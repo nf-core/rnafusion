@@ -43,5 +43,30 @@ params.reads = "data/*{1,2}.fastq.gz"
 params.outdir = './results'
 params.email = false
 
+Channel
+    .fromFilePairs( params.reads, size:  2 )
+    .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads} }
+    .into { read_files_STAR-fusion; read_files_trimming }
+
+
+
+/*
+ * STEP 1 - STAR-Fusion 
+ */
+
+process STAR-fusion {
+        
+    input:
+    set val (name), file(read1), file(read2) from read_files_STAR-fusion   
+
+    output:
+    '*final.abridged*'
+
+    """
+    STAR-Fusion --genome_lib_dir ${STAR_fusion_refrence} -_left_fq ${read1} --right_fq ${read2}  --output_dir ${star-fusion_outdir}
+    """
+
+}
+
 
 
