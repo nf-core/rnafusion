@@ -46,7 +46,7 @@ params.email = false
 Channel
     .fromFilePairs( params.reads, size:  2 )
     .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads} }
-    .into { read_files_STAR-fusion; read_files_trimming }
+    .into { read_files_STAR-fusion; fusionInspector-reads}
 
 
 
@@ -61,12 +61,38 @@ process STAR-fusion {
 
     output:
     '*final.abridged*'
-
+    'star-fusion.fusion_candidates.final.abridged.FFPM' into fusion_candidates
     """
     STAR-Fusion --genome_lib_dir ${STAR_fusion_refrence} -_left_fq ${read1} --right_fq ${read2}  --output_dir ${star-fusion_outdir}
     """
-
 }
+
+
+/*
+ *  -  FusionInspector
+ */
+
+process FusionInspector{
+
+    input:
+    set val (name), file(read1), file(read2) from fusionInspector-reads 
+    file fusion_candidates 
+    
+    output:
+
+    """
+    FusionInspector --fusions ${fusion_candidates} \
+                --genome_lib ${STAR_fusion_refrence} \
+                --left_fq ${read1} --right_fq ${read2} \
+                --out_dir ${my_FusionInspector_outdir} \
+                --out_prefix finspector \
+                --prep_for_IGV       
+    """
+}
+
+
+
+
 
 
 
