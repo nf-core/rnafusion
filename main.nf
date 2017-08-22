@@ -46,8 +46,8 @@ params.STAR = false
 params.FUSIONCATCHER = true
 Channel
     .fromFilePairs( params.reads, size:  2 )
-    .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads} }
-    .into { read_files_STAR-fusion; fusionInspector-reads, fusioncatcer-reads}
+    .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}" }
+    .into { read_files_STAR-fusion; fusionInspector-reads; fusioncatcer-reads}
 
 
 
@@ -55,7 +55,7 @@ Channel
  * STEP 1 - STAR-Fusion 
  */
 
-process STAR-fusion {
+process STAR_fusion{
         
     input:
     set val (name), file(read1), file(read2) from read_files_STAR-fusion   
@@ -67,7 +67,7 @@ process STAR-fusion {
     when: STAR == true 
     
     """
-    STAR-Fusion --genome_lib_dir ${STAR_fusion_refrence} -_left_fq ${read1} --right_fq ${read2}  --output_dir ${star-fusion_outdir}
+    STAR-Fusion --genome_lib_dir ${star_fusion_refrence} -_left_fq ${read1} --right_fq ${read2}  --output_dir ${star-fusion_outdir}
     """
 }
 
@@ -108,12 +108,13 @@ process FusionCatcher{
     input:
     set val (name), file(read1), file(read2) from fusioncatcer-reads
     output:
-    * 
+    '*.txt' 
     when: FUSIONCATCHER == true
+    
     """
     fusioncatcher \
-    -d $fusioncatcher_data_dir \
-    -i $ \
+    -d ${fusioncatcher_data_dir} \
+    -i  ${read1},${read2} \
     --threads ${task.cpus} \
     --${SENSITIVITY} \
     -o ${SAMPLE_NAME}/
