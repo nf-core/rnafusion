@@ -42,11 +42,12 @@ params.saveAlignedIntermediates = false
 params.reads = "data/*{1,2}.fastq.gz"
 params.outdir = './results'
 params.email = false
-
+params.STAR = false
+params.FUSIONCATCHER = true
 Channel
     .fromFilePairs( params.reads, size:  2 )
     .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads} }
-    .into { read_files_STAR-fusion; fusionInspector-reads}
+    .into { read_files_STAR-fusion; fusionInspector-reads, fusioncatcer-reads}
 
 
 
@@ -62,6 +63,9 @@ process STAR-fusion {
     output:
     '*final.abridged*'
     'star-fusion.fusion_candidates.final.abridged.FFPM' into fusion_candidates
+    
+    when: STAR == true 
+    
     """
     STAR-Fusion --genome_lib_dir ${STAR_fusion_refrence} -_left_fq ${read1} --right_fq ${read2}  --output_dir ${star-fusion_outdir}
     """
@@ -80,6 +84,8 @@ process FusionInspector{
     
     output:
 
+    when: STAR == true 
+    
     """
     FusionInspector --fusions ${fusion_candidates} \
                 --genome_lib ${STAR_fusion_refrence} \
@@ -89,6 +95,34 @@ process FusionInspector{
                 --prep_for_IGV       
     """
 }
+
+
+
+/*
+ * Fusion Catcher
+*/
+    // Requires raw untrimmed files. Should not be merged!
+
+process FusionCatcher{
+
+    input:
+    set val (name), file(read1), file(read2) from fusioncatcer-reads
+    output:
+    * 
+    when: FUSIONCATCHER == true
+    """
+    fusioncatcher \
+    -d $fusioncatcher_data_dir \
+    -i $ \
+    --threads ${task.cpus} \
+    --${SENSITIVITY} \
+    -o ${SAMPLE_NAME}/
+    """
+
+}
+
+
+
 
 
 
