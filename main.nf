@@ -10,6 +10,7 @@ vim: syntax=groovy
  https://github.com/SciLifeLab/NGI-RNAfusion
  #### Authors
  Rickard Hammarén @Hammarn  <rickard.hammaren@scilifelab.se>
+ Philip Ewels @ewels <phil.ewels@scilifelab.se>
 */
 
 /*
@@ -26,6 +27,7 @@ params.outdir = './results'
 params.email = false
 params.star = false
 params.fusioncatcher = true
+params.sensitivity = 'sensitive'
 Channel
     .fromFilePairs( params.reads, size: 2 )
     .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}" }
@@ -38,7 +40,7 @@ Channel
 process star_fusion{
 
     input:
-    set val (name), file(read1), file(read2) from read_files_star_fusion
+    set val (name), file(reads) from read_files_star_fusion
 
     output:
     file '*final.abridged*' into star_fusion_abridged
@@ -48,10 +50,10 @@ process star_fusion{
 
     script:
     """
-    STAR-Fusion \
-        --genome_lib_dir $star_fusion_refrence \
-        --left_fq $read1 \
-        --right_fq $read2 \
+    STAR-Fusion \\
+        --genome_lib_dir $star_fusion_refrence \\
+        --left_fq ${reads[0]} \\
+        --right_fq ${reads[1]} \\
         --output_dir $name
     """
 }
@@ -63,7 +65,7 @@ process star_fusion{
 process fusioninspector {
 
     input:
-    set val (name), file(read1), file(read2) from fusion_inspector_reads
+    set val (name), file(reads) from fusion_inspector_reads
     file fusion_candidates
 
     output:
@@ -73,13 +75,13 @@ process fusioninspector {
 
     script:
     """
-    FusionInspector \
-        --fusions $fusion_candidates \
-        --genome_lib $star_fusion_refrence \
-        --left_fq $read1 \
-        --right_fq $read2 \
-        --out_dir $my_FusionInspector_outdir \
-        --out_prefix finspector \
+    FusionInspector \\
+        --fusions $fusion_candidates \\
+        --genome_lib $star_fusion_refrence \\
+        --left_fq ${reads[0]} \\
+        --right_fq ${reads[1]} \\
+        --out_dir $my_FusionInspector_outdir \\
+        --out_prefix finspector \\
         --prep_for_IGV
     """
 }
@@ -93,7 +95,7 @@ process fusioninspector {
 process fusioncatcher {
 
     input:
-    set val (name), file(read1), file(read2) from fusioncatcher_reads
+    set val (name), file(reads) from fusioncatcher_reads
 
     output:
     file '*.txt' into fusioncatcher
@@ -102,12 +104,12 @@ process fusioncatcher {
 
     script:
     """
-    fusioncatcher \
-        -d $fusioncatcher_data_dir \
-        -i ${read1},${read2} \
-        --threads ${task.cpus} \
-        --$SENSITIVITY \
-        -o ${SAMPLE_NAME}/
+    fusioncatcher \\
+        -d ${params.fusioncatcher_data_dir} \\
+        -i ${reads[0]},${reads[1]} \\
+        --threads ${task.cpus} \\
+        --${params.sensitivity} \\
+        -o $name/
     """
 }
 
