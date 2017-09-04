@@ -28,6 +28,8 @@ params.email = false
 params.star = false
 params.fusioncatcher = true
 params.sensitivity = 'sensitive'
+params.clusterOptions = false
+params.fc_extra_options = ''
 Channel
     .fromFilePairs( params.reads, size: 2 )
     .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}" }
@@ -38,12 +40,14 @@ Channel
  * STEP 1 - STAR-Fusion
  */
 process star_fusion{
-
+    tag $name
+    publishDir: Star_fusion  mode: 'copy'
+    
     input:
     set val (name), file(reads) from read_files_star_fusion
 
     output:
-    file '*final.abridged*' into star_fusion_abridged
+    file '$name/*final.abridged*' into star_fusion_abridged
     file 'star-fusion.fusion_candidates.final.abridged.FFPM' into fusion_candidates
 
     when: params.star
@@ -51,7 +55,7 @@ process star_fusion{
     script:
     """
     STAR-Fusion \\
-        --genome_lib_dir $star_fusion_refrence \\
+        --genome_lib_dir ${params.star_fusion_reference}\\
         --left_fq ${reads[0]} \\
         --right_fq ${reads[1]} \\
         --output_dir $name
@@ -63,7 +67,8 @@ process star_fusion{
  *  -  FusionInspector
  */
 process fusioninspector {
-
+    tag $name
+    publishDir FusionInspector  mode: 'copy'  
     input:
     set val (name), file(reads) from fusion_inspector_reads
     file fusion_candidates
@@ -93,12 +98,15 @@ process fusioninspector {
 */
 // Requires raw untrimmed files. FastQ files should not be merged!
 process fusioncatcher {
+    tag $ name
+
+    publisDir FuisonCatcher  mode: 'copy'    
 
     input:
     set val (name), file(reads) from fusioncatcher_reads
 
     output:
-    file '*.txt' into fusioncatcher
+    file '$name/*.{txt,log}' into fusioncatcher
 
     when: params.fusioncatcher
 
@@ -109,7 +117,8 @@ process fusioncatcher {
         -i ${reads[0]},${reads[1]} \\
         --threads ${task.cpus} \\
         --${params.sensitivity} \\
-        -o $name/
+        -o . \\
+        ${params.fc_extra_options}
     """
 }
 
