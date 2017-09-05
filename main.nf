@@ -47,7 +47,7 @@ process star_fusion{
     set val (name), file(reads) from read_files_star_fusion
 
     output:
-    file '$name/*final.abridged*' into star_fusion_abridged
+    file '*final.abridged*' into star_fusion_abridged
     file 'star-fusion.fusion_candidates.final.abridged.FFPM' into fusion_candidates
 
     when: params.star
@@ -58,7 +58,7 @@ process star_fusion{
         --genome_lib_dir ${params.star_fusion_reference}\\
         --left_fq ${reads[0]} \\
         --right_fq ${reads[1]} \\
-        --output_dir $name
+        --output_dir .
     """
 }
 
