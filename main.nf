@@ -82,10 +82,10 @@ process fusioninspector {
     """
     FusionInspector \\
         --fusions $fusion_candidates \\
-        --genome_lib $star_fusion_refrence \\
+        --genome_lib ${params.star_fusion_reference} \\
         --left_fq ${reads[0]} \\
         --right_fq ${reads[1]} \\
-        --out_dir $my_FusionInspector_outdir \\
+        --out_dir . \\ 
         --out_prefix finspector \\
         --prep_for_IGV
     """
