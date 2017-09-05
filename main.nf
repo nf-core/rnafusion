@@ -40,8 +40,8 @@ Channel
  * STEP 1 - STAR-Fusion
  */
 process star_fusion{
-    tag $name
-    publishDir: Star_fusion  mode: 'copy'
+    tag "$name"
+    publishDir 'Star_fusion',  mode: 'copy'
     
     input:
     set val (name), file(reads) from read_files_star_fusion
@@ -67,8 +67,8 @@ process star_fusion{
  *  -  FusionInspector
  */
 process fusioninspector {
-    tag $name
-    publishDir FusionInspector  mode: 'copy'  
+    tag "$name"
+    publishDir 'FusionInspector',  mode: 'copy'  
     input:
     set val (name), file(reads) from fusion_inspector_reads
     file fusion_candidates
@@ -98,9 +98,9 @@ process fusioninspector {
 */
 // Requires raw untrimmed files. FastQ files should not be merged!
 process fusioncatcher {
-    tag $ name
+    tag "$name"
 
-    publisDir FuisonCatcher  mode: 'copy'    
+    publishDir 'FuisonCatcher',  mode: 'copy'    
 
     input:
     set val (name), file(reads) from fusioncatcher_reads
