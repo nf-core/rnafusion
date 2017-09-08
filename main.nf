@@ -25,7 +25,8 @@ params.project = false
 params.reads = "data/*{1,2}.fastq.gz"
 params.outdir = './results'
 params.email = false
-params.star = false
+params.star = true
+params.inspector = false
 params.fusioncatcher = true
 params.sensitivity = 'sensitive'
 params.clusterOptions = false
@@ -37,7 +38,7 @@ Channel
 
 
 /*
- * STEP 1 - STAR-Fusion
+ * STAR-Fusion
  */
 process star_fusion{
     tag "$name"
@@ -76,7 +77,7 @@ process fusioninspector {
     output:
     file '*' into fusioninspector_results
 
-    when: params.star
+    when: params.inspector
 
     script:
     """
