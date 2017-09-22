@@ -49,7 +49,7 @@ process star_fusion{
 
     output:
     file '*final.abridged*' into star_fusion_abridged
-    file 'star-fusion.fusion_candidates.final.abridged.FFPM' into fusion_candidates
+    file '*star-fusion.fusion_candidates.final.abridged.FFPM' into fusion_candidates
 
     when: params.star
 
@@ -60,6 +60,10 @@ process star_fusion{
         --left_fq ${reads[0]} \\
         --right_fq ${reads[1]} \\
         --output_dir .
+    for f in *
+    do
+    mv \$f $name\$f
+    done
     """
 }
 
@@ -107,7 +111,7 @@ process fusioncatcher {
     set val (name), file(reads) from fusioncatcher_reads
 
     output:
-    file '$name/*.{txt,log}' into fusioncatcher
+    file '*.{txt,log,zip}' into fusioncatcher
 
     when: params.fusioncatcher
 
@@ -120,6 +124,10 @@ process fusioncatcher {
         --${params.sensitivity} \\
         -o . \\
         ${params.fc_extra_options}
+    for f in *.{txt,log,zip}
+    do
+    mv \$f $name\$f
+    done
     """
 }
 
