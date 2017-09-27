@@ -30,6 +30,7 @@ params.inspector = false
 params.fusioncatcher = true
 params.sensitivity = 'sensitive'
 params.clusterOptions = false
+params.outdir = './results'
 params.fc_extra_options = ''
 Channel
     .fromFilePairs( params.reads, size: 2 )
@@ -42,7 +43,7 @@ Channel
  */
 process star_fusion{
     tag "$name"
-    publishDir 'Star_fusion',  mode: 'copy'
+    publishDir "${params.outdir}/Star_fusion",  mode: 'copy'
     
     input:
     set val (name), file(reads) from read_files_star_fusion
@@ -73,7 +74,8 @@ process star_fusion{
  */
 process fusioninspector {
     tag "$name"
-    publishDir 'FusionInspector',  mode: 'copy'  
+    ${params.outdir}/reference_genome"
+    publishDir "${params.outdir}/FusionInspector",  mode: 'copy'  
     input:
     set val (name), file(reads) from fusion_inspector_reads
     file fusion_candidates
@@ -105,7 +107,7 @@ process fusioninspector {
 process fusioncatcher {
     tag "$name"
 
-    publishDir 'FuisonCatcher',  mode: 'copy'    
+    publishDir "${params.outdir}/FusionCatcher",  mode: 'copy'    
 
     input:
     set val (name), file(reads) from fusioncatcher_reads
