@@ -23,7 +23,6 @@ version = '0.1'
 // Configurable variables - same as NGI-RNAseq for now
 params.project = false
 params.reads = "data/*{1,2}.fastq.gz"
-params.outdir = './results'
 params.email = false
 params.star = true
 params.inspector = false
@@ -74,7 +73,6 @@ process star_fusion{
  */
 process fusioninspector {
     tag "$name"
-    ${params.outdir}/reference_genome"
     publishDir "${params.outdir}/FusionInspector",  mode: 'copy'  
     input:
     set val (name), file(reads) from fusion_inspector_reads
