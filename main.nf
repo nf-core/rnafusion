@@ -131,5 +131,23 @@ process fusioncatcher {
     """
 }
 
+process fusion_genes_compare {
+    
+    publishDir "${params.outdir}/Comparative_shortlist",  mode: 'copy'
+    
+    input:
+    file ('*star-fusion.fusion_candidates.final.abridged') from fusion_candidates.collect() 
+    file ('*summary_candidate_fusions.txt') from fusioncatcher.collect()
+    
+    output:
+    file '*fusion_comparison.txt'  
+    
+    script:
+    """
+    fusion_genes_compare.py * 
+    """
+
+}
+
 
 
