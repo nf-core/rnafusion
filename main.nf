@@ -49,7 +49,7 @@ process star_fusion{
 
     output:
     file '*final.abridged*' into star_fusion_abridged
-    file '*star-fusion.fusion_candidates.final.abridged.FFPM' into fusion_candidates
+    file '*star-fusion.fusion_candidates.final.abridged.FFPM' into fusion_candidates,fusion_candidates_list
 
     when: params.star
 
@@ -136,7 +136,7 @@ process fusion_genes_compare {
     publishDir "${params.outdir}/Comparative_shortlist",  mode: 'copy'
     
     input:
-    file ('*star-fusion.fusion_candidates.final.abridged') from fusion_candidates.collect() 
+    file ('*star-fusion.fusion_candidates.final.abridged') from fusion_candidates_list.collect() 
     file ('*summary_candidate_fusions.txt') from fusioncatcher.collect()
     
     output:
