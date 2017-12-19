@@ -17,7 +17,7 @@ RUN apt-get -y install \
     bzip2 \
     cmake \
     automake \
-    make
+    make \
     gzip \
     zip \
     unzip \
@@ -31,18 +31,18 @@ RUN apt-get -y install \
     parallel \
     libtbb-dev \
     libtbb2 \
-    libdb-dev 
+    libdb-dev \
     python \
     python-dev \
     python-numpy \
     python-biopython \
     python-xlrd \
-    python-openpyxl \
+    python-openpyxl 
 
-RUN wget http://sf.net/projects/fusioncatcher/files/bootstrap.py -O bootstrap.py && 
-    \ python bootstrap.py -t --download -y && 
-    \ rm bootstrap.py
-
+RUN wget http://sf.net/projects/fusioncatcher/files/bootstrap.py -O bootstrap.py && \
+    python bootstrap.py -t --download -y && \
+    rm bootstrap.py
+  
 
 
 ##STAR
