@@ -12,7 +12,7 @@ Path to input reads
  --reads 'path/to/data/sample_*_{1,2}.fastq'
 ```
 
-### `--star`
+### `--star-fusion`
 If this flag is set to true then the pipeline will run STAR-Fusion.
 
 ### `--fusioncatcher`
@@ -28,7 +28,7 @@ nextflow run /NGI-RNAfusion/main.nf --star --fusioncatcher --reads 'SRR5665649_{
 
 ### `--fc_extra_options`
 
-Invoking this flag allows for extra options to be sent directly to Fusion Catcher. This is implemented since Fusion Catcher has too many potential options too be having their own flag in this pipeline. 
+Invoking this flag allows for extra options to be sent directly to Fusion Catcher. 
 
 ---
 

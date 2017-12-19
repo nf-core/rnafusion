@@ -24,7 +24,7 @@ version = '0.1'
 params.project = false
 params.reads = "data/*{1,2}.fastq.gz"
 params.email = false
-params.star = true
+params.star-fusion = true
 params.inspector = false
 params.fusioncatcher = true
 params.sensitivity = 'sensitive'
@@ -51,7 +51,7 @@ process star_fusion{
     file '*final.abridged*' into star_fusion_abridged
     file '*star-fusion.fusion_candidates.final.abridged.FFPM' into fusion_candidates,fusion_candidates_list
 
-    when: params.star
+    when: params.star-fusion
 
     script:
     """
@@ -142,6 +142,8 @@ process fusion_genes_compare {
     output:
     file '*fusion_comparison.txt'  
     
+    when: params.star && params.inspector
+
     script:
     """
     fusion_genes_compare.py * 
