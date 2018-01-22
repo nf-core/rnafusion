@@ -10,6 +10,7 @@ vim: syntax=groovy
  https://github.com/SciLifeLab/NGI-RNAfusion
  #### Authors
  Rickard Hammarén @Hammarn  <rickard.hammaren@scilifelab.se>
+ Philip Ewels @ewels <phil.ewels@scilifelab.se>
 */
 
 /*
@@ -22,10 +23,14 @@ version = '0.1'
 // Configurable variables - same as NGI-RNAseq for now
 params.project = false
 params.reads = "data/*{1,2}.fastq.gz"
-params.outdir = './results'
 params.email = false
-params.star = false
+params.star-fusion = true
+params.inspector = false
 params.fusioncatcher = true
+params.sensitivity = 'sensitive'
+params.clusterOptions = false
+params.outdir = './results'
+params.fc_extra_options = ''
 Channel
     .fromFilePairs( params.reads, size: 2 )
     .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}" }
@@ -33,26 +38,32 @@ Channel
 
 
 /*
- * STEP 1 - STAR-Fusion
+ * STAR-Fusion
  */
 process star_fusion{
-
+    tag "$name"
+    publishDir "${params.outdir}/Star_fusion",  mode: 'copy'
+    
     input:
-    set val (name), file(read1), file(read2) from read_files_star_fusion
+    set val (name), file(reads) from read_files_star_fusion
 
     output:
     file '*final.abridged*' into star_fusion_abridged
-    file 'star-fusion.fusion_candidates.final.abridged.FFPM' into fusion_candidates
+    file '*star-fusion.fusion_candidates.final.abridged.FFPM' into fusion_candidates,fusion_candidates_list
 
-    when: params.star
+    when: params.star-fusion
 
     script:
     """
-    STAR-Fusion \
-        --genome_lib_dir $star_fusion_refrence \
-        --left_fq $read1 \
-        --right_fq $read2 \
-        --output_dir $name
+    STAR-Fusion \\
+        --genome_lib_dir ${params.star_fusion_reference}\\
+        --left_fq ${reads[0]} \\
+        --right_fq ${reads[1]} \\
+        --output_dir .
+    for f in *
+    do
+    mv \$f $name\$f
+    done
     """
 }
 
@@ -61,25 +72,26 @@ process star_fusion{
  *  -  FusionInspector
  */
 process fusioninspector {
-
+    tag "$name"
+    publishDir "${params.outdir}/FusionInspector",  mode: 'copy'  
     input:
-    set val (name), file(read1), file(read2) from fusion_inspector_reads
+    set val (name), file(reads) from fusion_inspector_reads
     file fusion_candidates
 
     output:
     file '*' into fusioninspector_results
 
-    when: params.star
+    when: params.inspector
 
     script:
     """
-    FusionInspector \
-        --fusions $fusion_candidates \
-        --genome_lib $star_fusion_refrence \
-        --left_fq $read1 \
-        --right_fq $read2 \
-        --out_dir $my_FusionInspector_outdir \
-        --out_prefix finspector \
+    FusionInspector \\
+        --fusions $fusion_candidates \\
+        --genome_lib ${params.star_fusion_reference} \\
+        --left_fq ${reads[0]} \\
+        --right_fq ${reads[1]} \\
+        --out_dir . \\ 
+        --out_prefix finspector \\
         --prep_for_IGV
     """
 }
@@ -91,24 +103,52 @@ process fusioninspector {
 */
 // Requires raw untrimmed files. FastQ files should not be merged!
 process fusioncatcher {
+    tag "$name"
+
+    publishDir "${params.outdir}/FusionCatcher",  mode: 'copy'    
 
     input:
-    set val (name), file(read1), file(read2) from fusioncatcher_reads
+    set val (name), file(reads) from fusioncatcher_reads
 
     output:
-    file '*.txt' into fusioncatcher
+    file '*.{txt,log,zip}' into fusioncatcher
 
     when: params.fusioncatcher
 
     script:
     """
-    fusioncatcher \
-        -d $fusioncatcher_data_dir \
-        -i ${read1},${read2} \
-        --threads ${task.cpus} \
-        --$SENSITIVITY \
-        -o ${SAMPLE_NAME}/
+    fusioncatcher \\
+        -d ${params.fusioncatcher_data_dir} \\
+        -i ${reads[0]},${reads[1]} \\
+        --threads ${task.cpus} \\
+        --${params.sensitivity} \\
+        -o . \\
+        ${params.fc_extra_options}
+    for f in *.{txt,log,zip}
+    do
+    mv \$f $name\$f
+    done
     """
+}
+
+process fusion_genes_compare {
+    
+    publishDir "${params.outdir}/Comparative_shortlist",  mode: 'copy'
+    
+    input:
+    file ('*star-fusion.fusion_candidates.final.abridged') from fusion_candidates_list.collect() 
+    file ('*summary_candidate_fusions.txt') from fusioncatcher.collect()
+    
+    output:
+    file '*fusion_comparison.txt'  
+    
+    when: params.star && params.inspector
+
+    script:
+    """
+    fusion_genes_compare.py * 
+    """
+
 }
 
 
