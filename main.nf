@@ -31,11 +31,12 @@ params.sensitivity = 'sensitive'
 params.clusterOptions = false
 params.outdir = './results'
 params.fc_extra_options = ''
+
+params.singleEnd = false
 Channel
-    .fromFilePairs( params.reads, size: 2 )
+    .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 ) 
     .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}" }
     .into { read_files_star_fusion; fusion_inspector_reads; fusioncatcher_reads}
-
 
 /*
  * STAR-Fusion
@@ -116,6 +117,20 @@ process fusioncatcher {
     when: params.fusioncatcher
 
     script:
+    if (params.singleEnd) {
+    """
+    mkdir ${reads}_data
+    mv ${reads} ${reads}_data/
+    fusioncatcher \\
+        -d ${params.fusioncatcher_data_dir} \\
+        -i ${reads}_data \\
+        --threads ${task.cpus} \\
+        -o $name \\
+        --skip-blat \\
+        --single-end 
+    """
+    } else {
+ 
     """
     fusioncatcher \\
         -d ${params.fusioncatcher_data_dir} \\
