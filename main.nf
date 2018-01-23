@@ -38,6 +38,21 @@ Channel
     .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}" }
     .into { read_files_star_fusion; fusion_inspector_reads; fusioncatcher_reads}
 
+
+/ Validate inputs
+if( params.star_fusion_reference && params.star-fusion ){
+    star_fusion_reference = Channel
+        .fromPath(params.star_index)
+        .ifEmpty { exit 1, "STAR-fusion reference not found: ${params.star_fusion_reference}" }
+}
+
+
+if( params.fusioncatcher_data_dir && params.fusioncatcher ){
+    fusioncatcher_data_dir = Channel
+        .fromPath(params.fusioncatcher_data_dir)
+        .ifEmpty { exit 1, "FusionCatcher data directory not found: ${params.fusioncatcher_data_dir}" }
+}
+
 /*
  * STAR-Fusion
  */
@@ -60,12 +75,75 @@ process star_fusion{
         --genome_lib_dir ${params.star_fusion_reference}\\
         --left_fq ${reads[0]} \\
         --right_fq ${reads[1]} \\
-        --output_dir .
-    for f in *
-    do
-    mv \$f $name\$f
-    done
+        --output_dir  $name
     """
+}
+
+
+/*
+ * Fusion Catcher
+*/
+// Requires raw untrimmed files. FastQ files should not be merged!
+process fusioncatcher {
+    tag "$name"
+
+    publishDir "${params.outdir}/FusionCatcher",  mode: 'copy'    
+
+    input:
+    set val (name), file(reads) from fusioncatcher_reads
+
+    output:
+    file '*.{txt,log,zip}' into fusioncatcher
+
+    when: params.fusioncatcher
+
+    script:
+    if (params.singleEnd) {
+    
+    """
+    mkdir ${reads}_data
+    mv ${reads} ${reads}_data/
+    fusioncatcher \\
+        -d ${params.fusioncatcher_data_dir} \\
+        -i ${reads}_data \\
+        --threads ${task.cpus} \\
+        -o $name \\
+        --skip-blat \\
+        --single-end 
+    """
+    } else {
+ 
+    """
+    fusioncatcher \\
+        -d ${params.fusioncatcher_data_dir} \\
+        -i ${reads[0]},${reads[1]} \\
+        --threads ${task.cpus} \\
+        --${params.sensitivity} \\
+        -o $name \\
+        ${params.fc_extra_options}
+    """
+}
+
+
+
+process fusion_genes_compare {
+    
+    publishDir "${params.outdir}/Comparative_shortlist",  mode: 'copy'
+    
+    input:
+    file ('*star-fusion.fusion_candidates.final.abridged') from fusion_candidates_list.collect() 
+    file ('*summary_candidate_fusions.txt') from fusioncatcher.collect()
+    
+    output:
+    file '*fusion_comparison.txt'  
+    
+    when: params.star && params.inspector
+
+    script:
+    """
+    fusion_genes_compare.py * 
+    """
+
 }
 
 
@@ -96,75 +174,5 @@ process fusioninspector {
         --prep_for_IGV
     """
 }
-
-
-
-/*
- * Fusion Catcher
-*/
-// Requires raw untrimmed files. FastQ files should not be merged!
-process fusioncatcher {
-    tag "$name"
-
-    publishDir "${params.outdir}/FusionCatcher",  mode: 'copy'    
-
-    input:
-    set val (name), file(reads) from fusioncatcher_reads
-
-    output:
-    file '*.{txt,log,zip}' into fusioncatcher
-
-    when: params.fusioncatcher
-
-    script:
-    if (params.singleEnd) {
-    """
-    mkdir ${reads}_data
-    mv ${reads} ${reads}_data/
-    fusioncatcher \\
-        -d ${params.fusioncatcher_data_dir} \\
-        -i ${reads}_data \\
-        --threads ${task.cpus} \\
-        -o $name \\
-        --skip-blat \\
-        --single-end 
-    """
-    } else {
- 
-    """
-    fusioncatcher \\
-        -d ${params.fusioncatcher_data_dir} \\
-        -i ${reads[0]},${reads[1]} \\
-        --threads ${task.cpus} \\
-        --${params.sensitivity} \\
-        -o . \\
-        ${params.fc_extra_options}
-    for f in *.{txt,log,zip}
-    do
-    mv \$f $name\$f
-    done
-    """
-}
-
-process fusion_genes_compare {
-    
-    publishDir "${params.outdir}/Comparative_shortlist",  mode: 'copy'
-    
-    input:
-    file ('*star-fusion.fusion_candidates.final.abridged') from fusion_candidates_list.collect() 
-    file ('*summary_candidate_fusions.txt') from fusioncatcher.collect()
-    
-    output:
-    file '*fusion_comparison.txt'  
-    
-    when: params.star && params.inspector
-
-    script:
-    """
-    fusion_genes_compare.py * 
-    """
-
-}
-
 
 
