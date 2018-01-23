@@ -109,7 +109,8 @@ process fusioncatcher {
         --threads ${task.cpus} \\
         -o $name \\
         --skip-blat \\
-        --single-end 
+        --single-end \\
+        ${params.fc_extra_options}
     """
     } else {
  
@@ -120,6 +121,7 @@ process fusioncatcher {
         --threads ${task.cpus} \\
         --${params.sensitivity} \\
         -o $name \\
+        --skip-blat \\
         ${params.fc_extra_options}
     """
 }
