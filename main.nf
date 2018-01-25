@@ -24,7 +24,7 @@ version = '0.1'
 params.project = false
 params.reads = "data/*{1,2}.fastq.gz"
 params.email = false
-params.star-fusion = true
+params.star_fusion = true
 params.inspector = false
 params.fusioncatcher = true
 params.sensitivity = 'sensitive'
@@ -39,8 +39,8 @@ Channel
     .into { read_files_star_fusion; fusion_inspector_reads; fusioncatcher_reads}
 
 
-/ Validate inputs
-if( params.star_fusion_reference && params.star-fusion ){
+// Validate inputs
+if( params.star_fusion_reference && params.star_fusion ){
     star_fusion_reference = Channel
         .fromPath(params.star_index)
         .ifEmpty { exit 1, "STAR-fusion reference not found: ${params.star_fusion_reference}" }
@@ -65,9 +65,9 @@ process star_fusion{
 
     output:
     file '*final.abridged*' into star_fusion_abridged
-    file '*star-fusion.fusion_candidates.final.abridged.FFPM' into fusion_candidates,fusion_candidates_list
+    file '*star_fusion.fusion_candidates.final.abridged.FFPM' into fusion_candidates,fusion_candidates_list
 
-    when: params.star-fusion
+    when: params.star_fusion
 
     script:
     """
@@ -125,6 +125,7 @@ process fusioncatcher {
         ${params.fc_extra_options}
     """
 }
+}
 
 
 
@@ -133,7 +134,7 @@ process fusion_genes_compare {
     publishDir "${params.outdir}/Comparative_shortlist",  mode: 'copy'
     
     input:
-    file ('*star-fusion.fusion_candidates.final.abridged') from fusion_candidates_list.collect() 
+    file ('*star_fusion.fusion_candidates.final.abridged') from fusion_candidates_list.collect() 
     file ('*summary_candidate_fusions.txt') from fusioncatcher.collect()
     
     output:
