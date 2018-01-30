@@ -4,6 +4,7 @@ import re
 import argparse
 import sys
 
+import pdb
 
 def read_files_store_data(input_files,output_file):
     fusion_dict={}
@@ -25,6 +26,7 @@ def read_files_store_data(input_files,output_file):
 
         elif input_file.endswith("summary_candidate_fusions.txt"):
             #We have a Fusion catcher file
+            pdb.set_trace()
             with open(input_file, 'r') as f:
                 for line in f:
                     if line.startswith("  * "):
@@ -39,24 +41,33 @@ def read_files_store_data(input_files,output_file):
     make_report(fusion_dict, output_file)
 
 
-def group_NGI_files(input_files,outputfile):
-    sample_pattern=re.compile("^(P[0-9]+_[0-9]+)")
-    matches=[]
+def group_files(input_files, outputfile):
+    sample_dict = {}
+    # Look through the input files and find sample names.
     for input_file in input_files:
-        try:
-            match=sample_pattern.search(os.path.basename(input_file)).group(1)
-            if match:
-                matches.append(match)
-        except AttributeError:
-            continue
-    NGI_names=matches    
-    for NGI_name in NGI_names:
-        sample_files=[]
-        for fusion_file in input_files:
-            if os.path.basename(fusion_file).startswith(NGI_name):
-                sample_files.append(fusion_file)
-        outfile="{}.fusion_comparison.txt".format(NGI_name)
-        read_files_store_data(sample_files,outfile)
+        #Check for Star-fusion
+        if input_file.endswith('star-fusion.fusion_candidates.final.abridged'):
+            key = input_file.rstrip('star-fusion.fusion_candidates.final.abridged')    
+            try:
+                #We have already encountered the fusioncatcher mate
+                sample_dict[key].append(input_file)
+            except KeyError:
+                sample_dict[key]=[input_file]
+        #We have fusioncatcher
+        elif input_file.endswith("summary_candidate_fusions.txt"):    
+            try:
+                key = input_file.rstrip('summary_candidate_fusions.txt')   
+                try:
+                    #We have already encountered the star-fusion mate
+                    sample_dict[key].append(input_file)
+                except KeyError:
+                    sample_dict[key]=[input_file]
+            except KeyError:
+                continue
+
+    outfile="{}.fusion_comparison.txt".format(sample_dict.keys()[0])
+    read_files_store_data(sample_dict.values()[0],outfile)  
+
 
 
 def make_report(fusion_dict, output_file):
@@ -84,16 +95,19 @@ def make_report(fusion_dict, output_file):
     content+="## Number of Fusion genes detected with FusionCatcher: {} \n".format(len_fc)
     content +="##FUSIONCATCHER\tSTAR-FUSION\tBOTH\n"
     ##cleanup
+    
+    
     gene_in_both=[item.rstrip() for item in gene_in_both]
     gene_star_only=[item.rstrip() for item in gene_star_only]
     gene_fc_only=[item.rstrip() for item in gene_fc_only]
     
+    pdb.set_trace()
     maxlen = max([len(l) for l in [gene_in_both,gene_star_only,gene_fc_only]])
-    for idx in range(0, maxlen-1):
-	both_str = gene_in_both[idx] if len(gene_in_both) > idx else ''
-	star_str = gene_star_only[idx] if len(gene_star_only) > idx else ''
-	fc_str = gene_fc_only[idx] if len(gene_fc_only) > idx else ''
-	content += "{}\t{}\t{}\n".format(fc_str, star_str, both_str)    
+    for idx in range(0, maxlen):
+        both_str = gene_in_both[idx] if len(gene_in_both) > idx else ''
+        star_str = gene_star_only[idx] if len(gene_star_only) > idx else ''
+        fc_str = gene_fc_only[idx] if len(gene_fc_only) > idx else ''
+        content += "{}\t{}\t{}\n".format(fc_str, star_str, both_str)    
  
     with open(output_file, 'w') as f:
         f.write(content)
@@ -106,5 +120,4 @@ if __name__ == "__main__":
     parser.add_argument("output_file", metavar='Output file', nargs='?', default='fusion_comparison.txt',
                                    help="File to save output to. ")
     args = parser.parse_args() 
-    group_NGI_files(args.input_files,args.output_file)
-    read_files_store_data(args.input_files,args.output_file)
+    group_files(args.input_files,args.output_file)
