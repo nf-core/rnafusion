@@ -62,7 +62,7 @@ process star_fusion{
     
     input:
     set val (name), file(reads) from read_files_star_fusion
-
+    file star_fusion_reference 
     output:
     file '*final.abridged*' into star_fusion_abridged
     file '*star_fusion.fusion_candidates.final.abridged.FFPM' into fusion_candidates,fusion_candidates_list
@@ -72,7 +72,7 @@ process star_fusion{
     script:
     """
     STAR-Fusion \\
-        --genome_lib_dir ${params.star_fusion_reference}\\
+        --genome_lib_dir ${star_fusion_reference}\\
         --left_fq ${reads[0]} \\
         --right_fq ${reads[1]} \\
         --output_dir  $name
@@ -91,10 +91,10 @@ process fusioncatcher {
 
     input:
     set val (name), file(reads) from fusioncatcher_reads
+    file fusioncatcher_data_dir
 
     output:
     file '*.{txt,log,zip}' into fusioncatcher
-
     when: params.fusioncatcher
 
     script:
@@ -104,7 +104,7 @@ process fusioncatcher {
     mkdir ${reads}_data
     mv ${reads} ${reads}_data/
     fusioncatcher \\
-        -d ${params.fusioncatcher_data_dir} \\
+        -d ${fusioncatcher_data_dir} \\
         -i ${reads}_data \\
         --threads ${task.cpus} \\
         -o $name \\
@@ -116,7 +116,7 @@ process fusioncatcher {
  
     """
     fusioncatcher \\
-        -d ${params.fusioncatcher_data_dir} \\
+        -d ${fusioncatcher_data_dir} \\
         -i ${reads[0]},${reads[1]} \\
         --threads ${task.cpus} \\
         --${params.sensitivity} \\
