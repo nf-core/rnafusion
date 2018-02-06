@@ -14,10 +14,12 @@ Path to input reads
 
 ### `--star-fusion`
 If this flag is set to true then the pipeline will run STAR-Fusion.
+True by default
 
 ### `--fusioncatcher`
 
 If this flag is set to true then the pipeline will run Fusion Catcher.
+True by default
 
 More than one of these can be true at a time. 
 
