@@ -4,7 +4,6 @@ import re
 import argparse
 import sys
 
-import pdb
 
 def read_files_store_data(input_files,output_file):
     fusion_dict={}
@@ -26,7 +25,6 @@ def read_files_store_data(input_files,output_file):
 
         elif input_file.endswith("summary_candidate_fusions.txt"):
             #We have a Fusion catcher file
-            pdb.set_trace()
             with open(input_file, 'r') as f:
                 for line in f:
                     if line.startswith("  * "):
@@ -101,7 +99,6 @@ def make_report(fusion_dict, output_file):
     gene_star_only=[item.rstrip() for item in gene_star_only]
     gene_fc_only=[item.rstrip() for item in gene_fc_only]
     
-    pdb.set_trace()
     maxlen = max([len(l) for l in [gene_in_both,gene_star_only,gene_fc_only]])
     for idx in range(0, maxlen):
         both_str = gene_in_both[idx] if len(gene_in_both) > idx else ''
