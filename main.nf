@@ -41,14 +41,12 @@ Channel
 
 // Validate inputs
 if( params.star_fusion_reference && params.star_fusion ){
-    star_fusion_reference = Channel
-        .fromPath(params.star_fusion_reference)
+    Channel.fromPath(params.star_fusion_reference)
         .ifEmpty { exit 1, "STAR-fusion reference not found: ${params.star_fusion_reference}" }
-}
-(star_fusion_reference,star_fusion_reference_fusioninspector) = star_fusion_reference.into(2)
-
-if( params.fusioncatcher_data_dir && params.fusioncatcher ){
-    fusioncatcher_data_dir = Channel
+        .into { star_fusion_reference, star_fusion_reference_fusioninspector }
+    }
+    if( params.fusioncatcher_data_dir && params.fusioncatcher ){
+        fusioncatcher_data_dir = Channel
         .fromPath(params.fusioncatcher_data_dir)
         .ifEmpty { exit 1, "FusionCatcher data directory not found: ${params.fusioncatcher_data_dir}" }
 }
