@@ -43,12 +43,12 @@ Channel
 if( params.star_fusion_reference && params.star_fusion ){
     Channel.fromPath(params.star_fusion_reference)
         .ifEmpty { exit 1, "STAR-fusion reference not found: ${params.star_fusion_reference}" }
-        .into { star_fusion_reference, star_fusion_reference_fusioninspector }
+        .into { star_fusion_reference; star_fusion_reference_fusioninspector }
 }
 if( params.fusioncatcher_data_dir && params.fusioncatcher ){
-    fusioncatcher_data_dir = Channel
-    .fromPath(params.fusioncatcher_data_dir)
-    .ifEmpty { exit 1, "FusionCatcher data directory not found: ${params.fusioncatcher_data_dir}" }
+    Channel.fromPath(params.fusioncatcher_data_dir)
+        .ifEmpty { exit 1, "FusionCatcher data directory not found: ${params.fusioncatcher_data_dir}" }
+        .into { fusioncatcher_data_dir; fusioncatcher_data_dir }
 }
 
 /*
@@ -111,18 +111,17 @@ process fusioncatcher {
         ${params.fc_extra_options}
     """
     } else {
- 
-    """
-    fusioncatcher \\
-        -d $fusioncatcher_data_dir \\
-        -i ${reads[0]},${reads[1]} \\
-        --threads ${task.cpus} \\
-        --${params.sensitivity} \\
-        -o $name \\
-        --skip-blat \\
-        ${params.fc_extra_options}
-    """
-}
+        """
+        fusioncatcher \\
+            -d $fusioncatcher_data_dir \\
+            -i ${reads[0]},${reads[1]} \\
+            --threads ${task.cpus} \\
+            --${params.sensitivity} \\
+            -o $name \\
+            --skip-blat \\
+            ${params.fc_extra_options}
+        """
+    }
 }
 
 
