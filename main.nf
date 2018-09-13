@@ -25,9 +25,9 @@ params.project = false
 params.reads = "data/*{1,2}.fastq.gz"
 params.email = false
 params.star_fusion = true
-params.inspector = false
+params.inspector = true
 params.fusioncatcher = true
-params.clusterOptions = false
+params.clusterOptions = true
 params.outdir = './results'
 params.fc_extra_options = ''
 
@@ -45,57 +45,9 @@ if( params.star_fusion_reference && params.star_fusion ){
         .into { star_fusion_reference; star_fusion_reference_fusioninspector }
 }
 if( params.fusioncatcher_data_dir && params.fusioncatcher ){
-    Channel.fromPath(params.fusioncatcher_data_dir)
-        .ifEmpty { exit 1, "FusionCatcher data directory not found: ${params.fusioncatcher_data_dir}" }
-        .into { fusioncatcher_data_dir; fusioncatcher_data_dir }
-}
-
-/*
- * Fusion Catcher
-*/
-// Requires raw untrimmed files. FastQ files should not be merged!
-process fusioncatcher {
-    tag "$name"
-
-    publishDir "${params.outdir}/FusionCatcher",  mode: 'copy'    
-
-    module 'bioinfo-tools' 
-    module 'FusionCatcher'
-
-    input:
-        set val (name), file(reads) from fusioncatcher_reads
-        file fusioncatcher_data_dir from fusioncatcher_data_dir.collect()
-
-    output:
-        file '*.{txt,log,zip}' into fusioncatcher
-    
-    when: params.fusioncatcher
-
-    script:
-    if (params.singleEnd) {
-        """
-        mkdir ${reads}_data
-        mv ${reads} ${reads}_data/
-        fusioncatcher \\
-            -d $fusioncatcher_data_dir \\
-            -i ${reads}_data \\
-            --threads ${task.cpus} \\
-            -o $name \\
-            --skip-blat \\
-            --single-end \\
-            ${params.fc_extra_options}
-        """
-    } else {
-        """
-        fusioncatcher \\
-            -d $fusioncatcher_data_dir \\
-            -i ${reads[0]},${reads[1]} \\
-            --threads ${task.cpus} \\
-            -o $name \\
-            --skip-blat \\
-            ${params.fc_extra_options}
-        """
-    }
+    fusioncatcher_data_dir = Channel
+    .fromPath(params.fusioncatcher_data_dir)
+    .ifEmpty { exit 1, "FusionCatcher data directory not found: ${params.fusioncatcher_data_dir}" }
 }
 
 /*
@@ -110,42 +62,96 @@ process star_fusion{
     module 'samtools/1.5'
 
     input:
-        set val (name), file(reads) from read_files_star_fusion
-        file star_fusion_reference from star_fusion_reference.collect()
+    set val (name), file(reads) from read_files_star_fusion
+    file star_fusion_reference from star_fusion_reference.collect()
     output:
-        file '*abridged.tsv' into star_fusion_abridged
-        file '*abridged.tsv' into fusion_candidates,fusion_candidates_list
+    file '*abridged.tsv' into star_fusion_abridged
+    file '*abridged.tsv' into fusion_candidates,fusion_candidates_list
 
     when: params.star_fusion
 
     script:
-        """
-        STAR-Fusion \\
-            --genome_lib_dir ${star_fusion_reference}\\
-            --left_fq ${reads[0]} \\
-            --right_fq ${reads[1]} \\
-            --CPU ${task.cpus}
-            --output_dir .
-        """
+    """
+    STAR-Fusion \\
+        --genome_lib_dir ${star_fusion_reference}\\
+        --left_fq ${reads[0]} \\
+        --right_fq ${reads[1]} \\
+        --CPU  ${task.cpus} \\
+        --output_dir .
+    """
 }
 
+
+/*
+ * Fusion Catcher
+*/
+// Requires raw untrimmed files. FastQ files should not be merged!
+process fusioncatcher {
+    tag "$name"
+
+    publishDir "${params.outdir}/FusionCatcher",  mode: 'copy'    
+
+    module 'bioinfo-tools' 
+    module 'FusionCatcher' 
+
+    input:
+    set val (name), file(reads) from fusioncatcher_reads
+    file fusioncatcher_data_dir from fusioncatcher_data_dir.collect()
+
+    output:
+    file '*.{txt,log,zip}' into fusioncatcher
+    when: params.fusioncatcher
+
+    script:
+    if (params.singleEnd) {
+    
+    """
+    mkdir ${reads}_data
+    mv ${reads} ${reads}_data/
+    fusioncatcher \\
+        -d $fusioncatcher_data_dir \\
+        -i ${reads}_data \\
+        --threads ${task.cpus} \\
+        -o $name \\
+        --skip-blat \\
+        --single-end \\
+        ${params.fc_extra_options}
+    """
+    } else {
+ 
+    """
+    fusioncatcher \\
+        -d $fusioncatcher_data_dir \\
+        -i ${reads[0]},${reads[1]} \\
+        --threads ${task.cpus} \\
+        -o . \\
+        --skip-blat \\
+        ${params.fc_extra_options}
+    """
+}
+}
+
+
+
 process fusion_genes_compare {
+    tag "$name"
     
     publishDir "${params.outdir}/Comparative_shortlist",  mode: 'copy'
     
     input:
-        file ('*star_fusion.fusion_candidates.final.abridged') from fusion_candidates_list.collect() 
-        file ('*summary_candidate_fusions.txt') from fusioncatcher.collect()
+    file ('*star_fusion.fusion_candidates.final.abridged') from fusion_candidates_list.collect() 
+    file ('*summary_candidate_fusions.txt') from fusioncatcher.collect()
     
     output:
-        file '*fusion_comparison.txt'  
+    file '*fusion_comparison.txt'  
     
-    when: params.star && params.inspector
+    when: params.star_fusion && params.inspector
 
     script:
-        """
-        fusion_genes_compare.py * 
-        """
+    """
+    fusion_genes_compare.py * 
+    """
+
 }
 
 
@@ -164,27 +170,25 @@ process fusioninspector {
     module 'perl_modules'
 
     input:
-        set val (name), file(reads) from fusion_inspector_reads
-        file fusion_candidates
-        file star_fusion_reference from star_fusion_reference_fusioninspector.collect()
+    set val (name), file(reads) from fusion_inspector_reads
+    file fusion_candidates
+    file star_fusion_reference from star_fusion_reference_fusioninspector.collect()
 
     output:
-        file '*' into fusioninspector_results
+    file '*' into fusioninspector_results
 
     when: params.inspector
 
     script:
-        """
-        FusionInspector \\
-            --fusions $fusion_candidates \\
-            --genome_lib ${star_fusion_reference} \\
-            --left_fq ${reads[0]} \\
-            --right_fq ${reads[1]} \\
-            --CPU ${task.cpus} \\
-            --out_dir FI \\ 
-            --out_prefix finspector \\
-            --prep_for_IGV
-        """
+    """
+    FusionInspector \\
+        --fusions $fusion_candidates \\
+        --genome_lib $star_fusion_reference \\
+        --left_fq ${reads[0]} \\
+        --right_fq ${reads[1]} \\
+        --CPU  ${task.cpus} \\
+        --out_dir . \\ 
+        --out_prefix finspector \\
+        --prep_for_IGV
+    """
 }
-
-
