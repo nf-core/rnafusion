@@ -57,9 +57,9 @@ process star_fusion{
     tag "$name"
     publishDir "${params.outdir}/Star_fusion",  mode: 'copy'
     
-    module 'bioinfo-tools'
-    module 'star-fusion/1.2.0'
-    module 'samtools/1.5'
+    // module 'bioinfo-tools'
+    // module 'star-fusion/1.2.0'
+    // module 'samtools/1.5'
 
     input:
     set val (name), file(reads) from read_files_star_fusion
@@ -91,8 +91,8 @@ process fusioncatcher {
 
     publishDir "${params.outdir}/FusionCatcher",  mode: 'copy'    
 
-    module 'bioinfo-tools' 
-    module 'FusionCatcher' 
+    // module 'bioinfo-tools' 
+    // module 'FusionCatcher' 
 
     input:
     set val (name), file(reads) from fusioncatcher_reads
@@ -162,12 +162,12 @@ process fusioninspector {
     tag "$name"
     publishDir "${params.outdir}/FusionInspector",  mode: 'copy'  
     
-    module 'bioinfo-tools'
-    module 'star-fusion/1.2.0'
-    module 'trinity/2014-07-17'
-    module 'samtools/1.5'
-    module 'htslib/1.5'
-    module 'perl_modules'
+    // module 'bioinfo-tools'
+    // module 'star-fusion/1.2.0'
+    // module 'trinity/2014-07-17'
+    // module 'samtools/1.5'
+    // module 'htslib/1.5'
+    // module 'perl_modules'
 
     input:
     set val (name), file(reads) from fusion_inspector_reads
