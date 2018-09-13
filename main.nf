@@ -22,7 +22,7 @@ version = '0.1'
 
 // Configurable variables - same as NGI-RNAseq for now
 params.project = false
-params.reads = "data/*{1,2}.fastq.gz"
+params.reads = "data/*{1,2}.fastq"
 params.email = false
 params.star_fusion = true
 params.inspector = true
