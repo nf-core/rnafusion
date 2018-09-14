@@ -22,13 +22,12 @@ version = '0.1'
 
 // Configurable variables - same as NGI-RNAseq for now
 params.project = false
-params.reads = "data/*{1,2}.fastq.gz"
+params.reads = "data/*{1,2}.fastq"
 params.email = false
 params.star_fusion = true
-params.inspector = false
+params.inspector = true
 params.fusioncatcher = true
-params.sensitivity = 'sensitive'
-params.clusterOptions = false
+params.clusterOptions = true
 params.outdir = './results'
 params.fc_extra_options = ''
 
@@ -43,7 +42,7 @@ Channel
 if( params.star_fusion_reference && params.star_fusion ){
     Channel.fromPath(params.star_fusion_reference)
         .ifEmpty { exit 1, "STAR-fusion reference not found: ${params.star_fusion_reference}" }
-        .into { star_fusion_reference, star_fusion_reference_fusioninspector }
+        .into { star_fusion_reference; star_fusion_reference_fusioninspector }
 }
 if( params.fusioncatcher_data_dir && params.fusioncatcher ){
     fusioncatcher_data_dir = Channel
@@ -58,12 +57,16 @@ process star_fusion{
     tag "$name"
     publishDir "${params.outdir}/Star_fusion",  mode: 'copy'
     
+    // module 'bioinfo-tools'
+    // module 'star-fusion/1.2.0'
+    // module 'samtools/1.5'
+
     input:
     set val (name), file(reads) from read_files_star_fusion
     file star_fusion_reference from star_fusion_reference.collect()
     output:
-    file '*final.abridged*' into star_fusion_abridged
-    file '*star_fusion.fusion_candidates.final.abridged.FFPM' into fusion_candidates,fusion_candidates_list
+    file '*abridged.tsv' into star_fusion_abridged
+    file '*abridged.tsv' into fusion_candidates,fusion_candidates_list
 
     when: params.star_fusion
 
@@ -73,7 +76,8 @@ process star_fusion{
         --genome_lib_dir ${star_fusion_reference}\\
         --left_fq ${reads[0]} \\
         --right_fq ${reads[1]} \\
-        --output_dir  $name
+        --CPU  ${task.cpus} \\
+        --output_dir .
     """
 }
 
@@ -86,6 +90,9 @@ process fusioncatcher {
     tag "$name"
 
     publishDir "${params.outdir}/FusionCatcher",  mode: 'copy'    
+
+    // module 'bioinfo-tools' 
+    // module 'FusionCatcher' 
 
     input:
     set val (name), file(reads) from fusioncatcher_reads
@@ -117,8 +124,7 @@ process fusioncatcher {
         -d $fusioncatcher_data_dir \\
         -i ${reads[0]},${reads[1]} \\
         --threads ${task.cpus} \\
-        --${params.sensitivity} \\
-        -o $name \\
+        -o . \\
         --skip-blat \\
         ${params.fc_extra_options}
     """
@@ -128,6 +134,7 @@ process fusioncatcher {
 
 
 process fusion_genes_compare {
+    tag "$name"
     
     publishDir "${params.outdir}/Comparative_shortlist",  mode: 'copy'
     
@@ -138,7 +145,7 @@ process fusion_genes_compare {
     output:
     file '*fusion_comparison.txt'  
     
-    when: params.star && params.inspector
+    when: params.star_fusion && params.inspector
 
     script:
     """
@@ -154,6 +161,14 @@ process fusion_genes_compare {
 process fusioninspector {
     tag "$name"
     publishDir "${params.outdir}/FusionInspector",  mode: 'copy'  
+    
+    // module 'bioinfo-tools'
+    // module 'star-fusion/1.2.0'
+    // module 'trinity/2014-07-17'
+    // module 'samtools/1.5'
+    // module 'htslib/1.5'
+    // module 'perl_modules'
+
     input:
     set val (name), file(reads) from fusion_inspector_reads
     file fusion_candidates
@@ -171,10 +186,9 @@ process fusioninspector {
         --genome_lib $star_fusion_reference \\
         --left_fq ${reads[0]} \\
         --right_fq ${reads[1]} \\
+        --CPU  ${task.cpus} \\
         --out_dir . \\ 
         --out_prefix finspector \\
         --prep_for_IGV
     """
 }
-
-
