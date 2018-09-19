@@ -13,7 +13,7 @@
 def helpMessage() {
     log.info"""
     =========================================
-     nf-core/rnafusion v${manifest.pipelineVersion}
+     nf-core/rnafusion v${params.pipelineVersion}
     =========================================
     Usage:
 
@@ -29,6 +29,7 @@ def helpMessage() {
 
     Options:
       --singleEnd                   Specifies that the input is single end reads
+      --star_fusion                 [bool] Run STAR-Fusion. Default: False
 
     References                      If not specified in the configuration file or you wish to overwrite any of the references.
       --fasta                       Path to Fasta reference
@@ -37,6 +38,9 @@ def helpMessage() {
       --outdir                      The output directory where the results will be saved
       --email                       Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits
       -name                         Name for the pipeline run. If not specified, Nextflow will automatically generate a random mnemonic.
+
+    QC options:
+      --skip_qc                     Skip all QC including MultiQC
 
     AWSBatch options:
       --awsqueue                    The AWSBatch JobQueue that needs to be set when running on AWSBatch
@@ -60,6 +64,8 @@ params.fasta = params.genome ? params.genomes[ params.genome ].fasta ?: false : 
 params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
 params.email = false
 params.plaintext_email = false
+params.skip_qc = false
+params.star_fusion = false
 
 multiqc_config = file(params.multiqc_config)
 output_docs = file("$baseDir/docs/output.md")
@@ -95,6 +101,16 @@ if( workflow.profile == 'awsbatch') {
     if(!workflow.workDir.startsWith('s3:') || !params.outdir.startsWith('s3:')) exit 1, "Workdir or Outdir not on S3 - specify S3 Buckets for each to run on AWSBatch!"
 }
 
+// Validate pipeline variables
+// These variable have to be defined in the profile configuration which is referenced in nextflow.config
+if (!params.star_fusion_ref) {
+    exit 1, "Star-Fusion reference not specified!"
+}
+if (params.star_fusion_ref) {
+    star_fusion_dir = file(params.star_fusion_ref)
+    if ( !star_fusion_dir.exists() ) exit 1, "Stat-Fusion reference directory not found!"
+}
+
 /*
  * Create a channel for input read files
  */
@@ -104,19 +120,19 @@ if( workflow.profile == 'awsbatch') {
              .from(params.readPaths)
              .map { row -> [ row[0], [file(row[1][0])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_trimming }
+             .into { read_files_fastqc; read_files_star_fusion }
      } else {
          Channel
              .from(params.readPaths)
              .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_trimming }
+             .into { read_files_fastqc; read_files_star_fusion }
      }
  } else {
      Channel
          .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
          .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
-         .into { read_files_fastqc; read_files_trimming }
+         .into { read_files_fastqc; read_files_star_fusion }
  }
 
 
@@ -128,11 +144,11 @@ log.info """=======================================================
     | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                           `._,._,\'
 
-nf-core/rnafusion v${manifest.pipelineVersion}"
+nf-core/rnafusion v${params.pipelineVersion}"
 ======================================================="""
 def summary = [:]
 summary['Pipeline Name']  = 'nf-core/rnafusion'
-summary['Pipeline Version'] = manifest.pipelineVersion
+summary['Pipeline Version'] = params.pipelineVersion
 summary['Run Name']     = custom_runName ?: workflow.runName
 summary['Reads']        = params.reads
 summary['Fasta Ref']    = params.fasta
@@ -189,10 +205,11 @@ process get_software_versions {
 
     script:
     """
-    echo $manifest.pipelineVersion > v_pipeline.txt
+    echo $params.pipelineVersion > v_pipeline.txt
     echo $workflow.nextflow.version > v_nextflow.txt
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
+    STAR-Fusion --version > v_star_fusion.txt
     scrape_software_versions.py > software_versions_mqc.yaml
     """
 }
@@ -206,6 +223,9 @@ process fastqc {
     tag "$name"
     publishDir "${params.outdir}/fastqc", mode: 'copy',
         saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
+
+    when:
+    !params.skip_qc
 
     input:
     set val(name), file(reads) from read_files_fastqc
@@ -226,6 +246,9 @@ process fastqc {
  */
 process multiqc {
     publishDir "${params.outdir}/MultiQC", mode: 'copy'
+
+    when:
+    !params.skip_qc
 
     input:
     file multiqc_config
@@ -266,7 +289,47 @@ process output_documentation {
     """
 }
 
+/*************************************************************
+ * Fusion pipeline
+ ************************************************************/
 
+/*
+ * STAR-Fusion
+ */
+process star_fusion {
+    tag "$name"
+    publishDir "${params.outdir}/Star_fusion", mode: 'copy'
+
+    when:
+    params.star_fusion
+
+    input:
+    set val(name), file(reads) from read_files_star_fusion
+
+    output:
+    file '*fusion_predictions.tsv' into star_fusion_predictions
+    file '*fusion_predictions.abridged.tsv' into star_fusion_abridged
+
+    script:
+    if (params.singleEnd) {
+        """
+        STAR-Fusion \\
+        --genome_lib_dir ${params.star_fusion_ref} \\
+        --left_fq ${reads[0]} \\
+        --CPU  ${task.cpus} \\
+        --output_dir .
+        """
+    } else {
+        """
+        STAR-Fusion \\
+        --genome_lib_dir ${params.star_fusion_ref} \\
+        --left_fq ${reads[0]} \\
+        --right_fq ${reads[1]} \\
+        --CPU  ${task.cpus} \\
+        --output_dir .
+        """
+    } 
+}
 
 /*
  * Completion e-mail notification
@@ -279,7 +342,7 @@ workflow.onComplete {
       subject = "[nf-core/rnafusion] FAILED: $workflow.runName"
     }
     def email_fields = [:]
-    email_fields['version'] = manifest.pipelineVersion
+    email_fields['version'] = params.pipelineVersion
     email_fields['runName'] = custom_runName ?: workflow.runName
     email_fields['success'] = workflow.success
     email_fields['dateComplete'] = workflow.complete
