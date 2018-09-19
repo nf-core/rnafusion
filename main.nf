@@ -30,6 +30,8 @@ def helpMessage() {
     Options:
       --singleEnd                   Specifies that the input is single end reads
       --star_fusion                 [bool] Run STAR-Fusion. Default: False
+      --fusioncatcher               [bool] Run FusionCatcher. Default: False
+        --fc_extra_options          Extra parameters for FusionCatcher. Can be found at https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md
 
     References                      If not specified in the configuration file or you wish to overwrite any of the references.
       --fasta                       Path to Fasta reference
@@ -66,6 +68,8 @@ params.email = false
 params.plaintext_email = false
 params.skip_qc = false
 params.star_fusion = false
+params.fusioncatcher = false
+params.fc_extra_options = ''
 
 multiqc_config = file(params.multiqc_config)
 output_docs = file("$baseDir/docs/output.md")
@@ -111,6 +115,14 @@ if (params.star_fusion_ref) {
     if ( !star_fusion_dir.exists() ) exit 1, "Stat-Fusion reference directory not found!"
 }
 
+if (!params.fusioncatcher_dir) {
+    exit 1, "Fusion catcher data directory not specified!"
+}
+if (params.fusioncatcher_dir) {
+    fusioncatcher_dir = file(params.fusioncatcher_dir)
+    if ( !fusioncatcher_dir.exists() ) exit 1, "Fusion catcher data directory not found!"
+}
+
 /*
  * Create a channel for input read files
  */
@@ -120,19 +132,19 @@ if (params.star_fusion_ref) {
              .from(params.readPaths)
              .map { row -> [ row[0], [file(row[1][0])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_star_fusion }
+             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher }
      } else {
          Channel
              .from(params.readPaths)
              .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_star_fusion }
+             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher }
      }
  } else {
      Channel
          .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
          .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
-         .into { read_files_fastqc; read_files_star_fusion }
+         .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher }
  }
 
 
@@ -210,6 +222,7 @@ process get_software_versions {
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
     STAR-Fusion --version > v_star_fusion.txt
+    fusioncatcher --version > v_fusioncatcher.txt
     scrape_software_versions.py > software_versions_mqc.yaml
     """
 }
@@ -329,6 +342,49 @@ process star_fusion {
         --output_dir .
         """
     } 
+}
+
+/*
+ * Fusion Catcher
+ */
+
+process fusioncatcher {
+    tag "$name"
+    publishDir "${params.outdir}/Fusioncatcher", mode: 'copy'
+
+    when:
+    params.fusioncatcher
+
+    input:
+    set val(name), file(reads) from read_files_fusioncatcher
+
+    output:
+    file '*.{txt,log,zip}' into fusioncatcher_output
+
+    script:
+    if (params.singleEnd) {
+        """
+        fusioncatcher \\
+        -d ${params.fusioncatcher_dir} \\
+        -i ${reads[0]} \\
+        --threads ${task.cpus} \\
+        -o . \\
+        --skip-blat \\
+        --single-end \\
+        ${params.fc_extra_options}
+        """
+    } else {
+        """
+        fusioncatcher \\
+        -d ${params.fusioncatcher_dir} \\
+        -i ${reads[0]},${reads[1]} \\
+        --threads ${task.cpus} \\
+        -o . \\
+        --skip-blat \\
+        ${params.fc_extra_options}
+        """
+    }
+    
 }
 
 /*
