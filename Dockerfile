@@ -39,15 +39,7 @@ RUN apt-get -y install \
     python-openpyxl 
 
 ENV SRC /usr/local/src
-ENV BIN /usr/local/bin
-
 WORKDIR $SRC
-
-RUN mkdir fusioncatcher && cd fusioncatcher && \
-    wget http://sf.net/projects/fusioncatcher/files/bootstrap.py -O bootstrap.py && \
-    python bootstrap.py -t -y && \
-    rm bootstrap.py
-ENV PATH=$SRC/fusioncatcher/:${PATH}
 
 ## perl lib installations
 RUN curl -L https://cpanmin.us | perl - App::cpanminus
@@ -68,5 +60,12 @@ COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
 RUN /bin/bash -c "source ${SRC}/miniconda2/bin/activate"
 ENV PATH /usr/local/src/miniconda2/envs/nf-core-rnafusion-1.0dev/bin:$PATH
+
+# Fusion Catcher
+RUN mkdir fusioncatcher && cd fusioncatcher && \
+    wget http://sf.net/projects/fusioncatcher/files/bootstrap.py -O bootstrap.py && \
+    python bootstrap.py -t -y && \
+    rm bootstrap.py
+ENV PATH=$SRC/fusioncatcher/:${PATH}
 
 WORKDIR /
