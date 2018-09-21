@@ -84,13 +84,6 @@ if(workflow.profile == 'awsbatch'){
     if (!params.awsqueue || !params.awsregion) exit 1, "Specify correct --awsqueue and --awsregion parameters on AWSBatch!"
     if (!workflow.workDir.startsWith('s3') || !params.outdir.startsWith('s3')) exit 1, "Specify S3 URLs for workDir and outdir parameters on AWSBatch!"
 }
-//
-// NOTE - THIS IS NOT USED IN THIS PIPELINE, EXAMPLE ONLY
-// If you want to use the above in a process, define the following:
-//   input:
-//   file fasta from fasta
-//
-
 
 // Has the run name been specified by the user?
 //  this has the bonus effect of catching both -name and --name
@@ -107,20 +100,24 @@ if( workflow.profile == 'awsbatch') {
 
 // Validate pipeline variables
 // These variable have to be defined in the profile configuration which is referenced in nextflow.config
+if (!params.genome) {
+    exit 1, "Mandatory parameter genome not specified!"    
+}
+
 if (!params.star_fusion_ref) {
     exit 1, "Star-Fusion reference not specified!"
-}
-if (params.star_fusion_ref) {
-    star_fusion_dir = file(params.star_fusion_ref)
-    if ( !star_fusion_dir.exists() ) exit 1, "Stat-Fusion reference directory not found!"
+} else {
+    star_fusion_ref = Channel
+        .fromPath(params.star_fusion_ref)
+        .ifEmpty { exit 1, "Stat-Fusion reference directory not found!" }
 }
 
 if (!params.fusioncatcher_dir) {
     exit 1, "Fusion catcher data directory not specified!"
-}
-if (params.fusioncatcher_dir) {
-    fusioncatcher_dir = file(params.fusioncatcher_dir)
-    if ( !fusioncatcher_dir.exists() ) exit 1, "Fusion catcher data directory not found!"
+} else {
+    fusioncatcher_dir = Channel
+        .fromPath(params.fusioncatcher_dir)
+        .ifEmpty { exit 1, "Fusion catcher data directory not found!" }
 }
 
 /*
@@ -132,19 +129,19 @@ if (params.fusioncatcher_dir) {
              .from(params.readPaths)
              .map { row -> [ row[0], [file(row[1][0])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher }
+             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion }
      } else {
          Channel
              .from(params.readPaths)
              .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher }
+             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion }
      }
  } else {
      Channel
          .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
          .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
-         .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher }
+         .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion }
  }
 
 
@@ -318,6 +315,7 @@ process star_fusion {
 
     input:
     set val(name), file(reads) from read_files_star_fusion
+    file reference from star_fusion_ref.collect()
 
     output:
     file '*fusion_predictions.tsv' into star_fusion_predictions
@@ -327,7 +325,7 @@ process star_fusion {
     if (params.singleEnd) {
         """
         STAR-Fusion \\
-        --genome_lib_dir ${params.star_fusion_ref} \\
+        --genome_lib_dir ${reference} \\
         --left_fq ${reads[0]} \\
         --CPU  ${task.cpus} \\
         --output_dir .
@@ -335,7 +333,7 @@ process star_fusion {
     } else {
         """
         STAR-Fusion \\
-        --genome_lib_dir ${params.star_fusion_ref} \\
+        --genome_lib_dir ${reference} \\
         --left_fq ${reads[0]} \\
         --right_fq ${reads[1]} \\
         --CPU  ${task.cpus} \\
@@ -347,7 +345,6 @@ process star_fusion {
 /*
  * Fusion Catcher
  */
-
 process fusioncatcher {
     tag "$name"
     publishDir "${params.outdir}/Fusioncatcher", mode: 'copy'
@@ -357,6 +354,7 @@ process fusioncatcher {
 
     input:
     set val(name), file(reads) from read_files_fusioncatcher
+    file data_dir from fusioncatcher_dir.collect()
 
     output:
     file '*.{txt,log,zip}' into fusioncatcher_output
@@ -365,7 +363,7 @@ process fusioncatcher {
     if (params.singleEnd) {
         """
         fusioncatcher \\
-        -d ${params.fusioncatcher_dir} \\
+        -d ${data_dir} \\
         -i ${reads[0]} \\
         --threads ${task.cpus} \\
         -o . \\
@@ -376,7 +374,7 @@ process fusioncatcher {
     } else {
         """
         fusioncatcher \\
-        -d ${params.fusioncatcher_dir} \\
+        -d ${data_dir} \\
         -i ${reads[0]},${reads[1]} \\
         --threads ${task.cpus} \\
         -o . \\
@@ -384,7 +382,6 @@ process fusioncatcher {
         ${params.fc_extra_options}
         """
     }
-    
 }
 
 /*
