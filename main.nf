@@ -28,10 +28,12 @@ def helpMessage() {
                                     Available: standard, conda, docker, singularity, awsbatch, test
 
     Options:
+      --all                         [bool] Run all tools
       --singleEnd                   Specifies that the input is single end reads
       --star_fusion                 [bool] Run STAR-Fusion. Default: False
       --fusioncatcher               [bool] Run FusionCatcher. Default: False
         --fc_extra_options          Extra parameters for FusionCatcher. Can be found at https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md
+      --fusion_inspector            [bool] Run Fusion-Inspectro. Default: False
 
     References                      If not specified in the configuration file or you wish to overwrite any of the references.
       --fasta                       Path to Fasta reference
@@ -66,6 +68,7 @@ params.fasta = params.genome ? params.genomes[ params.genome ].fasta ?: false : 
 params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
 params.email = false
 params.plaintext_email = false
+params.all = false
 params.skip_qc = false
 params.star_fusion = false
 params.fusioncatcher = false
@@ -205,102 +208,6 @@ ${summary.collect { k,v -> "            <dt>$k</dt><dd><samp>${v ?: '<span style
    return yaml_file
 }
 
-
-/*
- * Parse software version numbers
- */
-process get_software_versions {
-
-    output:
-    file 'software_versions_mqc.yaml' into software_versions_yaml
-
-    script:
-    """
-    echo $params.pipelineVersion > v_pipeline.txt
-    echo $workflow.nextflow.version > v_nextflow.txt
-    fastqc --version > v_fastqc.txt
-    multiqc --version > v_multiqc.txt
-    STAR-Fusion --version > v_star_fusion.txt
-    fusioncatcher --version > v_fusioncatcher.txt
-    scrape_software_versions.py > software_versions_mqc.yaml
-    """
-}
-
-
-
-/*
- * STEP 1 - FastQC
- */
-process fastqc {
-    tag "$name"
-    publishDir "${params.outdir}/fastqc", mode: 'copy',
-        saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
-
-    when:
-    !params.skip_qc
-
-    input:
-    set val(name), file(reads) from read_files_fastqc
-
-    output:
-    file "*_fastqc.{zip,html}" into fastqc_results
-
-    script:
-    """
-    fastqc -q $reads
-    """
-}
-
-
-
-/*
- * STEP 2 - MultiQC
- */
-process multiqc {
-    publishDir "${params.outdir}/MultiQC", mode: 'copy'
-
-    when:
-    !params.skip_qc
-
-    input:
-    file multiqc_config
-    file ('fastqc/*') from fastqc_results.collect()
-    file ('software_versions/*') from software_versions_yaml
-    file workflow_summary from create_workflow_summary(summary)
-
-    output:
-    file "*multiqc_report.html" into multiqc_report
-    file "*_data"
-
-    script:
-    rtitle = custom_runName ? "--title \"$custom_runName\"" : ''
-    rfilename = custom_runName ? "--filename " + custom_runName.replaceAll('\\W','_').replaceAll('_+','_') + "_multiqc_report" : ''
-    """
-    multiqc -f $rtitle $rfilename --config $multiqc_config .
-    """
-}
-
-
-
-/*
- * STEP 3 - Output Description HTML
- */
-process output_documentation {
-    tag "$prefix"
-    publishDir "${params.outdir}/Documentation", mode: 'copy'
-
-    input:
-    file output_docs
-
-    output:
-    file "results_description.html"
-
-    script:
-    """
-    markdown_to_html.r $output_docs results_description.html
-    """
-}
-
 /*************************************************************
  * Fusion pipeline
  ************************************************************/
@@ -313,7 +220,7 @@ process star_fusion {
     publishDir "${params.outdir}/Star_fusion", mode: 'copy'
 
     when:
-    params.star_fusion
+    params.star_fusion || params.all
 
     input:
     set val(name), file(reads) from read_files_star_fusion
@@ -352,7 +259,7 @@ process fusioncatcher {
     publishDir "${params.outdir}/Fusioncatcher", mode: 'copy'
 
     when:
-    params.fusioncatcher
+    params.fusioncatcher || params.all
 
     input:
     set val(name), file(reads) from read_files_fusioncatcher
@@ -395,7 +302,7 @@ process fusion_inspector_preprocess {
     publishDir "${params.outdir}/Transformers", mode: 'copy'
 
     when:
-    params.fusion_inspector
+    params.fusion_inspector || params.all
 
     input:
     file fusioncatcher_candidates
@@ -418,7 +325,7 @@ process fusion_inspector {
     publishDir "${params.outdir}/FusionInspector", mode: 'copy'
 
     when:
-    params.fusion_inspector
+    params.fusion_inspector || params.all
 
     input:
     set val(name), file(reads) from read_files_fusion_inspector
@@ -439,6 +346,109 @@ process fusion_inspector {
         --out_dir . \\
         --out_prefix finspector \\
         --prep_for_IGV
+    
+    mkdir IGV
+    mv finspector.fa IGV/
+    mv finspector.fa.fai IGV/
+    mv finspector.bed IGV/
+    mv finspector.junction_reads.bam IGV/
+    mv finspector.spanning_reads.bam IGV/
+    """
+}
+
+/*************************************************************
+ * Building report
+ ************************************************************/
+
+/*
+ * Parse software version numbers
+ */
+process get_software_versions {
+
+    output:
+    file 'software_versions_mqc.yaml' into software_versions_yaml
+
+    script:
+    """
+    echo $params.pipelineVersion > v_pipeline.txt
+    echo $workflow.nextflow.version > v_nextflow.txt
+    fastqc --version > v_fastqc.txt
+    multiqc --version > v_multiqc.txt
+    STAR-Fusion --version > v_star_fusion.txt
+    fusioncatcher --version > v_fusioncatcher.txt
+    cat /environment.yml | grep 'fusion-inspector' > v_fusion_inspector.txt
+    scrape_software_versions.py > software_versions_mqc.yaml
+    """
+}
+
+/*
+ * FastQC
+ */
+process fastqc {
+    tag "$name"
+    publishDir "${params.outdir}/fastqc", mode: 'copy',
+        saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
+
+    when:
+    !params.skip_qc || params.all
+
+    input:
+    set val(name), file(reads) from read_files_fastqc
+
+    output:
+    file "*_fastqc.{zip,html}" into fastqc_results
+
+    script:
+    """
+    fastqc -q $reads
+    """
+}
+
+
+
+/*
+ * MultiQC
+ */
+process multiqc {
+    publishDir "${params.outdir}/MultiQC", mode: 'copy'
+
+    when:
+    !params.skip_qc || params.all
+
+    input:
+    file multiqc_config
+    file ('fastqc/*') from fastqc_results.collect()
+    file ('software_versions/*') from software_versions_yaml
+    file workflow_summary from create_workflow_summary(summary)
+
+    output:
+    file "*multiqc_report.html" into multiqc_report
+    file "*_data"
+
+    script:
+    rtitle = custom_runName ? "--title \"$custom_runName\"" : ''
+    rfilename = custom_runName ? "--filename " + custom_runName.replaceAll('\\W','_').replaceAll('_+','_') + "_multiqc_report" : ''
+    """
+    multiqc -f $rtitle $rfilename --config $multiqc_config .
+    """
+}
+
+/*
+ * Output Description HTML
+ */
+process output_documentation {
+    tag "$prefix"
+    publishDir "${params.outdir}/Documentation", mode: 'copy'
+
+    input:
+    file output_docs
+
+    output:
+    file "results_description.html"
+
+    script:
+    """
+    markdown_to_html.r $output_docs results_description.html
     """
 }
 
