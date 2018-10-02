@@ -69,6 +69,7 @@ params.plaintext_email = false
 params.skip_qc = false
 params.star_fusion = false
 params.fusioncatcher = false
+params.fusion_inspector = false
 params.fc_extra_options = ''
 
 multiqc_config = file(params.multiqc_config)
@@ -107,9 +108,10 @@ if (!params.genome) {
 if (!params.star_fusion_ref) {
     exit 1, "Star-Fusion reference not specified!"
 } else {
-    star_fusion_ref = Channel
+     Channel
         .fromPath(params.star_fusion_ref)
         .ifEmpty { exit 1, "Stat-Fusion reference directory not found!" }
+        .into { star_fusion_ref; fusion_inspector_ref }
 }
 
 if (!params.fusioncatcher_dir) {
@@ -129,19 +131,19 @@ if (!params.fusioncatcher_dir) {
              .from(params.readPaths)
              .map { row -> [ row[0], [file(row[1][0])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion }
+             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; read_files_fusion_inspector }
      } else {
          Channel
              .from(params.readPaths)
              .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion }
+             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; read_files_fusion_inspector }
      }
  } else {
      Channel
          .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
          .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
-         .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion }
+         .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; read_files_fusion_inspector }
  }
 
 
@@ -357,6 +359,7 @@ process fusioncatcher {
     file data_dir from fusioncatcher_dir.collect()
 
     output:
+    file 'final-list_candidate-fusion-genes.txt' into fusioncatcher_candidates
     file '*.{txt,log,zip}' into fusioncatcher_output
 
     script:
@@ -382,6 +385,61 @@ process fusioncatcher {
         ${params.fc_extra_options}
         """
     }
+}
+
+/*
+ * Fusion Inspector preprocess
+ */
+process fusion_inspector_preprocess {
+    tag "$name"
+    publishDir "${params.outdir}/Transformers", mode: 'copy'
+
+    when:
+    params.fusion_inspector
+
+    input:
+    file fusioncatcher_candidates
+
+    output:
+    file 'fusions.txt' into fusions
+
+    script:
+    """
+    transformer.py -i ${fusioncatcher_candidates} -t fusioncatcher -o fusioncatcher.txt
+    cat fusioncatcher.txt >> fusions.txt
+    """
+}
+
+/*
+ * Fusion Inspector
+ */
+process fusion_inspector {
+    tag "$name"
+    publishDir "${params.outdir}/FusionInspector", mode: 'copy'
+
+    when:
+    params.fusion_inspector
+
+    input:
+    set val(name), file(reads) from read_files_fusion_inspector
+    file reference from fusion_inspector_ref
+    file fusions
+
+    output:
+    file '*' into fusion_inspector_output
+
+    script:
+    """
+    FusionInspector \\
+        --fusions ${fusions} \\
+        --genome_lib ${reference} \\
+        --left_fq ${reads[0]} \\
+        --right_fq ${reads[1]} \\
+        --CPU ${task.cpus} \\
+        --out_dir . \\
+        --out_prefix finspector \\
+        --prep_for_IGV
+    """
 }
 
 /*
