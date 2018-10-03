@@ -346,13 +346,6 @@ process fusion_inspector {
         --out_dir . \\
         --out_prefix finspector \\
         --prep_for_IGV
-    
-    mkdir IGV
-    mv finspector.fa IGV/
-    mv finspector.fa.fai IGV/
-    mv finspector.bed IGV/
-    mv finspector.junction_reads.bam IGV/
-    mv finspector.spanning_reads.bam IGV/
     """
 }
 
