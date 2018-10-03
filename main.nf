@@ -309,11 +309,11 @@ process fusion_inspector_preprocess {
 
     output:
     file 'fusions.txt' into fusions
+    file 'summary.txt' into fusions_summary
 
     script:
     """
-    transformer.py -i ${fusioncatcher_candidates} -t fusioncatcher -o fusioncatcher.txt
-    cat fusioncatcher.txt >> fusions.txt
+    transformer.py -i ${fusioncatcher_candidates} -t fusioncatcher
     """
 }
 
