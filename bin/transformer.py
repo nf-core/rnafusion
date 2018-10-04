@@ -36,12 +36,11 @@ def transform(p_input, p_tool, p_output):
         with open(p_input, 'r') as in_file, open(p_output, 'a') as out_file, open(SUMMARY, 'a') as summary:
             func = getattr(sys.modules[__name__], p_tool)   # get function from parameter
             fusions = func(in_file).rstrip()  # call function
-            out_file.write(fusions)
-            out_file.write('\n')
-
-            # append to summary
-            summary_data = [x.split('--') for x in fusions.split('\n')]
-            summary.write(dump({p_tool : dict((k,v) for k,v in summary_data)}, default_flow_style=False, allow_unicode=True))
+            if len(fusions) > 0:
+                out_file.write(fusions + '\n')
+                # append to summary
+                summary_data = [x.split('--') for x in fusions.split('\n')]
+                summary.write(dump({p_tool : dict((k,v) for k,v in summary_data)}, default_flow_style=False, allow_unicode=True))
             
             # closing files
             in_file.close()
