@@ -54,7 +54,7 @@ RUN cpanm install Set::IntervalTree \
 
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
-ENV PATH /usr/local/src/miniconda2/envs/nf-core-rnafusion-1.0dev/bin:$PATH
+ENV PATH /opt/conda/envs/nf-core-rnafusion-1.0dev/bin:$PATH
 
 # Fusion Catcher
 RUN pip install numpy biopython xlrd openpyxl
@@ -64,5 +64,4 @@ RUN mkdir fusioncatcher && cd fusioncatcher && \
     rm bootstrap.py
 ENV PATH=$SRC/fusioncatcher/:${PATH}
 
-ENV PATH /opt/conda/envs/nf-core-rnafusion-1.0dev/bin:$PATH
 WORKDIR /
