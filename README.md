@@ -1,4 +1,4 @@
-# ![nf-core/rnafusion](https://raw.githubusercontent.com/nf-core/rnafusion/master/docs/images/rnafusion_logo.png.png)
+# ![nf-core/rnafusion](https://raw.githubusercontent.com/nf-core/rnafusion/master/docs/images/rnafusion_logo.png)
 **Attempt at setting up a pipeline for fusion detection as an addon to the previously existing nf-core/rnaseq pipeline.**
 
 [![Build Status](https://travis-ci.org/nf-core/rnafusion.svg?branch=master)](https://travis-ci.org/nf-core/rnafusion)
