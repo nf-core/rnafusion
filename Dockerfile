@@ -52,14 +52,8 @@ RUN cpanm install Set::IntervalTree \
     JSON::XS.pm \
     PerlIO::gzip
 
-# Conda
-# RUN wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda2.sh && \
-#     sh miniconda2.sh -b -p $SRC/miniconda2
-# ENV PATH=$SRC/miniconda2/bin/:$PATH
-
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
-# RUN /bin/bash -c "source ${SRC}/miniconda2/bin/activate"
 ENV PATH /usr/local/src/miniconda2/envs/nf-core-rnafusion-1.0dev/bin:$PATH
 
 # Fusion Catcher
