@@ -1,40 +1,25 @@
-# ![NGI-RNAfusion](https://raw.githubusercontent.com/SciLifeLab/NGI-RNAfusion/master/docs/images/NGI-RNAfusion_logo.png)
+# nf-core/rnafusion
+**Attempt at setting up a pipeline for fusion detection as an addon to the previously existing NGI-RNAseq pipeline.**
 
-## *NB* This is work in progress - use at your own risk!
+[![Build Status](https://travis-ci.org/nf-core/rnafusion.svg?branch=master)](https://travis-ci.org/nf-core/rnafusion)
+[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A50.30.0-brightgreen.svg)](https://www.nextflow.io/)
 
-Attempt at setting up a pipeline for fusion detection as an addon to the previously existing NGI-RNAseq pipeline.
+[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](http://bioconda.github.io/)
+[![Docker](https://img.shields.io/docker/automated/nfcore/rnafusion.svg)](https://hub.docker.com/r/nfcore/rnafusion)
+![Singularity Container available](
+https://img.shields.io/badge/singularity-available-7E4C74.svg)
 
-## Usage:
-### ` --reads`
-Path to input reads 
-**NB: Must be enclosed in quotes!**
-```
- --reads 'path/to/data/sample_*_{1,2}.fastq'
-```
+### Introduction
+The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker / singularity containers making installation trivial and results highly reproducible.
 
-### `--star-fusion`
-If this flag is set to true then the pipeline will run STAR-Fusion.
-True by default
 
-### `--fusioncatcher`
+### Documentation
+The nf-core/rnafusion pipeline comes with documentation about the pipeline, found in the `docs/` directory:
 
-If this flag is set to true then the pipeline will run Fusion Catcher.
-True by default
-
-More than one of these can be true at a time. 
-
-Example usage if you wish to run both STAR-fusion and Fusion Catcher   
-```
-nextflow run /NGI-RNAfusion/main.nf --star --fusioncatcher --reads 'SRR5665649_{1,2}*.gz'
-```
-
-### `--fc_extra_options`
-
-Invoking this flag allows for extra options to be sent directly to Fusion Catcher. 
-
----
-
-[![SciLifeLab](https://raw.githubusercontent.com/SciLifeLab/NGI-RNAfusion/master/docs/images/SciLifeLab_logo.png)](http://www.scilifelab.se/)
-[![National Genomics Infrastructure](https://raw.githubusercontent.com/SciLifeLab/NGI-RNAfusion/master/docs/images/NGI_logo.png)](https://ngisweden.scilifelab.se/)
-
----
+1. [Installation](docs/installation.md)
+2. Pipeline configuration
+    * [Local installation](docs/configuration/local.md)
+    * [Adding your own system](docs/configuration/adding_your_own.md)
+3. [Running the pipeline](docs/usage.md)
+4. [Output and how to interpret the results](docs/output.md)
+5. [Troubleshooting](docs/troubleshooting.md)
