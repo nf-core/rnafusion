@@ -309,8 +309,8 @@ process fusion_inspector_preprocess {
 
     output:
     file 'fusions.txt' into fusions
-    file 'summary.txt' into fusions_summary
-
+    file 'summary.yaml' into fusions_summary
+    
     script:
     """
     transformer.py -i ${fusioncatcher_candidates} -t fusioncatcher
@@ -397,7 +397,27 @@ process fastqc {
     """
 }
 
+/*
+ * Fusion gene compare
+ * Builds MultiQC custom section
+ */
+process fusion_gene_compare {
+    publishDir "${params.outdir}/FusionGeneCompare", mode: 'copy'
 
+    when:
+    params.fusion_inspector || params.all
+
+    input:
+    file fusions_summary
+
+    output:
+    file 'fusion_genes_mqc.yaml' into fusion_genes_mqc
+
+    script:
+    """
+    fusion_genes_compare.py -i ${fusions_summary} -s test_sample
+    """
+}
 
 /*
  * MultiQC
@@ -413,6 +433,7 @@ process multiqc {
     file ('fastqc/*') from fastqc_results.collect()
     file ('software_versions/*') from software_versions_yaml
     file workflow_summary from create_workflow_summary(summary)
+    file fusion_genes_mqc
 
     output:
     file "*multiqc_report.html" into multiqc_report
