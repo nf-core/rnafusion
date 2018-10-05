@@ -1,12 +1,12 @@
-# ![NGI-RNAfusion](https://raw.githubusercontent.com/SciLifeLab/NGI-RNAfusion/master/docs/images/NGI-RNAfusion_logo.png)
+# ![rnafusion](https://raw.githubusercontent.com/nf-core/rnafusion/master/docs/images/rnafusion_logo.png.png)
 
 ## *NB* This is work in progress - use at your own risk!
 
-Attempt at setting up a pipeline for fusion detection as an addon to the previously existing NGI-RNAseq pipeline.
+Attempt at setting up a pipeline for fusion detection as an addon to the previously existing nf-core/rnaseq pipeline.
 
 ## Usage:
 ### ` --reads`
-Path to input reads 
+Path to input reads
 **NB: Must be enclosed in quotes!**
 ```
  --reads 'path/to/data/sample_*_{1,2}.fastq'
@@ -21,20 +21,13 @@ True by default
 If this flag is set to true then the pipeline will run Fusion Catcher.
 True by default
 
-More than one of these can be true at a time. 
+More than one of these can be true at a time.
 
 Example usage if you wish to run both STAR-fusion and Fusion Catcher   
 ```
-nextflow run /NGI-RNAfusion/main.nf --star --fusioncatcher --reads 'SRR5665649_{1,2}*.gz'
+nextflow run nf-core/rnafusion/main.nf --star --fusioncatcher --reads 'SRR5665649_{1,2}*.gz'
 ```
 
 ### `--fc_extra_options`
 
-Invoking this flag allows for extra options to be sent directly to Fusion Catcher. 
-
----
-
-[![SciLifeLab](https://raw.githubusercontent.com/SciLifeLab/NGI-RNAfusion/master/docs/images/SciLifeLab_logo.png)](http://www.scilifelab.se/)
-[![National Genomics Infrastructure](https://raw.githubusercontent.com/SciLifeLab/NGI-RNAfusion/master/docs/images/NGI_logo.png)](https://ngisweden.scilifelab.se/)
-
----
+Invoking this flag allows for extra options to be sent directly to Fusion Catcher.
