@@ -1,120 +1,82 @@
-#!/usr/bin/env python 
-import os
-import re
+#!/usr/bin/env python
+from __future__ import print_function
+from __future__ import with_statement
+from collections import OrderedDict
+from yaml import dump
 import argparse
+import yaml
 import sys
+import os
 
+OUTPUT = 'fusion_genes_mqc.yaml'
+TEMPLATE = OrderedDict([
+    ('id', 'fusion_genes'),
+    ('s', 'Fusion genes'),
+    ('description', 'Number of fusion genes found by various tools'),
+    ('plot_type', 'bargraph'),
+    ('pconfig', {
+        'id': 'barplot_config_only',
+        'title': 'Detected fusion genes',
+        'ylab': 'Number of detected fusion genes'
+    })
+])
 
-def read_files_store_data(input_files,output_file):
-    fusion_dict={}
-    for input_file in input_files:
-        if input_file.endswith("star-fusion.fusion_candidates.final.abridged"):
-           #We have a star fusion file
-            with open(input_file, 'r') as f:
-                for line in f:
-                    if line.startswith("#"):
-                        #Skip header
-                            continue
-                    else:
-                        fusion=line.split("\t")[0]
-                        # If we want to store to metadata then that can be inserted here
-                        if fusion in fusion_dict.keys():
-                            fusion_dict[fusion]='Both'
-                        else:
-                            fusion_dict[fusion]='STAR'
+def findings(p_yaml, p_sample):
+    data = TEMPLATE
+    fusions = {}
 
-        elif input_file.endswith("summary_candidate_fusions.txt"):
-            #We have a Fusion catcher file
-            with open(input_file, 'r') as f:
-                for line in f:
-                    if line.startswith("  * "):
-                        fusion=line.split(" ")[3]
-                        if fusion in fusion_dict.keys():
-                            fusion_dict[fusion]='Both'
-                        else:
-                            fusion_dict[fusion]='FusionCatcher'
-
+    # Counts per tool
+    tools = p_yaml.keys()
+    for tool in tools:
+        if p_yaml[tool] == None:
+            fusions[tool] = 0
         else:
-           print"Found file with incorect file ending, omitting file {}".format(input_file)
-    make_report(fusion_dict, output_file)
+            fusions[tool] = len(p_yaml[tool].keys())
 
+    # If only one tool was found, there is no need to make intercept
+    if len(tools) == 1:
+        data['data'] = { p_sample: fusions}
+        return OrderedDict(data)
 
-def group_files(input_files, outputfile):
-    sample_dict = {}
-    # Look through the input files and find sample names.
-    for input_file in input_files:
-        #Check for Star-fusion
-        if input_file.endswith('star-fusion.fusion_candidates.final.abridged'):
-            key = input_file.rstrip('star-fusion.fusion_candidates.final.abridged')    
-            try:
-                #We have already encountered the fusioncatcher mate
-                sample_dict[key].append(input_file)
-            except KeyError:
-                sample_dict[key]=[input_file]
-        #We have fusioncatcher
-        elif input_file.endswith("summary_candidate_fusions.txt"):    
-            try:
-                key = input_file.rstrip('summary_candidate_fusions.txt')   
-                try:
-                    #We have already encountered the star-fusion mate
-                    sample_dict[key].append(input_file)
-                except KeyError:
-                    sample_dict[key]=[input_file]
-            except KeyError:
-                continue
+    # Intersect
+    intersect = 0
+    if p_yaml[tools[0]] != None:
+        for (fusion_left, fusion_right) in p_yaml[tools[0]].items():
+            counter = 1
+            for tool in tools[1:]:
+                if p_yaml[tool] != None:
+                    # check if the fusion is not swapped
+                    if (fusion_left in p_yaml[tool] and p_yaml[tool][fusion_left] == fusion_right) or (fusion_right in p_yaml[tool] and p_yaml[tool][fusion_right] == fusion_left):
+                        counter += 1
+            if (counter == len(tools)):
+                intersect += 1
+    fusions['together'] = intersect
 
-    outfile="{}.fusion_comparison.txt".format(sample_dict.keys()[0])
-    read_files_store_data(sample_dict.values()[0],outfile)  
+    # Group results
+    data['data'] = { p_sample: fusions}
+    return OrderedDict(data)
 
-
-
-def make_report(fusion_dict, output_file):
-    content=str()
-    gene_in_both=[]
-    gene_star_only=[]
-    gene_fc_only=[]
-    
-    len_fc=0
-    len_star=0
-
-    for fusion_gene in fusion_dict.keys():
-        if fusion_dict[fusion_gene] == 'Both':
-            gene_in_both.append(fusion_gene)
-            len_fc+=1
-            len_star+=1
-        elif fusion_dict[fusion_gene] == 'STAR':
-            gene_star_only.append(fusion_gene)
-            len_star+=1
-        elif fusion_dict[fusion_gene] == 'FusionCatcher':
-            gene_fc_only.append(fusion_gene)
-            len_fc+=1
-    
-    content+="## Number of Fusion genes detected with STAR-fusion: {} \n".format(len_star)
-    content+="## Number of Fusion genes detected with FusionCatcher: {} \n".format(len_fc)
-    content +="##FUSIONCATCHER\tSTAR-FUSION\tBOTH\n"
-    ##cleanup
-    
-    
-    gene_in_both=[item.rstrip() for item in gene_in_both]
-    gene_star_only=[item.rstrip() for item in gene_star_only]
-    gene_fc_only=[item.rstrip() for item in gene_fc_only]
-    
-    maxlen = max([len(l) for l in [gene_in_both,gene_star_only,gene_fc_only]])
-    for idx in range(0, maxlen):
-        both_str = gene_in_both[idx] if len(gene_in_both) > idx else ''
-        star_str = gene_star_only[idx] if len(gene_star_only) > idx else ''
-        fc_str = gene_fc_only[idx] if len(gene_fc_only) > idx else ''
-        content += "{}\t{}\t{}\n".format(fc_str, star_str, both_str)    
- 
-    with open(output_file, 'w') as f:
-        f.write(content)
+def summary(p_input, p_sample):
+    if not os.path.exists(p_input):
+        sys.exit('Defined {} doesn\'t exist'.format(p_input))
+    try:
+        with open(p_input, 'r') as stream, open(OUTPUT, 'w') as out_file:
+            yaml_data = yaml.safe_load(stream)
+            yaml.add_representer(OrderedDict, lambda dumper, data: dumper.represent_mapping('tag:yaml.org,2002:map', data.items()))
+            out_file.write(dump(findings(yaml_data, p_sample), default_flow_style=False, allow_unicode=True))
+            stream.close()
+            out_file.close()
+    except IOError as error:
+        sys.exit(error)
+    except yaml.YAMLError as error:
+        sys.exit(error)
+    except Exception as error:
+        sys.exit(error)
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="""Compare two list of fusion genes and give which fusions are found in both """)
-    parser.add_argument("input_files", metavar='Input file', nargs='+', default='.',
-                                   help="Input files from STAR fusion and Fusion catcher ")
-    parser.add_argument("output_file", metavar='Output file', nargs='?', default='fusion_comparison.txt',
-                                   help="File to save output to. ")
-    args = parser.parse_args() 
-    group_files(args.input_files,args.output_file)
+    parser = argparse.ArgumentParser(description="""Utility for generating data structure for MultiQC""")
+    parser.add_argument('-i', '--input', nargs='?', help='Input file', type=str, required=True)
+    parser.add_argument('-s', '--sample', nargs='?', help='Sample name', type=str, required=True)
+    args = parser.parse_args()
+    summary(args.input, args.sample)
