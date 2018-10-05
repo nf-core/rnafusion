@@ -39,20 +39,7 @@ RUN apt-get -y install \
     python-openpyxl 
 
 ENV SRC /usr/local/src
-ENV BIN /usr/local/bin
-
 WORKDIR $SRC
-
-RUN mkdir fusioncatcher && cd fusioncatcher && \
-    wget http://sf.net/projects/fusioncatcher/files/bootstrap.py -O bootstrap.py && \
-    python bootstrap.py -t -y && \
-    rm bootstrap.py
-ENV PATH=$SRC/fusioncatcher/:${PATH}
-
-RUN wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda2.sh && \
-    sh miniconda2.sh -b -p $SRC/miniconda2
-ENV PATH=$SRC/miniconda2/bin/:$PATH
-RUN /bin/bash -c "source ${SRC}/miniconda2/bin/activate"
 
 ## perl lib installations
 RUN curl -L https://cpanmin.us | perl - App::cpanminus
@@ -64,9 +51,21 @@ RUN cpanm install Set::IntervalTree \
     JSON::XS.pm \
     PerlIO::gzip
 
-# # Conda
+# Conda
+RUN wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda2.sh && \
+    sh miniconda2.sh -b -p $SRC/miniconda2
+ENV PATH=$SRC/miniconda2/bin/:$PATH
+
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
-ENV PATH /usr/local/src/miniconda2/envs/nf-core-ngi-rnafusion-1.0/bin:$PATH
+RUN /bin/bash -c "source ${SRC}/miniconda2/bin/activate"
+ENV PATH /usr/local/src/miniconda2/envs/nf-core-rnafusion-1.0dev/bin:$PATH
+
+# Fusion Catcher
+RUN mkdir fusioncatcher && cd fusioncatcher && \
+    wget http://sf.net/projects/fusioncatcher/files/bootstrap.py -O bootstrap.py && \
+    python bootstrap.py -t -y && \
+    rm bootstrap.py
+ENV PATH=$SRC/fusioncatcher/:${PATH}
 
 WORKDIR /
