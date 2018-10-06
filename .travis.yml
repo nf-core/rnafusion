@@ -39,4 +39,5 @@ script:
   # Lint the pipeline code
   - nf-core lint ${TRAVIS_BUILD_DIR}
   # Run the pipeline with the test profile
-  - nextflow run ${TRAVIS_BUILD_DIR} -profile test,docker
+  # TODO: Create custom genome and small test sample
+  # - nextflow run ${TRAVIS_BUILD_DIR} -profile test,docker --reads 'test_{1,2}.fastq' --genome GRCH37
