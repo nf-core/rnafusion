@@ -13,8 +13,14 @@ OUTPUT = 'fusions.txt'
 def fi_format(p_gene1, p_gene2):
     return '{}--{}\n'.format(p_gene1, p_gene2)
 
-def star_fusion():
-    exit('Not Implemented!')
+def star_fusion(p_file):
+    fusions = ''
+    next(p_file)    #skip header
+    for line in p_file:
+        tmp = line.split('\t')[0].split('--')
+        fusions += fi_format(tmp[0], tmp[1])
+
+    return fusions
 
 def fusioncatcher(p_file):
     fusions = ''
