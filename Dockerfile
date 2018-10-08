@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM nfcore/base
 
 LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.proks@scilifelab.se" \
     description="Docker image containing all requirements for NGI-RNAfusion pipeline"
@@ -6,7 +6,7 @@ LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.
 #Fusioncatcher 
 RUN apt-get -y update
 RUN apt-get -y install \
-    build-essential\
+    build-essential \
     libncurses5-dev \
     default-jdk \
     default-jre \
@@ -14,6 +14,7 @@ RUN apt-get -y install \
     gcc \
     g++ \
     bzip2 \
+    make \
     cmake \
     automake \
     make \
@@ -51,17 +52,12 @@ RUN cpanm install Set::IntervalTree \
     JSON::XS.pm \
     PerlIO::gzip
 
-# Conda
-RUN wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda2.sh && \
-    sh miniconda2.sh -b -p $SRC/miniconda2
-ENV PATH=$SRC/miniconda2/bin/:$PATH
-
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
-RUN /bin/bash -c "source ${SRC}/miniconda2/bin/activate"
-ENV PATH /usr/local/src/miniconda2/envs/nf-core-rnafusion-1.0dev/bin:$PATH
+ENV PATH /opt/conda/envs/nf-core-rnafusion-1.0dev/bin:$PATH
 
 # Fusion Catcher
+RUN pip install numpy biopython xlrd openpyxl
 RUN mkdir fusioncatcher && cd fusioncatcher && \
     wget http://sf.net/projects/fusioncatcher/files/bootstrap.py -O bootstrap.py && \
     python bootstrap.py -t -y && \
