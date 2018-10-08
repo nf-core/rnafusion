@@ -306,6 +306,7 @@ process fusion_inspector_preprocess {
 
     input:
     file fusioncatcher_candidates
+    file star_fusion_abridged
 
     output:
     file 'fusions.txt' into fusions
@@ -314,6 +315,7 @@ process fusion_inspector_preprocess {
     script:
     """
     transformer.py -i ${fusioncatcher_candidates} -t fusioncatcher
+    transformer.py -i ${star_fusion_abridged} -t star_fusion
     """
 }
 
