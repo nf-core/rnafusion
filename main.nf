@@ -13,7 +13,7 @@
 def helpMessage() {
     log.info"""
     =========================================
-     nf-core/rnafusion v${params.pipelineVersion}
+     nf-core/rnafusion v${workflow.manifest.version}
     =========================================
     Usage:
 
@@ -158,11 +158,11 @@ log.info """=======================================================
     | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                           `._,._,\'
 
-nf-core/rnafusion v${params.pipelineVersion}"
+nf-core/rnafusion v${workflow.manifest.version}"
 ======================================================="""
 def summary = [:]
 summary['Pipeline Name']  = 'nf-core/rnafusion'
-summary['Pipeline Version'] = params.pipelineVersion
+summary['Pipeline Version'] = workflow.manifest.version
 summary['Run Name']     = custom_runName ?: workflow.runName
 summary['Reads']        = params.reads
 summary['Fasta Ref']    = params.fasta
@@ -306,6 +306,7 @@ process fusion_inspector_preprocess {
 
     input:
     file fusioncatcher_candidates
+    file star_fusion_abridged
 
     output:
     file 'fusions.txt' into fusions
@@ -314,6 +315,7 @@ process fusion_inspector_preprocess {
     script:
     """
     transformer.py -i ${fusioncatcher_candidates} -t fusioncatcher
+    transformer.py -i ${star_fusion_abridged} -t star_fusion
     """
 }
 
@@ -363,7 +365,7 @@ process get_software_versions {
 
     script:
     """
-    echo $params.pipelineVersion > v_pipeline.txt
+    echo $workflow.manifest.version > v_pipeline.txt
     echo $workflow.nextflow.version > v_nextflow.txt
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
@@ -477,7 +479,7 @@ workflow.onComplete {
       subject = "[nf-core/rnafusion] FAILED: $workflow.runName"
     }
     def email_fields = [:]
-    email_fields['version'] = params.pipelineVersion
+    email_fields['version'] = workflow.manifest.version
     email_fields['runName'] = custom_runName ?: workflow.runName
     email_fields['success'] = workflow.success
     email_fields['dateComplete'] = workflow.complete

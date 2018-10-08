@@ -39,19 +39,16 @@ def findings(p_yaml, p_sample):
         return OrderedDict(data)
 
     # Intersect
-    intersect = 0
+    intersect_genes = {}
     if p_yaml[tools[0]] != None:
         for (fusion_left, fusion_right) in p_yaml[tools[0]].items():
-            counter = 1
             for tool in tools[1:]:
                 if p_yaml[tool] != None:
                     # check if the fusion is not swapped
                     if (fusion_left in p_yaml[tool] and p_yaml[tool][fusion_left] == fusion_right) or (fusion_right in p_yaml[tool] and p_yaml[tool][fusion_right] == fusion_left):
-                        counter += 1
-            if (counter == len(tools)):
-                intersect += 1
-    fusions['together'] = intersect
-
+                        intersect_genes[fusion_left] = fusion_right
+    fusions['together'] = len(intersect_genes)
+    
     # Group results
     data['data'] = { p_sample: fusions}
     return OrderedDict(data)
