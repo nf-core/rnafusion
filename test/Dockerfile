@@ -1,17 +1,27 @@
 # Species: saccharomyces_cerevisiae
 # Dataset taken from: https://www.ebi.ac.uk/ena/data/view/SRX3242046
 
-FROM nfcore/rnafusion
+FROM nfcore/base
+
+LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.proks@scilifelab.se" \
+    description="Docker image containing all requirements for NGI-RNAfusion pipeline"
 
 ARG FC_GENOME=saccharomyces_cerevisiae
 ENV USER travis-ci-test
 
+# Get all tools
+COPY environment.yml /
+RUN conda env create -f /environment.yml && conda clean -a
+ENV PATH /opt/conda/envs/nf-core-rnafusion-1.0dev/bin:$PATH
+
 # Get Genome
 RUN mkdir /data
 WORKDIR /data
+RUN apt-get install -y python-numpy
 RUN wget https://raw.githubusercontent.com/ndaniel/fusioncatcher/master/bin/get_genome.py -O get_genome.py
 RUN sed -i -e 's/import concatenate/from numpy import concatenate/g' get_genome.py
-RUN python get_genome.py --organism ${FC_GENOME} --output .
+RUN python2.7 -m pip install numpy
+RUN python2.7 get_genome.py --organism ${FC_GENOME} --output .
 
 # Get GTF
 RUN wget ftp://ftp.ensembl.org/pub/release-94/gtf/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.94.gtf.gz -O annotation.gtf.gz
@@ -21,14 +31,12 @@ RUN gunzip annotation.gtf.gz
 RUN mkdir /data/sf
 WORKDIR /data/sf
 
-RUN conda install -c biocore hmmer
 RUN wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz -O Pfam-A.hmm.gz
 RUN gunzip Pfam-A.hmm.gz && hmmpress Pfam-A.hmm 
 RUN prep_genome_lib.pl --genome_fa /data/genome.fa --gtf /data/annotation.gtf --pfarm_db Pfam-A.hmm --CPU 8
 
 # Install nextflow
 WORKDIR /
-RUN conda install -c anaconda graphviz 
 RUN curl -s https://get.nextflow.io | bash
 RUN chmod +x ./nextflow && mv nextflow /usr/local/bin
 

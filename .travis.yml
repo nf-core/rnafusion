@@ -30,9 +30,16 @@ env:
   - NXF_VER='0.32.0' # Specify a minimum NF version that should be tested and work
   - NXF_VER='' # Plus: get the latest NF version and check, that it works
 
-script:
-  # Lint the pipeline code
-  - nf-core lint ${TRAVIS_BUILD_DIR}
-  # Run the pipeline with the test profile
-  # - nextflow run ${TRAVIS_BUILD_DIR} -profile test,docker --read 'data/reads_{1,2}.fq.gz' --genome GRCh38
-  - docker run -it -v ${TRAVIS_BUILD_DIR}:/${TRAVIS_BUILD_DIR} mproksik/rnafusion-test /bin/bash -c 'nextflow run ${TRAVIS_BUILD_DIR} -profile test --reads "/test-data/test_{1,2}.fastq.gz" --genome R64-1-1 --star_fusion'
+stages:
+  - lint
+  - compile
+  # - unit-test
+
+jobs:
+  include:
+      - stage: lint
+        script: nf-core lint ${TRAVIS_BUILD_DIR}
+      - stage: compile
+        script: docker run -it -v ${TRAVIS_BUILD_DIR}:${TRAVIS_BUILD_DIR} mproksik/rnafusion-test /bin/bash -c 'nextflow run ${TRAVIS_BUILD_DIR} -profile test --reads "/test-data/test_{1,2}.fastq.gz" --genome R64-1-1 --star_fusion'
+      # - unit-test:
+      #    script:
