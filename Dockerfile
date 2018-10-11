@@ -6,38 +6,37 @@ LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.
 #Fusioncatcher 
 RUN apt-get -y update
 RUN apt-get -y install \
+    automake \
     build-essential \
-    libncurses5-dev \
+    bzip2 \
+    cmake \
+    curl \
     default-jdk \
     default-jre \
+    g++ \
     gawk \
     gcc \
-    g++ \
-    bzip2 \
-    make \
-    cmake \
-    automake \
-    make \
     gzip \
-    zip \
-    unzip \
-    zlibc \
-    zlib1g-dev \
-    zlib1g \
-    wget \
-    curl \
-    pigz \
-    tar \
-    parallel \
+    libdb-dev \
+    libncurses5-dev \
     libtbb-dev \
     libtbb2 \
-    libdb-dev \
+    make \
+    parallel \
+    pigz \
     python \
+    python-biopython \
     python-dev \
     python-numpy \
-    python-biopython \
+    python-openpyxl \
     python-xlrd \
-    python-openpyxl 
+    tar \
+    unzip \
+    wget \
+    zip \
+    zlib1g \
+    zlib1g-dev \
+    zlibc
 
 ENV SRC /usr/local/src
 WORKDIR $SRC
