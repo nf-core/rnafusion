@@ -6,6 +6,7 @@ channels:
 dependencies:
   - fastqc=0.11.7
   - multiqc=1.6
+  - graphviz=2.40.1
   - gmap=2018.03.25
   - star=2.6.1a
   - star-fusion=1.4.0

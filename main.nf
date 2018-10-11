@@ -64,25 +64,18 @@ if (params.help){
 
 // Configurable variables
 params.name = false
-params.fasta = params.genome ? params.genomes[ params.genome ].fasta ?: false : false
 params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
 params.email = false
 params.plaintext_email = false
-params.all = false
-params.skip_qc = false
 params.star_fusion = false
 params.fusioncatcher = false
-params.fusion_inspector = false
 params.fc_extra_options = ''
+params.fusion_inspector = false
+
 
 multiqc_config = file(params.multiqc_config)
 output_docs = file("$baseDir/docs/output.md")
 
-// Validate inputs
-if ( params.fasta ){
-    fasta = file(params.fasta)
-    if( !fasta.exists() ) exit 1, "Fasta file not found: ${params.fasta}"
-}
 // AWSBatch sanity checking
 if(workflow.profile == 'awsbatch'){
     if (!params.awsqueue || !params.awsregion) exit 1, "Specify correct --awsqueue and --awsregion parameters on AWSBatch!"
@@ -220,7 +213,7 @@ process star_fusion {
     publishDir "${params.outdir}/Star_fusion", mode: 'copy'
 
     when:
-    params.star_fusion || params.all
+    params.star_fusion
 
     input:
     set val(name), file(reads) from read_files_star_fusion
@@ -259,7 +252,7 @@ process fusioncatcher {
     publishDir "${params.outdir}/Fusioncatcher", mode: 'copy'
 
     when:
-    params.fusioncatcher || params.all
+    params.fusioncatcher
 
     input:
     set val(name), file(reads) from read_files_fusioncatcher
@@ -301,12 +294,9 @@ process fusion_inspector_preprocess {
     tag "$name"
     publishDir "${params.outdir}/Transformers", mode: 'copy'
 
-    when:
-    params.fusion_inspector || params.all
-
     input:
-    file fusioncatcher_candidates
-    file star_fusion_abridged
+    file fc from fusioncatcher_candidates.ifEmpty('')
+    file sf from star_fusion_abridged.ifEmpty('')
 
     output:
     file 'fusions.txt' into fusions
@@ -314,8 +304,8 @@ process fusion_inspector_preprocess {
     
     script:
     """
-    transformer.py -i ${fusioncatcher_candidates} -t fusioncatcher
-    transformer.py -i ${star_fusion_abridged} -t star_fusion
+    transformer.py -i ${fc} -t fusioncatcher
+    transformer.py -i ${sf} -t star_fusion
     """
 }
 
@@ -327,7 +317,7 @@ process fusion_inspector {
     publishDir "${params.outdir}/FusionInspector", mode: 'copy'
 
     when:
-    params.fusion_inspector || params.all
+    params.fusion_inspector
 
     input:
     set val(name), file(reads) from read_files_fusion_inspector
@@ -384,9 +374,6 @@ process fastqc {
     publishDir "${params.outdir}/fastqc", mode: 'copy',
         saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
 
-    when:
-    !params.skip_qc || params.all
-
     input:
     set val(name), file(reads) from read_files_fastqc
 
@@ -406,9 +393,6 @@ process fastqc {
 process fusion_gene_compare {
     publishDir "${params.outdir}/FusionGeneCompare", mode: 'copy'
 
-    when:
-    params.fusion_inspector || params.all
-
     input:
     file fusions_summary
 
@@ -427,15 +411,12 @@ process fusion_gene_compare {
 process multiqc {
     publishDir "${params.outdir}/MultiQC", mode: 'copy'
 
-    when:
-    !params.skip_qc || params.all
-
     input:
     file multiqc_config
     file ('fastqc/*') from fastqc_results.collect()
     file ('software_versions/*') from software_versions_yaml
     file workflow_summary from create_workflow_summary(summary)
-    file fusion_genes_mqc
+    file fusions_mq from fusion_genes_mqc.ifEmpty('')
 
     output:
     file "*multiqc_report.html" into multiqc_report

@@ -35,3 +35,4 @@ script:
   - nf-core lint ${TRAVIS_BUILD_DIR}
   # Run the pipeline with the test profile
   # - nextflow run ${TRAVIS_BUILD_DIR} -profile test,docker --read 'data/reads_{1,2}.fq.gz' --genome GRCh38
+  - docker run -it -v ${TRAVIS_BUILD_DIR}:/${TRAVIS_BUILD_DIR} mproksik/rnafusion-test /bin/bash -c "${TRAVIS_BUILD_DIR}/test/test.sh"
