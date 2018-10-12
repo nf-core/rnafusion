@@ -18,8 +18,8 @@ ENV PATH /opt/conda/envs/nf-core-rnafusion-1.0dev/bin:$PATH
 # Get Genome
 RUN mkdir /data
 WORKDIR /data
-COPY get_genome.py .
-RUN python get_genome.py --organism ${FC_GENOME} --output .
+RUN wget ftp://ftp.ensembl.org/pub/current_fasta/saccharomyces_cerevisiae/dna/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz
+RUN gzip -d -f -c './Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz' > 'genome.fa'
 
 # Get GTF
 RUN wget ftp://ftp.ensembl.org/pub/release-94/gtf/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.94.gtf.gz -O annotation.gtf.gz
