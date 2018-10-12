@@ -18,8 +18,6 @@ ENV PATH /opt/conda/envs/nf-core-rnafusion-1.0dev/bin:$PATH
 # Get Genome
 RUN mkdir /data
 WORKDIR /data
-RUN wget https://raw.githubusercontent.com/ndaniel/fusioncatcher/master/bin/get_genome.py -O get_genome.py
-RUN sed -i -e 's/import concatenate/from numpy import concatenate/g' get_genome.py
 RUN python get_genome.py --organism ${FC_GENOME} --output .
 
 # Get GTF

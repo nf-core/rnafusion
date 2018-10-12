@@ -10,21 +10,10 @@ matrix:
 before_install:
   # PRs made to 'master' branch should always orginate from another repo or the 'dev' branch
   - '[ $TRAVIS_PULL_REQUEST = "false" ] || [ $TRAVIS_BRANCH != "master" ] || ([ $TRAVIS_PULL_REQUEST_SLUG = $TRAVIS_REPO_SLUG ] && [ $TRAVIS_PULL_REQUEST_BRANCH = "dev" ])'
-  # Pull the docker image first so the test doesn't wait for this
-  - docker pull nfcore/rnafusion
-  # Fake the tag locally so that the pipeline runs properly
-  - docker tag nfcore/rnafusion nfcore/rnafusion:latest
 
 install:
-  # Install Nextflow
-  - mkdir /tmp/nextflow
-  - cd /tmp/nextflow
-  - wget -qO- get.nextflow.io | bash
-  - sudo ln -s /tmp/nextflow/nextflow /usr/local/bin/nextflow
-  # Install nf-core/tools
+  # Install nf-core tools
   - pip install nf-core
-  # Reset
-  - mkdir ${TRAVIS_BUILD_DIR}/tests && cd ${TRAVIS_BUILD_DIR}/tests
 
 env:
   - NXF_VER='0.32.0' # Specify a minimum NF version that should be tested and work
