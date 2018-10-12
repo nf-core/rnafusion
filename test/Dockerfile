@@ -16,7 +16,7 @@ ENV PATH /opt/conda/envs/nf-core-rnafusion-1.0dev/bin:$PATH
 # STAR-Fusion
 WORKDIR /data/
 RUN hmmpress Pfam-A.hmm 
-RUN prep_genome_lib.pl --genome_fa genome.fa --gtf annotation.gtf --pfarm_db Pfam-A.hmm --CPU 2
+RUN prep_genome_lib.pl --genome_fa genome.fa --gtf annotation.gtf --pfarm_db Pfam-A.hmm
 
 # Install nextflow
 WORKDIR /
