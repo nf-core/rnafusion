@@ -19,7 +19,7 @@ COPY ./data /data
 WORKDIR /data
 
 # Genome and GTF
-RUN gzip -d -f -c genome.fa.gz
+RUN gzip -d -f -c genome.fa.gz > 'genome.fa'
 RUN gunzip annotation.gtf.gz
 
 # STAR-Fusion
