@@ -26,7 +26,8 @@ RUN cpanm install Set::IntervalTree \
     PerlIO::gzip
 WORKDIR /data/
 RUN hmmpress Pfam-A.hmm 
-RUN prep_genome_lib.pl --genome_fa genome.fa --gtf annotation.gtf --pfarm_db Pfam-A.hmm --CPU 2
+RUN sed -i -e 's/my $CPU = 4;/my $CPU = 2;/' /opt/conda/envs/nf-core-rnafusion-1.0dev/lib/STAR-Fusion/FusionFilter/prep_genome_lib.pl
+RUN prep_genome_lib.pl --genome_fa genome.fa --gtf annotation.gtf --pfarm_db Pfam-A.hmm
 
 # Install nextflow
 WORKDIR /
