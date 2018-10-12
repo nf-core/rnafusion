@@ -11,27 +11,22 @@ ENV USER travis-ci-test
 # Get all tools
 COPY environment.yml .
 RUN conda env create -f /environment.yml python=2.7 && conda clean -a
-RUN conda install -c biocore hmmer pyyaml numpy graphviz
 ENV PATH /opt/conda/envs/nf-core-rnafusion-1.0dev/bin:$PATH
 
 # Data directory for genome and annotation
 COPY ./data /data
-WORKDIR /data
+# Get test data
+COPY ./test-data /test-data
 
+WORKDIR /data
 # Genome and GTF
 RUN gzip -d -f -c genome.fa.gz > 'genome.fa'
 RUN gunzip annotation.gtf.gz
-
 # STAR-Fusion
 RUN gunzip Pfam-A.hmm.gz && hmmpress Pfam-A.hmm 
-RUN prep_genome_lib.pl --genome_fa genome.fa --gtf annotation.gtf --pfarm_db Pfam-A.hmm --CPU 2
+RUN prep_genome_lib.pl --genome_fa genome.fa --gtf annotation.gtf --pfarm_db Pfam-A.hmm --CPU 2 >/dev/null 2>&1
 
 # Install nextflow
 WORKDIR /
 RUN curl -s https://get.nextflow.io | bash
 RUN chmod +x ./nextflow && mv nextflow /usr/local/bin
-
-# Get test data
-RUN mkdir /test-data
-RUN cd /test-data && wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR612/006/SRR6129616/SRR6129616_1.fastq.gz -O test_1.fastq.gz
-RUN cd /test-data && wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR612/006/SRR6129616/SRR6129616_2.fastq.gz -O test_2.fastq.gz
