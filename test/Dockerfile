@@ -18,6 +18,7 @@ ENV PATH /opt/conda/envs/nf-core-rnafusion-1.0dev/bin:$PATH
 # Get Genome
 RUN mkdir /data
 WORKDIR /data
+COPY get_genome.py .
 RUN python get_genome.py --organism ${FC_GENOME} --output .
 
 # Get GTF

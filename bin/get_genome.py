@@ -4,8 +4,6 @@
 
 It downloads the lastest available sequences of the chromosomes from the Ensembl database.
 
-
-
 Author: Daniel Nicorici, Daniel.Nicorici@gmail.com
 
 Copyright (c) 2009-2018 Daniel Nicorici
