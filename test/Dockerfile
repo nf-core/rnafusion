@@ -15,9 +15,10 @@ ENV PATH /opt/conda/envs/nf-core-rnafusion-1.0dev/bin:$PATH
 
 # STAR-Fusion
 ## perl lib installations
+RUN apt-get -y install make build-essential gcc
 RUN curl -L https://cpanmin.us | perl - App::cpanminus
 RUN cpanm install Set::IntervalTree \
-    DB_File \
+    DB_File::DB_Database \
     URI::Escape\
     Set::IntervalTree \
     Carp::Assert \
