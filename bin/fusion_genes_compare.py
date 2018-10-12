@@ -25,6 +25,9 @@ def findings(p_yaml, p_sample):
     data = TEMPLATE
     fusions = {}
 
+    if p_yaml == None:
+        return
+
     # Counts per tool
     tools = p_yaml.keys()
     for tool in tools:
@@ -59,7 +62,9 @@ def summary(p_input, p_sample):
     try:
         with open(p_input, 'r') as stream, open(OUTPUT, 'w') as out_file:
             yaml_data = yaml.safe_load(stream)
+            # Conversion to nice yaml file
             yaml.add_representer(OrderedDict, lambda dumper, data: dumper.represent_mapping('tag:yaml.org,2002:map', data.items()))
+            # Find and store
             out_file.write(dump(findings(yaml_data, p_sample), default_flow_style=False, allow_unicode=True))
             stream.close()
             out_file.close()
