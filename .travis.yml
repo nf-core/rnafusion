@@ -12,8 +12,15 @@ before_install:
   - '[ $TRAVIS_PULL_REQUEST = "false" ] || [ $TRAVIS_BRANCH != "master" ] || ([ $TRAVIS_PULL_REQUEST_SLUG = $TRAVIS_REPO_SLUG ] && [ $TRAVIS_PULL_REQUEST_BRANCH = "dev" ])'
 
 install:
-  # Install nf-core tools
-  - pip install nf-core
+  # Install Nextflow
+  - mkdir /tmp/nextflow	
+  - cd /tmp/nextflow	
+  - wget -qO- get.nextflow.io | bash	
+  - sudo ln -s /tmp/nextflow/nextflow /usr/local/bin/nextflow	
+  # Install nf-core/tools	
+  - pip install nf-core	  - pip install nf-core
+  # Reset	
+  - mkdir ${TRAVIS_BUILD_DIR}/tests && cd ${TRAVIS_BUILD_DIR}/tests
 
 env:
   - NXF_VER='0.32.0' # Specify a minimum NF version that should be tested and work
