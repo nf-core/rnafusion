@@ -64,6 +64,8 @@ if (params.help){
 
 // Configurable variables
 params.name = false
+params.test = false
+params.fasta = 'None'
 params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
 params.email = false
 params.plaintext_email = false
@@ -354,14 +356,15 @@ process get_software_versions {
     file 'software_versions_mqc.yaml' into software_versions_yaml
 
     script:
+    fusioncatcher = params.test ? 'echo NONE &> v_fusioncatcher.txt' : 'fusioncatcher --version &> v_fusioncatcher.txt'
     """
     echo $workflow.manifest.version > v_pipeline.txt
     echo $workflow.nextflow.version > v_nextflow.txt
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
     STAR-Fusion --version > v_star_fusion.txt
-    fusioncatcher --version > v_fusioncatcher.txt
-    cat /environment.yml | grep 'fusion-inspector' > v_fusion_inspector.txt
+    ${fusioncatcher}
+    cat /environment.yml | grep "fusion-inspector" > v_fusion_inspector.txt
     scrape_software_versions.py > software_versions_mqc.yaml
     """
 }

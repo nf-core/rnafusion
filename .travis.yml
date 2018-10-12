@@ -32,14 +32,19 @@ env:
 
 stages:
   - lint
-  - compile
+  - build
+  - test
   # - unit-test
 
 jobs:
   include:
       - stage: lint
         script: nf-core lint ${TRAVIS_BUILD_DIR}
-      - stage: compile
-        script: docker run -it -v ${TRAVIS_BUILD_DIR}:${TRAVIS_BUILD_DIR} mproksik/rnafusion-test /bin/bash -c 'nextflow run ${TRAVIS_BUILD_DIR} -profile test --reads "/test-data/test_{1,2}.fastq.gz" --genome R64-1-1 --star_fusion'
+      - stage: build
+        script:
+          - cd ${TRAVIS_BUILD_DIR}
+          - sh build.sh
+      - stage: test
+        script: docker run -v ${TRAVIS_BUILD_DIR}:${TRAVIS_BUILD_DIR} rnafusion-test nextflow run ${TRAVIS_BUILD_DIR} -profile test --reads "/test-data/test_{1,2}.fastq.gz" --genome R64-1-1 --star_fusion --test
       # - unit-test:
       #    script:

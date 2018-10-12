@@ -10,18 +10,17 @@ ARG FC_GENOME=saccharomyces_cerevisiae
 ENV USER travis-ci-test
 
 # Get all tools
-COPY environment.yml /
-RUN conda env create -f /environment.yml && conda clean -a
+COPY environment.yml .
+RUN conda env create -f /environment.yml python=2.7 && conda clean -a
+RUN conda install -c biocore hmmer pyyaml numpy graphviz
 ENV PATH /opt/conda/envs/nf-core-rnafusion-1.0dev/bin:$PATH
 
 # Get Genome
 RUN mkdir /data
 WORKDIR /data
-RUN apt-get install -y python-numpy
 RUN wget https://raw.githubusercontent.com/ndaniel/fusioncatcher/master/bin/get_genome.py -O get_genome.py
 RUN sed -i -e 's/import concatenate/from numpy import concatenate/g' get_genome.py
-RUN python2.7 -m pip install numpy
-RUN python2.7 get_genome.py --organism ${FC_GENOME} --output .
+RUN python get_genome.py --organism ${FC_GENOME} --output .
 
 # Get GTF
 RUN wget ftp://ftp.ensembl.org/pub/release-94/gtf/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.94.gtf.gz -O annotation.gtf.gz
