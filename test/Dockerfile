@@ -14,9 +14,18 @@ RUN conda env create -f /environment.yml python=2.7 && conda clean -a
 ENV PATH /opt/conda/envs/nf-core-rnafusion-1.0dev/bin:$PATH
 
 # STAR-Fusion
+## perl lib installations
+RUN curl -L https://cpanmin.us | perl - App::cpanminus
+RUN cpanm install Set::IntervalTree \
+    DB_File \
+    URI::Escape\
+    Set::IntervalTree \
+    Carp::Assert \
+    JSON::XS.pm \
+    PerlIO::gzip
 WORKDIR /data/
 RUN hmmpress Pfam-A.hmm 
-RUN prep_genome_lib.pl --genome_fa genome.fa --gtf annotation.gtf --pfarm_db Pfam-A.hmm
+RUN prep_genome_lib.pl --genome_fa genome.fa --gtf annotation.gtf --pfarm_db Pfam-A.hmm --CPU 2
 
 # Install nextflow
 WORKDIR /
