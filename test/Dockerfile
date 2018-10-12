@@ -24,7 +24,7 @@ RUN gunzip annotation.gtf.gz
 
 # STAR-Fusion
 RUN gunzip Pfam-A.hmm.gz && hmmpress Pfam-A.hmm 
-RUN prep_genome_lib.pl --genome_fa /data/genome.fa --gtf /data/annotation.gtf --pfarm_db Pfam-A.hmm --CPU 2
+RUN prep_genome_lib.pl --genome_fa genome.fa --gtf annotation.gtf --pfarm_db Pfam-A.hmm --CPU 2
 
 # Install nextflow
 WORKDIR /
