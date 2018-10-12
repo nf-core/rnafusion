@@ -98,7 +98,7 @@ if __name__ == '__main__':
 
 
     # timeout in seconds
-    timeout = 1800
+    timeout = 18000
     socket.setdefaulttimeout(timeout)
 
     #ftp.ensembl.org/pub/current_fasta/homo_sapiens/dna
