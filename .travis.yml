@@ -32,4 +32,4 @@ script:
   # Lint the pipeline code
   # - "nf-core lint ${TRAVIS_BUILD_DIR}"
   - cd ${TRAVIS_BUILD_DIR}/test && sh build.sh
-  - docker run -v ${TRAVIS_BUILD_DIR}:${TRAVIS_BUILD_DIR} rnafusion-test nextflow run ${TRAVIS_BUILD_DIR} -profile test --reads "/test-data/test_{1,2}.fastq.gz" --genome R64-1-1 --star_fusion --test
+  - travis_wait 30 docker run -v ${TRAVIS_BUILD_DIR}:${TRAVIS_BUILD_DIR} rnafusion-test nextflow run ${TRAVIS_BUILD_DIR} -profile test --reads "/test-data/test_{1,2}.fastq.gz" --genome R64-1-1 --star_fusion --test
