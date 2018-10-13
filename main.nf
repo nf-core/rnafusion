@@ -103,21 +103,25 @@ if (!params.genome) {
     exit 1, "Mandatory parameter genome not specified!"    
 }
 
-if (!params.star_fusion_ref) {
-    exit 1, "Star-Fusion reference not specified!"
-} else {
-     Channel
-        .fromPath(params.star_fusion_ref)
-        .ifEmpty { exit 1, "Stat-Fusion reference directory not found!" }
-        .into { star_fusion_ref; fusion_inspector_ref }
+if (params.star_fusion) {
+    if (!params.star_fusion_ref) {
+        exit 1, "Star-Fusion reference not specified!"
+    } else {
+        Channel
+            .fromPath(params.star_fusion_ref)
+            .ifEmpty { exit 1, "Stat-Fusion reference directory not found!" }
+            .into { star_fusion_ref; fusion_inspector_ref }
+    }
 }
 
-if (!params.fusioncatcher_dir) {
-    exit 1, "Fusion catcher data directory not specified!"
-} else {
-    fusioncatcher_dir = Channel
-        .fromPath(params.fusioncatcher_dir)
-        .ifEmpty { exit 1, "Fusion catcher data directory not found!" }
+if (params.fusioncatcher) {
+    if (!params.fusioncatcher_dir) {
+        exit 1, "Fusion catcher data directory not specified!"
+    } else {
+        fusioncatcher_dir = Channel
+            .fromPath(params.fusioncatcher_dir)
+            .ifEmpty { exit 1, "Fusion catcher data directory not found!" }
+    }
 }
 
 /*
