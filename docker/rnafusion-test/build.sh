@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cp ../environment.yml .
+cp ../../environment.yml .
 docker build . -t "rnafusion-test"

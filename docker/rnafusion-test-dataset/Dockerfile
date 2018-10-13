@@ -1,3 +1,9 @@
+# This is a testing dataset for species saccharomyces cerevisiae. The pipeline is designed for 
+# eukaryote so this is the smallest we could use that actually produccess some results.
+# Normally this would be a volume that could be mounted but we don't have a provider where
+# we could server it. 
+# NOTE: Running this in Travis CI will probably fail due to FTP timeouts. Build only locally!
+
 FROM nfcore/base
 
 LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.proks@scilifelab.se" \
