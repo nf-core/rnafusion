@@ -122,6 +122,8 @@ if (params.fusioncatcher) {
             .fromPath(params.fusioncatcher_dir)
             .ifEmpty { exit 1, "Fusion catcher data directory not found!" }
     }
+} else {
+    fusioncatcher_dir = ''
 }
 
 /*
