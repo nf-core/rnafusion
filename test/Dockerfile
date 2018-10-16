@@ -2,7 +2,7 @@
 # of RAM as a starter. This build usually takes about 1h to finish.
 # NOTE: prep_genome_lib.pl ignores CPU parameter so manual edit was applied
 
-FROM nfcore/rnafusion-test-dataset
+FROM nfcore/test-datasets:rnafusion
 
 LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.proks@scilifelab.se" \
     description="Docker image containing all requirements for nfcore/rnafusion-test container"

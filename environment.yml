@@ -16,7 +16,7 @@ dependencies:
   - conda-forge::r-gplots=3.0.1
   - bioconductor-edger=3.20.7
   - conda-forge::r-markdown=0.8
-  - hmmer
-  - pyyaml
-  - numpy
-  - graphviz
+  - hmmer=3.2.1
+  - pyyaml=3.13
+  - numpy=1.15.2
+  - graphviz=2.38.0

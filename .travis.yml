@@ -10,7 +10,11 @@ before_install:
   # PRs made to 'master' branch should always orginate from another repo or the 'dev' branch
   - '[ $TRAVIS_PULL_REQUEST = "false" ] || [ $TRAVIS_BRANCH != "master" ] || ([ $TRAVIS_PULL_REQUEST_SLUG = $TRAVIS_REPO_SLUG ] && [ $TRAVIS_PULL_REQUEST_BRANCH = "dev" ])'
   # Pull the docker image first so the test doesn't wait for this
-  - docker pull nfcore/rnafusion-test-dataset
+  - docker pull nfcore/rnafusion
+  # Fake the tag locally so that the pipeline runs properly
+  - docker tag nfcore/rnafusion nfcore/rnafusion:latest
+  # Pull the docker image first so the test doesn't wait for this
+  - docker pull nfcore/test-datasets:rnafusion
 
 env:
   - NXF_VER='0.32.0' # Specify a minimum NF version that should be tested and work
@@ -30,6 +34,6 @@ script:
   # Lint the pipeline code
   - nf-core lint ${TRAVIS_BUILD_DIR}
   # Build locally test container
-  - cd ${TRAVIS_BUILD_DIR}/docker/rnafusion-test && sh build.sh 
+  - cd ${TRAVIS_BUILD_DIR}/test && sh build.sh 
   # Run pipeline
   - travis_wait 30 docker run -v ${TRAVIS_BUILD_DIR}:${TRAVIS_BUILD_DIR} rnafusion-test nextflow run ${TRAVIS_BUILD_DIR} -profile test --reads "/test-data/test_{1,2}.fastq.gz" --genome R64-1-1 --star_fusion --test

@@ -28,12 +28,13 @@ def helpMessage() {
                                     Available: standard, conda, docker, singularity, awsbatch, test
 
     Options:
-      --all                         [bool] Run all tools
       --singleEnd                   Specifies that the input is single end reads
       --star_fusion                 [bool] Run STAR-Fusion. Default: False
       --fusioncatcher               [bool] Run FusionCatcher. Default: False
         --fc_extra_options          Extra parameters for FusionCatcher. Can be found at https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md
       --fusion_inspector            [bool] Run Fusion-Inspectro. Default: False
+      --star_fusion                 [bool] Run Star-Fusion. Deafult: False
+      --test                        [bool] Run in test mode
 
     References                      If not specified in the configuration file or you wish to overwrite any of the references.
       --fasta                       Path to Fasta reference
