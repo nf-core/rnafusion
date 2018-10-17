@@ -13,7 +13,7 @@
 def helpMessage() {
     log.info"""
     =========================================
-     nf-core/rnafusion v${params.pipelineVersion}
+     nf-core/rnafusion v${workflow.manifest.version}
     =========================================
     Usage:
 
@@ -28,12 +28,13 @@ def helpMessage() {
                                     Available: standard, conda, docker, singularity, awsbatch, test
 
     Options:
-      --all                         [bool] Run all tools
       --singleEnd                   Specifies that the input is single end reads
       --star_fusion                 [bool] Run STAR-Fusion. Default: False
       --fusioncatcher               [bool] Run FusionCatcher. Default: False
         --fc_extra_options          Extra parameters for FusionCatcher. Can be found at https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md
       --fusion_inspector            [bool] Run Fusion-Inspectro. Default: False
+      --star_fusion                 [bool] Run Star-Fusion. Deafult: False
+      --test                        [bool] Run in test mode
 
     References                      If not specified in the configuration file or you wish to overwrite any of the references.
       --fasta                       Path to Fasta reference
@@ -64,25 +65,20 @@ if (params.help){
 
 // Configurable variables
 params.name = false
-params.fasta = params.genome ? params.genomes[ params.genome ].fasta ?: false : false
+params.test = false
+params.fasta = 'None'
 params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
 params.email = false
 params.plaintext_email = false
-params.all = false
-params.skip_qc = false
 params.star_fusion = false
 params.fusioncatcher = false
-params.fusion_inspector = false
 params.fc_extra_options = ''
+params.fusion_inspector = false
+
 
 multiqc_config = file(params.multiqc_config)
 output_docs = file("$baseDir/docs/output.md")
 
-// Validate inputs
-if ( params.fasta ){
-    fasta = file(params.fasta)
-    if( !fasta.exists() ) exit 1, "Fasta file not found: ${params.fasta}"
-}
 // AWSBatch sanity checking
 if(workflow.profile == 'awsbatch'){
     if (!params.awsqueue || !params.awsregion) exit 1, "Specify correct --awsqueue and --awsregion parameters on AWSBatch!"
@@ -108,21 +104,27 @@ if (!params.genome) {
     exit 1, "Mandatory parameter genome not specified!"    
 }
 
-if (!params.star_fusion_ref) {
-    exit 1, "Star-Fusion reference not specified!"
-} else {
-     Channel
-        .fromPath(params.star_fusion_ref)
-        .ifEmpty { exit 1, "Stat-Fusion reference directory not found!" }
-        .into { star_fusion_ref; fusion_inspector_ref }
+if (params.star_fusion) {
+    if (!params.star_fusion_ref) {
+        exit 1, "Star-Fusion reference not specified!"
+    } else {
+        Channel
+            .fromPath(params.star_fusion_ref)
+            .ifEmpty { exit 1, "Stat-Fusion reference directory not found!" }
+            .into { star_fusion_ref; fusion_inspector_ref }
+    }
 }
 
-if (!params.fusioncatcher_dir) {
-    exit 1, "Fusion catcher data directory not specified!"
+if (params.fusioncatcher) {
+    if (!params.fusioncatcher_dir) {
+        exit 1, "Fusion catcher data directory not specified!"
+    } else {
+        fusioncatcher_dir = Channel
+            .fromPath(params.fusioncatcher_dir)
+            .ifEmpty { exit 1, "Fusion catcher data directory not found!" }
+    }
 } else {
-    fusioncatcher_dir = Channel
-        .fromPath(params.fusioncatcher_dir)
-        .ifEmpty { exit 1, "Fusion catcher data directory not found!" }
+    fusioncatcher_dir = ''
 }
 
 /*
@@ -158,11 +160,11 @@ log.info """=======================================================
     | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                           `._,._,\'
 
-nf-core/rnafusion v${params.pipelineVersion}"
+nf-core/rnafusion v${workflow.manifest.version}"
 ======================================================="""
 def summary = [:]
 summary['Pipeline Name']  = 'nf-core/rnafusion'
-summary['Pipeline Version'] = params.pipelineVersion
+summary['Pipeline Version'] = workflow.manifest.version
 summary['Run Name']     = custom_runName ?: workflow.runName
 summary['Reads']        = params.reads
 summary['Fasta Ref']    = params.fasta
@@ -220,7 +222,7 @@ process star_fusion {
     publishDir "${params.outdir}/Star_fusion", mode: 'copy'
 
     when:
-    params.star_fusion || params.all
+    params.star_fusion
 
     input:
     set val(name), file(reads) from read_files_star_fusion
@@ -259,7 +261,7 @@ process fusioncatcher {
     publishDir "${params.outdir}/Fusioncatcher", mode: 'copy'
 
     when:
-    params.fusioncatcher || params.all
+    params.fusioncatcher
 
     input:
     set val(name), file(reads) from read_files_fusioncatcher
@@ -301,12 +303,9 @@ process fusion_inspector_preprocess {
     tag "$name"
     publishDir "${params.outdir}/Transformers", mode: 'copy'
 
-    when:
-    params.fusion_inspector || params.all
-
     input:
-    file fusioncatcher_candidates
-    file star_fusion_abridged
+    file fc from fusioncatcher_candidates.ifEmpty('')
+    file sf from star_fusion_abridged.ifEmpty('')
 
     output:
     file 'fusions.txt' into fusions
@@ -314,8 +313,8 @@ process fusion_inspector_preprocess {
     
     script:
     """
-    transformer.py -i ${fusioncatcher_candidates} -t fusioncatcher
-    transformer.py -i ${star_fusion_abridged} -t star_fusion
+    transformer.py -i ${fc} -t fusioncatcher
+    transformer.py -i ${sf} -t star_fusion
     """
 }
 
@@ -327,7 +326,7 @@ process fusion_inspector {
     publishDir "${params.outdir}/FusionInspector", mode: 'copy'
 
     when:
-    params.fusion_inspector || params.all
+    params.fusion_inspector
 
     input:
     set val(name), file(reads) from read_files_fusion_inspector
@@ -364,14 +363,15 @@ process get_software_versions {
     file 'software_versions_mqc.yaml' into software_versions_yaml
 
     script:
+    fusioncatcher = params.test ? 'echo NONE &> v_fusioncatcher.txt' : 'fusioncatcher --version &> v_fusioncatcher.txt'
     """
-    echo $params.pipelineVersion > v_pipeline.txt
+    echo $workflow.manifest.version > v_pipeline.txt
     echo $workflow.nextflow.version > v_nextflow.txt
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
     STAR-Fusion --version > v_star_fusion.txt
-    fusioncatcher --version > v_fusioncatcher.txt
-    cat /environment.yml | grep 'fusion-inspector' > v_fusion_inspector.txt
+    ${fusioncatcher}
+    cat /environment.yml | grep "fusion-inspector" > v_fusion_inspector.txt
     scrape_software_versions.py > software_versions_mqc.yaml
     """
 }
@@ -383,9 +383,6 @@ process fastqc {
     tag "$name"
     publishDir "${params.outdir}/fastqc", mode: 'copy',
         saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
-
-    when:
-    !params.skip_qc || params.all
 
     input:
     set val(name), file(reads) from read_files_fastqc
@@ -406,9 +403,6 @@ process fastqc {
 process fusion_gene_compare {
     publishDir "${params.outdir}/FusionGeneCompare", mode: 'copy'
 
-    when:
-    params.fusion_inspector || params.all
-
     input:
     file fusions_summary
 
@@ -427,15 +421,12 @@ process fusion_gene_compare {
 process multiqc {
     publishDir "${params.outdir}/MultiQC", mode: 'copy'
 
-    when:
-    !params.skip_qc || params.all
-
     input:
     file multiqc_config
     file ('fastqc/*') from fastqc_results.collect()
     file ('software_versions/*') from software_versions_yaml
     file workflow_summary from create_workflow_summary(summary)
-    file fusion_genes_mqc
+    file fusions_mq from fusion_genes_mqc.ifEmpty('')
 
     output:
     file "*multiqc_report.html" into multiqc_report
@@ -479,7 +470,7 @@ workflow.onComplete {
       subject = "[nf-core/rnafusion] FAILED: $workflow.runName"
     }
     def email_fields = [:]
-    email_fields['version'] = params.pipelineVersion
+    email_fields['version'] = workflow.manifest.version
     email_fields['runName'] = custom_runName ?: workflow.runName
     email_fields['success'] = workflow.success
     email_fields['dateComplete'] = workflow.complete

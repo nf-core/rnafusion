@@ -1,10 +1,7 @@
 sudo: required
-language: java
-jdk: openjdk8
-services:
-  - docker
-python:
-  - "2.7"
+language: python
+services: docker
+python: '3.6'
 cache: pip
 matrix:
   fast_finish: true
@@ -16,27 +13,27 @@ before_install:
   - docker pull nfcore/rnafusion
   # Fake the tag locally so that the pipeline runs properly
   - docker tag nfcore/rnafusion nfcore/rnafusion:latest
+  # Pull the docker image first so the test doesn't wait for this
+  - docker pull nfcore/test-datasets:rnafusion
+
+env:
+  - NXF_VER='0.32.0' # Specify a minimum NF version that should be tested and work
+  - NXF_VER='' # Plus: get the latest NF version and check, that it works
 
 install:
   # Install Nextflow
-  - mkdir /tmp/nextflow
-  - cd /tmp/nextflow
+  - mkdir /tmp/nextflow && cd /tmp/nextflow
   - wget -qO- get.nextflow.io | bash
   - sudo ln -s /tmp/nextflow/nextflow /usr/local/bin/nextflow
   # Install nf-core/tools
-  - git clone https://github.com/nf-core/tools.git /tmp/nf-core-tools
-  - cd /tmp/nf-core-tools
-  - pip install --user -e .
+  - pip install nf-core
   # Reset
-  - mkdir ${TRAVIS_BUILD_DIR}/tests
-  - cd ${TRAVIS_BUILD_DIR}/tests
-
-env:
-  - NXF_VER=0.30.0 # Specify a minimum NF version that should be tested and work
-  - NXF_VER='' # Plus: get the latest NF version and check, that it works
+  - mkdir ${TRAVIS_BUILD_DIR}/tests && cd ${TRAVIS_BUILD_DIR}/tests
 
 script:
   # Lint the pipeline code
   - nf-core lint ${TRAVIS_BUILD_DIR}
-  # Run the pipeline with the test profile
-  - nextflow run ${TRAVIS_BUILD_DIR} -profile test,docker
+  # Build locally test container
+  - cd ${TRAVIS_BUILD_DIR}/test && sh build.sh 
+  # Run pipeline
+  - travis_wait 30 docker run -v ${TRAVIS_BUILD_DIR}:${TRAVIS_BUILD_DIR} rnafusion-test nextflow run ${TRAVIS_BUILD_DIR} -profile test --reads "/test-data/test_{1,2}.fastq.gz" --genome R64-1-1 --star_fusion --test

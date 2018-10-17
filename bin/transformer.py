@@ -33,10 +33,10 @@ def fusioncatcher(p_file):
 
 def transform(p_input, p_tool, p_output):
     if not os.path.exists(p_input):
-        sys.exit('Defined {} doesn\'t exist'.format(p_input))
+        print('Defined {} doesn\'t exist'.format(p_input))
 
     if p_tool not in TOOLS:
-       sys.exit('Defined {} not in the supported list of transformations!'.format(p_tool))
+       print('Defined {} not in the supported list of transformations!'.format(p_tool))
 
     try:
         with open(p_input, 'r') as in_file, open(p_output, 'a') as out_file, open(SUMMARY, 'a') as summary:
@@ -55,9 +55,9 @@ def transform(p_input, p_tool, p_output):
             out_file.close()
             summary.close()
     except IOError as error:
-        sys.exit(error)
+        print(error)
     except Exception as error:
-        sys.exit(error)
+        print(error)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="""Utility for transforming the results from apps to FusionInspector format""")
