@@ -3,3 +3,4 @@
 
 # Allowed files
 !environment.yml
+!tools
