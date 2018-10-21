@@ -4,11 +4,9 @@ channels:
   - conda-forge
   - biocore
 dependencies:
+  - python=2.7
   - fastqc=0.11.7
   - multiqc=1.6
-  # - gmap=2018.03.25
-  # - star=2.6.1a
-  # - trinity=2.6.6
   - conda-forge::r-data.table=1.11.4
   - conda-forge::r-gplots=3.0.1
   - bioconductor-edger=3.20.7
@@ -16,4 +14,3 @@ dependencies:
   - hmmer=3.2.1
   - pyyaml=3.13
   - numpy=1.15.2
-  - graphviz=2.38.0

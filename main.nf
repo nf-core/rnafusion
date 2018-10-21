@@ -113,8 +113,6 @@ if (params.star_fusion) {
             .ifEmpty { exit 1, "Stat-Fusion reference directory not found!" }
             .into { star_fusion_ref; fusion_inspector_ref }
     }
-} else {
-    star_fusion_ref = ''
 }
 
 if (params.fusioncatcher) {
@@ -221,6 +219,7 @@ ${summary.collect { k,v -> "            <dt>$k</dt><dd><samp>${v ?: '<span style
  */
 process star_fusion {
     tag "$name"
+    conda ''
     publishDir "${params.outdir}/Star_fusion", mode: 'copy'
 
     when:
@@ -237,6 +236,8 @@ process star_fusion {
     script:
     if (params.singleEnd) {
         """
+        #!/bin/bash
+        source activate star-fusion
         STAR-Fusion \\
         --genome_lib_dir ${reference} \\
         --left_fq ${reads[0]} \\
@@ -245,7 +246,8 @@ process star_fusion {
         """
     } else {
         """
-        conda activate star-fusion
+        #!/bin/bash
+        source activate star-fusion
         STAR-Fusion \\
         --genome_lib_dir ${reference} \\
         --left_fq ${reads[0]} \\
@@ -253,7 +255,216 @@ process star_fusion {
         --CPU  ${task.cpus} \\
         --output_dir .
         """
+    } 
+}
+
+/*
+ * Fusion Catcher
+ */
+process fusioncatcher {
+    tag "$name"
+    publishDir "${params.outdir}/Fusioncatcher", mode: 'copy'
+
+    when:
+    params.fusioncatcher
+
+    input:
+    set val(name), file(reads) from read_files_fusioncatcher
+    file data_dir from fusioncatcher_dir.collect()
+
+    output:
+    file 'final-list_candidate-fusion-genes.txt' into fusioncatcher_candidates
+    file '*.{txt,log,zip}' into fusioncatcher_output
+
+    script:
+    if (params.singleEnd) {
+        """
+        fusioncatcher \\
+        -d ${data_dir} \\
+        -i ${reads[0]} \\
+        --threads ${task.cpus} \\
+        -o . \\
+        --skip-blat \\
+        --single-end \\
+        ${params.fc_extra_options}
+        """
+    } else {
+        """
+        fusioncatcher \\
+        -d ${data_dir} \\
+        -i ${reads[0]},${reads[1]} \\
+        --threads ${task.cpus} \\
+        -o . \\
+        --skip-blat \\
+        ${params.fc_extra_options}
+        """
     }
+}
+
+/*
+ * Fusion Inspector preprocess
+ */
+process fusion_inspector_preprocess {
+    tag "$name"
+    publishDir "${params.outdir}/Transformers", mode: 'copy'
+
+    input:
+    file fc from fusioncatcher_candidates.ifEmpty('')
+    file sf from star_fusion_abridged.ifEmpty('')
+
+    output:
+    file 'fusions.txt' into fusions
+    file 'summary.yaml' into fusions_summary
+    
+    script:
+    """
+    transformer.py -i ${fc} -t fusioncatcher
+    transformer.py -i ${sf} -t star_fusion
+    """
+}
+
+/*
+ * Fusion Inspector
+ */
+process fusion_inspector {
+    tag "$name"
+    publishDir "${params.outdir}/FusionInspector", mode: 'copy'
+
+    when:
+    params.fusion_inspector
+
+    input:
+    set val(name), file(reads) from read_files_fusion_inspector
+    file reference from fusion_inspector_ref
+    file fusions
+
+    output:
+    file '*' into fusion_inspector_output
+
+    script:
+    """
+    #!/bin/bash
+    source activate fusion-inspector
+    FusionInspector \\
+        --fusions ${fusions} \\
+        --genome_lib ${reference} \\
+        --left_fq ${reads[0]} \\
+        --right_fq ${reads[1]} \\
+        --CPU ${task.cpus} \\
+        --out_dir . \\
+        --out_prefix finspector \\
+        --prep_for_IGV
+    """
+}
+
+/*************************************************************
+ * Building report
+ ************************************************************/
+
+/*
+ * Parse software version numbers
+ */
+process get_software_versions {
+
+    output:
+    file 'software_versions_mqc.yaml' into software_versions_yaml
+
+    script:
+    fusioncatcher = params.test ? 'echo NONE' : 'fusioncatcher --version'
+    """
+    #!/bin/bash
+    echo $workflow.manifest.version > v_pipeline.txt
+    echo $workflow.nextflow.version > v_nextflow.txt
+    fastqc --version > v_fastqc.txt
+    multiqc --version > v_multiqc.txt
+    $fusioncatcher > v_fusioncatcher.txt
+    source activate star-fusion && STAR-Fusion --version > v_star_fusion.txt
+    cat /tools/fusion-inspector/environment.yml | grep "-- fusion-inspector" > v_fusion_inspector.txt
+    scrape_software_versions.py > software_versions_mqc.yaml
+    """
+}
+
+/*
+ * FastQC
+ */
+process fastqc {
+    tag "$name"
+    publishDir "${params.outdir}/fastqc", mode: 'copy',
+        saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
+
+    input:
+    set val(name), file(reads) from read_files_fastqc
+
+    output:
+    file "*_fastqc.{zip,html}" into fastqc_results
+
+    script:
+    """
+    fastqc -q $reads
+    """
+}
+
+/*
+ * Fusion gene compare
+ * Builds MultiQC custom section
+ */
+process fusion_gene_compare {
+    publishDir "${params.outdir}/FusionGeneCompare", mode: 'copy'
+
+    input:
+    file fusions_summary
+
+    output:
+    file 'fusion_genes_mqc.yaml' into fusion_genes_mqc
+
+    script:
+    """
+    fusion_genes_compare.py -i ${fusions_summary} -s test_sample
+    """
+}
+
+/*
+ * MultiQC
+ */
+process multiqc {
+    publishDir "${params.outdir}/MultiQC", mode: 'copy'
+
+    input:
+    file multiqc_config
+    file ('fastqc/*') from fastqc_results.collect()
+    file ('software_versions/*') from software_versions_yaml
+    file workflow_summary from create_workflow_summary(summary)
+    file fusions_mq from fusion_genes_mqc.ifEmpty('')
+
+    output:
+    file "*multiqc_report.html" into multiqc_report
+    file "*_data"
+
+    script:
+    rtitle = custom_runName ? "--title \"$custom_runName\"" : ''
+    rfilename = custom_runName ? "--filename " + custom_runName.replaceAll('\\W','_').replaceAll('_+','_') + "_multiqc_report" : ''
+    """
+    multiqc -f $rtitle $rfilename --config $multiqc_config .
+    """
+}
+
+/*
+ * Output Description HTML
+ */
+process output_documentation {
+    tag "$prefix"
+    publishDir "${params.outdir}/Documentation", mode: 'copy'
+
+    input:
+    file output_docs
+
+    output:
+    file "results_description.html"
+
+    script:
+    """
+    markdown_to_html.r $output_docs results_description.html
+    """
 }
 
 /*

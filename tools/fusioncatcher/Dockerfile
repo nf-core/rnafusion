@@ -1,7 +1,7 @@
-FROM nfcore/base
+# FROM nfcore/base
 
-LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.proks@scilifelab.se" \
-    description="Docker image containing all requirements for NGI-RNAfusion pipeline"
+# LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.proks@scilifelab.se" \
+#     description="Docker image containing all requirements for NGI-RNAfusion pipeline"
 
 RUN apt-get -y update
 RUN apt-get -y install \
@@ -57,5 +57,5 @@ RUN mkdir fusioncatcher && cd fusioncatcher \
     && chmod +x blat \
     && rm bootstrap.py
 
-ENV PATH /usr/local/src/fusioncatcher/:${PATH}
 WORKDIR /
+ENV PATH /usr/local/src/fusioncatcher/:$PATH

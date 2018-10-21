@@ -15,6 +15,7 @@ RUN conda env create -f /tools/pizzly/environment.yml && conda clean -a
 RUN conda env create -f /tools/star-fusion/environment.yml && conda clean -a
 RUN conda env create -f /tools/top-hat/environment.yml && conda clean -a
 
+# fusioncatcher
 RUN apt-get -y update
 RUN apt-get -y install \
     automake \
@@ -69,6 +70,7 @@ RUN mkdir fusioncatcher && cd fusioncatcher \
     && chmod +x blat \
     && rm bootstrap.py
 
-ENV PATH /opt/conda/envs/nf-core-rnafusion-1.0dev/bin/:$PATH
-ENV PATH /usr/local/src/fusioncatcher/:$PATH
 WORKDIR /
+ENV PATH /usr/local/src/fusioncatcher/:$PATH
+
+ENV PATH /opt/conda/envs/nf-core-rnafusion-1.0dev/bin:$PATH
