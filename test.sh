@@ -3,10 +3,9 @@
 if [ $# -eq 0 ]
   then
     echo "No tool provided, testing default pipeline..."
-
     wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR612/006/SRR6129616/SRR6129616_1.fastq.gz -O ${TRAVIS_BUILD_DIR}/tests/test_1.fastq.gz
     wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR612/006/SRR6129616/SRR6129616_2.fastq.gz -O ${TRAVIS_BUILD_DIR}/tests/test_2.fastq.gz
-    nextflow run ${TRAVIS_BUILD_DIR} -profile test --reads "${TRAVIS_BUILD_DIR}/tests/test_{1,2}.fastq.gz" --genome --genome R64-1-1
+    nextflow run ${TRAVIS_BUILD_DIR} -profile test --reads "${TRAVIS_BUILD_DIR}/tests/test_{1,2}.fastq.gz" --genome R64-1-1
   else
     TOOL=$1
     if [ ! -d "./tools/$TOOL" ]; then
