@@ -33,7 +33,6 @@ def helpMessage() {
       --fusioncatcher               [bool] Run FusionCatcher. Default: False
         --fc_extra_options          Extra parameters for FusionCatcher. Can be found at https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md
       --fusion_inspector            [bool] Run Fusion-Inspectro. Default: False
-      --star_fusion                 [bool] Run Star-Fusion. Deafult: False
       --test                        [bool] Run in test mode
 
     References                      If not specified in the configuration file or you wish to overwrite any of the references.
@@ -113,6 +112,9 @@ if (params.star_fusion) {
             .ifEmpty { exit 1, "Stat-Fusion reference directory not found!" }
             .into { star_fusion_ref; fusion_inspector_ref }
     }
+} else {
+    star_fusion_ref = ''
+    fusion_inspector_ref = ''
 }
 
 if (params.fusioncatcher) {
@@ -236,8 +238,6 @@ process star_fusion {
     script:
     if (params.singleEnd) {
         """
-        #!/bin/bash
-        source activate star-fusion
         STAR-Fusion \\
         --genome_lib_dir ${reference} \\
         --left_fq ${reads[0]} \\
@@ -246,8 +246,6 @@ process star_fusion {
         """
     } else {
         """
-        #!/bin/bash
-        source activate star-fusion
         STAR-Fusion \\
         --genome_lib_dir ${reference} \\
         --left_fq ${reads[0]} \\
@@ -308,6 +306,9 @@ process fusion_inspector_preprocess {
     tag "$name"
     publishDir "${params.outdir}/Transformers", mode: 'copy'
 
+    when:
+    params.fusioncatcher || params.star_fusion
+
     input:
     file fc from fusioncatcher_candidates.ifEmpty('')
     file sf from star_fusion_abridged.ifEmpty('')
@@ -343,8 +344,6 @@ process fusion_inspector {
 
     script:
     """
-    #!/bin/bash
-    source activate fusion-inspector
     FusionInspector \\
         --fusions ${fusions} \\
         --genome_lib ${reference} \\
@@ -370,16 +369,17 @@ process get_software_versions {
     file 'software_versions_mqc.yaml' into software_versions_yaml
 
     script:
-    fusioncatcher = params.test ? 'echo NONE' : 'fusioncatcher --version'
+    /*
+        fusioncatcher = params.test ? 'echo NONE' : 'fusioncatcher --version'
+        $fusioncatcher > v_fusioncatcher.txt
+        STAR-Fusion --version > v_star_fusion.txt
+        cat /tools/fusion-inspector/environment.yml | grep "-- fusion-inspector" > v_fusion_inspector.txt
+    */
     """
-    #!/bin/bash
     echo $workflow.manifest.version > v_pipeline.txt
     echo $workflow.nextflow.version > v_nextflow.txt
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
-    $fusioncatcher > v_fusioncatcher.txt
-    source activate star-fusion && STAR-Fusion --version > v_star_fusion.txt
-    cat /tools/fusion-inspector/environment.yml | grep "-- fusion-inspector" > v_fusion_inspector.txt
     scrape_software_versions.py > software_versions_mqc.yaml
     """
 }

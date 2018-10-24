@@ -1,8 +1,9 @@
-# FROM nfcore/base
+FROM nfcore/base
 
-# LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.proks@scilifelab.se" \
-#     description="Docker image containing all requirements for NGI-RNAfusion pipeline"
+LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.proks@scilifelab.se" \
+    description="Docker image containing all requirements for NGI-RNAfusion pipeline"
 
+LABEL VERSION=1.00
 RUN apt-get -y update
 RUN apt-get -y install \
     automake \

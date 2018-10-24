@@ -2,6 +2,7 @@
 from __future__ import print_function
 from collections import OrderedDict
 import re
+import os
 
 regexes = {
     'nf-core/rnafusion': ['v_pipeline.txt', r"(\S+)"],
@@ -23,11 +24,12 @@ results['Fusion-Inspector'] = '<span style="color:#999999;\">N/A</span>'
 
 # Search each file using its regex
 for k, v in regexes.items():
-    with open(v[0]) as x:
-        versions = x.read()
-        match = re.search(v[1], versions)
-        if match:
-            results[k] = "v{}".format(match.group(1))
+    if os.path.exists(v[0]):
+        with open(v[0]) as x:
+            versions = x.read()
+            match = re.search(v[1], versions)
+            if match:
+                results[k] = "v{}".format(match.group(1))
 
 # Dump to YAML
 print ('''

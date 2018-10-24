@@ -29,7 +29,7 @@ def findings(p_yaml, p_sample):
         return
 
     # Counts per tool
-    tools = p_yaml.keys()
+    tools = list(p_yaml.keys())
     for tool in tools:
         if p_yaml[tool] == None:
             fusions[tool] = 0
