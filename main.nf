@@ -225,7 +225,7 @@ process star_fusion {
     publishDir "${params.outdir}/Star_fusion", mode: 'copy'
 
     when:
-    params.star_fusion
+    params.star_fusion || (params.star_fusion && params.test)
 
     input:
     set val(name), file(reads) from read_files_star_fusion
@@ -264,7 +264,7 @@ process fusioncatcher {
     publishDir "${params.outdir}/Fusioncatcher", mode: 'copy'
 
     when:
-    params.fusioncatcher
+    params.fusioncatcher || (params.fusioncatcher && params.test)
 
     input:
     set val(name), file(reads) from read_files_fusioncatcher
@@ -332,7 +332,7 @@ process fusion_inspector {
     publishDir "${params.outdir}/FusionInspector", mode: 'copy'
 
     when:
-    params.fusion_inspector
+    params.fusion_inspector || (params.fusion_inspector && params.test)
 
     input:
     set val(name), file(reads) from read_files_fusion_inspector
@@ -365,6 +365,9 @@ process fusion_inspector {
  */
 process get_software_versions {
 
+    when:
+    !params.test
+
     output:
     file 'software_versions_mqc.yaml' into software_versions_yaml
 
@@ -392,6 +395,9 @@ process fastqc {
     publishDir "${params.outdir}/fastqc", mode: 'copy',
         saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
 
+    when:
+    !params.test
+
     input:
     set val(name), file(reads) from read_files_fastqc
 
@@ -411,6 +417,9 @@ process fastqc {
 process fusion_gene_compare {
     publishDir "${params.outdir}/FusionGeneCompare", mode: 'copy'
 
+    when:
+    !params.test
+
     input:
     file fusions_summary
 
@@ -428,6 +437,9 @@ process fusion_gene_compare {
  */
 process multiqc {
     publishDir "${params.outdir}/MultiQC", mode: 'copy'
+
+    when:
+    !params.test
 
     input:
     file multiqc_config
@@ -454,6 +466,9 @@ process multiqc {
 process output_documentation {
     tag "$prefix"
     publishDir "${params.outdir}/Documentation", mode: 'copy'
+
+    when:
+    !params.test
 
     input:
     file output_docs
