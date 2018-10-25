@@ -29,7 +29,7 @@ install:
   # Install nf-core/tools
   - pip install nf-core
   # Reset
-  - mkdir ${TRAVIS_BUILD_DIR}/tests && cd ${TRAVIS_BUILD_DIR}/tests
+  - mkdir ${TRAVIS_BUILD_DIR}/tests && cd ${TRAVIS_BUILD_DIR}
 
 script:
   # Lint the pipeline code
