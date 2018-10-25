@@ -13,7 +13,7 @@ before_install:
   # - docker pull nfcore/rnafusion:dev
   # Fake the tag locally so that the pipeline runs properly
   # - docker tag nfcore/rnafusion:dev nfcore/rnafusion:latest
-  - docker pull nfcore/test-datasets:rnafusion
+  # - docker pull nfcore/test-datasets:rnafusion
   - docker pull mproksik/rnafusion:dev
   - docker tag mproksik/rnafusion:dev nfcore/rnafusion:latest
 
