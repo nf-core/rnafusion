@@ -14,11 +14,8 @@ if [ $# -eq 0 ]
     else
         cp ${TRAVIS_BUILD_DIR}/tools/$TOOL/* ${TRAVIS_BUILD_DIR}/tests/
         cd ${TRAVIS_BUILD_DIR}/tests && mv Dockerfile.test Dockerfile
-        ls -laF
         CONTAINER=test-$TOOL
-        echo $CONTAINER
         PROCESS=`echo $TOOL | sed 's/-/_/g'`
-        echo $PROCESS
         docker build -t $CONTAINER .
         docker run -v ${TRAVIS_BUILD_DIR}:${TRAVIS_BUILD_DIR} $CONTAINER nextflow run ${TRAVIS_BUILD_DIR} -profile test --reads "/test-data/test_{1,2}.fastq.gz" --genome R64-1-1 --$PROCESS --test
     fi

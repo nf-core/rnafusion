@@ -1,6 +1,6 @@
 FROM nfcore/test-datasets:rnafusion
 
-LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.proks@scilifelab.se" \\
+LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.proks@scilifelab.se" \
     description="Docker image containing all requirements for nfcore/rnafusion-test container"
 
 ENV USER travis-ci-test
