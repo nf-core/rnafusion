@@ -6,23 +6,14 @@ LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.
 ENV USER travis-ci-test
 
 COPY environment.yml /
-RUN conda env create -f /environment.yml && conda clean -a 2> /dev/null
+RUN conda env create -f /environment.yml && conda clean -a
 ENV PATH /opt/conda/envs/star-fusion/bin:$PATH
 
-# STAR-Fusion
-## perl lib installations
-RUN apt-get -y install make build-essential gcc 2> /dev/null
-RUN curl -L https://cpanmin.us | perl - App::cpanminus
-RUN cpanm install Set::IntervalTree \\
-    DB_File::DB_Database \\
-    URI::Escape \\
-    Set::IntervalTree \\
-    Carp::Assert \\
-    JSON::XS.pm \\
-    PerlIO::gzip
 WORKDIR /data/
+RUN conda install -c bioconda hmmer
 RUN hmmpress Pfam-A.hmm 
 RUN sed -i -e 's/my $CPU = 4;/my $CPU = 2;/' /opt/conda/envs/star-fusion/lib/STAR-Fusion/FusionFilter/prep_genome_lib.pl
+RUN ln -s /lib/x86_64-linux-gnu/libcrypt.so.1 /lib/x86_64-linux-gnu/libcrypto.so.1.0.0
 RUN prep_genome_lib.pl --genome_fa genome.fa --gtf annotation.gtf --pfarm_db Pfam-A.hmm 2> /dev/null
 
 # Install nextflow
