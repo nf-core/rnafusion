@@ -15,8 +15,8 @@ if [ $# -eq 0 ]
         cp ${TRAVIS_BUILD_DIR}/tools/$TOOL/* ${TRAVIS_BUILD_DIR}/tests/
         cd ${TRAVIS_BUILD_DIR}/tests && mv Dockerfile.test Dockerfile
         CONTAINER=test-$TOOL
-        PROCESS="--${TOOL//-/_}"
+        PROCESS=${TOOL//-/_}
         docker build -t $CONTAINER .
-        docker run -v ${TRAVIS_BUILD_DIR}:${TRAVIS_BUILD_DIR} $CONTAINER nextflow run ${TRAVIS_BUILD_DIR} -profile test --reads "/test-data/test_{1,2}.fastq.gz" --genome R64-1-1 $PROCESS --test
+        docker run -v ${TRAVIS_BUILD_DIR}:${TRAVIS_BUILD_DIR} $CONTAINER nextflow run ${TRAVIS_BUILD_DIR} -profile test --reads "/test-data/test_{1,2}.fastq.gz" --genome R64-1-1 --$PROCESS --test
     fi
 fi
