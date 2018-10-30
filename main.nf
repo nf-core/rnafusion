@@ -305,10 +305,10 @@ process fusioncatcher {
 process fusion_inspector_preprocess {
     tag "$name"
     publishDir "${params.outdir}/Transformers", mode: 'copy'
-
+ 
     when:
     params.fusioncatcher || params.star_fusion
-
+    
     input:
     file fc from fusioncatcher_candidates.ifEmpty('')
     file sf from star_fusion_abridged.ifEmpty('')
