@@ -307,7 +307,7 @@ process fusion_inspector_preprocess {
     publishDir "${params.outdir}/Transformers", mode: 'copy'
  
     when:
-    params.fusioncatcher || params.star_fusion
+    !params.test && (params.fusioncatcher || params.star_fusion)
     
     input:
     file fc from fusioncatcher_candidates.ifEmpty('')
