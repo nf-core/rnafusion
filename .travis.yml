@@ -9,12 +9,9 @@ matrix:
 before_install:
   # PRs made to 'master' branch should always orginate from another repo or the 'dev' branch
   - '[ $TRAVIS_PULL_REQUEST = "false" ] || [ $TRAVIS_BRANCH != "master" ] || ([ $TRAVIS_PULL_REQUEST_SLUG = $TRAVIS_REPO_SLUG ] && [ $TRAVIS_PULL_REQUEST_BRANCH = "dev" ])'
-  # Pull the docker image first so the test doesn't wait for this
-  # - docker pull nfcore/rnafusion:dev
-  # Fake the tag locally so that the pipeline runs properly
-  # - docker tag nfcore/rnafusion:dev nfcore/rnafusion:latest
+  - if [[ $TRAVIS_BRANCH == "dev" ]]; then docker pull nfcore/rnafusion:dev && docker tag nfcore/rnafusion:dev nfcore/rnafusion:latest; fi
+  - if [[ $TRAVIS_BRANCH == "master" ]]; then docker pull nfcore/rnafusion && docker tag nfcore/rnafusion nfcore/rnafusion:latest; fi
   - docker pull nfcore/test-datasets:rnafusion
-  - docker pull mproksik/rnafusion:dev
 
 env:
   - NXF_VER='0.32.0' # Specify a minimum NF version that should be tested and work
@@ -32,7 +29,7 @@ install:
 
 script:
   # Lint the pipeline code
-  # - nf-core lint ${TRAVIS_BUILD_DIR}
+  - nf-core lint ${TRAVIS_BUILD_DIR}
   # Test pipeline
   - sh test.sh
-  - travis_wait 30 sh test.sh star-fusion
+  # - travis_wait 30 sh test.sh star-fusion
