@@ -12,6 +12,9 @@ if [ $# -eq 0 ]
         echo "The tool doesn't exist"
         exit 1
     else
+        if [ ! -d ${TRAVIS_BUILD_DIR}/tests ]; then
+            mkdir ${TRAVIS_BUILD_DIR}/tests
+        fi
         cp ${TRAVIS_BUILD_DIR}/tools/$TOOL/* ${TRAVIS_BUILD_DIR}/tests/
         cd ${TRAVIS_BUILD_DIR}/tests && mv Dockerfile.test Dockerfile
         CONTAINER=test-$TOOL

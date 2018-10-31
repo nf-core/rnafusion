@@ -107,14 +107,12 @@ if (params.star_fusion) {
     if (!params.star_fusion_ref) {
         exit 1, "Star-Fusion reference not specified!"
     } else {
-        Channel
+        star_fusion_ref = Channel
             .fromPath(params.star_fusion_ref)
             .ifEmpty { exit 1, "Stat-Fusion reference directory not found!" }
-            .into { star_fusion_ref; fusion_inspector_ref }
     }
 } else {
     star_fusion_ref = ''
-    fusion_inspector_ref = ''
 }
 
 if (params.fusioncatcher) {
@@ -128,6 +126,19 @@ if (params.fusioncatcher) {
 } else {
     fusioncatcher_dir = ''
 }
+
+if (params.fusion_inspector) {
+    if (!params.star_fusion_ref) {
+        exit 1, "Reference not specified (using star-fusion reference path)!"
+    } else {
+        fusion_inspector_ref = Channel
+            .fromPath(params.star_fusion_ref)
+            .ifEmpty { exit 1, "Fusion-Inspector reference not found" }
+    }
+} else {
+    fusion_inspector_ref = ''    
+}
+
 
 /*
  * Create a channel for input read files
@@ -327,6 +338,9 @@ process fusion_inspector_preprocess {
 /*
  * Fusion Inspector
  */
+if (params.test) {
+    fusions = Channel.fromPath("$baseDir/tools/fusion-inspector/fusions.txt")
+}
 process fusion_inspector {
     tag "$name"
     publishDir "${params.outdir}/FusionInspector", mode: 'copy'
@@ -336,7 +350,7 @@ process fusion_inspector {
 
     input:
     set val(name), file(reads) from read_files_fusion_inspector
-    file reference from fusion_inspector_ref
+    file reference from fusion_inspector_ref.collect()
     file fusions
 
     output:
