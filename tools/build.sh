@@ -1,5 +1,6 @@
 #!/bin/bash
 
+VERSION="$(cat ../nextflow.config | grep "version" | cut -d"=" -f2 | tr -d "\'" | tr -d " ")"
 if [ $# -eq 0 ]; then
     echo "No tool name specified!"
     exit 1
@@ -10,10 +11,8 @@ else
         echo "The tool doesn't exist"
         exit 1
     else
-        VERSION=$(grep $(head -1 $TOOL_PATH/environment.yml | cut -d' ' -f2)'=' $TOOL_PATH/environment.yml | cut -d'=' -f2)
         CONTAINER_NAME=nfcore/rnafusion:${TOOL}_v${VERSION}
-        docker build $TOOL_PATH -t $TOOL
-        docker tag $TOOL $CONTAINER_NAME
-        docker push $CONTAINER_NAME
+        docker build $TOOL_PATH -t $CONTAINER_NAME
+        # docker push $CONTAINER_NAME
     fi
 fi

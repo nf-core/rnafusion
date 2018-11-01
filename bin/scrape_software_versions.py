@@ -9,9 +9,10 @@ regexes = {
     'Nextflow': ['v_nextflow.txt', r"(\S+)"],
     'FastQC': ['v_fastqc.txt', r"FastQC v(\S+)"],
     'MultiQC': ['v_multiqc.txt', r"multiqc, version (\S+)"],
-    'STAR-Fusion': ['v_star_fusion.txt', r"STAR-Fusion version: (\S+)"],
-    'FusionCatcher': ['v_fusioncatcher.txt', r"fusioncatcher.py (\S+)"],
-    'Fusion-Inspector': ['v_fusion_inspector.txt', r"=(\S+)"]
+    'STAR-Fusion': ['v_star_fusion.txt', r"=(\S+)"],
+    'FusionCatcher': ['v_fusioncatcher.txt', r"\"(.*?)\""],
+    'Fusion-Inspector': ['v_fusion_inspector.txt', r"=(\S+)"],
+    'EricScript': ['v_ericscript.txt', r"=(\S+)"]
 }
 results = OrderedDict()
 results['nf-core/rnafusion'] = '<span style="color:#999999;\">N/A</span>'
@@ -21,6 +22,7 @@ results['MultiQC'] = '<span style="color:#999999;\">N/A</span>'
 results['STAR-Fusion'] = '<span style="color:#999999;\">N/A</span>'
 results['FusionCatcher'] = '<span style="color:#999999;\">N/A</span>'
 results['Fusion-Inspector'] = '<span style="color:#999999;\">N/A</span>'
+results['EricScript'] = '<span style="color:#999999;\">N/A</span>'
 
 # Search each file using its regex
 for k, v in regexes.items():

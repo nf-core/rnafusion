@@ -3,7 +3,7 @@ FROM nfcore/base
 LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.proks@scilifelab.se" \
     description="Docker image containing all requirements for NGI-RNAfusion pipeline"
 
-LABEL VERSION=1.00
+LABEL VERSION="1.00 (045a8af)"
 RUN apt-get -y update
 RUN apt-get -y install \
     automake \
@@ -17,6 +17,7 @@ RUN apt-get -y install \
     gawk \
     gcc \
     gzip \
+    libc6-dev \
     libdb-dev \
     libncurses5-dev \
     libtbb-dev \
@@ -52,7 +53,7 @@ WORKDIR /usr/local/src
 
 RUN pip install numpy biopython xlrd openpyxl
 RUN mkdir fusioncatcher && cd fusioncatcher \
-    && wget http://sf.net/projects/fusioncatcher/files/bootstrap.py -O bootstrap.py \
+    && wget https://raw.githubusercontent.com/ndaniel/fusioncatcher/045a8af2a8b8e8f3fddd6bfcaf1bd1064cf2cc15/bin/bootstrap.py -O bootstrap.py \
     && wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/blat -O blat \
     && python bootstrap.py -t -y \
     && chmod +x blat \

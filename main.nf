@@ -232,7 +232,6 @@ ${summary.collect { k,v -> "            <dt>$k</dt><dd><samp>${v ?: '<span style
  */
 process star_fusion {
     tag "$name"
-    conda ''
     publishDir "${params.outdir}/Star_fusion", mode: 'copy'
 
     when:
@@ -386,17 +385,15 @@ process get_software_versions {
     file 'software_versions_mqc.yaml' into software_versions_yaml
 
     script:
-    /*
-        fusioncatcher = params.test ? 'echo NONE' : 'fusioncatcher --version'
-        $fusioncatcher > v_fusioncatcher.txt
-        STAR-Fusion --version > v_star_fusion.txt
-        cat /tools/fusion-inspector/environment.yml | grep "-- fusion-inspector" > v_fusion_inspector.txt
-    */
     """
     echo $workflow.manifest.version > v_pipeline.txt
     echo $workflow.nextflow.version > v_nextflow.txt
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
+    cat $baseDir/tools/fusioncatcher/Dockerfile | grep "VERSION" > v_fusioncatcher.txt
+    cat $baseDir/tools/fusion-inspector/environment.yml | grep "fusion-inspector" > v_fusion_inspector.txt
+    cat $baseDir/tools/star-fusion/environment.yml | grep "star-fusion" > v_star_fusion.txt
+    cat $baseDir/tools/ericscript/environment.yml | grep "ericscript" > v_ericscript.txt
     scrape_software_versions.py > software_versions_mqc.yaml
     """
 }
