@@ -10,6 +10,17 @@ TOOLS = ['star_fusion' ,'fusioncatcher']
 SUMMARY = 'summary.yaml'
 OUTPUT = 'fusions.txt'
 
+def save(p_output, p_fusions):
+    old = p_output.read().split('\n')
+    new = p_fusions.split('\n')
+    unique_fusions = set().union(old, new)
+    unique_fusions = '\n'.join(unique_fusions).lstrip()
+    # clear file
+    p_output.seek(0)
+    p_output.truncate()
+    # write fusions
+    p_output.write(unique_fusions)
+
 def fi_format(p_gene1, p_gene2):
     return '{}--{}\n'.format(p_gene1, p_gene2)
 
@@ -34,24 +45,34 @@ def fusioncatcher(p_file):
 def transform(p_input, p_tool, p_output):
     if not os.path.exists(p_input):
         print('Defined {} doesn\'t exist'.format(p_input))
+    
+    if not os.path.exists(OUTPUT):
+        with open(OUTPUT, 'w'): pass
 
     if p_tool not in TOOLS:
        print('Defined {} not in the supported list of transformations!'.format(p_tool))
 
     try:
-        with open(p_input, 'r') as in_file, open(p_output, 'a') as out_file, open(SUMMARY, 'a') as summary:
+        fusions = ''
+        with open(p_input, 'r') as in_file:
             func = getattr(sys.modules[__name__], p_tool)   # get function from parameter
             fusions = func(in_file).rstrip()  # call function
+            in_file.close()    
+
+        with open(p_output, 'r+') as out_file, open(SUMMARY, 'a') as summary:
             if len(fusions) > 0:
-                out_file.write(fusions + '\n')
+                save(out_file, fusions)
                 
                 summary_data = [x.split('--') for x in fusions.split('\n')]
-                summary.write(dump({p_tool : dict((k,v) for k,v in summary_data)}, default_flow_style=False, allow_unicode=True))
+                summary.write(dump(
+                    {
+                        p_tool : dict((left_gene,right_gene) for left_gene,right_gene in summary_data)
+                    }, 
+                    default_flow_style=False, allow_unicode=True
+                ))
             else:
                 summary.write(dump({p_tool: None}, default_flow_style=False, allow_unicode=True))
             
-            # closing files
-            in_file.close()
             out_file.close()
             summary.close()
     except IOError as error:

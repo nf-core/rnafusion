@@ -33,7 +33,6 @@ def helpMessage() {
       --fusioncatcher               [bool] Run FusionCatcher. Default: False
         --fc_extra_options          Extra parameters for FusionCatcher. Can be found at https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md
       --fusion_inspector            [bool] Run Fusion-Inspectro. Default: False
-      --star_fusion                 [bool] Run Star-Fusion. Deafult: False
       --test                        [bool] Run in test mode
 
     References                      If not specified in the configuration file or you wish to overwrite any of the references.
@@ -108,11 +107,12 @@ if (params.star_fusion) {
     if (!params.star_fusion_ref) {
         exit 1, "Star-Fusion reference not specified!"
     } else {
-        Channel
+        star_fusion_ref = Channel
             .fromPath(params.star_fusion_ref)
             .ifEmpty { exit 1, "Stat-Fusion reference directory not found!" }
-            .into { star_fusion_ref; fusion_inspector_ref }
     }
+} else {
+    star_fusion_ref = ''
 }
 
 if (params.fusioncatcher) {
@@ -126,6 +126,19 @@ if (params.fusioncatcher) {
 } else {
     fusioncatcher_dir = ''
 }
+
+if (params.fusion_inspector) {
+    if (!params.star_fusion_ref) {
+        exit 1, "Reference not specified (using star-fusion reference path)!"
+    } else {
+        fusion_inspector_ref = Channel
+            .fromPath(params.star_fusion_ref)
+            .ifEmpty { exit 1, "Fusion-Inspector reference not found" }
+    }
+} else {
+    fusion_inspector_ref = ''    
+}
+
 
 /*
  * Create a channel for input read files
@@ -222,7 +235,7 @@ process star_fusion {
     publishDir "${params.outdir}/Star_fusion", mode: 'copy'
 
     when:
-    params.star_fusion
+    params.star_fusion || (params.star_fusion && params.test)
 
     input:
     set val(name), file(reads) from read_files_star_fusion
@@ -261,7 +274,7 @@ process fusioncatcher {
     publishDir "${params.outdir}/Fusioncatcher", mode: 'copy'
 
     when:
-    params.fusioncatcher
+    params.fusioncatcher || (params.fusioncatcher && params.test)
 
     input:
     set val(name), file(reads) from read_files_fusioncatcher
@@ -302,7 +315,10 @@ process fusioncatcher {
 process fusion_inspector_preprocess {
     tag "$name"
     publishDir "${params.outdir}/Transformers", mode: 'copy'
-
+ 
+    when:
+    !params.test && (params.fusioncatcher || params.star_fusion)
+    
     input:
     file fc from fusioncatcher_candidates.ifEmpty('')
     file sf from star_fusion_abridged.ifEmpty('')
@@ -321,16 +337,19 @@ process fusion_inspector_preprocess {
 /*
  * Fusion Inspector
  */
+if (params.test) {
+    fusions = Channel.fromPath("$baseDir/tools/fusion-inspector/fusions.txt")
+}
 process fusion_inspector {
     tag "$name"
     publishDir "${params.outdir}/FusionInspector", mode: 'copy'
 
     when:
-    params.fusion_inspector
+    params.fusion_inspector || (params.fusion_inspector && params.test)
 
     input:
     set val(name), file(reads) from read_files_fusion_inspector
-    file reference from fusion_inspector_ref
+    file reference from fusion_inspector_ref.collect()
     file fusions
 
     output:
@@ -359,19 +378,22 @@ process fusion_inspector {
  */
 process get_software_versions {
 
+    when:
+    !params.test
+
     output:
     file 'software_versions_mqc.yaml' into software_versions_yaml
 
     script:
-    fusioncatcher = params.test ? 'echo NONE &> v_fusioncatcher.txt' : 'fusioncatcher --version &> v_fusioncatcher.txt'
     """
     echo $workflow.manifest.version > v_pipeline.txt
     echo $workflow.nextflow.version > v_nextflow.txt
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
-    STAR-Fusion --version > v_star_fusion.txt
-    ${fusioncatcher}
-    cat /environment.yml | grep "fusion-inspector" > v_fusion_inspector.txt
+    cat $baseDir/tools/fusioncatcher/Dockerfile | grep "VERSION" > v_fusioncatcher.txt
+    cat $baseDir/tools/fusion-inspector/environment.yml | grep "fusion-inspector" > v_fusion_inspector.txt
+    cat $baseDir/tools/star-fusion/environment.yml | grep "star-fusion" > v_star_fusion.txt
+    cat $baseDir/tools/ericscript/environment.yml | grep "ericscript" > v_ericscript.txt
     scrape_software_versions.py > software_versions_mqc.yaml
     """
 }
@@ -383,6 +405,9 @@ process fastqc {
     tag "$name"
     publishDir "${params.outdir}/fastqc", mode: 'copy',
         saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
+
+    when:
+    !params.test
 
     input:
     set val(name), file(reads) from read_files_fastqc
@@ -403,6 +428,9 @@ process fastqc {
 process fusion_gene_compare {
     publishDir "${params.outdir}/FusionGeneCompare", mode: 'copy'
 
+    when:
+    !params.test
+
     input:
     file fusions_summary
 
@@ -420,6 +448,9 @@ process fusion_gene_compare {
  */
 process multiqc {
     publishDir "${params.outdir}/MultiQC", mode: 'copy'
+
+    when:
+    !params.test
 
     input:
     file multiqc_config
@@ -446,6 +477,9 @@ process multiqc {
 process output_documentation {
     tag "$prefix"
     publishDir "${params.outdir}/Documentation", mode: 'copy'
+
+    when:
+    !params.test
 
     input:
     file output_docs
