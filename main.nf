@@ -33,6 +33,7 @@ def helpMessage() {
       --fusioncatcher               [bool] Run FusionCatcher. Default: False
         --fc_extra_options          Extra parameters for FusionCatcher. Can be found at https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md
       --fusion_inspector            [bool] Run Fusion-Inspectro. Default: False
+      --ericscript                  [bool] Run Ericscript. Default: False
       --test                        [bool] Run in test mode
 
     References                      If not specified in the configuration file or you wish to overwrite any of the references.
@@ -42,9 +43,6 @@ def helpMessage() {
       --outdir                      The output directory where the results will be saved
       --email                       Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits
       -name                         Name for the pipeline run. If not specified, Nextflow will automatically generate a random mnemonic.
-
-    QC options:
-      --skip_qc                     Skip all QC including MultiQC
 
     AWSBatch options:
       --awsqueue                    The AWSBatch JobQueue that needs to be set when running on AWSBatch
@@ -139,6 +137,17 @@ if (params.fusion_inspector) {
     fusion_inspector_ref = ''    
 }
 
+if (params.ericscript) {
+    if (!params.ericscript_ref) {
+        exit 1, "Reference not specified!"
+    } else {
+        ericscript_ref = Channel
+            .fromPath(params.ericscript_ref)
+            .ifEmpty { exit 1, "Ericscript reference not found" }
+    }
+} else {
+    ericscript_ref = ''
+}
 
 /*
  * Create a channel for input read files
@@ -149,19 +158,19 @@ if (params.fusion_inspector) {
              .from(params.readPaths)
              .map { row -> [ row[0], [file(row[1][0])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; read_files_fusion_inspector }
+             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; read_files_fusion_inspector; read_files_ericscript }
      } else {
          Channel
              .from(params.readPaths)
              .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; read_files_fusion_inspector }
+             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; read_files_fusion_inspector; read_files_ericscript }
      }
  } else {
      Channel
          .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
          .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
-         .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; read_files_fusion_inspector }
+         .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; read_files_fusion_inspector; read_files_ericscript }
  }
 
 
@@ -310,6 +319,35 @@ process fusioncatcher {
 }
 
 /*
+ * Ericscript
+ */
+process ericscript {
+    tag "$name"
+    publishDir "${params.outdir}/Ericscript", mode: 'copy'
+
+    when:
+    params.ericscript || (params.ericscript && params.test)
+
+    input:
+    set val(name), file(reads) from read_files_ericscript
+    file reference from ericscript_ref.collect()
+
+    output:
+    file 'fusion.results.total.tsv' into ericscript_fusion_total
+    file 'fusion.results.filtered.tsv' into ericscript_fusion_filtered
+
+    script:
+    """
+    ericscript.pl \\
+    -db ${reference} \\
+    -name fusion \\
+    -o ./tmp \\
+    ${reads[0]} \\
+    ${reads[1]}
+    """
+}
+
+/*
  * Fusion Inspector preprocess
  */
 process fusion_inspector_preprocess {
@@ -320,8 +358,9 @@ process fusion_inspector_preprocess {
     !params.test && (params.fusioncatcher || params.star_fusion)
     
     input:
-    file fc from fusioncatcher_candidates.ifEmpty('')
-    file sf from star_fusion_abridged.ifEmpty('')
+    file fusioncatcher from fusioncatcher_candidates.ifEmpty('')
+    file star_fusion from star_fusion_abridged.ifEmpty('')
+    file ericscript from ericscript_fusion_total.ifEmpty('')
 
     output:
     file 'fusions.txt' into fusions
@@ -329,8 +368,9 @@ process fusion_inspector_preprocess {
     
     script:
     """
-    transformer.py -i ${fc} -t fusioncatcher
-    transformer.py -i ${sf} -t star_fusion
+    transformer.py -i ${fusioncatcher} -t fusioncatcher
+    transformer.py -i ${star_fusion} -t star_fusion
+    transformer.py -i ${ericscript} -t ericscript
     """
 }
 

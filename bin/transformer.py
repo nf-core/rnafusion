@@ -24,6 +24,15 @@ def save(p_output, p_fusions):
 def fi_format(p_gene1, p_gene2):
     return '{}--{}\n'.format(p_gene1, p_gene2)
 
+def ericscript(p_file):
+    fusions = ''
+    next(p_file)    # skip header
+    for line in p_file:
+        tmp = line.split('\t')
+        fusions += fi_format(tmp[0], tmp[1])
+    
+    return fusions
+
 def star_fusion(p_file):
     fusions = ''
     next(p_file)    #skip header
