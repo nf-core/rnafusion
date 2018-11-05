@@ -333,8 +333,7 @@ process ericscript {
     file reference from ericscript_ref.collect()
 
     output:
-    file 'fusion.results.total.tsv' into ericscript_fusion_total
-    file 'fusion.results.filtered.tsv' into ericscript_fusion_filtered
+    file './tmp/fusion.results.total.tsv' into ericscript_fusion_total
 
     script:
     """
@@ -355,7 +354,7 @@ process fusion_inspector_preprocess {
     publishDir "${params.outdir}/Transformers", mode: 'copy'
  
     when:
-    !params.test && (params.fusioncatcher || params.star_fusion)
+    !params.test && (params.fusioncatcher || params.star_fusion || params.ericscript)
     
     input:
     file fusioncatcher from fusioncatcher_candidates.ifEmpty('')
