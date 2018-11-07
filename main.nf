@@ -34,6 +34,7 @@ def helpMessage() {
         --fc_extra_options          Extra parameters for FusionCatcher. Can be found at https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md
       --fusion_inspector            [bool] Run Fusion-Inspectro. Default: False
       --ericscript                  [bool] Run Ericscript. Default: False
+      --pizzly                      [Bool] Run Pizzly. Default: False
       --test                        [bool] Run in test mode
 
     References                      If not specified in the configuration file or you wish to overwrite any of the references.
@@ -63,7 +64,8 @@ if (params.help){
 // Configurable variables
 params.name = false
 params.test = false
-params.fasta = 'None'
+params.fasta = params.genome ? params.genomes[ params.genome ].fasta ?: false : false
+params.gtf = params.genome ? params.genomes[ params.genome ].gtf ?: false : false
 params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
 params.email = false
 params.plaintext_email = false
@@ -71,6 +73,8 @@ params.star_fusion = false
 params.fusioncatcher = false
 params.fc_extra_options = ''
 params.fusion_inspector = false
+params.ericscript = false
+params.pizzly = false
 
 
 multiqc_config = file(params.multiqc_config)
@@ -99,6 +103,16 @@ if( workflow.profile == 'awsbatch') {
 // These variable have to be defined in the profile configuration which is referenced in nextflow.config
 if (!params.genome) {
     exit 1, "Mandatory parameter genome not specified!"    
+}
+
+if (params.fasta) {
+    fasta = file(params.fasta)
+    if(!fasta.exists()) exit 1, "Fasta file not found: ${params.fasta}"
+}
+
+if (params.gtf) {
+    gtf = file(params.gtf)
+    if(!gtf.exists()) exit 1, "GTF file not found: ${params.fasta}"
 }
 
 if (params.star_fusion) {
@@ -149,6 +163,22 @@ if (params.ericscript) {
     ericscript_ref = ''
 }
 
+if (params.pizzly) {
+    if (!params.pizzly_ref) {
+        exit 1, "No pizzly reference folder defined"
+    } else {
+        pizzly_fasta = Channel
+            .fromPath("$params.pizzly_ref/Homo_sapiens.GRCh38.cdna.all.fa.gz")
+            .ifEmpty { exit 1, "FASTA file not found!" }
+        pizzly_gtf = Channel
+            .fromPath("$params.pizzly_ref/Homo_sapiens.GRCh38.94.gtf")
+            .ifEmpty { exit 1, "GTF file not found!" }
+    }
+} else {
+    pizzly_fasta = ''
+    pizzly_gtf = ''
+}
+
 /*
  * Create a channel for input read files
  */
@@ -158,19 +188,22 @@ if (params.ericscript) {
              .from(params.readPaths)
              .map { row -> [ row[0], [file(row[1][0])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; read_files_fusion_inspector; read_files_ericscript }
+             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; 
+                     read_files_fusion_inspector; read_files_ericscript; read_files_pizzly }
      } else {
          Channel
              .from(params.readPaths)
              .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; read_files_fusion_inspector; read_files_ericscript }
+             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; 
+                     read_files_fusion_inspector; read_files_ericscript; read_files_pizzly }
      }
  } else {
      Channel
          .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
          .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
-         .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; read_files_fusion_inspector; read_files_ericscript }
+         .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; 
+                     read_files_fusion_inspector; read_files_ericscript; read_files_pizzly }
  }
 
 
@@ -347,6 +380,39 @@ process ericscript {
 }
 
 /*
+ * Pizzly
+ */
+process pizzly {
+    tag "$name"
+    publishDir "${params.outdir}/Pizzly", mode: 'copy'
+
+    when:
+    params.pizzly || (params.pizzly && params.test)
+
+    input:
+    set val(name), file(reads) from read_files_pizzly
+    file fasta from pizzly_fasta.collect()
+    file gtf from pizzly_gtf.collect()
+    
+    output:
+    file 'final.unfiltered.json' into pizzly_fusion_unfiltered
+    file '*.{json,txt}' into pizzly_fusion_total
+
+    script:
+    """
+    kallisto index -i index.idx -k 31 ${fasta}
+    kallisto quant -i index.idx --fusion -o output ${reads[0]} ${reads[1]}
+    pizzly -k 31 \\
+        --gtf ${gtf} \\
+        --cache index.cache.txt \\
+        --align-score 2 \\
+        --insert-size 400 \\
+        --fasta ${fasta} \\
+        --output final output/fusion.txt
+    """
+}
+
+/*
  * Fusion Inspector preprocess
  */
 process fusion_inspector_preprocess {
@@ -354,12 +420,13 @@ process fusion_inspector_preprocess {
     publishDir "${params.outdir}/Transformers", mode: 'copy'
  
     when:
-    !params.test && (params.fusioncatcher || params.star_fusion || params.ericscript)
+    !params.test && (params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly)
     
     input:
     file fusioncatcher from fusioncatcher_candidates.ifEmpty('')
     file star_fusion from star_fusion_abridged.ifEmpty('')
     file ericscript from ericscript_fusion_total.ifEmpty('')
+    file pizzly from pizzly_fusion_unfiltered.ifEmpty('')
 
     output:
     file 'fusions.txt' into fusions
@@ -370,6 +437,7 @@ process fusion_inspector_preprocess {
     transformer.py -i ${fusioncatcher} -t fusioncatcher
     transformer.py -i ${star_fusion} -t star_fusion
     transformer.py -i ${ericscript} -t ericscript
+    transformer.py -i ${pizzly} -t pizzly
     """
 }
 
@@ -433,6 +501,7 @@ process get_software_versions {
     cat $baseDir/tools/fusion-inspector/environment.yml | grep "fusion-inspector" > v_fusion_inspector.txt
     cat $baseDir/tools/star-fusion/environment.yml | grep "star-fusion" > v_star_fusion.txt
     cat $baseDir/tools/ericscript/environment.yml | grep "ericscript" > v_ericscript.txt
+    cat $baseDir/tools/pizzly/environment.yml | grep "pizzly" > v_pizzly.txt
     scrape_software_versions.py > software_versions_mqc.yaml
     """
 }

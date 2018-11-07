@@ -5,8 +5,9 @@ from yaml import dump
 import argparse
 import os.path
 import sys
+import json
 
-TOOLS = ['star_fusion' ,'fusioncatcher']
+TOOLS = ['star_fusion' ,'fusioncatcher', 'ericscript', 'pizzly']
 SUMMARY = 'summary.yaml'
 OUTPUT = 'fusions.txt'
 
@@ -23,6 +24,14 @@ def save(p_output, p_fusions):
 
 def fi_format(p_gene1, p_gene2):
     return '{}--{}\n'.format(p_gene1, p_gene2)
+
+def pizzly(p_file):
+    fusions = ''
+    data = json.load(p_file)
+    for item in data['genes']:
+        fusions += fi_format(item['geneA']['name'], item['geneB']['name'])
+    
+    return fusions
 
 def ericscript(p_file):
     fusions = ''
