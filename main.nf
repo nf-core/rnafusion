@@ -35,6 +35,7 @@ def helpMessage() {
       --fusion_inspector            [bool] Run Fusion-Inspectro. Default: False
       --ericscript                  [bool] Run Ericscript. Default: False
       --pizzly                      [Bool] Run Pizzly. Default: False
+      --squid                       [Bool] Run Squid. Default: False
       --test                        [bool] Run in test mode
 
     References                      If not specified in the configuration file or you wish to overwrite any of the references.
@@ -66,6 +67,7 @@ params.name = false
 params.test = false
 params.fasta = params.genome ? params.genomes[ params.genome ].fasta ?: false : false
 params.gtf = params.genome ? params.genomes[ params.genome ].gtf ?: false : false
+params.star_index = params.genome ? params.genomes[ params.genome ].star ?: false : false
 params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
 params.email = false
 params.plaintext_email = false
@@ -75,6 +77,7 @@ params.fc_extra_options = ''
 params.fusion_inspector = false
 params.ericscript = false
 params.pizzly = false
+params.squid = false
 
 
 multiqc_config = file(params.multiqc_config)
@@ -113,6 +116,12 @@ if (params.fasta) {
 if (params.gtf) {
     gtf = file(params.gtf)
     if(!gtf.exists()) exit 1, "GTF file not found: ${params.fasta}"
+}
+
+if(params.star_index){
+    star_index = Channel
+        .fromPath(params.star_index)
+        .ifEmpty { exit 1, "STAR index not found: ${params.star_index}" }
 }
 
 if (params.star_fusion) {
@@ -189,21 +198,21 @@ if (params.pizzly) {
              .map { row -> [ row[0], [file(row[1][0])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
              .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; 
-                     read_files_fusion_inspector; read_files_ericscript; read_files_pizzly }
+                     read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
      } else {
          Channel
              .from(params.readPaths)
              .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
              .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; 
-                     read_files_fusion_inspector; read_files_ericscript; read_files_pizzly }
+                     read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
      }
  } else {
      Channel
          .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
          .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
          .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; 
-                     read_files_fusion_inspector; read_files_ericscript; read_files_pizzly }
+                     read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
  }
 
 
@@ -413,6 +422,42 @@ process pizzly {
 }
 
 /*
+ * Squid
+ */
+process squid {
+    tag "$name"
+    publishDir "${params.outdir}/Squid", mode: 'copy'
+
+    when:
+    params.squid || (params.squid && params.test)
+
+    input:
+    set val(name), file(reads) from read_files_squid
+    file index from star_index.collect()
+    file gtf
+    
+    output:
+    file '*_sv.txt' into squid_fusions
+
+    script:
+    def avail_mem = task.memory ? "--limitBAMsortRAM ${task.memory.toBytes() - 100000000}" : ''
+    """
+    STAR \\
+        --genomeDir ${index} \\
+        --sjdbGTFfile ${gtf} \\
+        --runThreadN ${task.cpus} \\
+        --readFilesIn ${reads[0]} ${reads[1]} \\
+        --twopassMode Basic \\
+        --chimOutType SeparateSAMold --chimSegmentMin 12 --chimJunctionOverhangMin 12 --alignSJDBoverhangMin 10 \\
+        --outSAMtype BAM Unsorted ${avail_mem} \\
+        --readFilesCommand zcat
+    samtools sort Aligned.out.bam > Aligned.out.sorted.bam
+    samtools view -bS Chimeric.out.sam > Chimeric.out.bam
+    squid -b Aligned.out.sorted.bam -c Chimeric.out.bam -o fusions
+    """
+}
+
+/*
  * Fusion Inspector preprocess
  */
 process fusion_inspector_preprocess {
@@ -502,6 +547,7 @@ process get_software_versions {
     cat $baseDir/tools/star-fusion/environment.yml | grep "star-fusion" > v_star_fusion.txt
     cat $baseDir/tools/ericscript/environment.yml | grep "ericscript" > v_ericscript.txt
     cat $baseDir/tools/pizzly/environment.yml | grep "pizzly" > v_pizzly.txt
+    cat $baseDir/tools/squid/environment.yml | grep "squid" > v_squid.txt
     scrape_software_versions.py > software_versions_mqc.yaml
     """
 }

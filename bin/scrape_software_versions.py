@@ -13,7 +13,8 @@ regexes = {
     'FusionCatcher': ['v_fusioncatcher.txt', r"\"(.*?)\""],
     'Fusion-Inspector': ['v_fusion_inspector.txt', r"=(\S+)"],
     'EricScript': ['v_ericscript.txt', r"=(\S+)"],
-    'Pizzly': ['v_pizzly.txt', r"=(\S+)"]
+    'Pizzly': ['v_pizzly.txt', r"=(\S+)"],
+    'Squid': ['v_squid.txt', r"=(\S+)"]
 }
 results = OrderedDict()
 results['nf-core/rnafusion'] = '<span style="color:#999999;\">N/A</span>'
@@ -24,6 +25,7 @@ results['STAR-Fusion'] = '<span style="color:#999999;\">N/A</span>'
 results['FusionCatcher'] = '<span style="color:#999999;\">N/A</span>'
 results['Fusion-Inspector'] = '<span style="color:#999999;\">N/A</span>'
 results['Pizzly'] = '<span style="color:#999999;\">N/A</span>'
+results['Squid'] = '<span style="color:#999999;\">N/A</span>'
 
 # Search each file using its regex
 for k, v in regexes.items():

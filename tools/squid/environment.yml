@@ -1,0 +1,7 @@
+name: squid
+channels:
+  - bioconda
+dependencies:
+  - squid=1.5
+  - star=2.6.1b
+  - samtools=1.9
