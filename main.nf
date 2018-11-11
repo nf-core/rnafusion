@@ -9,7 +9,6 @@
 ----------------------------------------------------------------------------------------
 */
 
-
 def helpMessage() {
     log.info"""
     =========================================
@@ -79,7 +78,6 @@ params.ericscript = false
 params.pizzly = false
 params.squid = false
 
-
 multiqc_config = file(params.multiqc_config)
 output_docs = file("$baseDir/docs/output.md")
 
@@ -124,6 +122,7 @@ if(params.star_index){
         .ifEmpty { exit 1, "STAR index not found: ${params.star_index}" }
 }
 
+star_fusion_ref = ''
 if (params.star_fusion) {
     if (!params.star_fusion_ref) {
         exit 1, "Star-Fusion reference not specified!"
@@ -132,10 +131,9 @@ if (params.star_fusion) {
             .fromPath(params.star_fusion_ref)
             .ifEmpty { exit 1, "Stat-Fusion reference directory not found!" }
     }
-} else {
-    star_fusion_ref = ''
 }
 
+fusioncatcher_dir = ''
 if (params.fusioncatcher) {
     if (!params.fusioncatcher_dir) {
         exit 1, "Fusion catcher data directory not specified!"
@@ -144,10 +142,9 @@ if (params.fusioncatcher) {
             .fromPath(params.fusioncatcher_dir)
             .ifEmpty { exit 1, "Fusion catcher data directory not found!" }
     }
-} else {
-    fusioncatcher_dir = ''
 }
 
+fusion_inspector_ref = ''
 if (params.fusion_inspector) {
     if (!params.star_fusion_ref) {
         exit 1, "Reference not specified (using star-fusion reference path)!"
@@ -156,10 +153,9 @@ if (params.fusion_inspector) {
             .fromPath(params.star_fusion_ref)
             .ifEmpty { exit 1, "Fusion-Inspector reference not found" }
     }
-} else {
-    fusion_inspector_ref = ''    
 }
 
+ericscript_ref = ''
 if (params.ericscript) {
     if (!params.ericscript_ref) {
         exit 1, "Reference not specified!"
@@ -168,10 +164,10 @@ if (params.ericscript) {
             .fromPath(params.ericscript_ref)
             .ifEmpty { exit 1, "Ericscript reference not found" }
     }
-} else {
-    ericscript_ref = ''
 }
 
+pizzly_fasta = ''
+pizzly_gtf = ''
 if (params.pizzly) {
     if (!params.pizzly_ref) {
         exit 1, "No pizzly reference folder defined"
@@ -183,9 +179,6 @@ if (params.pizzly) {
             .fromPath("$params.pizzly_ref/Homo_sapiens.GRCh38.94.gtf")
             .ifEmpty { exit 1, "GTF file not found!" }
     }
-} else {
-    pizzly_fasta = ''
-    pizzly_gtf = ''
 }
 
 /*
@@ -197,22 +190,22 @@ if (params.pizzly) {
              .from(params.readPaths)
              .map { row -> [ row[0], [file(row[1][0])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; 
-                     read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
+             .into { read_files_fastqc; read_files_summary; read_files_star_fusion; read_files_fusioncatcher; 
+                     read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
      } else {
          Channel
              .from(params.readPaths)
              .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; 
-                     read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
+             .into { read_files_fastqc; read_files_summary; read_files_star_fusion; read_files_fusioncatcher; 
+                     read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
      }
  } else {
      Channel
          .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
          .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
-         .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; 
-                     read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
+         .into { read_files_fastqc; read_files_summary; read_files_star_fusion; read_files_fusioncatcher; 
+                     read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
  }
 
 
@@ -283,7 +276,7 @@ ${summary.collect { k,v -> "            <dt>$k</dt><dd><samp>${v ?: '<span style
  */
 process star_fusion {
     tag "$name"
-    publishDir "${params.outdir}/Star_fusion", mode: 'copy'
+    publishDir "${params.outdir}/tools/StarFusion", mode: 'copy'
 
     when:
     params.star_fusion || (params.star_fusion && params.test)
@@ -293,26 +286,26 @@ process star_fusion {
     file reference from star_fusion_ref.collect()
 
     output:
-    file '*fusion_predictions.tsv' into star_fusion_predictions
-    file '*fusion_predictions.abridged.tsv' into star_fusion_abridged
+    file '*fusion_predictions.tsv' into star_fusion_fusions
+    file '*fusion_predictions.abridged.tsv' into star_fusion_output
 
     script:
     if (params.singleEnd) {
         """
         STAR-Fusion \\
-        --genome_lib_dir ${reference} \\
-        --left_fq ${reads[0]} \\
-        --CPU  ${task.cpus} \\
-        --output_dir .
+            --genome_lib_dir ${reference} \\
+            --left_fq ${reads[0]} \\
+            --CPU  ${task.cpus} \\
+            --output_dir .
         """
     } else {
         """
         STAR-Fusion \\
-        --genome_lib_dir ${reference} \\
-        --left_fq ${reads[0]} \\
-        --right_fq ${reads[1]} \\
-        --CPU  ${task.cpus} \\
-        --output_dir .
+            --genome_lib_dir ${reference} \\
+            --left_fq ${reads[0]} \\
+            --right_fq ${reads[1]} \\
+            --CPU  ${task.cpus} \\
+            --output_dir .
         """
     } 
 }
@@ -322,7 +315,7 @@ process star_fusion {
  */
 process fusioncatcher {
     tag "$name"
-    publishDir "${params.outdir}/Fusioncatcher", mode: 'copy'
+    publishDir "${params.outdir}/tools/Fusioncatcher", mode: 'copy'
 
     when:
     params.fusioncatcher || (params.fusioncatcher && params.test)
@@ -332,30 +325,30 @@ process fusioncatcher {
     file data_dir from fusioncatcher_dir.collect()
 
     output:
-    file 'final-list_candidate-fusion-genes.txt' into fusioncatcher_candidates
+    file 'final-list_candidate-fusion-genes.txt' into fusioncatcher_fusions
     file '*.{txt,log,zip}' into fusioncatcher_output
 
     script:
     if (params.singleEnd) {
         """
         fusioncatcher \\
-        -d ${data_dir} \\
-        -i ${reads[0]} \\
-        --threads ${task.cpus} \\
-        -o . \\
-        --skip-blat \\
-        --single-end \\
-        ${params.fc_extra_options}
+            -d ${data_dir} \\
+            -i ${reads[0]} \\
+            --threads ${task.cpus} \\
+            -o . \\
+            --skip-blat \\
+            --single-end \\
+            ${params.fc_extra_options}
         """
     } else {
         """
         fusioncatcher \\
-        -d ${data_dir} \\
-        -i ${reads[0]},${reads[1]} \\
-        --threads ${task.cpus} \\
-        -o . \\
-        --skip-blat \\
-        ${params.fc_extra_options}
+            -d ${data_dir} \\
+            -i ${reads[0]},${reads[1]} \\
+            --threads ${task.cpus} \\
+            -o . \\
+            --skip-blat \\
+            ${params.fc_extra_options}
         """
     }
 }
@@ -365,7 +358,7 @@ process fusioncatcher {
  */
 process ericscript {
     tag "$name"
-    publishDir "${params.outdir}/Ericscript", mode: 'copy'
+    publishDir "${params.outdir}/tools/Ericscript", mode: 'copy'
 
     when:
     params.ericscript || (params.ericscript && params.test)
@@ -375,25 +368,28 @@ process ericscript {
     file reference from ericscript_ref.collect()
 
     output:
-    file './tmp/fusion.results.total.tsv' into ericscript_fusion_total
+    file './tmp/fusions.results.total.tsv' into ericscript_fusions
 
     script:
-    """
-    ericscript.pl \\
-    -db ${reference} \\
-    -name fusion \\
-    -o ./tmp \\
-    ${reads[0]} \\
-    ${reads[1]}
-    """
+    if (!params.singleEnd) {
+        """
+        ericscript.pl \\
+            -db ${reference} \\
+            -name fusions \\
+            -o ./tmp \\
+            ${reads[0]} \\
+            ${reads[1]}
+        """
+    }
 }
 
 /*
  * Pizzly
  */
+params.pizzly_k = 31
 process pizzly {
     tag "$name"
-    publishDir "${params.outdir}/Pizzly", mode: 'copy'
+    publishDir "${params.outdir}/tools/Pizzly", mode: 'copy'
 
     when:
     params.pizzly || (params.pizzly && params.test)
@@ -404,21 +400,23 @@ process pizzly {
     file gtf from pizzly_gtf.collect()
     
     output:
-    file 'final.unfiltered.json' into pizzly_fusion_unfiltered
-    file '*.{json,txt}' into pizzly_fusion_total
+    file '*.unfiltered.json' into pizzly_fusions
+    file '*.{json,txt}' into pizzly_output
 
     script:
-    """
-    kallisto index -i index.idx -k 31 ${fasta}
-    kallisto quant -i index.idx --fusion -o output ${reads[0]} ${reads[1]}
-    pizzly -k 31 \\
-        --gtf ${gtf} \\
-        --cache index.cache.txt \\
-        --align-score 2 \\
-        --insert-size 400 \\
-        --fasta ${fasta} \\
-        --output final output/fusion.txt
-    """
+    if (!params.singleEnd) {
+        """
+        kallisto index -i index.idx -k ${params.pizzly_k} ${fasta}
+        kallisto quant -i index.idx --fusion -o output ${reads[0]} ${reads[1]}
+        pizzly -k ${params.pizzly_k} \\
+            --gtf ${gtf} \\
+            --cache index.cache.txt \\
+            --align-score 2 \\
+            --insert-size 400 \\
+            --fasta ${fasta} \\
+            --output pizzly_fusions output/fusion.txt
+        """
+    }
 }
 
 /*
@@ -426,7 +424,7 @@ process pizzly {
  */
 process squid {
     tag "$name"
-    publishDir "${params.outdir}/Squid", mode: 'copy'
+    publishDir "${params.outdir}/tools/Squid", mode: 'copy'
 
     when:
     params.squid || (params.squid && params.test)
@@ -458,24 +456,25 @@ process squid {
 }
 
 /*
- * Fusion Inspector preprocess
+ * Summarizing results from tools
  */
-process fusion_inspector_preprocess {
-    tag "$name"
-    publishDir "${params.outdir}/Transformers", mode: 'copy'
+process summary {
+    publishDir "${params.outdir}/Fusions", mode: 'copy'
  
     when:
     !params.test && (params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly)
     
     input:
-    file fusioncatcher from fusioncatcher_candidates.ifEmpty('')
-    file star_fusion from star_fusion_abridged.ifEmpty('')
-    file ericscript from ericscript_fusion_total.ifEmpty('')
-    file pizzly from pizzly_fusion_unfiltered.ifEmpty('')
+    set val(name), file(reads) from read_files_summary
+    file fusioncatcher from fusioncatcher_fusions.ifEmpty('')
+    file star_fusion from star_fusion_fusions.ifEmpty('')
+    file ericscript from ericscript_fusions.ifEmpty('')
+    file pizzly from pizzly_fusions.ifEmpty('')
 
     output:
-    file 'fusions.txt' into fusions
-    file 'summary.yaml' into fusions_summary
+    file 'fusions.txt' into summary_fusions
+    file 'summary.yaml' into summary_fusions_mq
+    file 'fusion_genes_config_mqc.yaml' into fusion_genes_config_mqc
     
     script:
     """
@@ -483,8 +482,13 @@ process fusion_inspector_preprocess {
     transformer.py -i ${star_fusion} -t star_fusion
     transformer.py -i ${ericscript} -t ericscript
     transformer.py -i ${pizzly} -t pizzly
+    create_mqc_section.py -i summary.yaml -s "${name}"
     """
 }
+
+/*************************************************************
+ * Visualization
+ ************************************************************/
 
 /*
  * Fusion Inspector
@@ -494,7 +498,7 @@ if (params.test) {
 }
 process fusion_inspector {
     tag "$name"
-    publishDir "${params.outdir}/FusionInspector", mode: 'copy'
+    publishDir "${params.outdir}/tools/FusionInspector", mode: 'copy'
 
     when:
     params.fusion_inspector || (params.fusion_inspector && params.test)
@@ -502,7 +506,7 @@ process fusion_inspector {
     input:
     set val(name), file(reads) from read_files_fusion_inspector
     file reference from fusion_inspector_ref.collect()
-    file fusions
+    file summary_fusions
 
     output:
     file '*' into fusion_inspector_output
@@ -510,7 +514,7 @@ process fusion_inspector {
     script:
     """
     FusionInspector \\
-        --fusions ${fusions} \\
+        --fusions ${summary_fusions} \\
         --genome_lib ${reference} \\
         --left_fq ${reads[0]} \\
         --right_fq ${reads[1]} \\
@@ -576,28 +580,6 @@ process fastqc {
 }
 
 /*
- * Fusion gene compare
- * Builds MultiQC custom section
- */
-process fusion_gene_compare {
-    publishDir "${params.outdir}/FusionGeneCompare", mode: 'copy'
-
-    when:
-    !params.test
-
-    input:
-    file fusions_summary
-
-    output:
-    file 'fusion_genes_mqc.yaml' into fusion_genes_mqc
-
-    script:
-    """
-    fusion_genes_compare.py -i ${fusions_summary} -s test_sample
-    """
-}
-
-/*
  * MultiQC
  */
 process multiqc {
@@ -611,7 +593,7 @@ process multiqc {
     file ('fastqc/*') from fastqc_results.collect()
     file ('software_versions/*') from software_versions_yaml
     file workflow_summary from create_workflow_summary(summary)
-    file fusions_mq from fusion_genes_mqc.ifEmpty('')
+    file fusions_mq from fusion_genes_config_mqc.ifEmpty('')
 
     output:
     file "*multiqc_report.html" into multiqc_report
@@ -629,7 +611,6 @@ process multiqc {
  * Output Description HTML
  */
 process output_documentation {
-    tag "$prefix"
     publishDir "${params.outdir}/Documentation", mode: 'copy'
 
     when:

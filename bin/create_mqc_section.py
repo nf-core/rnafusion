@@ -8,7 +8,7 @@ import yaml
 import sys
 import os
 
-OUTPUT = 'fusion_genes_mqc.yaml'
+OUTPUT = 'fusion_genes_config_mqc.yaml'
 TEMPLATE = OrderedDict([
     ('id', 'fusion_genes'),
     ('s', 'Fusion genes'),
