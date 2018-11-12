@@ -1,5 +1,0 @@
-name: top-hat
-channels:
-  - bioconda
-dependencies:
-  - tophat=2.1.1

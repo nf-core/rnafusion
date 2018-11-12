@@ -1,6 +1,0 @@
-name: chimerascan
-channels:
-  - bioconda
-  - biobuilds
-dependencies:
-  - chimerascan=0.4.5a
