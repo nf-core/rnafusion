@@ -526,6 +526,27 @@ process fusion_inspector {
 }
 
 /*************************************************************
+ * Annotation
+ ************************************************************/
+
+process annotsv {
+    publishDir "${params.outdir}/tools/Annotation", mode: 'copy'
+
+    when:
+    params.annotsv || (params.annotsv && params.test)
+
+    input:
+    
+
+    output:
+    file '*' into annotsv_output
+
+    script:
+    """
+    """
+}
+
+/*************************************************************
  * Building report
  ************************************************************/
 
