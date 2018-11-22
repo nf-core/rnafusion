@@ -47,8 +47,7 @@ def findings(p_yaml, p_sample):
         for (fusion_left, fusion_right) in p_yaml[tools[0]].items():
             for tool in tools[1:]:
                 if p_yaml[tool] != None:
-                    # check if the fusion is not swapped
-                    if (fusion_left in p_yaml[tool] and p_yaml[tool][fusion_left] == fusion_right) or (fusion_right in p_yaml[tool] and p_yaml[tool][fusion_right] == fusion_left):
+                    if fusion_left in p_yaml[tool] and p_yaml[tool][fusion_left] == fusion_right:
                         intersect_genes[fusion_left] = fusion_right
     fusions['together'] = len(intersect_genes)
     
