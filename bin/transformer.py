@@ -7,7 +7,7 @@ import os.path
 import sys
 import json
 
-TOOLS = ['star_fusion' ,'fusioncatcher', 'ericscript', 'pizzly']
+TOOLS = ['star_fusion' ,'fusioncatcher', 'ericscript', 'pizzly', 'squid']
 SUMMARY = 'summary.yaml'
 OUTPUT = 'fusions.txt'
 
@@ -24,6 +24,15 @@ def save(p_output, p_fusions):
 
 def fi_format(p_gene1, p_gene2):
     return '{}--{}\n'.format(p_gene1, p_gene2)
+
+def squid(p_file):
+    fusions = ''
+    next(p_file)    # skip header
+    for line in p_file:
+        tmp = line.split('\t')[0].split('--')
+        fusions += fi_format(tmp[0], tmp[1])
+    
+    return fusions
 
 def pizzly(p_file):
     fusions = ''
