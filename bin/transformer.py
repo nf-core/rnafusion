@@ -29,8 +29,9 @@ def squid(p_file):
     fusions = ''
     next(p_file)    # skip header
     for line in p_file:
-        tmp = line.split('\t')[0].split('--')
-        fusions += fi_format(tmp[0], tmp[1])
+        tmp = line.rstrip('\n').split('\t')[11].split(':')
+        if len(tmp) == 2:
+            fusions += fi_format(tmp[0], tmp[1])
     
     return fusions
 

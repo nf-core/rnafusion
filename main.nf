@@ -464,7 +464,7 @@ process summary {
     publishDir "${params.outdir}/Fusions", mode: 'copy'
  
     when:
-    !params.test && (params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly)
+    !params.test && (params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
     
     input:
     set val(name), file(reads) from read_files_summary
@@ -472,7 +472,7 @@ process summary {
     file star_fusion from star_fusion_fusions.ifEmpty('')
     file ericscript from ericscript_fusions.ifEmpty('')
     file pizzly from pizzly_fusions.ifEmpty('')
-    // file squid from squid_fusions.ifEmpty('')
+    file squid from squid_fusions.ifEmpty('')
 
     output:
     file 'fusions.txt' into summary_fusions
