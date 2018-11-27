@@ -1,7 +1,10 @@
 name: squid
 channels:
   - bioconda
+  - conda-forge
 dependencies:
   - squid=1.5
   - star=2.6.1b
   - samtools=1.9
+  - python=3.6
+  - conda-forge::numpy=1.15.4

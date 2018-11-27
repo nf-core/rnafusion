@@ -7,4 +7,9 @@ COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
 ENV PATH /opt/conda/envs/squid/bin:$PATH
 
+RUN wget https://raw.githubusercontent.com/Kingsford-Group/squid/master/utils/AnnotateSQUIDOutput.py -O /AnnotateSQUIDOutput.py \
+    && chmod +x /AnnotateSQUIDOutput.py \
+    && ln -s /AnnotateSQUIDOutput.py /usr/local/bin \
+    && ln -s /opt/conda/envs/squid/bin/python3 /bin/python 
+
 RUN ln -s /lib/x86_64-linux-gnu/libcrypt.so.1 /lib/x86_64-linux-gnu/libcrypto.so.1.0.0

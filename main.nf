@@ -435,7 +435,8 @@ process squid {
     file gtf
     
     output:
-    file '*_sv.txt' into squid_fusions
+    file '*_sv.txt' into squid_predictions
+    file '*_annotated.txt' into squid_fusions
 
     script:
     def avail_mem = task.memory ? "--limitBAMsortRAM ${task.memory.toBytes() - 100000000}" : ''
@@ -446,23 +447,24 @@ process squid {
         --runThreadN ${task.cpus} \\
         --readFilesIn ${reads[0]} ${reads[1]} \\
         --twopassMode Basic \\
-        --chimOutType SeparateSAMold --chimSegmentMin 12 --chimJunctionOverhangMin 12 --alignSJDBoverhangMin 10 \\
+        --chimOutType SeparateSAMold --chimSegmentMin 20 --chimJunctionOverhangMin 12 --alignSJDBoverhangMin 10 --outReadsUnmapped Fastx --outSAMstrandField intronMotif \\
         --outSAMtype BAM Unsorted ${avail_mem} \\
         --readFilesCommand zcat
     samtools sort Aligned.out.bam > Aligned.out.sorted.bam
-    samtools view -bS Chimeric.out.sam > Chimeric.out.bam
+    samtools view -Shb Chimeric.out.sam > Chimeric.out.bam
     squid -b Aligned.out.sorted.bam -c Chimeric.out.bam -o fusions
+    AnnotateSQUIDOutput.py ${gtf} fusions_sv.txt fusions_annotated.txt
     """
 }
 
-/*
+/*************************************************************
  * Summarizing results from tools
- */
+ ************************************************************/
 process summary {
     publishDir "${params.outdir}/Fusions", mode: 'copy'
  
     when:
-    !params.test && (params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly)
+    !params.test && (params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
     
     input:
     set val(name), file(reads) from read_files_summary
@@ -470,6 +472,7 @@ process summary {
     file star_fusion from star_fusion_fusions.ifEmpty('')
     file ericscript from ericscript_fusions.ifEmpty('')
     file pizzly from pizzly_fusions.ifEmpty('')
+    file squid from squid_fusions.ifEmpty('')
 
     output:
     file 'fusions.txt' into summary_fusions
@@ -482,6 +485,7 @@ process summary {
     transformer.py -i ${star_fusion} -t star_fusion
     transformer.py -i ${ericscript} -t ericscript
     transformer.py -i ${pizzly} -t pizzly
+    transformer.py -i ${squid} -t squid
     create_mqc_section.py -i summary.yaml -s "${name}"
     """
 }
