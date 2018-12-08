@@ -461,7 +461,7 @@ process squid {
  * Summarizing results from tools
  ************************************************************/
 process summary {
-    publishDir "${params.outdir}/Fusions", mode: 'copy'
+    publishDir "${params.outdir}/Report", mode: 'copy'
  
     when:
     !params.test && (params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
@@ -478,6 +478,7 @@ process summary {
     file 'fusions.txt' into summary_fusions
     file 'summary.yaml' into summary_fusions_mq
     file 'fusion_genes_config_mqc.yaml' into fusion_genes_config_mqc
+    file '*.html' into report
     
     script:
     """
@@ -487,6 +488,7 @@ process summary {
     transformer.py -i ${pizzly} -t pizzly
     transformer.py -i ${squid} -t squid
     create_mqc_section.py -i summary.yaml -s "${name}"
+    generate_report.py fusions.txt summary.yaml -o .
     """
 }
 

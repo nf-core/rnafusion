@@ -1,0 +1,142 @@
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">Summary</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group mr-2">
+            <p>Generated {{ date }}</p>
+        </div>
+        </div>
+    </div>
+    <section class="" id="intro">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+            <h1 class="h3">{{ intro.title }}</h1>
+        </div>
+        <div class="row">
+            {% for graph_id in intro.graphs.keys() %}
+                <div class="{% if intro.graphs.keys() | length == 1 %} col-md-6 mx-auto {% else %} col-md-6 {% endif %}" id="{{ graph_id }}"></div>
+            {% endfor %}
+        </div>
+        
+    </section>
+    <section class="" id="fusion_summary">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+            <h1 class="h3">{{ summary_fusions.title }}</h1>
+        </div>
+        <table id="summary_fusions" class="table table-striped table-bordered">
+                <thead>
+                    <th>Fusion gene</th>
+                    <th>Found in DB</th>
+                    {% for tool in summary_fusions.data.tools %}
+                        <th>{{ tool }}</th>
+                    {% endfor %}
+                    <th>Tools hits</th>
+                </thead>
+                <tbody>
+                    {% for fusion, fusion_info in summary_fusions.data.fusions.items() %}
+                    <tr>
+                        {% if fusion_info['known'] %}
+                            <td><a href="{{ fusion_info['left_gene'] }}_{{ fusion_info['right_gene'] }}.html">{{ fusion }}</a></td>
+                        {% else %}
+                            <td>{{ fusion }}</td>
+                        {% endif %}
+
+                        <td>{{ fusion_info['known'] }}</td>
+                        {% for tool, value in fusion_info['tools'].items() %}
+                            <td>{{ value }}</td>
+                        {% endfor %}
+                        <td>{{ fusion_info['tools_total'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </section>
+</main>
+<script>
+$(document).ready(function() {
+    $('#summary_fusions').DataTable();
+});
+Highcharts.chart('tool_detection_chart', {
+  chart: {
+    plotBackgroundColor: null,
+    plotBorderWidth: 0,
+    plotShadow: false
+  },
+  credits: {
+      enabled: false
+  },
+  title: {
+    text: 'Tool detection',
+    align: 'center',
+    verticalAlign: 'middle',
+    y: 40
+  },
+  tooltip: {
+    pointFormat: '{series.name}: <b>{point.y}</b>'
+  },
+  plotOptions: {
+    pie: {
+      dataLabels: {
+        enabled: true,
+        distance: -50,
+        style: {
+          fontWeight: 'bold',
+          color: 'white'
+        }
+      },
+      startAngle: -90,
+      endAngle: 90,
+      center: ['50%', '75%'],
+      size: '110%'
+    }
+  },
+  series: [{
+    type: 'pie',
+    name: 'Count',
+    innerSize: '50%',
+    data: {{ intro.graphs['tool_detection_chart'] | safe }}
+  }]
+});
+
+Highcharts.chart('known_unknown_chart', {
+  chart: {
+    plotBackgroundColor: null,
+    plotBorderWidth: 0,
+    plotShadow: false
+  },
+  credits: {
+      enabled: false
+  },
+  title: {
+    text: 'Known<br/>VS<br/>Unknown',
+    align: 'center',
+    verticalAlign: 'middle',
+    y: 40
+  },
+  tooltip: {
+    pointFormat: '{series.name}: <b>{point.y}</b>'
+  },
+  plotOptions: {
+    pie: {
+      dataLabels: {
+        enabled: true,
+        distance: -50,
+        style: {
+          fontWeight: 'bold',
+          color: 'white'
+        }
+      },
+      startAngle: -90,
+      endAngle: 90,
+      center: ['50%', '75%'],
+      size: '110%'
+    }
+  },
+  series: [{
+    type: 'pie',
+    name: 'Count',
+    innerSize: '50%',
+    data: {{ intro.graphs['known_unknown_chart'] | safe }}
+  }]
+});
+
+</script>
