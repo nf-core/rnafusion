@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-from __future__ import print_function
-from __future__ import with_statement
+#!/usr/bin/env python3
 from yaml import dump
 import argparse
 import os.path
@@ -72,13 +70,13 @@ def fusioncatcher(p_file):
 
 def transform(p_input, p_tool, p_output):
     if not os.path.exists(p_input):
-        print('Defined {} doesn\'t exist'.format(p_input))
+        exit('Defined {} doesn\'t exist'.format(p_input))
     
     if not os.path.exists(OUTPUT):
         with open(OUTPUT, 'w'): pass
 
     if p_tool not in TOOLS:
-       print('Defined {} not in the supported list of transformations!'.format(p_tool))
+       exit('Defined {} not in the supported list of transformations!'.format(p_tool))
 
     try:
         fusions = ''
@@ -90,14 +88,7 @@ def transform(p_input, p_tool, p_output):
         with open(p_output, 'r+') as out_file, open(SUMMARY, 'a') as summary:
             if len(fusions) > 0:
                 save(out_file, fusions)
-                
-                summary_data = [x.split('--') for x in fusions.split('\n')]
-                summary.write(dump(
-                    {
-                        p_tool : dict((left_gene,right_gene) for left_gene,right_gene in summary_data)
-                    }, 
-                    default_flow_style=False, allow_unicode=True
-                ))
+                summary.write(dump({p_tool : list(set(fusions.split('\n')))}, default_flow_style=False, allow_unicode=True))
             else:
                 summary.write(dump({p_tool: None}, default_flow_style=False, allow_unicode=True))
             
