@@ -26,9 +26,8 @@ class Report:
             print('Page ' + page.filename + ' already exists, skipping ...')
         else:
             dict_page = page.get_content()
-            template_variables = {**self.j2_variables, **dict_page, **dict_page['content']}
-            del template_variables['content']
-            template_variables['menu'] = [(key, page.content[key]['title']) for key in page.content.keys()]
+            template_variables = {**self.j2_variables, **dict_page}
+            template_variables['menu'] = [(key, page.get_section(key).title) for key in page.sections.keys()]
             self.pages[page.filename] = template_variables
 
     def render(self):
