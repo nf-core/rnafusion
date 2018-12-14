@@ -64,7 +64,15 @@
                         </code>
                     </td>
                     {% endfor %}
-                    <td><code>{{ fusion_info['tools_total'] }}</code></td>
+                    <td>
+                        {% set progress_value = (fusion_info['tools_total'] / fusion_info['tools']|length) * 100 %}
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: {{ progress_value }}%;" 
+                                aria-valuenow="{{ progress_value }}" aria-valuemin="0" aria-valuemax="100">
+                                {{ fusion_info['tools_total'] }}
+                            </div>
+                        </div>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
