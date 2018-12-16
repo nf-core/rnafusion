@@ -208,7 +208,11 @@
                     animate: false,
                     ready: function () {
                         $(".loading").hide();
-                    }
+                    },
+                    nodeDimensionsIncludeLabels: true,
+                    fit: true,
+                    padding: 500,
+                    randomize: true
                 },
                 style: [ // the stylesheet for the graph
                     {
@@ -225,6 +229,18 @@
                             'line-color': '#ccc',
                             'target-arrow-color': '#ccc',
                             'target-arrow-shape': 'triangle'
+                        }
+                    },
+                    {
+                        selector: '.core',
+                        style: {
+                            'background-color': '#007bff'
+                        }
+                    },
+                    {
+                        selector: '.core-connection',
+                        style: {
+                            'line-color': '#007bff'
                         }
                     }
                 ],

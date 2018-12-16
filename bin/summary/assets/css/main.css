@@ -131,6 +131,7 @@ table code {
 
 #ppi_graph {
   height: 500px;
+  width: 100%;
 }
 
 .loading {

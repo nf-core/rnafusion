@@ -31,20 +31,22 @@ def create_ppi_graph(p_data):
         return graph_data
 
     graph_data = [
-        {'data': {'id': 'fusion' }},
-        {'data': {'id': p_data[0]['h_gene']}},
-        {'data': {'id': p_data[0]['t_gene']}},
+        {'data': {'id': 'fusion' }, 'classes': 'core'},
+        {'data': {'id': p_data[0]['h_gene']}, 'classes': 'core'},
+        {'data': {'id': p_data[0]['t_gene']}, 'classes': 'core'},
         {'data': {
             'id': 'fusion' + p_data[0]['h_gene'],
             'source': 'fusion',
             'target': p_data[0]['h_gene']
-            }
+            },
+            'classes': 'core-connection'
         },
         {'data': {
             'id': 'fusion' + p_data[0]['t_gene'],
             'source': 'fusion',
             'target': p_data[0]['t_gene']
-            }
+            },
+            'classes': 'core-connection'
         },
     ]
 
@@ -115,7 +117,8 @@ def generate(p_fusion_list, p_summary, p_config, p_output):
     if p_fusion_list is None or p_summary is None:
         exit('Fusion list or summary was not provided')
     
-    db = Db()
+    # db = Db()
+    db = Db('/Users/mproksik/Desktop/ttt/fusions.db')
     known_fusions = []
     unknown_fusions = []
     summary_file = parse_summary(p_summary)
