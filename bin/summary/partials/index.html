@@ -6,9 +6,15 @@
         <h1 class="h2">Summary</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group mr-2">
-                <p>Generated {{ date }}</p>
+                <p class="mb-0">Generated {{ date }}<br><strong>{{ page_variables.sample }}</strong></p>
             </div>
         </div>
+    </div>
+    <div class="alert alert-success" role="alert">
+        <p class="mb-0">The pipeline ran successfully and was able to detect <strong>{{ page_variables.total_fusions }}</strong> fusions 
+            for sample <strong>{{ page_variables.sample }}</strong>.</p>
+        <p class="mb-0">We were able to find and describe <strong>{{ page_variables.known_fusions }}</strong> fusions from our local database.</p>
+        <p class="mb-0">Tools used during the analysis were {{ page_variables.tools | map('capitalize') | join(', ') }}.</p>
     </div>
     <section class="" id="dashboard">
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
@@ -104,6 +110,13 @@
             verticalAlign: 'middle',
             y: 40
         },
+        subtitle: {
+            text: "{{ sections['dashboard'].graphs['tool_detection_chart'].subtitle| safe }}",
+            floating: true,
+            align: 'center',
+            verticalAlign: 'bottom',
+            y: -80
+        },
         tooltip: {
             pointFormat: '{series.name}: <b>{point.y}</b>'
         },
@@ -145,6 +158,13 @@
             align: 'center',
             verticalAlign: 'middle',
             y: 40
+        },
+        subtitle: {
+            text: "{{ sections['dashboard'].graphs['known_unknown_chart'].subtitle| safe }}",
+            floating: true,
+            align: 'center',
+            verticalAlign: 'bottom',
+            y: -80
         },
         tooltip: {
             pointFormat: '{series.name}: <b>{point.y}</b>'
@@ -188,6 +208,13 @@
             align: 'center',
             verticalAlign: 'middle',
             y: 40
+        },
+        subtitle: {
+            text: "{{ sections['dashboard'].graphs['distribution_chart'].subtitle| safe }}",
+            floating: true,
+            align: 'center',
+            verticalAlign: 'bottom',
+            y: -80
         },
         tooltip: {
             pointFormat: '{series.name}: <b>{point.y}</b>'

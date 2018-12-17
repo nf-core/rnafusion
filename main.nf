@@ -487,7 +487,7 @@ process summary {
     transformer.py -i ${ericscript} -t ericscript
     transformer.py -i ${pizzly} -t pizzly
     transformer.py -i ${squid} -t squid
-    generate_report.py fusions.txt summary.yaml -o .
+    generate_report.py fusions.txt summary.yaml -s ${name} -o .
     """
 }
 

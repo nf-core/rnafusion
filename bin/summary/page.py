@@ -1,7 +1,8 @@
 from .master_page import MasterPage
 
 class Page(MasterPage):
-    def __init__(self, title, partial_template):        
+    def __init__(self, title, page_variables, partial_template):        
+        self.page_variables = page_variables
         self.sections = {}
         super().__init__(title, partial_template)
     

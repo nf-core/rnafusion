@@ -7,24 +7,29 @@
 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
         <h1 class="h2">{{ title }}</h1>
-        <p>Generated {{ date }}</p>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <p class="mb-0">Generated {{ date }}<br><strong>{{ page_variables.sample }}</strong></p>
+            </div>
+        </div>
     </div>
     <div>
         <section class="fusion" id="variations">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
                 <h1 class="h3">{{ sections['variations'].title }}</h1>
             </div>
+            <p>{{ sections['variations'].content | safe }}</p>
             <table id="variation_table" class="table table-hover table-striped table table-bordered">
                 <thead>
                     <th>Source</th>
                     <th>Nucleotide</th>
                     <th>Left gene</th>
                     <th>Chromosome</th>
-                    <th>Position</th>
+                    <th>Breakpoint position</th>
                     <th>Strand</th>
                     <th>Right gene</th>
                     <th>Chromosome</th>
-                    <th>Position</th>
+                    <th>Breakpoint position</th>
                     <th>Strand</th>
                 </thead>
                 <tbody>
@@ -35,11 +40,21 @@
                                     row['sample'] }}</a></code></td>
                         <td><code>{{ row['h_gene'] }}</code></td>
                         <td><code>{{ row['h_chr'] }}</code></td>
-                        <td><code>{{ row['h_bp'] }}</code></td>
+                        <td>
+                            <code>
+                                <a href="http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&lastVirtModeType=default&lastVirtModeExtraState=&virtModeType=default&virtMode=0&nonVirtPosition=&position={{ row['h_chr'] }}%3A{{ row['h_bp'] - 5 }}-{{ row['h_bp'] + 5}}" 
+                                    target="_blank">{{ row['h_bp'] }}</a>
+                            </code>
+                        </td>
                         <td><code>{{ row['h_strand'] }}</code></td>
                         <td><code>{{ row['t_gene'] }}</code></td>
                         <td><code>{{ row['t_chr'] }}</code></td>
-                        <td><code>{{ row['t_bp'] }}</code></td>
+                        <td>
+                            <code>
+                                <a href="http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&lastVirtModeType=default&lastVirtModeExtraState=&virtModeType=default&virtMode=0&nonVirtPosition=&position={{ row['t_chr'] }}%3A{{ row['t_bp'] - 5 }}-{{ row['t_bp'] + 5}}" 
+                                    target="_blank">{{ row['t_bp'] }}</a>
+                            </code>
+                        </td>
                         <td><code>{{ row['t_strand'] }}</code></td>
                     </tr>
                     {% endfor %}
@@ -51,6 +66,7 @@
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
                 <h1 class="h3">{{ sections['transcripts'].title }}</h1>
             </div>
+            <p>{{ sections['transcripts'].content | safe }}</p>
             <table id="transcripts_table" class="table table-hover table-striped table table-bordered">
                 <thead>
                     <th>Source</th>
@@ -76,14 +92,24 @@
                                     }}</a></code></td>
                         <td><code>{{ row['h_gene'] }}</code></td>
                         <td><code>{{ row['h_chr'] }}</code></td>
-                        <td><code>{{ row['h_bp'] }}</code></td>
+                        <td>
+                            <code>
+                                <a href="http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&lastVirtModeType=default&lastVirtModeExtraState=&virtModeType=default&virtMode=0&nonVirtPosition=&position={{ row['h_chr'] }}%3A{{ row['h_bp'] - 5 }}-{{ row['h_bp'] + 5}}" 
+                                    target="_blank">{{ row['h_bp'] }}</a>
+                            </code>
+                        </td>
                         <td><code>{{ row['h_strand'] }}</code></td>
                         <td><code><a href="https://www.ensembl.org/id/{{ row['t_enst'] }}" target="_blank">{{
                                     row['t_enst']
                                     }}</a></code></td>
                         <td><code>{{ row['t_gene'] }}</code></td>
                         <td><code>{{ row['t_chr'] }}</code></td>
-                        <td><code>{{ row['t_bp'] }}</code></td>
+                        <td>
+                            <code>
+                                <a href="http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&lastVirtModeType=default&lastVirtModeExtraState=&virtModeType=default&virtMode=0&nonVirtPosition=&position={{ row['t_chr'] }}%3A{{ row['t_bp'] - 5 }}-{{ row['t_bp'] + 5}}" 
+                                    target="_blank">{{ row['t_bp'] }}</a>
+                            </code>
+                        </td>
                         <td><code>{{ row['t_strand'] }}</code></td>
                     </tr>
                     {% endfor %}
@@ -105,6 +131,7 @@
                     </div>
                 </div>
             </div>
+            <p>{{ sections['ppi'].content | safe }}</p>
             <div class="col-md-12" id="ppi_graph">
                 <div class="col loading mx-auto"></div>
             </div>
@@ -114,6 +141,7 @@
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
                 <h1 class="h3">{{ sections['targeting_drugs'].title }}</h1>
             </div>
+            <p>{{ sections['targeting_drugs'].content | safe }}</p>
             <table id="targeting_drug_table" class="table table-hover table-striped table table-bordered">
                 <thead>
                     <th>Gene</th>
@@ -146,6 +174,7 @@
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
                 <h1 class="h3">{{ sections['related_diseases'].title }}</h1>
             </div>
+            <p>{{ sections['related_diseases'].content | safe }}</p>
             <table id="related_diseases_table" class="table table-hover table-striped table table-bordered">
                 <thead>
                     <th>Gene (Disease ID)</th>
