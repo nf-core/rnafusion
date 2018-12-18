@@ -29,4 +29,4 @@ install:
 script:
   # Lint the pipeline code
   - nf-core lint ${TRAVIS_BUILD_DIR}
-  - nextflow run ${TRAVIS_BUILD_DIR} -profile test,docker --genome GRCh38
+  - nextflow run ${TRAVIS_BUILD_DIR} -profile test,docker --genome GRCh38 --test
