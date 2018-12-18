@@ -1,0 +1,246 @@
+<!-- Required javascript -->
+{{ include_raw('assets/js/colorbrewer-1.3.0.min.js') | safe }}
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">Summary</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <p class="mb-0">Generated {{ date }}<br><strong>{{ page_variables.sample }}</strong></p>
+            </div>
+        </div>
+    </div>
+    <div class="alert alert-success" role="alert">
+        <p class="mb-0">The pipeline ran successfully and was able to detect <strong>{{ page_variables.total_fusions }}</strong> fusions 
+            for sample <strong>{{ page_variables.sample }}</strong>.</p>
+        <p class="mb-0">We were able to find and describe <strong>{{ page_variables.known_fusions }}</strong> fusions from our local database.</p>
+        <p class="mb-0">Tools used during the analysis were {{ page_variables.tools | map('capitalize') | join(', ') }}.</p>
+    </div>
+    <section class="" id="dashboard">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+            <h1 class="h3">{{ sections['dashboard'].title }}</h1>
+        </div>
+        <div class="row">
+            {% for graph_id in sections['dashboard'].graphs.keys() %}
+            <div class="{% if sections['dashboard'].graphs.keys() | length == 1 %} col-md-6 mx-auto {% else %} col-md-4 {% endif %}"
+                id="{{ graph_id }}"></div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="" id="fusion_list">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+            <h1 class="h3">{{ sections['fusion_list'].title }}</h1>
+        </div>
+        <table id="fusion_list_table" class="table table-hover table-striped table-bordered">
+            <thead>
+                <th>Fusion gene</th>
+                <th>Found in DB</th>
+                {% for tool in sections['fusion_list'].data.tools %}
+                <th>{{ tool }}</th>
+                {% endfor %}
+                <th>Tools hits</th>
+            </thead>
+            <tbody>
+                {% for fusion, fusion_info in sections['fusion_list'].data.fusions.items() %}
+                <tr>
+                    <td>
+                        <code>
+                        {% if fusion_info['known'] %}
+                        <a href="{{ fusion | replace('--', '_') }}.html">{{ fusion }}</a>
+                        {% else %}
+                        {{ fusion }}
+                        {% endif %}
+                        </code>
+                    </td>
+                    <td>
+                        <code>
+                        {% if fusion_info['known'] %}
+                        <span class="badge badge-success">Found</span>
+                        {% else %}
+                        <span class="badge badge-danger">Not found</span>
+                        {% endif %}
+                        </code>
+                    </td>
+                    {% for found_by_tool in fusion_info['tools'] %}
+                    <td>
+                        <code>
+                        {% if found_by_tool %}
+                        <span class="badge badge-success">Found</span>
+                        {% else %}
+                        <span class="badge badge-danger">Not found</span>
+                        {% endif %}
+                        </code>
+                    </td>
+                    {% endfor %}
+                    <td>
+                        {% set progress_value = (fusion_info['tools_total'] / fusion_info['tools']|length) * 100 %}
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: {{ progress_value }}%;" 
+                                aria-valuenow="{{ progress_value }}" aria-valuemin="0" aria-valuemax="100">
+                                {{ fusion_info['tools_total'] }}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<script>
+    $(document).ready(function () {
+        $('#fusion_list_table').DataTable({
+            'pageLength': 25
+        }).columns(-1).order('desc').draw();
+    });
+    Highcharts.chart('tool_detection_chart', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: 0,
+            plotShadow: false
+        },
+        credits: {
+            enabled: false
+        },
+        title: {
+            text: "{{ sections['dashboard'].graphs['tool_detection_chart'].title | replace(' ', '<br>') | safe }}",
+            align: 'center',
+            verticalAlign: 'middle',
+            y: 40
+        },
+        subtitle: {
+            text: "{{ sections['dashboard'].graphs['tool_detection_chart'].subtitle| safe }}",
+            floating: true,
+            align: 'center',
+            verticalAlign: 'bottom',
+            y: -80
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.y}</b>'
+        },
+        plotOptions: {
+            pie: {
+                dataLabels: {
+                    enabled: true,
+                    distance: -50,
+                    style: {
+                        fontWeight: 'bold',
+                        color: 'white'
+                    }
+                },
+                startAngle: -90,
+                endAngle: 90,
+                center: ['50%', '75%'],
+                size: '110%'
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'Count',
+            innerSize: '50%',
+            data: {{ sections['dashboard'].graphs['tool_detection_chart'].graph | safe }}
+        }]
+    });
+
+    Highcharts.chart('known_unknown_chart', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: 0,
+            plotShadow: false
+        },
+        credits: {
+            enabled: false
+        },
+        title: {
+            text: "{{ sections['dashboard'].graphs['known_unknown_chart'].title | replace(' ', '<br>') | safe }}",
+            align: 'center',
+            verticalAlign: 'middle',
+            y: 40
+        },
+        subtitle: {
+            text: "{{ sections['dashboard'].graphs['known_unknown_chart'].subtitle| safe }}",
+            floating: true,
+            align: 'center',
+            verticalAlign: 'bottom',
+            y: -80
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.y}</b>'
+        },
+        plotOptions: {
+            pie: {
+                dataLabels: {
+                    enabled: true,
+                    distance: -50,
+                    style: {
+                        fontWeight: 'bold',
+                        color: 'white'
+                    }
+                },
+                startAngle: -90,
+                endAngle: 90,
+                center: ['50%', '75%'],
+                size: '110%'
+            }
+        },
+        colors: ['#28a745', '#6c757d'],
+        series: [{
+            type: 'pie',
+            name: 'Count',
+            innerSize: '50%',
+            data: {{ sections['dashboard'].graphs['known_unknown_chart'].graph | safe }}
+        }]
+    });
+    
+    Highcharts.chart('distribution_chart', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: 0,
+            plotShadow: false
+        },
+        credits: {
+            enabled: false
+        },
+        title: {
+            text: "{{ sections['dashboard'].graphs['distribution_chart'].title | replace(' ', '<br>') | safe }}",
+            align: 'center',
+            verticalAlign: 'middle',
+            y: 40
+        },
+        subtitle: {
+            text: "{{ sections['dashboard'].graphs['distribution_chart'].subtitle| safe }}",
+            floating: true,
+            align: 'center',
+            verticalAlign: 'bottom',
+            y: -80
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.y}</b>'
+        },
+        plotOptions: {
+            pie: {
+                dataLabels: {
+                    enabled: true,
+                    distance: -50,
+                    style: {
+                        fontWeight: 'bold',
+                        color: 'white'
+                    }
+                },
+                startAngle: -90,
+                endAngle: 90,
+                center: ['50%', '75%'],
+                size: '110%'
+            }
+        },
+        colors: colorbrewer.Oranges[{{ sections['dashboard'].graphs['distribution_chart'].graph | length }}],
+        series: [{
+            type: 'pie',
+            name: 'Count',
+            innerSize: '50%',
+            data: {{ sections['dashboard'].graphs['distribution_chart'].graph | safe }}
+        }]
+    });
+</script>

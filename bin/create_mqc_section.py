@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-from __future__ import print_function
-from __future__ import with_statement
+#!/usr/bin/env python3
 from collections import OrderedDict
 from yaml import dump
 import argparse
@@ -21,41 +19,30 @@ TEMPLATE = OrderedDict([
     })
 ])
 
-def findings(p_yaml, p_sample):
-    data = TEMPLATE
-    fusions = {}
+def findings(p_yaml, p_sample_name):
+    template = TEMPLATE
+    result = {}
 
-    if p_yaml == None:
+    if p_yaml is None:
         return
 
     # Counts per tool
-    tools = list(p_yaml.keys())
-    for tool in tools:
-        if p_yaml[tool] == None:
-            fusions[tool] = 0
-        else:
-            fusions[tool] = len(p_yaml[tool].keys())
+    for tool, fusions in p_yaml.items():
+        result[tool] = len(fusions) if fusions is not None else 0
 
     # If only one tool was found, there is no need to make intercept
-    if len(tools) == 1:
-        data['data'] = { p_sample: fusions}
-        return OrderedDict(data)
+    if len(result) == 1:
+        template['data'] = { p_sample_name: result }
+        return OrderedDict(template)
 
     # Intersect
-    intersect_genes = {}
-    if p_yaml[tools[0]] != None:
-        for (fusion_left, fusion_right) in p_yaml[tools[0]].items():
-            for tool in tools[1:]:
-                if p_yaml[tool] != None:
-                    if fusion_left in p_yaml[tool] and p_yaml[tool][fusion_left] == fusion_right:
-                        intersect_genes[fusion_left] = fusion_right
-    fusions['together'] = len(intersect_genes)
+    result['together'] = len(set.intersection(*map(set, [fusions for _, fusions in p_yaml.items()])))
     
     # Group results
-    data['data'] = { p_sample: fusions}
-    return OrderedDict(data)
+    template['data'] = { p_sample_name: result }
+    return OrderedDict(template)
 
-def summary(p_input, p_sample):
+def summary(p_input, p_sample_name):
     if not os.path.exists(p_input):
         sys.exit('Defined {} doesn\'t exist'.format(p_input))
     try:
@@ -64,7 +51,7 @@ def summary(p_input, p_sample):
             # Conversion to nice yaml file
             yaml.add_representer(OrderedDict, lambda dumper, data: dumper.represent_mapping('tag:yaml.org,2002:map', data.items()))
             # Find and store
-            out_file.write(dump(findings(yaml_data, p_sample), default_flow_style=False, allow_unicode=True))
+            out_file.write(dump(findings(yaml_data, p_sample_name), default_flow_style=False, allow_unicode=True))
             stream.close()
             out_file.close()
     except IOError as error:

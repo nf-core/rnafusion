@@ -1,0 +1,26 @@
+<nav class="col-md-2 d-none d-md-block bg-light sidebar">
+    <div class="sidebar-sticky">
+        <a href="https://github.com/nf-core/rnafusion" target="_blank">
+            <img src="data:image/png;base64,{{ logo | safe }}" class="img-fluid" alt="Responsive image">
+        </a>
+        <ul class="nav flex-column dashboard">
+            <li class="nav-item">
+                <a class="nav-link active" href="index.html">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    Dashboard <span class="sr-only">(current)</span>
+                </a>
+            </li>
+        </ul>
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <span>Summary</span>
+        </h6>
+        <ul class="nav flex-column mb-2">
+        {% for menu_item in menu %}
+            <li class="nav-item">
+                <a class="nav-link" href="#{{ menu_item[0] }}">{{ menu_item[1] }}</a>
+            </li>
+        {% endfor %}
+        </ul>
+        {% include 'partials/footer.html' %}
+    </div>
+</nav>

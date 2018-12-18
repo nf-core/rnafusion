@@ -1,0 +1,11 @@
+# Report customization configuration
+report_title: 'Some really cool title'
+institution: 'assets/img/scilifelab.jpg'
+date_format: '%Y-%m-%d'
+assets:
+  css:
+    - assets/css/something.css
+    - path2
+  js:
+    - path1
+    - path2

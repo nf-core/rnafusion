@@ -1,0 +1,306 @@
+<!-- Required javascript -->
+{{ include_raw('assets/js/popper-1.14.6.min.js') | safe }}
+{{ include_raw('assets/js/bootstrap.min.js') | safe }}
+{{ include_raw('assets/js/cytoscape-3.2.22.min.js') | safe }}
+{{ include_raw('assets/js/cytoscape-cose-bilkent-4.0.0.min.js') | safe }}
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">{{ title }}</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <p class="mb-0">Generated {{ date }}<br><strong>{{ page_variables.sample }}</strong></p>
+            </div>
+        </div>
+    </div>
+    <div>
+        <section class="fusion" id="variations">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                <h1 class="h3">{{ sections['variations'].title }}</h1>
+            </div>
+            <p>{{ sections['variations'].content | safe }}</p>
+            <table id="variation_table" class="table table-hover table-striped table table-bordered">
+                <thead>
+                    <th>Source</th>
+                    <th>Nucleotide</th>
+                    <th>Left gene</th>
+                    <th>Chromosome</th>
+                    <th>Breakpoint position</th>
+                    <th>Strand</th>
+                    <th>Right gene</th>
+                    <th>Chromosome</th>
+                    <th>Breakpoint position</th>
+                    <th>Strand</th>
+                </thead>
+                <tbody>
+                    {% for row in sections['variations'].data %}
+                    <tr>
+                        <td><code>{{ row['source1'] }}</code></td>
+                        <td><code><a href="https://www.ncbi.nlm.nih.gov/nuccore/{{ row['sample'] }}" target="_blank">{{
+                                    row['sample'] }}</a></code></td>
+                        <td><code>{{ row['h_gene'] }}</code></td>
+                        <td><code>{{ row['h_chr'] }}</code></td>
+                        <td>
+                            <code>
+                                <a href="http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&lastVirtModeType=default&lastVirtModeExtraState=&virtModeType=default&virtMode=0&nonVirtPosition=&position={{ row['h_chr'] }}%3A{{ row['h_bp'] - 5 }}-{{ row['h_bp'] + 5}}" 
+                                    target="_blank">{{ row['h_bp'] }}</a>
+                            </code>
+                        </td>
+                        <td><code>{{ row['h_strand'] }}</code></td>
+                        <td><code>{{ row['t_gene'] }}</code></td>
+                        <td><code>{{ row['t_chr'] }}</code></td>
+                        <td>
+                            <code>
+                                <a href="http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&lastVirtModeType=default&lastVirtModeExtraState=&virtModeType=default&virtMode=0&nonVirtPosition=&position={{ row['t_chr'] }}%3A{{ row['t_bp'] - 5 }}-{{ row['t_bp'] + 5}}" 
+                                    target="_blank">{{ row['t_bp'] }}</a>
+                            </code>
+                        </td>
+                        <td><code>{{ row['t_strand'] }}</code></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table table-hover>
+        </section>
+
+        <section class="fusion" id="transcripts">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                <h1 class="h3">{{ sections['transcripts'].title }}</h1>
+            </div>
+            <p>{{ sections['transcripts'].content | safe }}</p>
+            <table id="transcripts_table" class="table table-hover table-striped table table-bordered">
+                <thead>
+                    <th>Source</th>
+                    <th>Type</th>
+                    <th>Left gene transcript</th>
+                    <th>Left gene</th>
+                    <th>Chromosome</th>
+                    <th>Position</th>
+                    <th>Strand</th>
+                    <th>Right gene transcript</th>
+                    <th>Right gene</th>
+                    <th>Chromosome</th>
+                    <th>Position</th>
+                    <th>Strand</th>
+                </thead>
+                <tbody>
+                    {% for row in sections['transcripts'].data %}
+                    <tr>
+                        <td><code>{{ row['ctype1'] }}</code></td>
+                        <td><code>{{ row['orf'] }}</code></td>
+                        <td><code><a href="https://www.ensembl.org/id/{{ row['h_enst'] }}" target="_blank">{{
+                                    row['h_enst']
+                                    }}</a></code></td>
+                        <td><code>{{ row['h_gene'] }}</code></td>
+                        <td><code>{{ row['h_chr'] }}</code></td>
+                        <td>
+                            <code>
+                                <a href="http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&lastVirtModeType=default&lastVirtModeExtraState=&virtModeType=default&virtMode=0&nonVirtPosition=&position={{ row['h_chr'] }}%3A{{ row['h_bp'] - 5 }}-{{ row['h_bp'] + 5}}" 
+                                    target="_blank">{{ row['h_bp'] }}</a>
+                            </code>
+                        </td>
+                        <td><code>{{ row['h_strand'] }}</code></td>
+                        <td><code><a href="https://www.ensembl.org/id/{{ row['t_enst'] }}" target="_blank">{{
+                                    row['t_enst']
+                                    }}</a></code></td>
+                        <td><code>{{ row['t_gene'] }}</code></td>
+                        <td><code>{{ row['t_chr'] }}</code></td>
+                        <td>
+                            <code>
+                                <a href="http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&lastVirtModeType=default&lastVirtModeExtraState=&virtModeType=default&virtMode=0&nonVirtPosition=&position={{ row['t_chr'] }}%3A{{ row['t_bp'] - 5 }}-{{ row['t_bp'] + 5}}" 
+                                    target="_blank">{{ row['t_bp'] }}</a>
+                            </code>
+                        </td>
+                        <td><code>{{ row['t_strand'] }}</code></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table table-hover>
+        </section>
+
+        <section class="fusion" id="ppi">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                <h1 class="h3">{{ sections['ppi'].title }}</h1>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Export graph as
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#ppi" onclick="export_chart('png', 'ppi.png')">PNG</a>
+                        <a class="dropdown-item" href="#ppi" onclick="export_chart('jpg', 'ppi.jpg')">JPG</a>
+                    </div>
+                </div>
+            </div>
+            <p>{{ sections['ppi'].content | safe }}</p>
+            <div class="col-md-12" id="ppi_graph">
+                <div class="col loading mx-auto"></div>
+            </div>
+        </section>
+
+        <section class="fusion" id="targeting_drugs">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                <h1 class="h3">{{ sections['targeting_drugs'].title }}</h1>
+            </div>
+            <p>{{ sections['targeting_drugs'].content | safe }}</p>
+            <table id="targeting_drug_table" class="table table-hover table-striped table table-bordered">
+                <thead>
+                    <th>Gene</th>
+                    <th>Drug Bank ID</th>
+                    <th>Drug status</th>
+                    <th>Drug status</th>
+                    <th>Drug function</th>
+                </thead>
+                <tbody>
+                    {% for row in sections['targeting_drugs'].data %}
+                    <tr>
+                        {% set drug_status = row['drug_status'].split('|') %}
+                        <td><code>{{ row['gene_symbol'] }} ({{ row['uniprot_acc'] }})</code></td>
+                        <td><code>{{ row['drug_name'] }} (<a href="https://www.drugbank.ca/drugs/{{ row['drug_bank_id'] }}">{{
+                                    row['drug_bank_id'] }}</a>)</code></td>
+                        <td>
+                            {% for status in drug_status %}
+                            <code>{{ status }}</code>
+                            {% endfor %}
+                        </td>
+                        <td><code>{{ row['drug_name'] }}</code></td>
+                        <td><code>{{ row['drug_action'] }}</code></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section class="fusion" id="related_diseases">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                <h1 class="h3">{{ sections['related_diseases'].title }}</h1>
+            </div>
+            <p>{{ sections['related_diseases'].content | safe }}</p>
+            <table id="related_diseases_table" class="table table-hover table-striped table table-bordered">
+                <thead>
+                    <th>Gene (Disease ID)</th>
+                    <th>Disease description</th>
+                    <th>Disease probability (%)</th>
+                    <th>Disease publications</th>
+                    <th>Disease source</th>
+                </thead>
+                <tbody>
+                    {% for row in sections['related_diseases'].data %}
+                    <tr>
+                        <td><code>{{ row['gene'] }} (<a href="https://www.ncbi.nlm.nih.gov/medgen/{{ row['disease_id'] }}"
+                                    target="_blank">{{ row['disease_id'] }}</a>)</code></td>
+                        <td><code>{{ row['disease_desc'] }}</code></td>
+                        <td><code>{{ row['disease_prob'] * 100 }}</code></td>
+                        <td><code>{{ row['disease_pub'] }}</code></td>
+                        <td><code>{{ row['disease_source'] }}</code></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+    </div>
+</main>
+<script>
+    var cy;
+    function export_chart(type, filename) {
+        var image;
+        if (type == 'jpg') {
+            image = cy.jpg();
+        }
+        if (type == 'png') {
+            image = cy.png();
+        }
+        if (typeof image != 'undefined') {
+            fetch(image)
+            .then(res => res.blob())
+            .then(blob => {
+                var download = document.createElement('a');
+                download.href = URL.createObjectURL(blob);
+                download.download = 'ppi' + '.' + type;
+                download.click();
+            });
+        }
+    }
+
+    $(document).ready(function () {
+        $('#variation_table, #transcripts_table, #targeting_drug_table, #ppi_table').DataTable();
+        $('#related_diseases_table').DataTable({
+            'order': [
+                [2, 'desc']
+            ]
+        });
+        setTimeout(function(){
+            cy = cytoscape({
+                container: $('#ppi_graph'),
+                layout: {
+                    name: 'cose-bilkent',
+                    animate: false,
+                    ready: function () {
+                        $(".loading").hide();
+                    },
+                    nodeDimensionsIncludeLabels: true,
+                    fit: true,
+                    padding: 500,
+                    randomize: true
+                },
+                style: [ // the stylesheet for the graph
+                    {
+                        selector: 'node',
+                        style: {
+                            'background-color': '#666',
+                            'label': 'data(id)'
+                        }
+                    },
+                    {
+                        selector: 'edge',
+                        style: {
+                            'width': 3,
+                            'line-color': '#ccc',
+                            'target-arrow-color': '#ccc',
+                            'target-arrow-shape': 'triangle'
+                        }
+                    },
+                    {
+                        selector: '.core',
+                        style: {
+                            'background-color': '#007bff'
+                        }
+                    },
+                    {
+                        selector: '.core-connection',
+                        style: {
+                            'line-color': '#007bff'
+                        }
+                    }
+                ],
+                // initial viewport state:
+                zoom: 1,
+                pan: {
+                    x: 0,
+                    y: 0
+                },
+    
+                // interaction options:
+                zoomingEnabled: false,
+                userZoomingEnabled: false,
+                panningEnabled: true,
+                userPanningEnabled: true,
+                autolock: false,
+                autoungrabify: false,
+                autounselectify: false,
+    
+                // rendering options:
+                headless: false,
+                styleEnabled: true,
+                hideEdgesOnViewport: false,
+                hideLabelsOnViewport: false,
+                textureOnViewport: false,
+                motionBlur: false,
+                motionBlurOpacity: 0.2,
+                wheelSensitivity: 1,
+                pixelRatio: 'auto',
+                elements: {{ sections["ppi"].graphs["ppi_graph"].graph | safe }},
+            });
+        }, 2000);
+    });
+</script>

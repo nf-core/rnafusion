@@ -190,21 +190,21 @@ if (params.pizzly) {
              .from(params.readPaths)
              .map { row -> [ row[0], [file(row[1][0])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_summary; read_files_star_fusion; read_files_fusioncatcher; 
+             .into { read_files_fastqc; read_files_summary; read_files_multiqc; read_files_star_fusion; read_files_fusioncatcher; 
                      read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
      } else {
          Channel
              .from(params.readPaths)
              .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_summary; read_files_star_fusion; read_files_fusioncatcher; 
+             .into { read_files_fastqc; read_files_summary; read_files_multiqc; read_files_star_fusion; read_files_fusioncatcher; 
                      read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
      }
  } else {
      Channel
          .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
          .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
-         .into { read_files_fastqc; read_files_summary; read_files_star_fusion; read_files_fusioncatcher; 
+         .into { read_files_fastqc; read_files_summary; read_files_multiqc; read_files_star_fusion; read_files_fusioncatcher; 
                      read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
  }
 
@@ -461,7 +461,8 @@ process squid {
  * Summarizing results from tools
  ************************************************************/
 process summary {
-    publishDir "${params.outdir}/Fusions", mode: 'copy'
+    tag "$name"
+    publishDir "${params.outdir}/Report-${name}", mode: 'copy'
  
     when:
     !params.test && (params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
@@ -477,7 +478,7 @@ process summary {
     output:
     file 'fusions.txt' into summary_fusions
     file 'summary.yaml' into summary_fusions_mq
-    file 'fusion_genes_config_mqc.yaml' into fusion_genes_config_mqc
+    file '*.html' into report
     
     script:
     """
@@ -486,7 +487,7 @@ process summary {
     transformer.py -i ${ericscript} -t ericscript
     transformer.py -i ${pizzly} -t pizzly
     transformer.py -i ${squid} -t squid
-    create_mqc_section.py -i summary.yaml -s "${name}"
+    generate_report.py fusions.txt summary.yaml -s ${name} -o .
     """
 }
 
@@ -593,11 +594,12 @@ process multiqc {
     !params.test
 
     input:
+    set val(name), file(reads) from read_files_multiqc
     file multiqc_config
     file ('fastqc/*') from fastqc_results.collect()
     file ('software_versions/*') from software_versions_yaml
     file workflow_summary from create_workflow_summary(summary)
-    file fusions_mq from fusion_genes_config_mqc.ifEmpty('')
+    file fusions_mq from summary_fusions_mq.ifEmpty('')
 
     output:
     file "*multiqc_report.html" into multiqc_report
@@ -607,6 +609,7 @@ process multiqc {
     rtitle = custom_runName ? "--title \"$custom_runName\"" : ''
     rfilename = custom_runName ? "--filename " + custom_runName.replaceAll('\\W','_').replaceAll('_+','_') + "_multiqc_report" : ''
     """
+    create_mqc_section.py -i summary.yaml -s "${name}"
     multiqc -f $rtitle $rfilename --config $multiqc_config .
     """
 }
