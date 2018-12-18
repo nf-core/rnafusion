@@ -11,7 +11,6 @@ before_install:
   - '[ $TRAVIS_PULL_REQUEST = "false" ] || [ $TRAVIS_BRANCH != "master" ] || ([ $TRAVIS_PULL_REQUEST_SLUG = $TRAVIS_REPO_SLUG ] && [ $TRAVIS_PULL_REQUEST_BRANCH = "dev" ])'
   - docker pull nfcore/rnafusion:dev
   - docker tag nfcore/rnafusion:dev nfcore/rnafusion:latest
-  - docker pull nfcore/test-datasets:rnafusion
 
 env:
   - NXF_VER='0.32.0' # Specify a minimum NF version that should be tested and work
@@ -30,5 +29,4 @@ install:
 script:
   # Lint the pipeline code
   - nf-core lint ${TRAVIS_BUILD_DIR}
-  # Test pipeline
-  - sh test.sh
+  - nextflow run ${TRAVIS_BUILD_DIR} -profile test,docker --genome GRCh38
