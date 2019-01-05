@@ -1,4 +1,3 @@
--- sqlite3 fusions.db < test.sql
 CREATE TABLE "TCGA_ChiTaRS_combined_fusion_information_on_hg19" (
 	"source1" varchar(50) NOT NULL DEFAULT '',
 	"source2" varchar(50) NOT NULL DEFAULT '',
