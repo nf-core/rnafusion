@@ -396,7 +396,7 @@ process pizzly {
     
     output:
     file '*.unfiltered.json' into pizzly_fusions
-    file '*.{json,txt}' into pizzly_output
+    file '*.{json,txt,tsv,fasta}' into pizzly_output
 
     script:
     if (!params.singleEnd) {
