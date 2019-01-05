@@ -13,6 +13,5 @@ else
     else
         CONTAINER_NAME=nfcore/rnafusion:${TOOL}_v${VERSION}
         docker build $TOOL_PATH -t $CONTAINER_NAME
-        # docker push $CONTAINER_NAME
     fi
 fi

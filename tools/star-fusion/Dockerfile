@@ -7,4 +7,5 @@ COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
 ENV PATH /opt/conda/envs/star-fusion/bin:$PATH
 
+RUN apt-get install make && perl -MCPAN -e 'install Carp::Assert'
 RUN ln -s /lib/x86_64-linux-gnu/libcrypt.so.1 /lib/x86_64-linux-gnu/libcrypto.so.1.0.0

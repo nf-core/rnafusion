@@ -70,13 +70,6 @@ params.star_index = params.genome ? params.genomes[ params.genome ].star ?: fals
 params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
 params.email = false
 params.plaintext_email = false
-params.star_fusion = false
-params.fusioncatcher = false
-params.fc_extra_options = ''
-params.fusion_inspector = false
-params.ericscript = false
-params.pizzly = false
-params.squid = false
 
 multiqc_config = file(params.multiqc_config)
 output_docs = file("$baseDir/docs/output.md")
@@ -287,7 +280,7 @@ process star_fusion {
 
     output:
     file '*fusion_predictions.tsv' into star_fusion_fusions
-    file '*fusion_predictions.abridged.tsv' into star_fusion_output
+    file '*' into star_fusion_output
 
     script:
     if (params.singleEnd) {
@@ -296,6 +289,7 @@ process star_fusion {
             --genome_lib_dir ${reference} \\
             --left_fq ${reads[0]} \\
             --CPU  ${task.cpus} \\
+            --examine_coding_effect \\
             --output_dir .
         """
     } else {
@@ -305,6 +299,7 @@ process star_fusion {
             --left_fq ${reads[0]} \\
             --right_fq ${reads[1]} \\
             --CPU  ${task.cpus} \\
+            --examine_coding_effect \\
             --output_dir .
         """
     } 
@@ -326,7 +321,7 @@ process fusioncatcher {
 
     output:
     file 'final-list_candidate-fusion-genes.txt' into fusioncatcher_fusions
-    file '*.{txt,log,zip}' into fusioncatcher_output
+    file '*' into fusioncatcher_output
 
     script:
     if (params.singleEnd) {
@@ -369,6 +364,7 @@ process ericscript {
 
     output:
     file './tmp/fusions.results.total.tsv' into ericscript_fusions
+    file '*' into ericscript_output
 
     script:
     if (!params.singleEnd) {
@@ -386,7 +382,6 @@ process ericscript {
 /*
  * Pizzly
  */
-params.pizzly_k = 31
 process pizzly {
     tag "$name"
     publishDir "${params.outdir}/tools/Pizzly", mode: 'copy'
@@ -435,8 +430,8 @@ process squid {
     file gtf
     
     output:
-    file '*_sv.txt' into squid_predictions
     file '*_annotated.txt' into squid_fusions
+    file '*' into squid_output
 
     script:
     def avail_mem = task.memory ? "--limitBAMsortRAM ${task.memory.toBytes() - 100000000}" : ''
@@ -588,6 +583,7 @@ process fastqc {
  * MultiQC
  */
 process multiqc {
+    tag "$name"
     publishDir "${params.outdir}/MultiQC", mode: 'copy'
 
     when:
@@ -609,7 +605,7 @@ process multiqc {
     rtitle = custom_runName ? "--title \"$custom_runName\"" : ''
     rfilename = custom_runName ? "--filename " + custom_runName.replaceAll('\\W','_').replaceAll('_+','_') + "_multiqc_report" : ''
     """
-    create_mqc_section.py -i summary.yaml -s "${name}"
+    create_mqc_section.py -i ${fusions_mq} -s "${name}"
     multiqc -f $rtitle $rfilename --config $multiqc_config .
     """
 }
