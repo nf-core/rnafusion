@@ -149,6 +149,7 @@ There are 31 different species supported in the iGenomes references. To run the 
 You can find the keys to specify the genomes in the [iGenomes config file](../conf/igenomes.config). Common genomes that are supported are:
 
 * Human
+  * `--genome GRCh38` (recommended)
   * `--genome GRCh37`
 * Mouse
   * `--genome GRCm38`

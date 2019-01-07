@@ -76,7 +76,7 @@ The final summary report is made so that the user can customize it easily. These
 - Add institution logo
 - Change styling of the report
 
-```json
+```js
 # Report customization configuration
 report_title: 'Some really cool title'
 institution: 'assets/img/scilifelab.jpg'
