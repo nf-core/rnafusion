@@ -493,9 +493,6 @@ process summary {
 /*
  * Fusion Inspector
  */
-if (params.test) {
-    fusions = Channel.fromPath("$baseDir/tools/fusion-inspector/fusions.txt")
-}
 process fusion_inspector {
     tag "$name"
     publishDir "${params.outdir}/tools/FusionInspector", mode: 'copy'
