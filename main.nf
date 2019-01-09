@@ -126,13 +126,13 @@ if (params.star_fusion) {
     }
 }
 
-fusioncatcher_dir = ''
+fusioncatcher_ref = ''
 if (params.fusioncatcher) {
-    if (!params.fusioncatcher_dir) {
+    if (!params.fusioncatcher_ref) {
         exit 1, "Fusion catcher data directory not specified!"
     } else {
-        fusioncatcher_dir = Channel
-            .fromPath(params.fusioncatcher_dir)
+        fusioncatcher_ref = Channel
+            .fromPath(params.fusioncatcher_ref)
             .ifEmpty { exit 1, "Fusion catcher data directory not found!" }
     }
 }
@@ -317,7 +317,7 @@ process fusioncatcher {
 
     input:
     set val(name), file(reads) from read_files_fusioncatcher
-    file data_dir from fusioncatcher_dir.collect()
+    file data_dir from fusioncatcher_ref.collect()
 
     output:
     file 'final-list_candidate-fusion-genes.txt' into fusioncatcher_fusions
