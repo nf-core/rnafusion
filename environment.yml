@@ -1,17 +1,15 @@
-name: nf-core-rnafusion-1.0dev
+name: nf-core-rnafusion-1.0
 channels:
   - bioconda
   - conda-forge
   - defaults
 dependencies:
-  - fastqc=0.11.7
-  - multiqc=1.6
-  - gmap=2018.03.25
-  - star=2.6.1a
-  - star-fusion=1.4.0
-  - trinity=2.6.6
-  - fusion-inspector=1.2.0
-  - conda-forge::r-data.table=1.11.4
+  - anaconda::openjdk=8.0.152 # Needed for FastQC - conda build hangs without this
+  - conda-forge::python=3.5.4
+  - bioconda::fastqc=0.11.8
+  - bioconda::multiqc=1.7
+  - conda-forge::pyyaml=3.13
+  - conda-forge::r-data.table=1.11.8
   - conda-forge::r-gplots=3.0.1
-  - bioconductor-edger=3.20.7
+  - bioconda::bioconductor-edger=3.22.5
   - conda-forge::r-markdown=0.8

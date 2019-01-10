@@ -1,0 +1,6 @@
+name: pizzly
+channels:
+  - bioconda
+dependencies:
+  - pizzly=0.37.3
+  - kallisto=0.44.0

@@ -48,12 +48,22 @@ NXF_OPTS='-Xms1g -Xmx4g'
 ```
 
 ## Running the pipeline
-The typical command for running the pipeline is as follows:
+The typical command for running the whole pipeline is as follows:
 ```bash
-nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' -profile standard,docker
+nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile standard,docker --star_fusion --fusioncatcher --ericscript --pizzly --squid --fusion_inspector
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
+
+You can run only particular tools as follows:
+```bash
+nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile standard,docker --fusioncatcher --ericscript
+```
+
+It is also possible to run just the tool itself by addind `--test` parameter like so:
+```bash
+nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile standard,docker --star_fusion --test
+```
 
 Note that the pipeline will create the following files in your working directory:
 
@@ -139,6 +149,7 @@ There are 31 different species supported in the iGenomes references. To run the 
 You can find the keys to specify the genomes in the [iGenomes config file](../conf/igenomes.config). Common genomes that are supported are:
 
 * Human
+  * `--genome GRCh38` (recommended)
   * `--genome GRCh37`
 * Mouse
   * `--genome GRCm38`

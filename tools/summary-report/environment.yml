@@ -1,0 +1,8 @@
+name: report-summary
+channels:
+  - anaconda
+  - conda-forge
+dependencies:
+  - conda-forge::python=3.6
+  - conda-forge::jinja2=2.10
+  - conda-forge::pyyaml=3.13

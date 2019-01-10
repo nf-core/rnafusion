@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-from __future__ import print_function
-from __future__ import with_statement
+#!/usr/bin/env python3
 from collections import OrderedDict
 from yaml import dump
 import argparse
@@ -8,7 +6,7 @@ import yaml
 import sys
 import os
 
-OUTPUT = 'fusion_genes_mqc.yaml'
+OUTPUT = 'fusion_genes_config_mqc.yaml'
 TEMPLATE = OrderedDict([
     ('id', 'fusion_genes'),
     ('s', 'Fusion genes'),
@@ -21,49 +19,39 @@ TEMPLATE = OrderedDict([
     })
 ])
 
-def findings(p_yaml, p_sample):
-    data = TEMPLATE
-    fusions = {}
+def findings(p_yaml, p_sample_name):
+    template = TEMPLATE
+    result = {}
+
+    if p_yaml is None:
+        return
 
     # Counts per tool
-    tools = p_yaml.keys()
-    for tool in tools:
-        if p_yaml[tool] == None:
-            fusions[tool] = 0
-        else:
-            fusions[tool] = len(p_yaml[tool].keys())
+    for tool, fusions in p_yaml.items():
+        result[tool] = len(fusions) if fusions is not None else 0
 
     # If only one tool was found, there is no need to make intercept
-    if len(tools) == 1:
-        data['data'] = { p_sample: fusions}
-        return OrderedDict(data)
+    if len(result) == 1:
+        template['data'] = { p_sample_name: result }
+        return OrderedDict(template)
 
     # Intersect
-    intersect = 0
-    if p_yaml[tools[0]] != None:
-        for (fusion_left, fusion_right) in p_yaml[tools[0]].items():
-            counter = 1
-            for tool in tools[1:]:
-                if p_yaml[tool] != None:
-                    # check if the fusion is not swapped
-                    if (fusion_left in p_yaml[tool] and p_yaml[tool][fusion_left] == fusion_right) or (fusion_right in p_yaml[tool] and p_yaml[tool][fusion_right] == fusion_left):
-                        counter += 1
-            if (counter == len(tools)):
-                intersect += 1
-    fusions['together'] = intersect
-
+    result['together'] = len(set.intersection(*map(set, [fusions for _, fusions in p_yaml.items()])))
+    
     # Group results
-    data['data'] = { p_sample: fusions}
-    return OrderedDict(data)
+    template['data'] = { p_sample_name: result }
+    return OrderedDict(template)
 
-def summary(p_input, p_sample):
+def summary(p_input, p_sample_name):
     if not os.path.exists(p_input):
         sys.exit('Defined {} doesn\'t exist'.format(p_input))
     try:
         with open(p_input, 'r') as stream, open(OUTPUT, 'w') as out_file:
             yaml_data = yaml.safe_load(stream)
+            # Conversion to nice yaml file
             yaml.add_representer(OrderedDict, lambda dumper, data: dumper.represent_mapping('tag:yaml.org,2002:map', data.items()))
-            out_file.write(dump(findings(yaml_data, p_sample), default_flow_style=False, allow_unicode=True))
+            # Find and store
+            out_file.write(dump(findings(yaml_data, p_sample_name), default_flow_style=False, allow_unicode=True))
             stream.close()
             out_file.close()
     except IOError as error:

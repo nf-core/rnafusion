@@ -1,20 +1,63 @@
-#!/usr/bin/env python
-from __future__ import print_function
-from __future__ import with_statement
+#!/usr/bin/env python3
 from yaml import dump
 import argparse
 import os.path
 import sys
+import json
 
-TOOLS = ['star_fusion' ,'fusioncatcher']
+TOOLS = ['star_fusion' ,'fusioncatcher', 'ericscript', 'pizzly', 'squid']
 SUMMARY = 'summary.yaml'
 OUTPUT = 'fusions.txt'
+
+def save(p_output, p_fusions):
+    old = p_output.read().split('\n')
+    new = p_fusions.split('\n')
+    unique_fusions = set().union(old, new)
+    unique_fusions = '\n'.join(unique_fusions).lstrip()
+    # clear file
+    p_output.seek(0)
+    p_output.truncate()
+    # write fusions
+    p_output.write(unique_fusions)
 
 def fi_format(p_gene1, p_gene2):
     return '{}--{}\n'.format(p_gene1, p_gene2)
 
-def star_fusion():
-    exit('Not Implemented!')
+def squid(p_file):
+    fusions = ''
+    next(p_file)    # skip header
+    for line in p_file:
+        tmp = line.rstrip('\n').split('\t')[11].split(':')
+        if len(tmp) == 2:
+            fusions += fi_format(tmp[0], tmp[1])
+    
+    return fusions
+
+def pizzly(p_file):
+    fusions = ''
+    data = json.load(p_file)
+    for item in data['genes']:
+        fusions += fi_format(item['geneA']['name'], item['geneB']['name'])
+    
+    return fusions
+
+def ericscript(p_file):
+    fusions = ''
+    next(p_file)    # skip header
+    for line in p_file:
+        tmp = line.split('\t')
+        fusions += fi_format(tmp[0], tmp[1])
+    
+    return fusions
+
+def star_fusion(p_file):
+    fusions = ''
+    next(p_file)    #skip header
+    for line in p_file:
+        tmp = line.split('\t')[0].split('--')
+        fusions += fi_format(tmp[0], tmp[1])
+
+    return fusions
 
 def fusioncatcher(p_file):
     fusions = ''
@@ -27,31 +70,34 @@ def fusioncatcher(p_file):
 
 def transform(p_input, p_tool, p_output):
     if not os.path.exists(p_input):
-        sys.exit('Defined {} doesn\'t exist'.format(p_input))
+        exit('Defined {} doesn\'t exist'.format(p_input))
+    
+    if not os.path.exists(OUTPUT):
+        with open(OUTPUT, 'w'): pass
 
     if p_tool not in TOOLS:
-       sys.exit('Defined {} not in the supported list of transformations!'.format(p_tool))
+       exit('Defined {} not in the supported list of transformations!'.format(p_tool))
 
     try:
-        with open(p_input, 'r') as in_file, open(p_output, 'a') as out_file, open(SUMMARY, 'a') as summary:
+        fusions = ''
+        with open(p_input, 'r') as in_file:
             func = getattr(sys.modules[__name__], p_tool)   # get function from parameter
             fusions = func(in_file).rstrip()  # call function
+            in_file.close()    
+
+        with open(p_output, 'r+') as out_file, open(SUMMARY, 'a') as summary:
             if len(fusions) > 0:
-                out_file.write(fusions + '\n')
-                
-                summary_data = [x.split('--') for x in fusions.split('\n')]
-                summary.write(dump({p_tool : dict((k,v) for k,v in summary_data)}, default_flow_style=False, allow_unicode=True))
+                save(out_file, fusions)
+                summary.write(dump({p_tool : list(set(fusions.split('\n')))}, default_flow_style=False, allow_unicode=True))
             else:
                 summary.write(dump({p_tool: None}, default_flow_style=False, allow_unicode=True))
             
-            # closing files
-            in_file.close()
             out_file.close()
             summary.close()
     except IOError as error:
-        sys.exit(error)
+        print(error)
     except Exception as error:
-        sys.exit(error)
+        print(error)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="""Utility for transforming the results from apps to FusionInspector format""")

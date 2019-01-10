@@ -9,11 +9,10 @@
 ----------------------------------------------------------------------------------------
 */
 
-
 def helpMessage() {
     log.info"""
     =========================================
-     nf-core/rnafusion v${params.pipelineVersion}
+     nf-core/rnafusion v${workflow.manifest.version}
     =========================================
     Usage:
 
@@ -28,12 +27,15 @@ def helpMessage() {
                                     Available: standard, conda, docker, singularity, awsbatch, test
 
     Options:
-      --all                         [bool] Run all tools
       --singleEnd                   Specifies that the input is single end reads
       --star_fusion                 [bool] Run STAR-Fusion. Default: False
       --fusioncatcher               [bool] Run FusionCatcher. Default: False
         --fc_extra_options          Extra parameters for FusionCatcher. Can be found at https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md
       --fusion_inspector            [bool] Run Fusion-Inspectro. Default: False
+      --ericscript                  [bool] Run Ericscript. Default: False
+      --pizzly                      [Bool] Run Pizzly. Default: False
+      --squid                       [Bool] Run Squid. Default: False
+      --test                        [bool] Run in test mode
 
     References                      If not specified in the configuration file or you wish to overwrite any of the references.
       --fasta                       Path to Fasta reference
@@ -42,9 +44,6 @@ def helpMessage() {
       --outdir                      The output directory where the results will be saved
       --email                       Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits
       -name                         Name for the pipeline run. If not specified, Nextflow will automatically generate a random mnemonic.
-
-    QC options:
-      --skip_qc                     Skip all QC including MultiQC
 
     AWSBatch options:
       --awsqueue                    The AWSBatch JobQueue that needs to be set when running on AWSBatch
@@ -64,25 +63,17 @@ if (params.help){
 
 // Configurable variables
 params.name = false
+params.test = false
 params.fasta = params.genome ? params.genomes[ params.genome ].fasta ?: false : false
+params.gtf = params.genome ? params.genomes[ params.genome ].gtf ?: false : false
+params.star_index = params.genome ? params.genomes[ params.genome ].star ?: false : false
 params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
 params.email = false
 params.plaintext_email = false
-params.all = false
-params.skip_qc = false
-params.star_fusion = false
-params.fusioncatcher = false
-params.fusion_inspector = false
-params.fc_extra_options = ''
 
 multiqc_config = file(params.multiqc_config)
 output_docs = file("$baseDir/docs/output.md")
 
-// Validate inputs
-if ( params.fasta ){
-    fasta = file(params.fasta)
-    if( !fasta.exists() ) exit 1, "Fasta file not found: ${params.fasta}"
-}
 // AWSBatch sanity checking
 if(workflow.profile == 'awsbatch'){
     if (!params.awsqueue || !params.awsregion) exit 1, "Specify correct --awsqueue and --awsregion parameters on AWSBatch!"
@@ -108,21 +99,79 @@ if (!params.genome) {
     exit 1, "Mandatory parameter genome not specified!"    
 }
 
-if (!params.star_fusion_ref) {
-    exit 1, "Star-Fusion reference not specified!"
-} else {
-     Channel
-        .fromPath(params.star_fusion_ref)
-        .ifEmpty { exit 1, "Stat-Fusion reference directory not found!" }
-        .into { star_fusion_ref; fusion_inspector_ref }
+if (params.fasta) {
+    fasta = file(params.fasta)
+    if(!fasta.exists()) exit 1, "Fasta file not found: ${params.fasta}"
 }
 
-if (!params.fusioncatcher_dir) {
-    exit 1, "Fusion catcher data directory not specified!"
-} else {
-    fusioncatcher_dir = Channel
-        .fromPath(params.fusioncatcher_dir)
-        .ifEmpty { exit 1, "Fusion catcher data directory not found!" }
+if (params.gtf) {
+    gtf = file(params.gtf)
+    if(!gtf.exists()) exit 1, "GTF file not found: ${params.fasta}"
+}
+
+if(params.star_index){
+    star_index = Channel
+        .fromPath(params.star_index)
+        .ifEmpty { exit 1, "STAR index not found: ${params.star_index}" }
+}
+
+star_fusion_ref = ''
+if (params.star_fusion) {
+    if (!params.star_fusion_ref) {
+        exit 1, "Star-Fusion reference not specified!"
+    } else {
+        star_fusion_ref = Channel
+            .fromPath(params.star_fusion_ref)
+            .ifEmpty { exit 1, "Stat-Fusion reference directory not found!" }
+    }
+}
+
+fusioncatcher_ref = ''
+if (params.fusioncatcher) {
+    if (!params.fusioncatcher_ref) {
+        exit 1, "Fusion catcher data directory not specified!"
+    } else {
+        fusioncatcher_ref = Channel
+            .fromPath(params.fusioncatcher_ref)
+            .ifEmpty { exit 1, "Fusion catcher data directory not found!" }
+    }
+}
+
+fusion_inspector_ref = ''
+if (params.fusion_inspector) {
+    if (!params.star_fusion_ref) {
+        exit 1, "Reference not specified (using star-fusion reference path)!"
+    } else {
+        fusion_inspector_ref = Channel
+            .fromPath(params.star_fusion_ref)
+            .ifEmpty { exit 1, "Fusion-Inspector reference not found" }
+    }
+}
+
+ericscript_ref = ''
+if (params.ericscript) {
+    if (!params.ericscript_ref) {
+        exit 1, "Reference not specified!"
+    } else {
+        ericscript_ref = Channel
+            .fromPath(params.ericscript_ref)
+            .ifEmpty { exit 1, "Ericscript reference not found" }
+    }
+}
+
+pizzly_fasta = ''
+pizzly_gtf = ''
+if (params.pizzly) {
+    if (!params.pizzly_ref) {
+        exit 1, "No pizzly reference folder defined"
+    } else {
+        pizzly_fasta = Channel
+            .fromPath("$params.pizzly_ref/Homo_sapiens.GRCh38.cdna.all.fa.gz")
+            .ifEmpty { exit 1, "FASTA file not found!" }
+        pizzly_gtf = Channel
+            .fromPath("$params.pizzly_ref/Homo_sapiens.GRCh38.94.gtf")
+            .ifEmpty { exit 1, "GTF file not found!" }
+    }
 }
 
 /*
@@ -134,19 +183,22 @@ if (!params.fusioncatcher_dir) {
              .from(params.readPaths)
              .map { row -> [ row[0], [file(row[1][0])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; read_files_fusion_inspector }
+             .into { read_files_fastqc; read_files_summary; read_files_multiqc; read_files_star_fusion; read_files_fusioncatcher; 
+                     read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
      } else {
          Channel
              .from(params.readPaths)
              .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
              .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; read_files_fusion_inspector }
+             .into { read_files_fastqc; read_files_summary; read_files_multiqc; read_files_star_fusion; read_files_fusioncatcher; 
+                     read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
      }
  } else {
      Channel
          .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
          .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
-         .into { read_files_fastqc; read_files_star_fusion; read_files_fusioncatcher; read_files_gfusion; read_files_fusion_inspector }
+         .into { read_files_fastqc; read_files_summary; read_files_multiqc; read_files_star_fusion; read_files_fusioncatcher; 
+                     read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
  }
 
 
@@ -158,11 +210,11 @@ log.info """=======================================================
     | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                           `._,._,\'
 
-nf-core/rnafusion v${params.pipelineVersion}"
+nf-core/rnafusion v${workflow.manifest.version}"
 ======================================================="""
 def summary = [:]
 summary['Pipeline Name']  = 'nf-core/rnafusion'
-summary['Pipeline Version'] = params.pipelineVersion
+summary['Pipeline Version'] = workflow.manifest.version
 summary['Run Name']     = custom_runName ?: workflow.runName
 summary['Reads']        = params.reads
 summary['Fasta Ref']    = params.fasta
@@ -217,36 +269,38 @@ ${summary.collect { k,v -> "            <dt>$k</dt><dd><samp>${v ?: '<span style
  */
 process star_fusion {
     tag "$name"
-    publishDir "${params.outdir}/Star_fusion", mode: 'copy'
+    publishDir "${params.outdir}/tools/StarFusion", mode: 'copy'
 
     when:
-    params.star_fusion || params.all
+    params.star_fusion || (params.star_fusion && params.test)
 
     input:
     set val(name), file(reads) from read_files_star_fusion
     file reference from star_fusion_ref.collect()
 
     output:
-    file '*fusion_predictions.tsv' into star_fusion_predictions
-    file '*fusion_predictions.abridged.tsv' into star_fusion_abridged
+    file '*fusion_predictions.tsv' into star_fusion_fusions
+    file '*' into star_fusion_output
 
     script:
     if (params.singleEnd) {
         """
         STAR-Fusion \\
-        --genome_lib_dir ${reference} \\
-        --left_fq ${reads[0]} \\
-        --CPU  ${task.cpus} \\
-        --output_dir .
+            --genome_lib_dir ${reference} \\
+            --left_fq ${reads[0]} \\
+            --CPU  ${task.cpus} \\
+            --examine_coding_effect \\
+            --output_dir .
         """
     } else {
         """
         STAR-Fusion \\
-        --genome_lib_dir ${reference} \\
-        --left_fq ${reads[0]} \\
-        --right_fq ${reads[1]} \\
-        --CPU  ${task.cpus} \\
-        --output_dir .
+            --genome_lib_dir ${reference} \\
+            --left_fq ${reads[0]} \\
+            --right_fq ${reads[1]} \\
+            --CPU  ${task.cpus} \\
+            --examine_coding_effect \\
+            --output_dir .
         """
     } 
 }
@@ -256,81 +310,200 @@ process star_fusion {
  */
 process fusioncatcher {
     tag "$name"
-    publishDir "${params.outdir}/Fusioncatcher", mode: 'copy'
+    publishDir "${params.outdir}/tools/Fusioncatcher", mode: 'copy'
 
     when:
-    params.fusioncatcher || params.all
+    params.fusioncatcher || (params.fusioncatcher && params.test)
 
     input:
     set val(name), file(reads) from read_files_fusioncatcher
-    file data_dir from fusioncatcher_dir.collect()
+    file data_dir from fusioncatcher_ref.collect()
 
     output:
-    file 'final-list_candidate-fusion-genes.txt' into fusioncatcher_candidates
-    file '*.{txt,log,zip}' into fusioncatcher_output
+    file 'final-list_candidate-fusion-genes.txt' into fusioncatcher_fusions
+    file '*' into fusioncatcher_output
 
     script:
     if (params.singleEnd) {
         """
         fusioncatcher \\
-        -d ${data_dir} \\
-        -i ${reads[0]} \\
-        --threads ${task.cpus} \\
-        -o . \\
-        --skip-blat \\
-        --single-end \\
-        ${params.fc_extra_options}
+            -d ${data_dir} \\
+            -i ${reads[0]} \\
+            --threads ${task.cpus} \\
+            -o . \\
+            --skip-blat \\
+            --single-end \\
+            ${params.fc_extra_options}
         """
     } else {
         """
         fusioncatcher \\
-        -d ${data_dir} \\
-        -i ${reads[0]},${reads[1]} \\
-        --threads ${task.cpus} \\
-        -o . \\
-        --skip-blat \\
-        ${params.fc_extra_options}
+            -d ${data_dir} \\
+            -i ${reads[0]},${reads[1]} \\
+            --threads ${task.cpus} \\
+            -o . \\
+            --skip-blat \\
+            ${params.fc_extra_options}
         """
     }
 }
 
 /*
- * Fusion Inspector preprocess
+ * Ericscript
  */
-process fusion_inspector_preprocess {
+process ericscript {
     tag "$name"
-    publishDir "${params.outdir}/Transformers", mode: 'copy'
+    publishDir "${params.outdir}/tools/Ericscript", mode: 'copy'
 
     when:
-    params.fusion_inspector || params.all
+    params.ericscript || (params.ericscript && params.test)
 
     input:
-    file fusioncatcher_candidates
+    set val(name), file(reads) from read_files_ericscript
+    file reference from ericscript_ref.collect()
 
     output:
-    file 'fusions.txt' into fusions
-    file 'summary.yaml' into fusions_summary
+    file './tmp/fusions.results.total.tsv' into ericscript_fusions
+    file '*' into ericscript_output
+
+    script:
+    if (!params.singleEnd) {
+        """
+        ericscript.pl \\
+            -db ${reference} \\
+            -name fusions \\
+            -o ./tmp \\
+            ${reads[0]} \\
+            ${reads[1]}
+        """
+    }
+}
+
+/*
+ * Pizzly
+ */
+process pizzly {
+    tag "$name"
+    publishDir "${params.outdir}/tools/Pizzly", mode: 'copy'
+
+    when:
+    params.pizzly || (params.pizzly && params.test)
+
+    input:
+    set val(name), file(reads) from read_files_pizzly
+    file fasta from pizzly_fasta.collect()
+    file gtf from pizzly_gtf.collect()
+    
+    output:
+    file '*.unfiltered.json' into pizzly_fusions
+    file '*.{json,txt,tsv,fasta}' into pizzly_output
+
+    script:
+    if (!params.singleEnd) {
+        """
+        kallisto index -i index.idx -k ${params.pizzly_k} ${fasta}
+        kallisto quant -i index.idx --fusion -o output ${reads[0]} ${reads[1]}
+        pizzly -k ${params.pizzly_k} \\
+            --gtf ${gtf} \\
+            --cache index.cache.txt \\
+            --align-score 2 \\
+            --insert-size 400 \\
+            --fasta ${fasta} \\
+            --output pizzly_fusions output/fusion.txt
+        """
+    }
+}
+
+/*
+ * Squid
+ */
+process squid {
+    tag "$name"
+    publishDir "${params.outdir}/tools/Squid", mode: 'copy'
+
+    when:
+    params.squid || (params.squid && params.test)
+
+    input:
+    set val(name), file(reads) from read_files_squid
+    file index from star_index.collect()
+    file gtf
+    
+    output:
+    file '*_annotated.txt' into squid_fusions
+    file '*' into squid_output
+
+    script:
+    def avail_mem = task.memory ? "--limitBAMsortRAM ${task.memory.toBytes() - 100000000}" : ''
+    """
+    STAR \\
+        --genomeDir ${index} \\
+        --sjdbGTFfile ${gtf} \\
+        --runThreadN ${task.cpus} \\
+        --readFilesIn ${reads[0]} ${reads[1]} \\
+        --twopassMode Basic \\
+        --chimOutType SeparateSAMold --chimSegmentMin 20 --chimJunctionOverhangMin 12 --alignSJDBoverhangMin 10 --outReadsUnmapped Fastx --outSAMstrandField intronMotif \\
+        --outSAMtype BAM Unsorted ${avail_mem} \\
+        --readFilesCommand zcat
+    samtools sort Aligned.out.bam > Aligned.out.sorted.bam
+    samtools view -Shb Chimeric.out.sam > Chimeric.out.bam
+    squid -b Aligned.out.sorted.bam -c Chimeric.out.bam -o fusions
+    AnnotateSQUIDOutput.py ${gtf} fusions_sv.txt fusions_annotated.txt
+    """
+}
+
+/*************************************************************
+ * Summarizing results from tools
+ ************************************************************/
+process summary {
+    tag "$name"
+    publishDir "${params.outdir}/Report-${name}", mode: 'copy'
+ 
+    when:
+    !params.test && (params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
+    
+    input:
+    set val(name), file(reads) from read_files_summary
+    file fusioncatcher from fusioncatcher_fusions.ifEmpty('')
+    file star_fusion from star_fusion_fusions.ifEmpty('')
+    file ericscript from ericscript_fusions.ifEmpty('')
+    file pizzly from pizzly_fusions.ifEmpty('')
+    file squid from squid_fusions.ifEmpty('')
+
+    output:
+    file 'fusions.txt' into summary_fusions
+    file 'summary.yaml' into summary_fusions_mq
+    file '*.html' into report
     
     script:
     """
-    transformer.py -i ${fusioncatcher_candidates} -t fusioncatcher
+    transformer.py -i ${fusioncatcher} -t fusioncatcher
+    transformer.py -i ${star_fusion} -t star_fusion
+    transformer.py -i ${ericscript} -t ericscript
+    transformer.py -i ${pizzly} -t pizzly
+    transformer.py -i ${squid} -t squid
+    generate_report.py fusions.txt summary.yaml -s ${name} -o .
     """
 }
+
+/*************************************************************
+ * Visualization
+ ************************************************************/
 
 /*
  * Fusion Inspector
  */
 process fusion_inspector {
     tag "$name"
-    publishDir "${params.outdir}/FusionInspector", mode: 'copy'
+    publishDir "${params.outdir}/tools/FusionInspector", mode: 'copy'
 
     when:
-    params.fusion_inspector || params.all
+    params.fusion_inspector || (params.fusion_inspector && params.test)
 
     input:
     set val(name), file(reads) from read_files_fusion_inspector
-    file reference from fusion_inspector_ref
-    file fusions
+    file reference from fusion_inspector_ref.collect()
+    file summary_fusions
 
     output:
     file '*' into fusion_inspector_output
@@ -338,7 +511,7 @@ process fusion_inspector {
     script:
     """
     FusionInspector \\
-        --fusions ${fusions} \\
+        --fusions ${summary_fusions} \\
         --genome_lib ${reference} \\
         --left_fq ${reads[0]} \\
         --right_fq ${reads[1]} \\
@@ -358,18 +531,24 @@ process fusion_inspector {
  */
 process get_software_versions {
 
+    when:
+    !params.test
+
     output:
     file 'software_versions_mqc.yaml' into software_versions_yaml
 
     script:
     """
-    echo $params.pipelineVersion > v_pipeline.txt
+    echo $workflow.manifest.version > v_pipeline.txt
     echo $workflow.nextflow.version > v_nextflow.txt
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
-    STAR-Fusion --version > v_star_fusion.txt
-    fusioncatcher --version > v_fusioncatcher.txt
-    cat /environment.yml | grep 'fusion-inspector' > v_fusion_inspector.txt
+    cat $baseDir/tools/fusioncatcher/Dockerfile | grep "VERSION" > v_fusioncatcher.txt
+    cat $baseDir/tools/fusion-inspector/environment.yml | grep "fusion-inspector" > v_fusion_inspector.txt
+    cat $baseDir/tools/star-fusion/environment.yml | grep "star-fusion" > v_star_fusion.txt
+    cat $baseDir/tools/ericscript/environment.yml | grep "ericscript" > v_ericscript.txt
+    cat $baseDir/tools/pizzly/environment.yml | grep "pizzly" > v_pizzly.txt
+    cat $baseDir/tools/squid/environment.yml | grep "squid" > v_squid.txt
     scrape_software_versions.py > software_versions_mqc.yaml
     """
 }
@@ -383,7 +562,7 @@ process fastqc {
         saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
 
     when:
-    !params.skip_qc || params.all
+    !params.test
 
     input:
     set val(name), file(reads) from read_files_fastqc
@@ -398,42 +577,22 @@ process fastqc {
 }
 
 /*
- * Fusion gene compare
- * Builds MultiQC custom section
- */
-process fusion_gene_compare {
-    publishDir "${params.outdir}/FusionGeneCompare", mode: 'copy'
-
-    when:
-    params.fusion_inspector || params.all
-
-    input:
-    file fusions_summary
-
-    output:
-    file 'fusion_genes_mqc.yaml' into fusion_genes_mqc
-
-    script:
-    """
-    fusion_genes_compare.py -i ${fusions_summary} -s test_sample
-    """
-}
-
-/*
  * MultiQC
  */
 process multiqc {
+    tag "$name"
     publishDir "${params.outdir}/MultiQC", mode: 'copy'
 
     when:
-    !params.skip_qc || params.all
+    !params.test
 
     input:
+    set val(name), file(reads) from read_files_multiqc
     file multiqc_config
     file ('fastqc/*') from fastqc_results.collect()
     file ('software_versions/*') from software_versions_yaml
     file workflow_summary from create_workflow_summary(summary)
-    file fusion_genes_mqc
+    file fusions_mq from summary_fusions_mq.ifEmpty('')
 
     output:
     file "*multiqc_report.html" into multiqc_report
@@ -443,6 +602,7 @@ process multiqc {
     rtitle = custom_runName ? "--title \"$custom_runName\"" : ''
     rfilename = custom_runName ? "--filename " + custom_runName.replaceAll('\\W','_').replaceAll('_+','_') + "_multiqc_report" : ''
     """
+    create_mqc_section.py -i ${fusions_mq} -s "${name}"
     multiqc -f $rtitle $rfilename --config $multiqc_config .
     """
 }
@@ -451,8 +611,10 @@ process multiqc {
  * Output Description HTML
  */
 process output_documentation {
-    tag "$prefix"
     publishDir "${params.outdir}/Documentation", mode: 'copy'
+
+    when:
+    !params.test
 
     input:
     file output_docs
@@ -477,7 +639,7 @@ workflow.onComplete {
       subject = "[nf-core/rnafusion] FAILED: $workflow.runName"
     }
     def email_fields = [:]
-    email_fields['version'] = params.pipelineVersion
+    email_fields['version'] = workflow.manifest.version
     email_fields['runName'] = custom_runName ?: workflow.runName
     email_fields['success'] = workflow.success
     email_fields['dateComplete'] = workflow.complete

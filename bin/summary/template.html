@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>{{ report_title }}</title>
+
+  <!-- Import Bootstrap CSS, Main CSS -->
+  {{ include_raw('assets/css/bootstrap.min.css') | safe }}
+  {{ include_raw('assets/css/datatables.min.css') | safe }}
+  {{ include_raw('assets/css/main.css') | safe }}
+
+  <!-- Additional CSS -->
+  {% for css in assets.css %}
+  {{ include_raw(css) | safe }}
+  {% endfor %}
+</head>
+
+<body>
+  {{ include_raw('assets/js/jquery-3.3.1.slim.min.js') | safe }}
+  {{ include_raw('assets/js/datatables.min.js') | safe }}
+  {{ include_raw('assets/js/highcharts-6.2.0.js') | safe }}
+  {{ include_raw('assets/js/highcharts-exporting.js') | safe }}
+  <script>
+    $(document).ready(function () {
+      $.extend(true, $.fn.dataTable.defaults, {
+        dom: "<'row'<'col-sm-3'l><'col-sm-5 text-center'B><'col-sm-4'f>>" +
+          "<'row'<'col-sm-12'tr>>" +
+          "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        buttons: {
+          buttons: [{
+              extend: 'copy',
+              className: 'btn-warning'
+            },
+            {
+              extend: 'csv',
+              className: 'btn-secondary'
+            },
+            {
+              extend: 'pdf',
+              className: 'btn-info'
+            },
+            {
+              extend: 'print',
+              className: 'btn-primary'
+            }
+          ],
+          dom: {
+            button: {
+              className: 'btn'
+            }
+          }
+        }
+      });
+    });
+  </script>
+  <!-- Additional JS -->
+  {% for js in assets.js %}
+  {{ include_raw(js) | safe }}
+  {% endfor %}
+
+  {% include 'partials/header.html' %}
+  <div class="container-fluid">
+    <div class="row">
+      {% include 'partials/sidebar.html' %}
+      {% include dynamic_partial %}
+    </div>
+  </div>
+</body>
+
+</html>

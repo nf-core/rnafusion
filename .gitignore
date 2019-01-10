@@ -1,3 +1,5 @@
 .nextflow*
 work/
 results/
+tests/
+.vscode/

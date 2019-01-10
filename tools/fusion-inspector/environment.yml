@@ -1,0 +1,5 @@
+name: fusion-inspector
+channels:
+  - bioconda
+dependencies:
+  - fusion-inspector=1.3.1
