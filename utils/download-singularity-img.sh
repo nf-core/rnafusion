@@ -8,4 +8,4 @@ singularity pull --name rnafusion_ericscript_v${VERSION}.img docker://nfcore/rna
 singularity pull --name rnafusion_pizzly_v${VERSION}.img docker://nfcore/rnafusion:pizzly_v${VERSION}
 singularity pull --name rnafusion_squid_v${VERSION}.img docker://nfcore/rnafusion:squid_v${VERSION}
 singularity pull --name rnafusion_summary-report_v${VERSION}.img docker://nfcore/rnafusion:summary-report_v${VERSION}
-singularity pull --name rnafusion-latest.img docker://nfcore/rnafusion
+singularity pull --name rnafusion-${VERSION}.img docker://nfcore/rnafusion:${VERSION}
