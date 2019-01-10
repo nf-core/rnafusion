@@ -22,7 +22,7 @@ cd $cwd \
 echo 'Downloading Ericscript references'
 cd $cwd \
 && mkdir ericscript_ref && cd ericscript_ref \
-&& wget https://raw.githubusercontent.com/circulosmeos/gdown.pl/master/gdown.pl \
+&& wget https://raw.githubusercontent.com/circulosmeos/gdown.pl/dfd6dc910a38a42d550397bb5c2335be2c4bcf54/gdown.pl \
 && chmod +x gdown.pl \
 && ./gdown.pl "https://drive.google.com/uc?export=download&confirm=qgOc&id=0B9s__vuJPvIiUGt1SnFMZFg4TlE" ericscript_db_homosapiens_ensembl84.tar.bz2 \
 && tar jxf ericscript_db_homosapiens_ensembl84.tar.bz2 \
