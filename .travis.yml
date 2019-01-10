@@ -10,7 +10,7 @@ before_install:
   # PRs made to 'master' branch should always orginate from another repo or the 'dev' branch
   - '[ $TRAVIS_PULL_REQUEST = "false" ] || [ $TRAVIS_BRANCH != "master" ] || ([ $TRAVIS_PULL_REQUEST_SLUG = $TRAVIS_REPO_SLUG ] && [ $TRAVIS_PULL_REQUEST_BRANCH = "dev" ])'
   - docker pull nfcore/rnafusion:dev
-  - docker tag nfcore/rnafusion:dev nfcore/rnafusion:latest
+  - docker tag nfcore/rnafusion:dev nfcore/rnafusion:1.0
 
 env:
   - NXF_VER='0.32.0' # Specify a minimum NF version that should be tested and work

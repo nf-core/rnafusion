@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION="$(cat ../nextflow.config | grep "version" | cut -d"=" -f2 | tr -d "\'" | tr -d " ")"
+VERSION="$(cat ../nextflow.config | grep "container_version" | cut -d"=" -f2 | tr -d "\'" | tr -d " ")"
 if [ $# -eq 0 ]; then
     echo "No tool name specified!"
     exit 1
