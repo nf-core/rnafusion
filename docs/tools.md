@@ -38,7 +38,7 @@ cat human_v90.tar.gz.* | tar xz
 Update the config file to include the directory
 ```groovy
 params {
-  fusioncatcher_dir = '/path/to/human_v90'
+  fusioncatcher_ref = '/path/to/human_v90'
 }
 ```
 ## Ericscript
