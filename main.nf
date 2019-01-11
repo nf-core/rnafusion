@@ -372,6 +372,7 @@ process ericscript {
         ericscript.pl \\
             -db ${reference} \\
             -name fusions \\
+            -p ${task.cpus} \\
             -o ./tmp \\
             ${reads[0]} \\
             ${reads[1]}
@@ -402,7 +403,7 @@ process pizzly {
     if (!params.singleEnd) {
         """
         kallisto index -i index.idx -k ${params.pizzly_k} ${fasta}
-        kallisto quant -i index.idx --fusion -o output ${reads[0]} ${reads[1]}
+        kallisto quant -t ${task.cpus} -i index.idx --fusion -o output ${reads[0]} ${reads[1]}
         pizzly -k ${params.pizzly_k} \\
             --gtf ${gtf} \\
             --cache index.cache.txt \\
