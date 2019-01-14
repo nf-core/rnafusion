@@ -63,7 +63,6 @@ if (params.help){
 
 // Configurable variables
 params.name = false
-params.test = false
 params.fasta = params.genome ? params.genomes[ params.genome ].fasta ?: false : false
 params.gtf = params.genome ? params.genomes[ params.genome ].gtf ?: false : false
 params.star_index = params.genome ? params.genomes[ params.genome ].star ?: false : false
@@ -73,6 +72,15 @@ params.plaintext_email = false
 
 multiqc_config = file(params.multiqc_config)
 output_docs = file("$baseDir/docs/output.md")
+
+// Reference variables required by tools
+star_index = ''
+star_fusion_ref = ''
+fusioncatcher_ref = ''
+fusion_inspector_ref = ''
+ericscript_ref = ''
+pizzly_fasta = ''
+pizzly_gtf = ''
 
 // AWSBatch sanity checking
 if(workflow.profile == 'awsbatch'){
@@ -115,7 +123,6 @@ if(params.star_index){
         .ifEmpty { exit 1, "STAR index not found: ${params.star_index}" }
 }
 
-star_fusion_ref = ''
 if (params.star_fusion) {
     if (!params.star_fusion_ref) {
         exit 1, "Star-Fusion reference not specified!"
@@ -126,7 +133,6 @@ if (params.star_fusion) {
     }
 }
 
-fusioncatcher_ref = ''
 if (params.fusioncatcher) {
     if (!params.fusioncatcher_ref) {
         exit 1, "Fusion catcher data directory not specified!"
@@ -137,7 +143,6 @@ if (params.fusioncatcher) {
     }
 }
 
-fusion_inspector_ref = ''
 if (params.fusion_inspector) {
     if (!params.star_fusion_ref) {
         exit 1, "Reference not specified (using star-fusion reference path)!"
@@ -148,7 +153,6 @@ if (params.fusion_inspector) {
     }
 }
 
-ericscript_ref = ''
 if (params.ericscript) {
     if (!params.ericscript_ref) {
         exit 1, "Reference not specified!"
@@ -159,8 +163,6 @@ if (params.ericscript) {
     }
 }
 
-pizzly_fasta = ''
-pizzly_gtf = ''
 if (params.pizzly) {
     if (!params.pizzly_ref) {
         exit 1, "No pizzly reference folder defined"
