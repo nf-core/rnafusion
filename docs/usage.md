@@ -8,10 +8,14 @@
 * [Reproducibility](#reproducibility)
 * [Main arguments](#main-arguments)
     * [`-profile`](#-profile-single-dash)
-        * [`docker`](#docker)
         * [`awsbatch`](#awsbatch)
-        * [`standard`](#standard)
-        * [`none`](#none)
+        * [`conda`](#conda)
+        * [`docker`](#docker)
+        * [`munin_docker`](#munin_docker)
+        * [`munin_singularity`](#munin_singularity)
+        * [`singularity`](#singularity)
+        * [`test`](#test)
+        * [`uppmax_devel`](#uppmax_devel)
     * [`--reads`](#--reads)
     * [`--singleEnd`](#--singleend)
 * [Reference Genomes](#reference-genomes)
@@ -50,19 +54,19 @@ NXF_OPTS='-Xms1g -Xmx4g'
 ## Running the pipeline
 The typical command for running the whole pipeline is as follows:
 ```bash
-nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile standard,docker --star_fusion --fusioncatcher --ericscript --pizzly --squid --fusion_inspector
+nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile docker --star_fusion --fusioncatcher --ericscript --pizzly --squid --fusion_inspector
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
 
 You can run only particular tools as follows:
 ```bash
-nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile standard,docker --fusioncatcher --ericscript
+nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile docker --fusioncatcher --ericscript
 ```
 
 It is also possible to run just the tool itself by addind `--test` parameter like so:
 ```bash
-nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile standard,docker --star_fusion --test
+nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile docker --star_fusion --test
 ```
 
 Note that the pipeline will create the following files in your working directory:
@@ -94,25 +98,26 @@ This version number will be logged in reports when you run the pipeline, so that
 ### `-profile`
 Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments. Note that multiple profiles can be loaded, for example: `-profile standard,docker` - the order of arguments is important!
 
-* `standard`
-    * The default profile, used if `-profile` is not specified at all.
-    * Runs locally and expects all software to be installed and available on the `PATH`.
+* `awsbatch`
+    * A generic configuration profile to be used with AWS Batch.
+* `conda`
+    * A generic configuration profile to be used with [conda](https://conda.io/docs/)
 * `docker`
     * A generic configuration profile to be used with [Docker](http://docker.com/)
     * Pulls software from dockerhub: [`nfcore/rnafusion`](http://hub.docker.com/r/nfcore/rnafusion/)
+* `munin_docker`
+    * Designed to be used on the MUNIN clusters using [Docker](http://docker.com/)
+* `munin_singularity`
+    * Designed to be used on the MUNIN clusters using [Singularity](http://singularity.lbl.gov/)
 * `singularity`
     * A generic configuration profile to be used with [Singularity](http://singularity.lbl.gov/)
-    * Pulls software from singularity-hub
-* `conda`
-    * A generic configuration profile to be used with [conda](https://conda.io/docs/)
-    * Pulls most software from [Bioconda](https://bioconda.github.io/)
-* `awsbatch`
-    * A generic configuration profile to be used with AWS Batch.
+    * Pulls software from docker-hub
 * `test`
     * A profile with a complete configuration for automated testing
     * Includes links to test data so needs no other parameters
-* `none`
-    * No configuration at all. Useful if you want to build your own config from scratch and want to avoid loading in the default `base` config profile (not recommended).
+* `uppmax_devel`
+    * Designed to be used on the Swedish UPPMAX clusters such as `milou`, `rackham`, `bianca` and `irma`
+    * See [docs/configuration/uppmax.md](configuration/uppmax.md)
 
 ### `--reads`
 Use this to specify the location of your input FastQ files. For example:

@@ -18,6 +18,10 @@ The workflow processes raw single-read (limited tools available) or paired-end d
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker / singularity containers making installation trivial and results highly reproducible.
 
+```bash
+nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile docker --star_fusion --fusioncatcher --ericscript --pizzly --squid --fusion_inspector
+```
+
 ### Documentation
 The nf-core/rnafusion pipeline comes with documentation about the pipeline, found in the `docs/` directory:
 
