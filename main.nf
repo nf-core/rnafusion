@@ -399,7 +399,7 @@ process squid {
     publishDir "${params.outdir}/tools/Squid", mode: 'copy'
 
     when:
-    params.squid || (!params.singleEnd || params.test)
+    params.squid && (!params.singleEnd || params.test)
 
     input:
     set val(name), file(reads) from read_files_squid
