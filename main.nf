@@ -336,7 +336,7 @@ process ericscript {
     publishDir "${params.outdir}/tools/Ericscript", mode: 'copy'
 
     when:
-    (params.ericscript && !params.singleEnd) || (params.ericscript && params.test)
+    params.ericscript && (!params.singleEnd || params.test)
 
     input:
     set val(name), file(reads) from read_files_ericscript
@@ -366,7 +366,7 @@ process pizzly {
     publishDir "${params.outdir}/tools/Pizzly", mode: 'copy'
 
     when:
-    (params.pizzly && !params.singleEnd) || (params.pizzly && params.test)
+    params.pizzly && (!params.singleEnd || params.test)
 
     input:
     set val(name), file(reads) from read_files_pizzly
@@ -399,7 +399,7 @@ process squid {
     publishDir "${params.outdir}/tools/Squid", mode: 'copy'
 
     when:
-    (params.squid && !params.singleEnd) || (params.squid && params.test)
+    params.squid || (!params.singleEnd || params.test)
 
     input:
     set val(name), file(reads) from read_files_squid
