@@ -82,7 +82,7 @@ The process is very similar: running the pipeline with the option `-profile stan
 If running offline with Singularity, you'll need to download and transfer the Singularity image first:
 
 ```bash
-singularity pull --name nf-core-rnafusion.simg shub://nf-core/rnafusion
+singularity pull --name nf-core-rnafusion.simg docker://nf-core/rnafusion
 ```
 
 Once transferred, use `-with-singularity` and specify the path to the image file:
