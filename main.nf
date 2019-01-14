@@ -285,26 +285,16 @@ process star_fusion {
     file '*' into star_fusion_output
 
     script:
-    if (params.singleEnd) {
-        """
-        STAR-Fusion \\
-            --genome_lib_dir ${reference} \\
-            --left_fq ${reads[0]} \\
-            --CPU  ${task.cpus} \\
-            --examine_coding_effect \\
-            --output_dir .
-        """
-    } else {
-        """
-        STAR-Fusion \\
-            --genome_lib_dir ${reference} \\
-            --left_fq ${reads[0]} \\
-            --right_fq ${reads[1]} \\
-            --CPU  ${task.cpus} \\
-            --examine_coding_effect \\
-            --output_dir .
-        """
-    } 
+    option = params.singleEnd ?: "--right_fq ${reads[1]}"
+    """
+    STAR-Fusion \\
+        --genome_lib_dir ${reference} \\
+        --left_fq ${reads[0]} \\
+        ${option} \\
+        --CPU  ${task.cpus} \\
+        --examine_coding_effect \\
+        --output_dir .
+    """
 }
 
 /*
@@ -326,28 +316,16 @@ process fusioncatcher {
     file '*' into fusioncatcher_output
 
     script:
-    if (params.singleEnd) {
-        """
-        fusioncatcher \\
-            -d ${data_dir} \\
-            -i ${reads[0]} \\
-            --threads ${task.cpus} \\
-            -o . \\
-            --skip-blat \\
-            --single-end \\
-            ${params.fc_extra_options}
-        """
-    } else {
-        """
-        fusioncatcher \\
-            -d ${data_dir} \\
-            -i ${reads[0]},${reads[1]} \\
-            --threads ${task.cpus} \\
-            -o . \\
-            --skip-blat \\
-            ${params.fc_extra_options}
-        """
-    }
+    option = params.singleEnd ? "${reads[0]}" : "${reads[0]},${reads[1]}"
+    """
+    fusioncatcher \\
+        -d ${data_dir} \\
+        -i ${option} \\
+        --threads ${task.cpus} \\
+        -o . \\
+        --skip-blat \\
+        ${params.fc_extra_options}
+    """
 }
 
 /*
@@ -358,7 +336,7 @@ process ericscript {
     publishDir "${params.outdir}/tools/Ericscript", mode: 'copy'
 
     when:
-    params.ericscript || (params.ericscript && params.test)
+    (params.ericscript && !params.singleEnd) || (params.ericscript && params.test)
 
     input:
     set val(name), file(reads) from read_files_ericscript
@@ -369,17 +347,15 @@ process ericscript {
     file '*' into ericscript_output
 
     script:
-    if (!params.singleEnd) {
-        """
-        ericscript.pl \\
-            -db ${reference} \\
-            -name fusions \\
-            -p ${task.cpus} \\
-            -o ./tmp \\
-            ${reads[0]} \\
-            ${reads[1]}
-        """
-    }
+    """
+    ericscript.pl \\
+        -db ${reference} \\
+        -name fusions \\
+        -p ${task.cpus} \\
+        -o ./tmp \\
+        ${reads[0]} \\
+        ${reads[1]}
+    """
 }
 
 /*
@@ -390,7 +366,7 @@ process pizzly {
     publishDir "${params.outdir}/tools/Pizzly", mode: 'copy'
 
     when:
-    params.pizzly || (params.pizzly && params.test)
+    (params.pizzly && !params.singleEnd) || (params.pizzly && params.test)
 
     input:
     set val(name), file(reads) from read_files_pizzly
@@ -402,19 +378,17 @@ process pizzly {
     file '*.{json,txt,tsv,fasta}' into pizzly_output
 
     script:
-    if (!params.singleEnd) {
-        """
-        kallisto index -i index.idx -k ${params.pizzly_k} ${fasta}
-        kallisto quant -t ${task.cpus} -i index.idx --fusion -o output ${reads[0]} ${reads[1]}
-        pizzly -k ${params.pizzly_k} \\
-            --gtf ${gtf} \\
-            --cache index.cache.txt \\
-            --align-score 2 \\
-            --insert-size 400 \\
-            --fasta ${fasta} \\
-            --output pizzly_fusions output/fusion.txt
-        """
-    }
+    """
+    kallisto index -i index.idx -k ${params.pizzly_k} ${fasta}
+    kallisto quant -t ${task.cpus} -i index.idx --fusion -o output ${reads[0]} ${reads[1]}
+    pizzly -k ${params.pizzly_k} \\
+        --gtf ${gtf} \\
+        --cache index.cache.txt \\
+        --align-score 2 \\
+        --insert-size 400 \\
+        --fasta ${fasta} \\
+        --output pizzly_fusions output/fusion.txt
+    """
 }
 
 /*
@@ -425,7 +399,7 @@ process squid {
     publishDir "${params.outdir}/tools/Squid", mode: 'copy'
 
     when:
-    params.squid || (params.squid && params.test)
+    (params.squid && !params.singleEnd) || (params.squid && params.test)
 
     input:
     set val(name), file(reads) from read_files_squid
@@ -501,7 +475,7 @@ process fusion_inspector {
     publishDir "${params.outdir}/tools/FusionInspector", mode: 'copy'
 
     when:
-    params.fusion_inspector || (params.fusion_inspector && params.test)
+    (params.fusion_inspector && !params.singleEnd) || (params.fusion_inspector && params.test)
 
     input:
     set val(name), file(reads) from read_files_fusion_inspector
