@@ -79,11 +79,13 @@ Then, running the pipeline with the option `-profile standard,docker` tells Next
 If you're not able to use Docker then [Singularity](http://singularity.lbl.gov/) is a great alternative.
 The process is very similar: running the pipeline with the option `-profile standard,singularity` tells Nextflow to enable singularity for this run. An image containing all of the software requirements will be automatically fetched and used from singularity hub.
 
-If running offline with Singularity, you'll need to download and transfer the Singularity image first:
+If running offline with Singularity, you'll need to build and transfer the Singularity images first:  This can be done with `utils/download-singularity-img.sh`  and `utils/download-singularity-img.sh` like so:
 
-```bash
-singularity pull --name nf-core-rnafusion.simg docker://nf-core/rnafusion
 ```
+cd rnafusion/utils
+download-singularity-img.sh
+```
+
 
 Once transferred, use `-with-singularity` and specify the path to the image file:
 
