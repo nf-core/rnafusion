@@ -12,7 +12,7 @@
 # Download references for tools
 ## 1. Using script
 ```bash
-cd utils && sh download-references.sh
+cd utils && sh download-references.sh <PATH>
 ```
 
 ## 2.  Manual download
