@@ -1,4 +1,10 @@
 #!/bin/bash
+
+#Create a reference directory
+
+mkdir ../../rnafusion_references
+cd ../../rnafusion_references
+
 cwd=`pwd`
 
 # STAR-Fusion
