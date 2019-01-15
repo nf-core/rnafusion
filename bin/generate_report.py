@@ -8,6 +8,8 @@ from summary.report import Report
 from summary.section import Section
 from summary.graph import Graph
 
+TOOL_DETECTION_CUTOFF = 2
+
 def parse_summary(p_summary):
     try:
         with open(p_summary, 'r') as in_file:
@@ -105,11 +107,14 @@ def create_fusions_table(p_summary, p_known_fusions):
 
     for fusion in unique_fusions:
         tools = [fusion in x for x in all_fusions]
-        fusions[fusion] = {
-            'known': fusion in p_known_fusions,
-            'tools': tools,
-            'tools_total': sum(tools)
-        }
+        summary_tools = len(p_summary.keys())
+        # Only add fusions that are detected by at least TOOL_DETECTION_CUTOFF tools if more than TOOL_DETECTION_CUTOFF tools are applied
+        if sum(tools) >= TOOL_DETECTION_CUTOFF or summary_tools < TOOL_DETECTION_CUTOFF:
+            fusions[fusion] = {
+                'known': fusion in p_known_fusions,
+                'tools': tools,
+                'tools_total': sum(tools)
+            }
 
     return { 'fusions': fusions, 'tools': p_summary.keys() }
 
@@ -249,13 +254,13 @@ def generate(p_args):
     
     fusion_list_section = Section()
     fusion_list_section.id = 'fusion_list'
-    fusion_list_section.title = 'List of all detected fusions'
+    fusion_list_section.title = 'List of detected fusions'
+    fusion_list_section.content = 'Filters fusions found by at least ' + str(TOOL_DETECTION_CUTOFF) + ' tools. ' \
+                                  'If number of chosen tools is less than ' + str(TOOL_DETECTION_CUTOFF) + ' the filter is disabled. ' \
+                                  'The whole list can be found in <code>results/Report-' + str(args.sample) + '/fusions.txt</code>.'
     fusion_list_section.data = create_fusions_table(summary_file, known_fusions)
     index_page.add_section(fusion_list_section)
     report.add_page(index_page)
-    
-    # Render final report
-    report.render()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="""Utility for generating HTML summary report""")

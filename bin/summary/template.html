@@ -20,8 +20,9 @@
 <body>
   {{ include_raw('assets/js/jquery-3.3.1.slim.min.js') | safe }}
   {{ include_raw('assets/js/datatables.min.js') | safe }}
-  {{ include_raw('assets/js/highcharts-6.2.0.js') | safe }}
+  {{ include_raw('assets/js/highcharts-7.0.1.js') | safe }}
   {{ include_raw('assets/js/highcharts-exporting.js') | safe }}
+  {{ include_raw('assets/js/highcharts-export-data.js') | safe }}
   <script>
     $(document).ready(function () {
       $.extend(true, $.fn.dataTable.defaults, {

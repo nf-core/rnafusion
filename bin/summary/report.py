@@ -29,13 +29,19 @@ class Report:
             template_variables = {**self.j2_variables, **dict_page}
             template_variables['menu'] = [(key, page.get_section(key).title) for key in page.sections.keys()]
             self.pages[page.filename] = template_variables
+            self.render(page.filename, template_variables)
 
-    def render(self):
-        for page, template_variables in self.pages.items():
-            # print('Building ' + page +  ' ...')
-            output = self.j2_env.get_template('template.html').render(template_variables)
-            with open(os.path.join(self.output_dir, page), 'w') as file_out:
-                file_out.write(output)
+    def render(self, filename, template_variables):
+        output = self.j2_env.get_template('template.html').render(template_variables)
+        with open(os.path.join(self.output_dir, filename), 'w') as file_out:
+            file_out.write(output)
+
+    # def render(self):
+    #     for page, template_variables in self.pages.items():
+    #         # print('Building ' + page +  ' ...')
+    #         output = self.j2_env.get_template('template.html').render(template_variables)
+    #         with open(os.path.join(self.output_dir, page), 'w') as file_out:
+    #             file_out.write(output)
 
     def __include_raw(self, filename):
         file_extension = Path(filename).suffix
