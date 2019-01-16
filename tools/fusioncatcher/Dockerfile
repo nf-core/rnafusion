@@ -1,7 +1,7 @@
 FROM nfcore/base
 
 LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.proks@scilifelab.se" \
-    description="Docker image containing all requirements for NGI-RNAfusion pipeline"
+    description="Docker image containing all requirements for nfcore/rnafusion pipeline"
 
 LABEL VERSION="1.00 (045a8af)"
 RUN apt-get -y update
