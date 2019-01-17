@@ -17,9 +17,12 @@ ERROR ~ Cannot find any reads matching: *{1,2}.fastq.gz
 
 Note that if your sample name is "messy" then you have to be very particular with your glob specification. A file name like `L1-1-D-2h_S1_L002_R1_001.fastq.gz` can be difficult enough for a human to read. Specifying `*{1,2}*.gz` wont work give you what you want Whilst `*{R1,R2}*.gz` will.
 
-
 ## Data organization
 The pipeline can't take a list of multiple input files - it takes a glob expression. If your input files are scattered in different paths then we recommend that you generate a directory with symlinked files. If running in paired end mode please make sure that your files are sensibly named so that they can be properly paired. See the previous point.
+
+## Strange errors from tools
+
+Make sure you are using the **recommended** amount of RAM. Some tools will fail because of this and will break the pipeline throwing strange error messages and codes. Some of the tools are not maintained any more and require small hacking as can be seen in some `Dockerfiles` defined in `tools/` folder.
 
 ## Extra resources and getting help
 If you still have an issue with running the pipeline then feel free to contact us.
