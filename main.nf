@@ -9,11 +9,18 @@
 ----------------------------------------------------------------------------------------
 */
 
+nfcore_logo = """=======================================================
+                                          ,--./,-.
+          ___     __   __   __   ___     /,-._.--~\'
+    |\\ | |__  __ /  ` /  \\ |__) |__         }  {
+    | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
+                                          `._,._,\'
+
+nf-core/rnafusion v${workflow.manifest.version}"
+======================================================="""
+
 def helpMessage() {
-    log.info"""
-    =========================================
-     nf-core/rnafusion v${workflow.manifest.version}
-    =========================================
+    log.info """${nfcore_logo}
     Usage:
 
     The typical command for running the pipeline is as follows:
@@ -206,15 +213,7 @@ if (params.pizzly) {
 
 
 // Header log info
-log.info """=======================================================
-                                          ,--./,-.
-          ___     __   __   __   ___     /,-._.--~\'
-    |\\ | |__  __ /  ` /  \\ |__) |__         }  {
-    | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
-                                          `._,._,\'
-
-nf-core/rnafusion v${workflow.manifest.version}"
-======================================================="""
+log.info nfcore_logo
 def summary = [:]
 summary['Pipeline Name']  = 'nf-core/rnafusion'
 summary['Pipeline Version'] = workflow.manifest.version

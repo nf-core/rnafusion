@@ -34,6 +34,11 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile docker --star_fusion --fusioncatcher --ericscript --pizzly --squid --fusion_inspector
 ```
 
+For available parameters or help run:
+```bash
+nextflow run nf-core/rnafusion --help
+```
+
 ### Documentation
 
 The nf-core/rnafusion pipeline comes with documentation about the pipeline, found in the `docs/` directory:
