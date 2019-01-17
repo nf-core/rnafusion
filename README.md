@@ -18,6 +18,16 @@ The pipeline works with both single-end and paired-end data, though not all fusi
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker / singularity containers making installation trivial and results highly reproducible.
 
+| Tool            | Single-end reads | CPU (recommended) | RAM (recommended) |
+| --------------- |:----------------:|:-----------------:|:-----------------:|
+| [Star-Fusion](https://github.com/STAR-Fusion/STAR-Fusion/wiki) | Yes              | >=16 cores        | ~30GB             |
+| [Fusioncatcher](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) | Yes              | >=16 cores        | ~60GB             |
+| [Ericscript](https://sites.google.com/site/bioericscript/getting-started) | **No**           | >=16 cores        | ~30GB             |
+| [Pizzly](https://github.com/pmelsted/pizzly) | **No**           | >=16 cores        | ~30GB             |
+| [Squid](https://github.com/Kingsford-Group/squid) | **No**           | >=16 cores        | ~30GB             |
+| [FusionInspector](https://github.com/FusionInspector/FusionInspector/wiki) | **No**           | >=16 cores        | ~30GB             |
+
+
 > **TL;DR:** Make sure to download all required references for each tool. More details can be found in section [tools](docs/tools.md).
 
 ```bash
@@ -30,7 +40,7 @@ The nf-core/rnafusion pipeline comes with documentation about the pipeline, foun
 
 1. [Installation](docs/installation.md)
 2. Pipeline configuration
-    * [Tools](docs/tools.md)
+    * [Download references for tools](docs/references.md)
     * [Local installation](docs/configuration/local.md)
     * [Adding your own system](docs/configuration/adding_your_own.md)
 3. [Running the pipeline](docs/usage.md)

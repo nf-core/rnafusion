@@ -1,15 +1,5 @@
-# nfcore/rnafusion: Tools
+# nfcore/rnafusion: Download references for tools
 
-| Tool            | Single-end reads | CPU (recommended) | RAM (recommended) |
-| --------------- |:----------------:|:-----------------:|:-----------------:|
-| [Star-Fusion](https://github.com/STAR-Fusion/STAR-Fusion/wiki) | Yes              | >=16 cores        | ~30GB             |
-| [Fusioncatcher](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) | Yes              | >=16 cores        | ~60GB             |
-| [Ericscript](https://sites.google.com/site/bioericscript/getting-started) | **No**           | >=16 cores        | ~30GB             |
-| [Pizzly](https://github.com/pmelsted/pizzly) | **No**           | >=16 cores        | ~30GB             |
-| [Squid](https://github.com/Kingsford-Group/squid) | **No**           | >=16 cores        | ~30GB             |
-| [FusionInspector](https://github.com/FusionInspector/FusionInspector/wiki) | **No**           | >=16 cores        | ~30GB             |
-
-# Download references for tools
 ## 1. Using script
 ```bash
 cd utils && sh download-references.sh <PATH>
@@ -95,7 +85,7 @@ The final summary report is made so that the user can customize it easily. These
 - Add institution logo
 - Change styling of the report
 
-```js
+```yaml
 # Report customization configuration
 report_title: 'Some really cool title'
 institution: 'assets/img/scilifelab.jpg'
