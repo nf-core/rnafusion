@@ -28,14 +28,15 @@ def helpMessage() {
 
     Options:
       --singleEnd                   Specifies that the input is single end reads
-      --star_fusion                 [bool] Run STAR-Fusion. Default: False
-      --fusioncatcher               [bool] Run FusionCatcher. Default: False
+      --star_fusion                 Run STAR-Fusion
+      --fusioncatcher               Run FusionCatcher
         --fc_extra_options          Extra parameters for FusionCatcher. Can be found at https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md
-      --fusion_inspector            [bool] Run Fusion-Inspectro. Default: False
-      --ericscript                  [bool] Run Ericscript. Default: False
-      --pizzly                      [Bool] Run Pizzly. Default: False
-      --squid                       [Bool] Run Squid. Default: False
-      --test                        [bool] Run in test mode
+      --fusion_inspector            Run Fusion-Inspector
+      --ericscript                  Run Ericscript
+      --pizzly                      Run Pizzly
+      --squid                       Run Squid
+      --test                        Run in test mode
+      --tool_cutoff                 Number of tools required to detect a fusion gene. [Default = 2]
 
     References                      If not specified in the configuration file or you wish to overwrite any of the references.
       --fasta                       Path to Fasta reference
@@ -453,13 +454,14 @@ process summary {
     file '*.html' into report
     
     script:
+    extra = params.tool_cutoff ? "-t ${params.tool_cutoff}" : "" 
     """
     transformer.py -i ${fusioncatcher} -t fusioncatcher
     transformer.py -i ${star_fusion} -t star_fusion
     transformer.py -i ${ericscript} -t ericscript
     transformer.py -i ${pizzly} -t pizzly
     transformer.py -i ${squid} -t squid
-    generate_report.py fusions.txt summary.yaml -s ${name} -o .
+    generate_report.py fusions.txt summary.yaml -s ${name} -o . ${extra}
     """
 }
 

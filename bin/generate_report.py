@@ -100,7 +100,7 @@ def create_distribution_chart(p_summary):
 
     return [[str(index + 1) + ' tool/s', len(value)] for index, value in enumerate(graph_data)]
 
-def create_fusions_table(p_summary, p_known_fusions):
+def create_fusions_table(p_summary, p_known_fusions, cutoff):
     fusions = {}
     all_fusions = [fusions for _, fusions in p_summary.items()]
     unique_fusions = set(sum(all_fusions, []))
@@ -108,8 +108,9 @@ def create_fusions_table(p_summary, p_known_fusions):
     for fusion in unique_fusions:
         tools = [fusion in x for x in all_fusions]
         summary_tools = len(p_summary.keys())
-        # Only add fusions that are detected by at least TOOL_DETECTION_CUTOFF tools if more than TOOL_DETECTION_CUTOFF tools are applied
-        if sum(tools) >= TOOL_DETECTION_CUTOFF or summary_tools < TOOL_DETECTION_CUTOFF:
+        # Add only fusions that are detected by at least <cutoff>, default = TOOL_DETECTION_CUTOFF
+        # If # of tools is less than cutoff => ignore
+        if sum(tools) >= cutoff or summary_tools < cutoff:
             fusions[fusion] = {
                 'known': fusion in p_known_fusions,
                 'tools': tools,
@@ -255,10 +256,10 @@ def generate(p_args):
     fusion_list_section = Section()
     fusion_list_section.id = 'fusion_list'
     fusion_list_section.title = 'List of detected fusions'
-    fusion_list_section.content = 'Filters fusions found by at least ' + str(TOOL_DETECTION_CUTOFF) + ' tools. ' \
-                                  'If number of chosen tools is less than ' + str(TOOL_DETECTION_CUTOFF) + ' the filter is disabled. ' \
+    fusion_list_section.content = 'Filters fusions found by at least ' + str(args.tool_num) + ' tools. ' \
+                                  'If number of chosen tools is less than ' + str(args.tool_num) + ' the filter is disabled. ' \
                                   'The whole list can be found in <code>results/Report-' + str(args.sample) + '/fusions.txt</code>.'
-    fusion_list_section.data = create_fusions_table(summary_file, known_fusions)
+    fusion_list_section.data = create_fusions_table(summary_file, known_fusions, args.tool_num)
     index_page.add_section(fusion_list_section)
     report.add_page(index_page)
 
@@ -267,6 +268,7 @@ if __name__ == "__main__":
     parser.add_argument('fusions', help='Input fusion file', type=str)
     parser.add_argument('summary', help='Input fusion file', type=str)
     parser.add_argument('-c', '--config', nargs='?', help='Input config file', type=str, required=False)
+    parser.add_argument('-t', '--tool_num', nargs='?', help='Number of tools required to detect a fusion', type=int, default = TOOL_DETECTION_CUTOFF)
     parser.add_argument('-s', '--sample', nargs='?', help='Sample name', type=str, required=True)
     parser.add_argument('-o', '--output', nargs='?', help='Output directory', type=str, required=True)
     args = parser.parse_args()
