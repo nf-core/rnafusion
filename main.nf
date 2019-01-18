@@ -207,29 +207,11 @@ if (params.squid) {
 /*
  * Create a channel for input read files
  */
- if(params.readPaths){
-     if(params.singleEnd){
-         Channel
-             .from(params.readPaths)
-             .map { row -> [ row[0], [file(row[1][0])]] }
-             .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_summary; read_files_multiqc; read_files_star_fusion; read_files_fusioncatcher; 
-                     read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
-     } else {
-         Channel
-             .from(params.readPaths)
-             .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
-             .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_summary; read_files_multiqc; read_files_star_fusion; read_files_fusioncatcher; 
-                     read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
-     }
- } else {
-     Channel
-         .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
-         .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
-         .into { read_files_fastqc; read_files_summary; read_files_multiqc; read_files_star_fusion; read_files_fusioncatcher; 
-                     read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
- }
+Channel
+    .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
+    .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
+    .into { read_files_fastqc; read_files_summary; read_files_multiqc; read_files_star_fusion; read_files_fusioncatcher; 
+            read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
 
 
 // Header log info
