@@ -11,5 +11,6 @@ dependencies:
   - conda-forge::pyyaml=3.13
   - conda-forge::r-data.table=1.11.8
   - conda-forge::r-gplots=3.0.1
+  - conda-forge::jinja2=2.10
   - bioconda::bioconductor-edger=3.22.5
   - conda-forge::r-markdown=0.8
