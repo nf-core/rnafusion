@@ -63,7 +63,8 @@ wget ftp://ftp.ensembl.org/pub/release-94/gtf/homo_sapiens/Homo_sapiens.GRCh38.9
 > Update the config file to include the directory
 ```groovy
 params {
-  pizzly_ref = '/path/to/pizzly-ref'
+  pizzly_fasta = "/path/to/pizzly_ref/Homo_sapiens.GRCh38.cdna.all.fa.gz"
+  pizzly_gtf = "/path/to/pizzly_ref/Homo_sapiens.GRCh38.94.gtf"
 }
 ```
 
