@@ -186,6 +186,13 @@ For more info and help check [wiki page](https://github.com/FusionInspector/Fusi
 
 ## Summary report
 
+**Output directory: `results/Report-<READS_BASE_NAME>`**
+
+* `index.html`
+    * main dashboard containing the list of all detected fusions
+* `*.html`
+    * each fusion gets a custom page with fetched data from the local database
+
 Graphs displaying ratio of fusion genes caught by different tools. The last part *all tools* is an intersection of all tools.
 ![Tool detection](images/summary_graph_1.png)
 
