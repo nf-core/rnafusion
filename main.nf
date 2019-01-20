@@ -376,7 +376,7 @@ process pizzly {
     file gtf from pizzly_gtf
     
     output:
-    file '*.unfiltered.json' into pizzly_fusions
+    file 'pizzly_fusions.json' into pizzly_fusions
     file '*.{json,txt}' into pizzly_output
 
     script:
