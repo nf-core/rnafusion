@@ -14,7 +14,7 @@ The workflow processes RNA-sequencing data from FastQ files. It runs quality con
 
 ![Final summary report](docs/images/example-summary-report.png)
 
-The pipeline works with both single-end and paired-end data, though not all fusion detection tools work with single-end data (Ericscript, Pizzly, Squid and FusionInspector). 
+The pipeline works with both single-end and paired-end data, though not all fusion detection tools work with single-end data (Ericscript, Pizzly, Squid and FusionInspector).
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker / singularity containers making installation trivial and results highly reproducible.
 
@@ -27,7 +27,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 | [Squid](https://github.com/Kingsford-Group/squid) | **No**           | >=16 cores        | ~30GB             |
 | [FusionInspector](https://github.com/FusionInspector/FusionInspector/wiki) | **No**           | >=16 cores        | ~30GB             |
 
-
 > **TL;DR:** Make sure to download all required references for each tool. More details can be found in section [tools](docs/tools.md).
 
 ```bash
@@ -35,11 +34,12 @@ nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -prof
 ```
 
 For available parameters or help run:
+
 ```bash
 nextflow run nf-core/rnafusion --help
 ```
 
-### Documentation
+## Documentation
 
 The nf-core/rnafusion pipeline comes with documentation about the pipeline, found in the `docs/` directory:
 

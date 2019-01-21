@@ -9,6 +9,7 @@ If you are the only person to be running this pipeline, you can create your conf
 A basic configuration comes with the pipeline, which runs by default (the `standard` config profile - see [`conf/base.config`](../conf/base.config)). This means that you only need to configure the specifics for your system and overwrite any defaults that you want to change.
 
 ## Cluster Environment
+
 By default, pipeline uses the `local` Nextflow executor - in other words, all jobs are run in the login session. If you're using a simple server, this may be fine. If you're using a compute cluster, this is bad as all jobs will run on the head node.
 
 To specify your cluster environment, add the following line to your config file:
@@ -28,13 +29,14 @@ process {
 }
 ```
 
-
 ## Software Requirements
+
 To run the pipeline, several software packages are required. How you satisfy these requirements is essentially up to you and depends on your system. If possible, we _highly_ recommend using either Docker or Singularity.
 
 Please see the [`installation documentation`](../installation.md) for how to run using the below as a one-off. These instructions are about configuring a config file for repeated use.
 
 ### Docker
+
 Docker is a great way to run nf-core/rnafusion, as it manages all software installations and allows the pipeline to be run in an identical software environment across a range of systems.
 
 Nextflow has [excellent integration](https://www.nextflow.io/docs/latest/docker.html) with Docker, and beyond installing the two tools, not much else is required - nextflow will automatically fetch the [nfcore/rnafusion](https://hub.docker.com/r/nfcore/rnafusion/) image that we have created and is hosted at dockerhub at run time.
@@ -48,8 +50,8 @@ process.container = "nfcore/rnafusion"
 
 Note that the dockerhub organisation name annoyingly can't have a hyphen, so is `nfcore` and not `nf-core`.
 
-
 ### Singularity image
+
 Many HPC environments are not able to run Docker due to security issues.
 [Singularity](http://singularity.lbl.gov/) is a tool designed to run on such HPC systems which is very similar to Docker.
 
@@ -76,8 +78,8 @@ singularity.enabled = true
 process.container = "/path/to/nf-core-rnafusion.simg"
 ```
 
-
 ### Conda
+
 If you're not able to use Docker or Singularity, you can instead use conda to manage the software requirements.
 To use conda in your own config file, add the following:
 

@@ -13,6 +13,7 @@ params.project = 'project_ID' // eg. b2017123
 ```
 
 ## Running offline
+
 If you are running the pipeline on Bianca or Irma, you will not have an active internet connection and some automated features will not be able to function. Specifically, you'll need to transfer the pipeline files and the singularity image manually.
 
 First, to generate the singularity image, run the following command. Note that you need singularity installed - this is available on the other UPPMAX clusters (Milou and Rackham):
@@ -28,7 +29,7 @@ singularity pull --name nfcore-rnafusion-1.0.img docker://nfcore/rnafusion:1.0
 pwd # Prints path to your singularity container
 ```
 
-The nfcore/rnafusion pipeline files can be downloaded from https://github.com/nf-core/rnafusion/releases
+The nfcore/rnafusion pipeline files can be downloaded from [https://github.com/nf-core/rnafusion/releases](https://github.com/nf-core/rnafusion/releases).
 
 Download the pipeline files and transfer the compressed archive (the `.zip`
 or `.tar.gz` file). Once transferred, extract the pipeline files.
@@ -54,8 +55,8 @@ nextflow run /path/to/nfcore-rnafusion-1.0 -with-singularity /path/to/singularit
 > NB: Note that you should _not_ use the `-r 1.0` flag recommended elsewhere. This tells Nextflow to download
 > that version of the code when it runs. Here, you have already downloaded the code, so it generates an error.
 
-
 ## Environment modules and development
+
 If you would prefer to use environment modules instead of singularity, you can use the old version of the configuration by specifying `-profile uppmax_modules` (we don't recommend this).
 
 For pipeline development work on `milou`, use `-profile uppmax_devel` - this uses the milou [devel partition](http://www.uppmax.uu.se/support/user-guides/slurm-user-guide/#tocjump_030509106905141747_8) for testing the pipeline quickly. Please note that this is _not_ suitable for proper analysis runs - only tiny test datasets.
