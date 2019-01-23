@@ -90,6 +90,7 @@
     </section>
 </main>
 
+{% set distribution_chart_colors_length = sections['dashboard'].graphs['distribution_chart'].graph | length %}
 <script>
     $(document).ready(function () {
         $('#fusion_list_table').DataTable({
@@ -236,7 +237,7 @@
                 size: '110%'
             }
         },
-        colors: colorbrewer.Oranges[{{ sections['dashboard'].graphs['distribution_chart'].graph | length }}],
+        {% if distribution_chart_colors_length > 2 %} colors: colorbrewer.Oranges[{{ distribution_chart_colors_length}}], {% endif %}
         series: [{
             type: 'pie',
             name: 'Count',
