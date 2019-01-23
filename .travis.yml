@@ -23,12 +23,11 @@ install:
   - sudo ln -s /tmp/nextflow/nextflow /usr/local/bin/nextflow
   # Install nf-core/tools
   - pip install nf-core
-  # Reset
-  - mkdir ${TRAVIS_BUILD_DIR}/tests
 
 script:
   # Create and download test data
-  - | 
+  - |
+    mkdir ${TRAVIS_BUILD_DIR}/tests
     touch tests/genome.fa tests/genes.gtf
     wget http://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/reads_1.fq.gz -O tests/reads_1.fq.gz
     wget http://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/reads_2.fq.gz -O tests/reads_2.fq.gz
