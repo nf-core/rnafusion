@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
-from .report_config import ReportConfig
 from jinja2 import Environment, FileSystemLoader, Markup
+from .report_config import ReportConfig
 
 class Report:
     def __init__(self, config, output_dir):
@@ -27,7 +27,9 @@ class Report:
         else:
             dict_page = page.get_content()
             template_variables = {**self.j2_variables, **dict_page}
-            template_variables['menu'] = [(key, page.get_section(key).title) for key in page.sections.keys()]
+            template_variables['menu'] = [
+                (key, page.get_section(key).title) for key in page.sections.keys()
+            ]
             self.pages[page.filename] = template_variables
             self.render(page.filename, template_variables)
 
@@ -39,8 +41,16 @@ class Report:
     def __include_raw(self, filename):
         file_extension = Path(filename).suffix
         if file_extension == '.css':
-            return Markup('<style type="text/css">' + self.j2_env.loader.get_source(self.j2_env, filename)[0] + '</style>')
+            return Markup(
+                '<style type="text/css">{css}</style>'.format(
+                    css=self.j2_env.loader.get_source(self.j2_env, filename)[0]
+                )
+            )
         if file_extension == '.js':
-            return Markup('<script>' + self.j2_env.loader.get_source(self.j2_env, filename)[0] + '</script>')
+            return Markup(
+                '<script>{js}</script>'.format(
+                    js=self.j2_env.loader.get_source(self.j2_env, filename)[0]
+                )
+            )
 
         return Markup(self.j2_env.loader.get_source(self.j2_env, filename)[0])

@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 from collections import OrderedDict
-from yaml import dump
 import argparse
-import yaml
 import sys
 import os
+import yaml
+from yaml import dump
+
 
 OUTPUT = 'fusion_genes_config_mqc.yaml'
 TEMPLATE = OrderedDict([
     ('id', 'fusion_genes'),
-    ('s', 'Fusion genes'),
+    ('section_name', 'Fusion genes'),
     ('description', 'Number of fusion genes found by various tools'),
     ('plot_type', 'bargraph'),
     ('pconfig', {
@@ -24,7 +25,7 @@ def findings(p_yaml, p_sample_name):
     result = {}
 
     if p_yaml is None:
-        return
+        return None
 
     # Counts per tool
     for tool, fusions in p_yaml.items():
@@ -32,14 +33,16 @@ def findings(p_yaml, p_sample_name):
 
     # If only one tool was found, there is no need to make intercept
     if len(result) == 1:
-        template['data'] = { p_sample_name: result }
-        return OrderedDict(template)
+        template['data'] = {p_sample_name: result}
+    else:
+        # Intersect
+        result['together'] = len(
+            set.intersection(*map(set, [fusions for _, fusions in p_yaml.items()]))
+        )
 
-    # Intersect
-    result['together'] = len(set.intersection(*map(set, [fusions for _, fusions in p_yaml.items()])))
-    
-    # Group results
-    template['data'] = { p_sample_name: result }
+        # Group results
+        template['data'] = {p_sample_name: result}
+
     return OrderedDict(template)
 
 def summary(p_input, p_sample_name):
@@ -49,22 +52,44 @@ def summary(p_input, p_sample_name):
         with open(p_input, 'r') as stream, open(OUTPUT, 'w') as out_file:
             yaml_data = yaml.safe_load(stream)
             # Conversion to nice yaml file
-            yaml.add_representer(OrderedDict, lambda dumper, data: dumper.represent_mapping('tag:yaml.org,2002:map', data.items()))
+            yaml.add_representer(
+                OrderedDict,
+                lambda dumper, data:
+                dumper.represent_mapping('tag:yaml.org,2002:map', data.items())
+            )
             # Find and store
-            out_file.write(dump(findings(yaml_data, p_sample_name), default_flow_style=False, allow_unicode=True))
+            out_file.write(
+                dump(
+                    findings(yaml_data, p_sample_name),
+                    default_flow_style=False,
+                    allow_unicode=True
+                )
+            )
             stream.close()
             out_file.close()
     except IOError as error:
         sys.exit(error)
     except yaml.YAMLError as error:
         sys.exit(error)
-    except Exception as error:
-        sys.exit(error)
 
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="""Utility for generating data structure for MultiQC""")
-    parser.add_argument('-i', '--input', nargs='?', help='Input file', type=str, required=True)
-    parser.add_argument('-s', '--sample', nargs='?', help='Sample name', type=str, required=True)
+def main():
+    parser = argparse.ArgumentParser(
+        description='Tool for generating Fusion MultiQC section'
+    )
+    parser.add_argument(
+        '-i', '--input',
+        help='Input file',
+        type=str,
+        required=True
+    )
+    parser.add_argument(
+        '-s', '--sample',
+        help='Sample name',
+        type=str,
+        required=True
+    )
     args = parser.parse_args()
     summary(args.input, args.sample)
+
+if __name__ == "__main__":
+    main()
