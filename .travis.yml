@@ -23,6 +23,8 @@ install:
   - sudo ln -s /tmp/nextflow/nextflow /usr/local/bin/nextflow
   # Install nf-core/tools
   - pip install nf-core
+  # Install markdownlint-cli
+  - apt-get install npm && npm install -g markdownlint-cli
   # Reset 
   - mkdir ${TRAVIS_BUILD_DIR}/tests && cd ${TRAVIS_BUILD_DIR}
 
@@ -34,4 +36,6 @@ script:
     wget http://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/reads_2.fq.gz -O tests/reads_2.fq.gz
   # Lint the pipeline code
   - nf-core lint ${TRAVIS_BUILD_DIR}
+  - markdownlint ${TRAVIS_BUILD_DIR}/docs -c ${TRAVIS_BUILD_DIR}/conf/markdown-lint.yaml
+  # Running the pipeline
   - nextflow run ${TRAVIS_BUILD_DIR} -profile test,docker
