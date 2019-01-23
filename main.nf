@@ -16,11 +16,11 @@ nfcore_logo = """=======================================================
     | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                           `._,._,\'
 
-nf-core/rnafusion v${workflow.manifest.version}"
+nf-core/rnafusion v${workflow.manifest.version}
 ======================================================="""
 
 def helpMessage() {
-    log.info """${nfcore_logo}
+    nfcore_help = """
     Usage:
 
     The typical command for running the pipeline is as follows:
@@ -67,6 +67,7 @@ def helpMessage() {
       --awsqueue                    The AWSBatch JobQueue that needs to be set when running on AWSBatch
       --awsregion                   The AWS Region for your AWS Batch job to run on
     """.stripIndent()
+    log.info "${nfcore_logo}${nfcore_help}"
 }
 
 /*
