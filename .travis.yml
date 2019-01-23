@@ -24,7 +24,8 @@ install:
   # Install nf-core/tools
   - pip install nf-core
   # Reset
-  - mkdir ${TRAVIS_BUILD_DIR}/tests && touch genome.fa genes.gtf && cd ${TRAVIS_BUILD_DIR}/tests
+  - mkdir ${TRAVIS_BUILD_DIR}/tests && cd ${TRAVIS_BUILD_DIR}/tests
+  - touch genome.fa genes.gtf
   - wget http://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/reads_1.fq.gz -O reads_1.fq.gz
   - wget http://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/reads_2.fq.gz -O reads_2.fq.gz
 
