@@ -24,7 +24,7 @@ install:
   # Install nf-core/tools
   - pip install nf-core
   # Install markdownlint-cli
-  - apt-get install npm && npm install -g markdownlint-cli
+  - sudo apt-get install npm && npm install -g markdownlint-cli
   # Reset 
   - mkdir ${TRAVIS_BUILD_DIR}/tests && cd ${TRAVIS_BUILD_DIR}
 
