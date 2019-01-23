@@ -345,8 +345,8 @@ process ericscript {
     file reference from ericscript_ref
 
     output:
-    file './tmp/fusions.results.total.tsv' into ericscript_fusions
-    file './tmp/fusions.results.filtered.tsv' into ericscript_output
+    file './tmp/fusions.results.filtered.tsv' into ericscript_fusions
+    file './tmp/fusions.results.total.tsv' into ericscript_output
 
     script:
     """
