@@ -1,0 +1,185 @@
+{
+  "parameters": [
+    {
+      "name": "reads",
+      "label": "Single or pair-end reads",
+      "usage": "Workflow input data.",
+      "type": "string",
+      "render": "file",
+      "default_value": "path/to/reads.fastq.gz",
+      "pattern": ".*(\\.fastq$|\\.fastq\\.gz$)",
+      "group": "input"
+    },
+    {
+      "name": "profile",
+      "label": "Profile",
+      "usage": "HPC profile",
+      "type": "string",
+      "render": "textfield",
+      "default_value": "",
+      "group": "input"
+    },
+    {
+      "name": "singleEnd",
+      "label": "Sequencing strategy",
+      "usage": "Flag if input data is of type singleEnd.",
+      "type": "boolean",
+      "render": "check-box",
+      "default_value": false,
+      "group": "input"
+    },
+    {
+      "name": "genome",
+      "label": "Sequencing strategy",
+      "usage": "Flag if input data is of type singleEnd.",
+      "type": "boolean",
+      "render": "check-box",
+      "default_value": false,
+      "group": "reference"
+    },
+    {
+      "name": "fasta",
+      "label": "FASTA reference",
+      "usage": "Path to custom FASTA reference.",
+      "type": "string",
+      "render": "textfield",
+      "default_value": "",
+      "group": "reference"
+    },
+    {
+      "name": "gtf",
+      "label": "GTF annotation",
+      "usage": "Path to custom GTF annotation.",
+      "type": "string",
+      "render": "textfield",
+      "default_value": "",
+      "group": "reference"
+    },
+    {
+      "name": "star_index",
+      "label": "STAR index",
+      "usage": "Path to STAR index.",
+      "type": "string",
+      "render": "textfield",
+      "default_value": "",
+      "group": "reference"
+    },
+    {
+      "name": "star_fusion",
+      "label": "STAR-Fusion",
+      "usage": "Enable STAR-Fusion.",
+      "type": "boolean",
+      "render": "check-box",
+      "default_value": true,
+      "group": "star_fusion"
+    },
+    {
+      "name": "star_fusion_ref",
+      "label": "STAR-Fusion reference",
+      "usage": "Path to STAR-Fusion reference.",
+      "type": "string",
+      "render": "text-field",
+      "default_value": "",
+      "group": "star_fusion"
+    },
+    {
+      "name": "fusioncatcher",
+      "label": "Fusioncatcher",
+      "usage": "Enable Fusioncatcher.",
+      "type": "boolean",
+      "render": "check-box",
+      "default_value": true,
+      "group": "fusioncatcher"
+    },
+    {
+      "name": "fc_extra_options",
+      "label": "Fusioncatcher",
+      "usage": "Fusioncatcher extra params.",
+      "type": "string",
+      "render": "textbox",
+      "default_value": "",
+      "group": "fusioncatcher"
+    },
+    {
+      "name": "fusioncatcher_ref",
+      "label": "Fusioncatcher reference",
+      "usage": "Path to Fusioncatcher reference.",
+      "type": "string",
+      "render": "textbox",
+      "default_value": "",
+      "group": "fusioncatcher"
+    },
+    {
+      "name": "ericscript",
+      "label": "Ericscript",
+      "usage": "Enable Fusioncatcher.",
+      "type": "boolean",
+      "render": "check-box",
+      "default_value": true,
+      "group": "ericscript"
+    },
+    {
+      "name": "ericscript_ref",
+      "label": "Ericscript reference",
+      "usage": "Path to Ericscript reference.",
+      "type": "string",
+      "render": "textbox",
+      "default_value": "",
+      "group": "ericscript"
+    },
+    {
+      "name": "pizzly",
+      "label": "Pizzly",
+      "usage": "Enable Pizzly.",
+      "type": "boolean",
+      "render": "check-box",
+      "default_value": true,
+      "group": "pizzly"
+    },
+    {
+      "name": "pizzly_fasta",
+      "label": "Pizzly FASTA reference",
+      "usage": "Path to Pizzly FASTA reference.",
+      "type": "string",
+      "render": "textbox",
+      "default_value": "",
+      "group": "pizzly"
+    },
+    {
+      "name": "pizzly_gtf",
+      "label": "Pizzly GTF annotation",
+      "usage": "Path to Pizzly GTF annotation.",
+      "type": "string",
+      "render": "textbox",
+      "default_value": "",
+      "group": "pizzly"
+    },
+    {
+      "name": "fusion_inspector",
+      "label": "FusionInspector",
+      "usage": "Enable FusionInspector.",
+      "type": "boolean",
+      "render": "check-box",
+      "default_value": true,
+      "group": "visualization"
+    },
+    {
+      "name": "read_length",
+      "label": "Average read length",
+      "usage": "The length is used to generate STAR index.",
+      "type": "integer",
+      "render": "textfield",
+      "default_value": 100,
+      "group": "other"
+    },
+    {
+      "name": "tool_cutoff",
+      "label": "Detection tool cutoff",
+      "usage": "Number of tools required to detect fusion (used as filter in summary report.)",
+      "type": "integer",
+      "render": "textfield",
+      "default_value": 2,
+      "group": "other"
+    }
+  ]
+}
