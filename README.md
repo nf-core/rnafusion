@@ -4,7 +4,6 @@
 [![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A50.32.0-brightgreen.svg)](https://www.nextflow.io/)
 [![MIT License](https://img.shields.io/github/license/nf-core/rnafusion.svg)](https://github.com/nf-core/rnafusion/blob/master/LICENSE)
 
-
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](http://bioconda.github.io/)
 [![Docker](https://img.shields.io/docker/automated/nfcore/rnafusion.svg)](https://hub.docker.com/r/nfcore/rnafusion)
 ![Singularity Container available](

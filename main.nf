@@ -58,6 +58,10 @@ def helpMessage() {
 
     Options:
       --genome                      Name of iGenomes reference
+      --fasta                       Fasta reference
+      --gtf                         GTF annotation
+      --star_index                  STAR index reference
+      --read_length                 Length of the reads. Default: 100
       --singleEnd                   Specifies that the input is single end reads
 
     Other Options:
