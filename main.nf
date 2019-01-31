@@ -43,7 +43,7 @@ def helpMessage() {
       --tool_cutoff                 Number of tools to pass threshold required for showing fusion in the report. [Default = 2]
 
     Visualization flags:
-        --fusion_inspector            Run Fusion-Inspector
+      --fusion_inspector            Run Fusion-Inspector
 
     References                      If not specified in the configuration file or you wish to overwrite any of the references.
       --fasta                       Path to Fasta reference
@@ -51,16 +51,12 @@ def helpMessage() {
       --star_index                  Path to STAR-Index reference
       --star_fusion_ref             Path to STAR-Fusion reference
       --fusioncatcher_ref           Path to Fusioncatcher reference
-      --fusion_inspector_ref        Path to FusionInspector reference
       --ericscript_ref              Path to Ericscript reference
       --pizzly_fasta                Path to Pizzly FASTA reference
       --pizzly_gtf                  Path to Pizzly GTF annotation
 
     Options:
       --genome                      Name of iGenomes reference
-      --fasta                       Fasta reference
-      --gtf                         GTF annotation
-      --star_index                  STAR index reference
       --read_length                 Length of the reads. Default: 100
       --singleEnd                   Specifies that the input is single end reads
 
@@ -147,29 +143,18 @@ if (params.star_fusion) {
     } else {
         star_fusion_ref = Channel
             .fromPath(params.star_fusion_ref)
-            .ifEmpty { exit 1, "Stat-Fusion reference directory not found!" }
+            .ifEmpty { exit 1, "Star-Fusion reference directory not found!" }
     }
 }
 
 if (params.fusioncatcher) {
     params.running_tools.add("Fusioncatcher")
     if (!params.fusioncatcher_ref) {
-        exit 1, "Fusion catcher data directory not specified!"
+        exit 1, "Fusioncatcher data directory not specified!"
     } else {
         fusioncatcher_ref = Channel
             .fromPath(params.fusioncatcher_ref)
-            .ifEmpty { exit 1, "Fusion catcher data directory not found!" }
-    }
-}
-
-if (params.fusion_inspector) {
-    params.running_tools.add("FusionInspector")
-    if (!params.star_fusion_ref) {
-        exit 1, "Reference not specified (using star-fusion reference path)!"
-    } else {
-        fusion_inspector_ref = Channel
-            .fromPath(params.star_fusion_ref)
-            .ifEmpty { exit 1, "Fusion-Inspector reference not found" }
+            .ifEmpty { exit 1, "Fusioncatcher data directory not found!" }
     }
 }
 
@@ -189,18 +174,29 @@ if (params.pizzly) {
     if (params.pizzly_fasta) {
         pizzly_fasta = Channel
             .fromPath(params.pizzly_fasta)
-            .ifEmpty { exit 1, "FASTA file not found!" }
+            .ifEmpty { exit 1, "Pizzly FASTA file not found!" }
     }
 
     if (params.pizzly_gtf) {
         pizzly_gtf = Channel
             .fromPath(params.pizzly_gtf)
-            .ifEmpty { exit 1, "GTF file not found!" }
+            .ifEmpty { exit 1, "Pizzly GTF file not found!" }
     }
 }
 
 if (params.squid) {
     params.running_tools.add("Squid")
+}
+
+if (params.fusion_inspector) {
+    params.running_tools.add("FusionInspector")
+    if (!params.star_fusion_ref) {
+        exit 1, "Reference not specified (using star-fusion reference path)!"
+    } else {
+        fusion_inspector_ref = Channel
+            .fromPath(params.star_fusion_ref)
+            .ifEmpty { exit 1, "Fusion-Inspector reference not found" }
+    }
 }
 
 /*
