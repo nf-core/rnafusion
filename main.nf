@@ -36,12 +36,14 @@ def helpMessage() {
       --star_fusion                 Run STAR-Fusion
       --fusioncatcher               Run FusionCatcher
         --fc_extra_options          Extra parameters for FusionCatcher. Can be found at https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md
-      --fusion_inspector            Run Fusion-Inspector
       --ericscript                  Run Ericscript
       --pizzly                      Run Pizzly
       --squid                       Run Squid
       --test                        Runs only specific fusion tool/s and not the whole pipeline. Only works on tool flags.
       --tool_cutoff                 Number of tools to pass threshold required for showing fusion in the report. [Default = 2]
+
+    Visualization flags:
+        --fusion_inspector            Run Fusion-Inspector
 
     References                      If not specified in the configuration file or you wish to overwrite any of the references.
       --fasta                       Path to Fasta reference
@@ -84,7 +86,6 @@ if (params.help){
 params.name = false
 params.fasta = params.genome ? params.genomes[ params.genome ].fasta ?: false : false
 params.gtf = params.genome ? params.genomes[ params.genome ].gtf ?: false : false
-params.star_index = params.genome ? params.genomes[ params.genome ].star ?: false : false
 params.running_tools = []
 params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
 params.email = false
@@ -97,7 +98,6 @@ output_docs = file("$baseDir/docs/output.md")
 // These are needed in order to run the pipeline
 pizzly_fasta = false
 pizzly_gtf = false
-star_index = false
 star_fusion_ref = false
 fusioncatcher_ref = false
 fusion_inspector_ref = false
@@ -128,18 +128,12 @@ if (params.fasta) {
     fasta = file(params.fasta)
     if(!fasta.exists()) exit 1, "Fasta file not found: ${params.fasta}"
 } else {
-    if (!params.genome) exit 1, "Genome parameter not specified!"
+    if (!params.genome) exit 1, "You have to specify either fasta file or Genome version!"
 }
 
 if (params.gtf) {
     gtf = file(params.gtf)
     if(!gtf.exists()) exit 1, "GTF file not found: ${params.fasta}"
-}
-
-if(params.star_index){
-    star_index = Channel
-        .fromPath(params.star_index)
-        .ifEmpty { exit 1, "STAR index not found: ${params.star_index}" }
 }
 
 if (params.star_fusion) {
@@ -223,6 +217,8 @@ summary['Pipeline Version'] = workflow.manifest.version
 summary['Run Name']     = custom_runName ?: workflow.runName
 summary['Reads']        = params.reads
 summary['Fasta Ref']    = params.fasta
+summary['GTF Ref']      = params.gtf
+summary['STAR Index']   = params.star_index ? params.star_index : 'Not specified, building'
 summary['Tools']        = params.running_tools.size() == 0 ? 'None' : params.running_tools.join(", ")
 summary['Data Type']    = params.singleEnd ? 'Single-End' : 'Paired-End'
 summary['Max Memory']   = params.max_memory
@@ -267,6 +263,46 @@ ${summary.collect { k,v -> "            <dt>$k</dt><dd><samp>${v ?: '<span style
 }
 
 /*************************************************************
+ * PREPROCESSING
+ ************************************************************/
+
+/*
+ * Build STAR index
+ */
+if (params.star_index) {
+    Channel
+        .fromPath(params.star_index)
+        .ifEmpty { exit 1, "STAR index not found: ${params.star_index}" }
+        .into { star_index_squid; star_index_star_fusion }
+} else {
+    process build_star_index {
+        tag "$fasta"
+        publishDir "${params.outdir}/star_index", mode: 'copy'
+
+        input:
+        file fasta
+        file gtf
+
+        output:
+        file "star" into star_index_squid, star_index_star_fusion
+
+        script:
+        def avail_mem = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
+        """
+        mkdir star
+        STAR \\
+            --runMode genomeGenerate \\
+            --runThreadN ${task.cpus} \\
+            --sjdbGTFfile ${gtf} \\
+            --sjdbOverhang ${params.read_length - 1} \\
+            --genomeDir star/ \\
+            --genomeFastaFiles ${fasta} \\
+            $avail_mem
+        """
+    }
+}
+
+/*************************************************************
  * Fusion pipeline
  ************************************************************/
 
@@ -282,6 +318,7 @@ process star_fusion {
 
     input:
     set val(name), file(reads) from read_files_star_fusion
+    file star_index_star_fusion
     file reference from star_fusion_ref
 
     output:
@@ -289,12 +326,29 @@ process star_fusion {
     file '*.{tsv,txt}' into star_fusion_output
 
     script:
-    option = params.singleEnd ? "" : "--right_fq ${reads[1]}"
+    def avail_mem = task.memory ? "--limitBAMsortRAM ${task.memory.toBytes() - 100000000}" : ''
     """
+    STAR \\
+        --genomeDir ${star_index_star_fusion} \\
+        --readFilesIn ${reads} \\
+        --twopassMode Basic \\
+        --outReadsUnmapped None \\
+        --chimSegmentMin 12 \\
+        --chimJunctionOverhangMin 12 \\
+        --alignSJDBoverhangMin 10 \\
+        --alignMatesGapMax 100000 \\
+        --alignIntronMax 100000 \\
+        --chimSegmentReadGapMax 3 \\
+        --alignSJstitchMismatchNmax 5 -1 5 5 \\
+        --runThreadN ${task.cpus} \\
+        --outSAMstrandField intronMotif ${avail_mem} \\
+        --readFilesCommand zcat \\
+        --chimOutJunctionFormat 1
+
     STAR-Fusion \\
         --genome_lib_dir ${reference} \\
-        --left_fq ${reads[0]} ${option} \\
-        --CPU  ${task.cpus} \\
+        -J Chimeric.out.junction \\
+        --CPU ${task.cpus} \\
         --examine_coding_effect \\
         --output_dir .
     """
@@ -406,7 +460,7 @@ process squid {
 
     input:
     set val(name), file(reads) from read_files_squid
-    file index from star_index
+    file star_index_squid
     file gtf
     
     output:
@@ -417,7 +471,7 @@ process squid {
     def avail_mem = task.memory ? "--limitBAMsortRAM ${task.memory.toBytes() - 100000000}" : ''
     """
     STAR \\
-        --genomeDir ${index} \\
+        --genomeDir ${star_index_squid} \\
         --sjdbGTFfile ${gtf} \\
         --runThreadN ${task.cpus} \\
         --readFilesIn ${reads[0]} ${reads[1]} \\

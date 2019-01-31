@@ -7,6 +7,7 @@ dependencies:
   - anaconda::openjdk=8.0.152 # Needed for FastQC - conda build hangs without this
   - conda-forge::python=3.5.4
   - bioconda::fastqc=0.11.8
+  - bioconda::star=2.6.1b
   - bioconda::multiqc=1.7
   - conda-forge::pyyaml=3.13
   - conda-forge::r-data.table=1.11.8
