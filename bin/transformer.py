@@ -115,45 +115,51 @@ def transform(p_input, p_tool, p_output):
         p_tool (string): name of the tool defined from command line
         p_output (string): OUTPUT
     """
+    errors = []
     if not os.path.exists(p_input):
-        exit('Defined {} doesn\'t exist'.format(p_input))
+        errors.append('Defined {} doesn\'t exist'.format(p_input))
 
-    if not os.path.exists(OUTPUT):
-        with open(OUTPUT, 'w'):
-            pass
+    if os.stat(p_input).st_size == 0:
+        errors.append('Provided file {} is empty'.format(p_input))
 
     if p_tool not in TOOLS:
-        exit('Defined {} not in the supported list of transformations!'.format(p_tool))
+        errors.append('Defined {} not in the supported list of transformations!'.format(p_tool))
 
-    try:
-        fusions = ''
-        with open(p_input, 'r') as in_file:
-            func = getattr(sys.modules[__name__], p_tool)   # get function from parameter
-            fusions = func(in_file).rstrip()  # call function
-            in_file.close()
+    if errors:
+        map(print, errors)
+    else:
+        if not os.path.exists(OUTPUT):
+            with open(OUTPUT, 'w'):
+                pass
 
-        with open(p_output, 'r+') as out_file, open(SUMMARY, 'a') as summary:
-            if fusions:
-                save(out_file, fusions)
-                summary.write(
-                    dump(
-                        {p_tool : list(set(fusions.split('\n')))},
-                        default_flow_style=False,
-                        allow_unicode=True)
-                )
-            else:
-                summary.write(
-                    dump(
-                        {p_tool: None},
-                        default_flow_style=False,
-                        allow_unicode=True
+        try:
+            fusions = ''
+            with open(p_input, 'r') as in_file:
+                func = getattr(sys.modules[__name__], p_tool)   # get function from parameter
+                fusions = func(in_file).rstrip()  # call function
+                in_file.close()
+
+            with open(p_output, 'r+') as out_file, open(SUMMARY, 'a') as summary:
+                if fusions:
+                    save(out_file, fusions)
+                    summary.write(
+                        dump(
+                            {p_tool : list(set(fusions.split('\n')))},
+                            default_flow_style=False,
+                            allow_unicode=True)
                     )
-                )
-
-            out_file.close()
-            summary.close()
-    except IOError as error:
-        print(error)
+                else:
+                    summary.write(
+                        dump(
+                            {p_tool: None},
+                            default_flow_style=False,
+                            allow_unicode=True
+                        )
+                    )
+                out_file.close()
+                summary.close()
+        except IOError as error:
+            print(error)
 
 def main():
     """Main function for processing command line arguments"""
