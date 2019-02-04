@@ -327,6 +327,7 @@ process star_fusion {
 
     script:
     def avail_mem = task.memory ? "--limitBAMsortRAM ${task.memory.toBytes() - 100000000}" : ''
+    option = params.singleEnd ? "--left_fq ${reads[0]}" : "--left_fq ${reads[0]} --right_fq ${reads[1]}"
     """
     STAR \\
         --genomeDir ${star_index_star_fusion} \\
@@ -348,6 +349,7 @@ process star_fusion {
     STAR-Fusion \\
         --genome_lib_dir ${reference} \\
         -J Chimeric.out.junction \\
+        ${option} \\
         --CPU ${task.cpus} \\
         --examine_coding_effect \\
         --output_dir .
