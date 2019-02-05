@@ -1,0 +1,9 @@
+name: fusioncatcher
+channels:
+  - anaconda
+  - bioconda
+  - conda-forge
+  - hcc
+dependencies:
+  - hcc::fusioncatcher=1.00
+  - conda-forge::zip=3.0
