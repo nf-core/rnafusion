@@ -1,13 +1,13 @@
 # nfcore/rnafusion
 
-## nfcore/rnafusion version 1.0 -
+## nfcore/rnafusion version 1.0 - 2018/02/14
 
 Version 1.0 marks the first production release of this pipeline under the nf-core flag. The pipeline includes
 additional help scripts to download references for fusion tools and Singularity images.
 
 * Fusion gene detection tools:
   * `STAR-Fusion v1.5.0`
-  * `Fusioncatcher v1.00 (commit hash: 045a8af)`
+  * `Fusioncatcher v1.00`
   * `Ericscript v0.5.5`
   * `Pizzly v0.37.3`
   * `Squid v1.5`
