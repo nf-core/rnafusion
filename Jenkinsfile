@@ -8,21 +8,21 @@ pipeline {
     stages {
         stage('Setup environment') {
             steps {
-                pip install nf-core
-                pip install pylint
-                docker pull nfcore/rnafusion:dev
-                docker tag nfcore/rnafusion:dev nfcore/rnafusion:1.0
+                sh "pip install nf-core"
+                sh "pip install pylint"
+                sh "docker pull nfcore/rnafusion:dev"
+                sh "docker tag nfcore/rnafusion:dev nfcore/rnafusion:1.0"
             }
         }
 
         stage('Lint markdown') {
             steps {
-                markdownlint $WORKSPACE/$JOB_NAME -c $WORKSPACE/$JOB_NAME/.github/markdownlint.yml
+                sh "markdownlint $WORKSPACE/$JOB_NAME -c $WORKSPACE/$JOB_NAME/.github/markdownlint.yml"
             }
         }
         stage('Lint python code') {
             steps {
-                pylint --rcfile=$WORKSPACE/$JOB_NAME/.github/pylintrc $WORKSPACE/$JOB_NAME/bin/*/\*.py --ignore=scrape_software_versions.py
+                sh "pylint --rcfile=$WORKSPACE/$JOB_NAME/.github/pylintrc $WORKSPACE/$JOB_NAME/bin/*/*.py --ignore=scrape_software_versions.py"
             }
         }
         /*
