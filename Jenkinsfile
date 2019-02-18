@@ -3,17 +3,33 @@ pipeline {
 
     environment {
         NXF_VER = '0.32.0'
-        REPO_NAME = 'rnafusion'
-        REPO_URL = 'https://github.com/nf-core/rnafusion.git'
     }
 
     stages {
-        stage('Checkout') {
+        stage('Setup environment') {
             steps {
-                echo `pwd`
-                echo "BUILD_NUMBER"
-                echo "WORKSPACE"
+                pip install nf-core
+                pip install pylint
+                docker pull nfcore/rnafusion:dev
+                docker tag nfcore/rnafusion:dev nfcore/rnafusion:1.0
             }
         }
+
+        stage('Lint markdown') {
+            steps {
+                markdownlint $WORKSPACE/$JOB_NAME -c $WORKSPACE/$JOB_NAME/.github/markdownlint.yml
+            }
+        }
+        stage('Lint python code') {
+            steps {
+                pylint --rcfile=$WORKSPACE/$JOB_NAME/.github/pylintrc $WORKSPACE/$JOB_NAME/bin/*/\*.py --ignore=scrape_software_versions.py
+            }
+        }
+        /*
+        stage('Build') {
+            steps {
+                nextflow run . -profile test,docker
+            }
+        }*/
     }
 }
