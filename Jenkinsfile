@@ -25,11 +25,5 @@ pipeline {
                 sh "pylint --rcfile=$WORKSPACE/.github/pylintrc $WORKSPACE/bin/*/*.py --ignore=scrape_software_versions.py"
             }
         }
-        /*
-        stage('Build') {
-            steps {
-                nextflow run . -profile test,docker
-            }
-        }*/
     }
 }
