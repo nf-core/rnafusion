@@ -2,6 +2,5 @@ name: fusioncatcher
 channels:
   - bioconda
   - conda-forge
-  - hcc
 dependencies:
-  - hcc::fusioncatcher=1.00
+  - bioconda::fusioncatcher=1.00
