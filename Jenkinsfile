@@ -17,12 +17,12 @@ pipeline {
 
         stage('Lint markdown') {
             steps {
-                sh "markdownlint $WORKSPACE/$JOB_NAME -c $WORKSPACE/$JOB_NAME/.github/markdownlint.yml"
+                sh "markdownlint $WORKSPACE -c $WORKSPACE/.github/markdownlint.yml"
             }
         }
         stage('Lint python code') {
             steps {
-                sh "pylint --rcfile=$WORKSPACE/$JOB_NAME/.github/pylintrc $WORKSPACE/$JOB_NAME/bin/*/*.py --ignore=scrape_software_versions.py"
+                sh "pylint --rcfile=$WORKSPACE/.github/pylintrc $WORKSPACE/bin/*/*.py --ignore=scrape_software_versions.py"
             }
         }
         /*
