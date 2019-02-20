@@ -25,15 +25,15 @@ pipeline {
                 sh "pylint --rcfile=$WORKSPACE/.github/pylintrc $WORKSPACE/bin/*/*.py --ignore=scrape_software_versions.py"
             }
         }
-        post {
-            failure {
-                // Find the log
-                sh "cat ${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_NUMBER}/log >> log.txt"
-                // comment to log to PR
-            }
-            always {
-                deleteDir()
-            }
+    }
+    post {
+        failure {
+            // Find the log
+            sh "cat ${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_NUMBER}/log >> log.txt"
+            // comment to log to PR
+        }
+        always {
+            deleteDir()
         }
     }
 }
