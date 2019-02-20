@@ -25,11 +25,19 @@ pipeline {
                 sh "pylint --rcfile=$WORKSPACE/.github/pylintrc $WORKSPACE/bin/*/*.py --ignore=scrape_software_versions.py"
             }
         }
-    }
-    post {
-        always {
-            sh "pwd && cat ${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_NUMBER}/log >> log.txt"
-            deleteDir()
+        stage('save log build') {
+            steps {
+                script {
+                    def logContent = Jenkins.getInstance()
+                        .getItemByFullName(env.JOB_NAME)
+                        .getBuildByNumber(
+                            Integer.parseInt(env.BUILD_NUMBER))
+                        .logFile.text
+                    // copy the log in the job's own workspace
+                    writeFile file: "buildlog.txt", text: logContent
+                }
+                sh "cat buildlog.txt"
+            }
         }
     }
 }
