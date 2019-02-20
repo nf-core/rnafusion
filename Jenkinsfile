@@ -25,9 +25,14 @@ pipeline {
                 sh "pylint --rcfile=$WORKSPACE/.github/pylintrc $WORKSPACE/bin/*/*.py --ignore=scrape_software_versions.py"
             }
         }
-        stage('Get build log?') {
-            steps {
-                sh "wget -O- $BUILD_URL/consoleText"
+        post {
+            failure {
+                // find the log
+                sh "cat ${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_NUMBER}/log >> log.txt"
+                // comment to log to PR
+            }
+            always {
+                deleteDir()
             }
         }
     }
