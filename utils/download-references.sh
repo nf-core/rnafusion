@@ -6,8 +6,7 @@ else
     DEST=$1
     if [ -d "$DEST" ]; then
         cwd=$DEST/rnafusion_references
-        mkdir $cwd
-        cd $cwd
+        mkdir $cwd && cd $cwd
         # STAR-Fusion
         echo 'Downloading STAR-Fusion references'
         mkdir star_fusion_ref && cd star_fusion_ref \
