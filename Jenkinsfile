@@ -28,11 +28,10 @@ pipeline {
     }
     post {
         failure {
-            // Find the log
-            sh "cat ${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_NUMBER}/log >> log.txt"
-            // comment to log to PR
+            // send github message to GitHub with the log
         }
         always {
+            sh "pwd && cat ${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_NUMBER}/log >> log.txt"
             deleteDir()
         }
     }
