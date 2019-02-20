@@ -27,7 +27,7 @@ pipeline {
         }
         post {
             failure {
-                // Find the log
+                // Find the log 
                 sh "cat ${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_NUMBER}/log >> log.txt"
                 // comment to log to PR
             }
