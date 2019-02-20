@@ -27,9 +27,6 @@ pipeline {
         }
     }
     post {
-        failure {
-            // send github message to GitHub with the log
-        }
         always {
             sh "pwd && cat ${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_NUMBER}/log >> log.txt"
             deleteDir()
