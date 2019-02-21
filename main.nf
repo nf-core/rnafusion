@@ -580,7 +580,7 @@ process get_software_versions {
     echo $workflow.nextflow.version > v_nextflow.txt
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
-    cat $baseDir/tools/fusioncatcher/Dockerfile | grep "VERSION" > v_fusioncatcher.txt
+    cat $baseDir/tools/fusioncatcher/environment.yml | grep "fusioncatcher" > v_fusioncatcher.txt
     cat $baseDir/tools/fusion-inspector/environment.yml | grep "fusion-inspector" > v_fusion_inspector.txt
     cat $baseDir/tools/star-fusion/environment.yml | grep "star-fusion" > v_star_fusion.txt
     cat $baseDir/tools/ericscript/environment.yml | grep "ericscript" > v_ericscript.txt
