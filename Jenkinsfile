@@ -25,11 +25,12 @@ pipeline {
                 sh "pylint --rcfile=$WORKSPACE/.github/pylintrc $WORKSPACE/bin/*/*.py --ignore=scrape_software_versions.py"
             }
         }
-        stage('') {
+        /*
+        stage('Build') {
             steps {
-                // sh "nextflow run kraken,jenkins nf-core/rnafusion"
+                sh "nextflow run kraken,jenkins nf-core/rnafusion"
             }
-        }
+        }*/
         stage('save log build') {
             steps {
                 script {
