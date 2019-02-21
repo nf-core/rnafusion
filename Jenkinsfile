@@ -25,10 +25,15 @@ pipeline {
                 sh "pylint --rcfile=$WORKSPACE/.github/pylintrc $WORKSPACE/bin/*/*.py --ignore=scrape_software_versions.py"
             }
         }
+        stage('') {
+            steps {
+                // sh "nextflow run kraken,jenkins nf-core/rnafusion"
+            }
+        }
         stage('save log build') {
             steps {
                 script {
-                    def response = sh(script: "curl -u ${JENKINS_API_USR}:${JENKINS_API_PSW} ${BUILD_URL}/consoleText", returnStdout: true)
+                    def response = sh(script: "curl -u ${JENKINS_API_USR}:${JENKINS_API_PSW} ${BUILD_URL}/consoleText", returnStdout: true).trim().replace('\n', '<br>')
                     def comment = pullRequest.comment("<summary><pre><code>Log output:</code></pre><details>${response}</details></summary>")
                 }
             }
