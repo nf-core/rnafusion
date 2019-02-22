@@ -3,10 +3,10 @@ Bootstrap:docker
 
 %labels
     DESCRIPTION Singularity image containing all requirements for nf-core/rnafusion pipeline
-    VERSION 1.0
+    VERSION 1.0.1
 
 %environment
-    PATH=/opt/conda/envs/nf-core-rnafusion-1.0/bin:$PATH
+    PATH=/opt/conda/envs/nf-core-rnafusion-1.0.1/bin:$PATH
     export PATH
 
 %files

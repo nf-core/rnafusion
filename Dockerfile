@@ -6,7 +6,7 @@ LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.
 
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
-ENV PATH /opt/conda/envs/nf-core-rnafusion-1.0/bin:$PATH
+ENV PATH /opt/conda/envs/nf-core-rnafusion-1.0.1/bin:$PATH
 
 WORKDIR /script-db
 # Download FusionGDB
@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y wget \
     && wget --no-check-certificate https://ccsm.uth.edu/FusionGDB/tables/fusion_uniprot_related_drugs.txt -O fusion_uniprot_related_drugs.txt \
     && wget --no-check-certificate https://ccsm.uth.edu/FusionGDB/tables/fusion_ppi.txt -O fusion_ppi.txt \
     && wget --no-check-certificate https://ccsm.uth.edu/FusionGDB/tables/fgene_disease_associations.txt -O fgene_disease_associations.txt \
-    && ln -s /opt/conda/envs/nf-core-rnafusion-1.0/bin/python3 /bin/python3
+    && ln -s /opt/conda/envs/nf-core-rnafusion-1.0.1/bin/python3 /bin/python3
 
 COPY ./FusionGDB.sql .
 RUN sqlite3 fusions.db < FusionGDB.sql

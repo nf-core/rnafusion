@@ -1,5 +1,13 @@
 # nfcore/rnafusion
 
+## nfcore/rnafusion version 1.0.1 - 2018/02/25
+
+* Updated documentation
+* Uploaded results into example folder
+* Converted bash scripts into nextflow pipeline
+* Added Jenkinsfile
+* Updated installation of fusioncatcher (available now on bioconda)
+
 ## nfcore/rnafusion version 1.0 - 2018/02/14
 
 Version 1.0 marks the first production release of this pipeline under the nf-core flag. The pipeline includes

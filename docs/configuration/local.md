@@ -22,7 +22,7 @@ For more information about how to work with reference genomes, see [`docs/config
 
 ### Pipeline versions
 
-The public docker images are tagged with the same version numbers as the code, which you can use to ensure reproducibility. When running the pipeline, specify the pipeline version with `-r`, for example `-r 1.0`. This uses pipeline code and docker image from this tagged version.
+The public docker images are tagged with the same version numbers as the code, which you can use to ensure reproducibility. When running the pipeline, specify the pipeline version with `-r`, for example `-r 1.0.1`. This uses pipeline code and docker image from this tagged version.
 
 ## Singularity image
 
@@ -35,15 +35,15 @@ If you intend to run the pipeline offline, nextflow will not be able to automati
 First, pull the image file where you have an internet connection:
 
 > NB: The "tag" at the end of this command corresponds to the pipeline version.
-> Here, we're pulling the docker image for version 1.0 of the nfcore/rnafusion pipeline
+> Here, we're pulling the docker image for version 1.0.1 of the nfcore/rnafusion pipeline
 > Make sure that this tag corresponds to the version of the pipeline that you're using
 
 ```bash
-singularity pull --name nfcore-rnafusion-1.0.img docker://nfcore/rnafusion:1.0
+singularity pull --name nfcore-rnafusion-1.0.1.img docker://nfcore/rnafusion:1.0.1
 ```
 
 Then transfer this file and run the pipeline with this path:
 
 ```bash
-nextflow run /path/to/nfcore-rnafusion -with-singularity /path/to/nfcore-rnafusion-1.0.img
+nextflow run /path/to/nfcore-rnafusion -with-singularity /path/to/nfcore-rnafusion-1.0.1.img
 ```

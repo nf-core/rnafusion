@@ -11,7 +11,7 @@ pipeline {
             steps {
                 sh "pip install nf-core"
                 sh "docker pull nfcore/rnafusion:dev"
-                sh "docker tag nfcore/rnafusion:dev nfcore/rnafusion:1.0"
+                sh "docker tag nfcore/rnafusion:dev nfcore/rnafusion:1.0.1"
             }
         }
         stage('Lint markdown') {

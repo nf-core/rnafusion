@@ -103,7 +103,7 @@ nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' -profile singularity 
 ```groovy
 // Example singularity custom.config
 params {
-  container_version = '1.0'
+  container_version = '1.0.1'
   reference_base = '/path/to/reference'
   containerPath = "file:///path/to/containers/rnafusion_containers_v${params.container_version}"
 
