@@ -1,9 +1,15 @@
 # nfcore/rnafusion: Download references for tools
 
-## 1. Using script
+## 1. Using nextflow helper script
 
 ```bash
-cd utils && sh download-references.sh <PATH>
+nextflow run nf-core/rnafusion/download-singularity-img.sh --all --outdir <PATH>
+```
+
+For additional optional parameters run:
+
+```bash
+nextflow run nf-core/rnafusion/download-singularity-img.sh --help
 ```
 
 ## 2.  Manual download
@@ -11,7 +17,7 @@ cd utils && sh download-references.sh <PATH>
 ### STAR-Fusion
 
 ```bash
-wget https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz -O GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz
+wget -N -N https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz -O GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz
 tar -xvzf GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz
 ```
 
@@ -26,10 +32,10 @@ params {
 ## Fusioncatcher
 
 ```bash
-wget http://sourceforge.net/projects/fusioncatcher/files/data/human_v90.tar.gz.aa
-wget http://sourceforge.net/projects/fusioncatcher/files/data/human_v90.tar.gz.ab
-wget http://sourceforge.net/projects/fusioncatcher/files/data/human_v90.tar.gz.ac
-wget http://sourceforge.net/projects/fusioncatcher/files/data/human_v90.tar.gz.ad
+wget -N -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v90.tar.gz.aa
+wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v90.tar.gz.ab
+wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v90.tar.gz.ac
+wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v90.tar.gz.ad
 cat human_v90.tar.gz.* | tar xz
 ```
 
@@ -44,7 +50,7 @@ params {
 ## Ericscript
 
 ```bash
-wget https://raw.githubusercontent.com/circulosmeos/gdown.pl/dfd6dc910a38a42d550397bb5c2335be2c4bcf54/gdown.pl \
+wget -N https://raw.githubusercontent.com/circulosmeos/gdown.pl/dfd6dc910a38a42d550397bb5c2335be2c4bcf54/gdown.pl \
 && chmod +x gdown.pl \
 && ./gdown.pl "https://drive.google.com/uc?export=download&confirm=qgOc&id=0B9s__vuJPvIiUGt1SnFMZFg4TlE" ericscript_db_homosapiens_ensembl84.tar.bz2 \
 && rm gdown.pl
@@ -62,10 +68,10 @@ params {
 
 ```bash
 # transcriptome
-wget ftp://ftp.ensembl.org/pub/release-94/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz \
+wget -N ftp://ftp.ensembl.org/pub/release-94/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz \
 
 # annotation
-wget ftp://ftp.ensembl.org/pub/release-94/gtf/homo_sapiens/Homo_sapiens.GRCh38.94.gtf.gz && gunzip Homo_sapiens.GRCh38.94.gtf.gz
+wget -N ftp://ftp.ensembl.org/pub/release-94/gtf/homo_sapiens/Homo_sapiens.GRCh38.94.gtf.gz && gunzip Homo_sapiens.GRCh38.94.gtf.gz
 ```
 
 > Update the config file to include the directory
@@ -79,7 +85,7 @@ params {
 
 ## Squid
 
-> Requires STAR alignment, GTF, FASTA file
+> Requires GTF and FASTA file
 
 ```bash
 mkdir -p igenomes/Homo_sapiens/NCBI/GRCh38/

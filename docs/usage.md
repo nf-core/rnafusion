@@ -4,6 +4,8 @@
 
 * [Introduction](#general-nextflow-info)
 * [Running the pipeline](#running-the-pipeline)
+  * [using Docker](#running-the-pipeline-using-docker)
+  * [using Singularity](#running-the-pipeline-using-singularity)
 * [Updating the pipeline](#updating-the-pipeline)
 * [Reproducibility](#reproducibility)
 * [Main arguments](#main-arguments)
@@ -23,6 +25,7 @@
   * [`--squid`](#--squid)
   * [`--tool_cutoff`](#--tool-cutoff)
   * [`--test`](#--test)
+  * [`--fusion_inspector`](#--fusion_inspector)
 * [Reference Genomes](#reference-genomes)
   * [`--genome`](#--genome)
   * [`--fasta`](#--fasta)
@@ -69,16 +72,77 @@ NXF_OPTS='-Xms1g -Xmx4g'
 
 The typical command for running the whole pipeline is as follows:
 
-```bash
-nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile docker --star_fusion --fusioncatcher --ericscript --pizzly --squid --fusion_inspector
-```
+### Running the pipeline using Docker
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
 
-Is is also possible to execute specific tools:
+```bash
+nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' -profile docker -c '/path/to/custom/custom.config' --genome GRCh38 --star_fusion --fusioncatcher --ericscript --pizzly --squid --fusion_inspector
+```
+
+```groovy
+// Example docker custom.config
+params {
+    reference_base = '/path/to/references'
+    fusioncatcher_ref = "${params.reference_base}/fusioncatcher_ref/human_v90"
+    star_fusion_ref = "${params.reference_base}/star_fusion_ref/GRCh38_v27_CTAT_lib_Feb092018/ctat_genome_lib_build_dir"
+    ericscript_ref = "${params.reference_base}/ericscript_ref/ericscript_db_homosapiens_ensembl84"
+    pizzly_fasta = "${params.reference_base}/pizzly_ref/Homo_sapiens.GRCh38.cdna.all.fa.gz"
+    pizzly_gtf = "${params.reference_base}/pizzly_ref/Homo_sapiens.GRCh38.94.gtf"
+}
+```
+
+### Running the pipeline using Singularity
+
+This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles.
 
 ```bash
-nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile docker --fusioncatcher --ericscript
+nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' -profile singularity -c '/path/to/custom/custom.config' --genome GRCh38 --star_fusion --fusioncatcher --ericscript --pizzly --squid --fusion_inspector
+```
+
+```groovy
+// Example singularity custom.config
+params {
+  container_version = '1.0'
+  reference_base = '/path/to/reference'
+  containerPath = "file:///path/to/containers/rnafusion_containers_v${params.container_version}"
+
+  fusioncatcher_ref = "${params.reference_base}/fusioncatcher_ref/human_v90"
+  star_fusion_ref = "${params.reference_base}/star_fusion_ref/GRCh38_v27_CTAT_lib_Feb092018/ctat_genome_lib_build_dir"
+  ericscript_ref = "${params.reference_base}/ericscript_ref/ericscript_db_homosapiens_ensembl84"
+  pizzly_fasta = "${params.reference_base}/pizzly_ref/Homo_sapiens.GRCh38.cdna.all.fa.gz"
+  pizzly_gtf = "${params.reference_base}/pizzly_ref/Homo_sapiens.GRCh38.94.gtf"
+}
+
+process {
+  container = "${params.containerPath}/rnafusion_v${params.container_version}.img"
+  withName:star_fusion {
+    container = "${params.containerPath}/rnafusion_star-fusion_v${params.container_version}.img"
+  }
+  withName:fusioncatcher {
+    container = "${params.containerPath}/rnafusion_fusioncatcher_v${params.container_version}.img"
+  }
+  withName:fusion_inspector {
+    container = "${params.containerPath}/rnafusion_fusion-inspector_v${params.container_version}.img"
+  }
+  withName:ericscript {
+    container = "${params.containerPath}/rnafusion_ericscript_v${params.container_version}.img"
+  }
+  withName:pizzly {
+    container = "${params.containerPath}/rnafusion_pizzly_v${params.container_version}.img"
+  }
+  withName:squid {
+    container = "${params.containerPath}/rnafusion_squid_v${params.container_version}.img"
+  }
+}
+```
+
+---
+
+It is also possible to execute specific tools:
+
+```bash
+nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile docker -c '/path/to/custom/custom.config' --fusioncatcher --ericscript
 ```
 
 Note that the pipeline will create the following files in your working directory:
@@ -180,6 +244,10 @@ To run only a specific tool (testing freshly implemented tool) just add `--test`
 ```bash
 nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile docker --star_fusion --test
 ```
+
+### `--fusion_inspector`
+
+If enabled, executes `Fusion-Inspector` tool.
 
 ## Reference Genomes
 

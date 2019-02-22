@@ -84,10 +84,16 @@ Then, running the pipeline with the option `-profile docker` tells Nextflow to e
 If you're not able to use Docker then [Singularity](http://singularity.lbl.gov/) is a great alternative.
 The process is very similar: running the pipeline with the option `-profile singularity` tells Nextflow to enable singularity for this run. A set of images containing all of the software requirements will be automatically fetched and used from DockerHub.
 
-If running offline with Singularity, you'll need to download and transfer the Singularity image first. You can use included `utils/download-singularity-img.sh` script and define the destination parameter as shown below:
+If running offline with Singularity, you'll need to download and transfer the Singularity images first. You can use included nextflow `download-singularity-img.nf` script:
 
 ```bash
-cd utils && sh download-singularity-img.sh <PATH>
+nextflow run nf-core/rnafusion/download-singularity-img.sh --all --outdir <PATH>
+```
+
+For additional optional parameters run:
+
+```bash
+nextflow run nf-core/rnafusion/download-singularity-img.sh --help
 ```
 
 ### 3.2) Software deps: conda

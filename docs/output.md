@@ -91,7 +91,7 @@ For more info check the [documentation](https://github.com/ndaniel/fusioncatcher
 
 **Output directory: `results/tools/Ericscript/tmp`**
 
-* `fusions.results.total.tsv`
+* `fusions.results.filtered.tsv`
   * contains all the predicted gene fusions
 
 |  Column | Description |
