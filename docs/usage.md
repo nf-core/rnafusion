@@ -102,7 +102,18 @@ params {
 
 ### Running the pipeline using Singularity
 
-This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles.
+First start by downloading singularity images. Sometimes the pipeline can randomly crash if you are not using downloaded images.
+You can do this by running either:
+
+```bash
+nextflow run nf-core/rnafusion/download-singularity-img.nf --all --outdir /path
+
+# or
+
+cd utils && sh download-singularity-img.sh /path/to/images
+```
+
+To launch the pipeline with the `singularity` configuration profile run:
 
 ```bash
 nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' -profile singularity -c '/path/to/custom/custom.config' --genome GRCh38 --star_fusion --fusioncatcher --ericscript --pizzly --squid --fusion_inspector
@@ -160,12 +171,6 @@ It is also possible to execute specific tools:
 
 ```bash
 nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile docker -c '/path/to/custom/custom.config' --fusioncatcher --ericscript
-```
-
-If you are having some issues or strange errors you can use bash script:
-
-```bash
-cd utils && sh download-singularity-img.sh /path/to/images
 ```
 
 Note that the pipeline will create the following files in your working directory:
