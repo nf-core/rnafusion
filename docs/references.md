@@ -3,13 +3,13 @@
 ## 1. Using nextflow helper script
 
 ```bash
-nextflow run nf-core/rnafusion/download-singularity-img.sh --all --outdir <PATH>
+nextflow run nf-core/rnafusion/download-singularity-img.nf --all --outdir <PATH>
 ```
 
 For additional optional parameters run:
 
 ```bash
-nextflow run nf-core/rnafusion/download-singularity-img.sh --help
+nextflow run nf-core/rnafusion/download-singularity-img.nf --help
 ```
 
 ## 2.  Manual download

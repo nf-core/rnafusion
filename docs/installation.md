@@ -87,13 +87,13 @@ The process is very similar: running the pipeline with the option `-profile sing
 If running offline with Singularity, you'll need to download and transfer the Singularity images first. You can use included nextflow `download-singularity-img.nf` script:
 
 ```bash
-nextflow run nf-core/rnafusion/download-singularity-img.sh --all --outdir <PATH>
+nextflow run nf-core/rnafusion/download-singularity-img.nf --all --outdir <PATH>
 ```
 
 For additional optional parameters run:
 
 ```bash
-nextflow run nf-core/rnafusion/download-singularity-img.sh --help
+nextflow run nf-core/rnafusion/download-singularity-img.nf --help
 ```
 
 ### 3.2) Software deps: conda

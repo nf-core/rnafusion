@@ -83,12 +83,20 @@ nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' -profile docker -c '/
 ```groovy
 // Example docker custom.config
 params {
-    reference_base = '/path/to/references'
-    fusioncatcher_ref = "${params.reference_base}/fusioncatcher_ref/human_v90"
-    star_fusion_ref = "${params.reference_base}/star_fusion_ref/GRCh38_v27_CTAT_lib_Feb092018/ctat_genome_lib_build_dir"
-    ericscript_ref = "${params.reference_base}/ericscript_ref/ericscript_db_homosapiens_ensembl84"
-    pizzly_fasta = "${params.reference_base}/pizzly_ref/Homo_sapiens.GRCh38.cdna.all.fa.gz"
-    pizzly_gtf = "${params.reference_base}/pizzly_ref/Homo_sapiens.GRCh38.94.gtf"
+  // Default tool versions
+  star_fusion_version = '1.5.0'
+  fusioncatcher_version = '1.00'
+  ericscript_version = '0.5.5'
+  pizzly_version = '0.37.3'
+  squid_version = '1.5'
+  fusion_inspector_version = '1.3.1'
+
+  reference_base = '/path/to/references'
+  fusioncatcher_ref = "${params.reference_base}/fusioncatcher_ref/human_v90"
+  star_fusion_ref = "${params.reference_base}/star_fusion_ref/GRCh38_v27_CTAT_lib_Feb092018/ctat_genome_lib_build_dir"
+  ericscript_ref = "${params.reference_base}/ericscript_ref/ericscript_db_homosapiens_ensembl84"
+  pizzly_fasta = "${params.reference_base}/pizzly_ref/Homo_sapiens.GRCh38.cdna.all.fa.gz"
+  pizzly_gtf = "${params.reference_base}/pizzly_ref/Homo_sapiens.GRCh38.94.gtf"
 }
 ```
 
@@ -104,6 +112,15 @@ nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' -profile singularity 
 // Example singularity custom.config
 params {
   container_version = '1.0.1'
+  
+  // Default tool versions
+  star_fusion_version = '1.5.0'
+  fusioncatcher_version = '1.00'
+  ericscript_version = '0.5.5'
+  pizzly_version = '0.37.3'
+  squid_version = '1.5'
+  fusion_inspector_version = '1.3.1'
+
   reference_base = '/path/to/reference'
   containerPath = "file:///path/to/containers/rnafusion_containers_v${params.container_version}"
 
@@ -117,22 +134,22 @@ params {
 process {
   container = "${params.containerPath}/rnafusion_v${params.container_version}.img"
   withName:star_fusion {
-    container = "${params.containerPath}/rnafusion_star-fusion_v${params.container_version}.img"
+    container = "${params.containerPath}/rnafusion_star-fusion_v${params.star_fusion_version}.img"
   }
   withName:fusioncatcher {
-    container = "${params.containerPath}/rnafusion_fusioncatcher_v${params.container_version}.img"
+    container = "${params.containerPath}/rnafusion_fusioncatcher_v${params.fusioncatcher_version}.img"
   }
   withName:fusion_inspector {
-    container = "${params.containerPath}/rnafusion_fusion-inspector_v${params.container_version}.img"
+    container = "${params.containerPath}/rnafusion_fusion-inspector_v${params.fusion_inspector_version}.img"
   }
   withName:ericscript {
-    container = "${params.containerPath}/rnafusion_ericscript_v${params.container_version}.img"
+    container = "${params.containerPath}/rnafusion_ericscript_v${params.ericscript_version}.img"
   }
   withName:pizzly {
-    container = "${params.containerPath}/rnafusion_pizzly_v${params.container_version}.img"
+    container = "${params.containerPath}/rnafusion_pizzly_v${params.pizzly_version}.img"
   }
   withName:squid {
-    container = "${params.containerPath}/rnafusion_squid_v${params.container_version}.img"
+    container = "${params.containerPath}/rnafusion_squid_v${params.squid_version}.img"
   }
 }
 ```
@@ -143,6 +160,12 @@ It is also possible to execute specific tools:
 
 ```bash
 nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile docker -c '/path/to/custom/custom.config' --fusioncatcher --ericscript
+```
+
+If you are having some issues or strange errors you can use bash script:
+
+```bash
+cd utils && sh download-singularity-img.sh /path/to/images
 ```
 
 Note that the pipeline will create the following files in your working directory:
