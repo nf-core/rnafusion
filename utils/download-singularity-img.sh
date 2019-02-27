@@ -14,11 +14,6 @@ if [ $1 == "-h" ]; then
     echo
     exit 0
 elif [ -d "$1" ]; then
-    cwd=$1/rnafusion_containers_v$RNAFUSION
-    echo "Creating folder $cwd"
-    mkdir $cwd && cd $cwd
-    echo "Pulling images ..."
-    
     RNAFUSION="$(cat ../nextflow.config | grep "container" | cut -d":" -f2 | cut -d "'" -f1)"
     STAR_FUSION="$(cat ../nextflow.config | grep "star_fusion_version" | cut -d"=" -f2 | tr -d \' | tr -d ' ')"
     FUSIONCATCHER="$(cat ../nextflow.config | grep "fusioncatcher_version" | cut -d"=" -f2 | tr -d \' | tr -d ' ')"
@@ -26,6 +21,11 @@ elif [ -d "$1" ]; then
     PIZZLY="$(cat ../nextflow.config | grep "pizzly_version" | cut -d"=" -f2 | tr -d \' | tr -d ' ')"
     SQUID="$(cat ../nextflow.config | grep "squid_version" | cut -d"=" -f2 | tr -d \' | tr -d ' ')" 
     FUSION_INSPECTOR="$(cat ../nextflow.config | grep "fusion_inspector_version" | cut -d"=" -f2 | tr -d \' | tr -d ' ')"
+    
+    cwd=$1/rnafusion_containers_v$RNAFUSION
+    echo "Creating folder $cwd"
+    mkdir $cwd && cd $cwd
+    echo "Pulling images ..."
     
     singularity pull --name "rnafusion_v${RNAFUSION}.img" docker://nfcore/rnafusion:${RNAFUSION}
     singularity pull --name "rnafusion_star-fusion_v${STAR_FUSION}.img" docker://nfcore/rnafusion:star-fusion_v${STAR_FUSION}
