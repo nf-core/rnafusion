@@ -26,7 +26,7 @@ install:
   # Install markdownlint-cli
   - sudo apt-get install npm && npm install -g markdownlint-cli
   # Install pylint
-  - sudo apt-get install pylint
+  # - pip install pylint
   # Reset 
   - mkdir ${TRAVIS_BUILD_DIR}/tests && cd ${TRAVIS_BUILD_DIR}
 
@@ -42,6 +42,6 @@ script:
   # Lint markdown
   - markdownlint ${TRAVIS_BUILD_DIR} -c ${TRAVIS_BUILD_DIR}/.github/markdownlint.yml
   # Lint python code
-  - pylint --rcfile=${TRAVIS_BUILD_DIR}/.github/pylintrc ${TRAVIS_BUILD_DIR}/bin/*/*.py --ignore=scrape_software_versions.py
+  # - pylint --rcfile=${TRAVIS_BUILD_DIR}/.github/pylintrc ${TRAVIS_BUILD_DIR}/bin/*/*.py --ignore=scrape_software_versions.py
   # Running the pipeline
   - nextflow run ${TRAVIS_BUILD_DIR} -profile test,docker
