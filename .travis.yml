@@ -26,7 +26,7 @@ install:
   # Install markdownlint-cli
   - sudo apt-get install npm && npm install -g markdownlint-cli
   # Install pylint
-  - pip install pylint
+  - pip install pylint && pip install pylint --upgrade
   # Reset 
   - mkdir ${TRAVIS_BUILD_DIR}/tests && cd ${TRAVIS_BUILD_DIR}
 
