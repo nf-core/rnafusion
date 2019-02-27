@@ -96,6 +96,8 @@ output_docs = file("$baseDir/docs/output.md")
 
 // Reference variables required by tools
 // These are needed in order to run the pipeline
+fasta = false
+gtf = false
 pizzly_fasta = false
 pizzly_gtf = false
 star_fusion_ref = false
@@ -127,13 +129,15 @@ if( workflow.profile == 'awsbatch') {
 if (params.fasta) {
     fasta = file(params.fasta)
     if(!fasta.exists()) exit 1, "Fasta file not found: ${params.fasta}"
-} else {
-    if (!params.genome) exit 1, "You have to specify either fasta file or Genome version!"
 }
 
 if (params.gtf) {
     gtf = file(params.gtf)
     if(!gtf.exists()) exit 1, "GTF file not found: ${params.fasta}"
+}
+
+if (!params.star_index && (!params.fasta && !params.gtf)) {
+    exit 1, "Either specify STAR-INDEX or fasta and gtf file!"
 }
 
 if (params.star_fusion) {
@@ -186,6 +190,9 @@ if (params.pizzly) {
 
 if (params.squid) {
     params.running_tools.add("Squid")
+    if (!gtf) {
+        exit 1, "Missing GTF annotation file for squid!"
+    }
 }
 
 if (params.fusion_inspector) {
