@@ -42,6 +42,6 @@ script:
   # Lint markdown
   - markdownlint ${TRAVIS_BUILD_DIR} -c ${TRAVIS_BUILD_DIR}/.github/markdownlint.yml
   # Lint python code
-  - pylint --rcfile=${TRAVIS_BUILD_DIR}/.github/pylintrc ${TRAVIS_BUILD_DIR}/bin/*/*.py --ignore=scrape_software_versions.py
+  # - pylint --rcfile=${TRAVIS_BUILD_DIR}/.github/pylintrc ${TRAVIS_BUILD_DIR}/bin/*/*.py --ignore=scrape_software_versions.py
   # Running the pipeline
   - nextflow run ${TRAVIS_BUILD_DIR} -profile test,docker
