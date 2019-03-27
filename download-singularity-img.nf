@@ -58,7 +58,7 @@ params.running_tools = ["nf-core/rnafusion/${workflow.manifest.version}"]
 if (!params.outdir) {
     exit 1, "Output directory not specified!"
 }
-if (params.all) {
+if (params.download_all) {
     params.running_tools.add("All")
 }
 if (params.star_fusion) {
@@ -107,7 +107,7 @@ process download_base_image {
     publishDir "${params.outdir}", mode: 'copy'
 
     when:
-    params.all
+    params.download_all
 
     output:
     file "rnafusion_v${workflow.manifest.version}.img"
@@ -122,7 +122,7 @@ process download_star_fusion {
     publishDir "${params.outdir}", mode: 'copy'
     
     when:
-    params.star_fusion || params.all
+    params.star_fusion || params.download_all
 
     output:
     file "rnafusion_star-fusion_v${params.star_fusion_version}.img"
@@ -137,7 +137,7 @@ process download_fusioncatcher {
     publishDir "${params.outdir}", mode: 'copy'
     
     when:
-    params.fusioncatcher || params.all
+    params.fusioncatcher || params.download_all
 
     output:
     file "rnafusion_fusioncatcher_v${params.fusioncatcher_version}.img"
@@ -152,7 +152,7 @@ process download_ericscript {
     publishDir "${params.outdir}", mode: 'copy'
     
     when:
-    params.ericscript || params.all
+    params.ericscript || params.download_all
 
     output:
     file "rnafusion_ericscript_v${params.ericscript_version}.img"
@@ -167,7 +167,7 @@ process download_pizzly {
     publishDir "${params.outdir}", mode: 'copy'
     
     when:
-    params.pizzly || params.all
+    params.pizzly || params.download_all
 
     output:
     file "rnafusion_pizzly_v${params.pizzly_version}.img"
@@ -182,7 +182,7 @@ process download_squid {
     publishDir "${params.outdir}", mode: 'copy'
     
     when:
-    params.squid || params.all
+    params.squid || params.download_all
 
     output:
     file "rnafusion_squid_v${params.squid_version}.img"
@@ -197,7 +197,7 @@ process download_fusion_inspector {
     publishDir "${params.outdir}", mode: 'copy'
     
     when:
-    params.fusion_inspector || params.all
+    params.fusion_inspector || params.download_all
 
     output:
     file "rnafusion_fusion-inspector_v${params.fusion_inspector_version}.img"

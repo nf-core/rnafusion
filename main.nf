@@ -39,8 +39,9 @@ def helpMessage() {
       --ericscript                  Run Ericscript
       --pizzly                      Run Pizzly
       --squid                       Run Squid
-      --test                        Runs only specific fusion tool/s and not the whole pipeline. Only works on tool flags.
+      --debug                       Flag to run only specific fusion tool/s and not the whole pipeline. Only works on tool flags.
       --tool_cutoff                 Number of tools to pass threshold required for showing fusion in the report. [Default = 2]
+      --databases                   Database path for fusion-report
 
     Visualization flags:
       --fusion_inspector            Run Fusion-Inspector
@@ -138,6 +139,10 @@ if (params.gtf) {
 
 if (!params.star_index && (!params.fasta && !params.gtf)) {
     exit 1, "Either specify STAR-INDEX or fasta and gtf file!"
+}
+
+if (!params.databases) {
+    exit 1, "Database path for fusion-report has to be specified!"
 }
 
 if (params.star_fusion) {
@@ -321,7 +326,7 @@ process star_fusion {
     publishDir "${params.outdir}/tools/StarFusion", mode: 'copy'
 
     when:
-    params.star_fusion || (params.star_fusion && params.test)
+    params.star_fusion || (params.star_fusion && params.debug)
 
     input:
     set val(name), file(reads) from read_files_star_fusion
@@ -371,7 +376,7 @@ process fusioncatcher {
     publishDir "${params.outdir}/tools/Fusioncatcher", mode: 'copy'
 
     when:
-    params.fusioncatcher || (params.fusioncatcher && params.test)
+    params.fusioncatcher || (params.fusioncatcher && params.debug)
 
     input:
     set val(name), file(reads) from read_files_fusioncatcher
@@ -402,7 +407,7 @@ process ericscript {
     publishDir "${params.outdir}/tools/Ericscript", mode: 'copy'
 
     when:
-    params.ericscript && (!params.singleEnd || params.test)
+    params.ericscript && (!params.singleEnd || params.debug)
 
     input:
     set val(name), file(reads) from read_files_ericscript
@@ -432,7 +437,7 @@ process pizzly {
     publishDir "${params.outdir}/tools/Pizzly", mode: 'copy'
 
     when:
-    params.pizzly && (!params.singleEnd || params.test)
+    params.pizzly && (!params.singleEnd || params.debug)
 
     input:
     set val(name), file(reads) from read_files_pizzly
@@ -440,7 +445,7 @@ process pizzly {
     file gtf from pizzly_gtf
     
     output:
-    file 'pizzly_fusions.json' into pizzly_fusions
+    file 'pizzly_fusions.txt' into pizzly_fusions
     file '*.{json,txt}' into pizzly_output
 
     script:
@@ -454,6 +459,7 @@ process pizzly {
         --insert-size 400 \\
         --fasta ${fasta} \\
         --output pizzly_fusions output/fusion.txt
+    pizzly_flatten_json.py pizzly_fusions.json pizzly_fusions.txt
     """
 }
 
@@ -465,7 +471,7 @@ process squid {
     publishDir "${params.outdir}/tools/Squid", mode: 'copy'
 
     when:
-    params.squid && (!params.singleEnd || params.test)
+    params.squid && (!params.singleEnd || params.debug)
 
     input:
     set val(name), file(reads) from read_files_squid
@@ -503,30 +509,29 @@ process summary {
     publishDir "${params.outdir}/Report-${name}", mode: 'copy'
  
     when:
-    !params.test && (params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
+    !params.debug && (params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
     
     input:
     set val(name), file(reads) from read_files_summary
     file fusioncatcher from fusioncatcher_fusions.ifEmpty('')
-    file star_fusion from star_fusion_fusions.ifEmpty('')
+    file starfusion from star_fusion_fusions.ifEmpty('')
     file ericscript from ericscript_fusions.ifEmpty('')
     file pizzly from pizzly_fusions.ifEmpty('')
     file squid from squid_fusions.ifEmpty('')
 
     output:
-    file 'fusions.txt' into summary_fusions
-    file 'summary.yaml' into summary_fusions_mq
-    file '*.html' into report
+    file 'fusions_list.txt' into fusion_inspector_input_list
+    file 'fusion_genes_mqc.json' into summary_fusions_mq
+    file '*' into report
     
     script:
-    extra = params.tool_cutoff ? "-t ${params.tool_cutoff}" : "" 
     """
-    transformer.py -i ${fusioncatcher} -t fusioncatcher
-    transformer.py -i ${star_fusion} -t star_fusion
-    transformer.py -i ${ericscript} -t ericscript
-    transformer.py -i ${pizzly} -t pizzly
-    transformer.py -i ${squid} -t squid
-    generate_report.py fusions.txt summary.yaml -s ${name} -o . ${extra}
+    fusion_report run ${name} . ${params.databases} \\
+        --ericscript ${ericscript} \\
+        --starfusion ${starfusion} \\
+        --fusioncatcher ${fusioncatcher} \\
+        --squid ${squid} \\
+        --pizzly ${pizzly} ${params.fr_extra_options}
     """
 }
 
@@ -542,12 +547,12 @@ process fusion_inspector {
     publishDir "${params.outdir}/tools/FusionInspector", mode: 'copy'
 
     when:
-    params.fusion_inspector && (!params.singleEnd || params.test)
+    params.fusion_inspector && (!params.singleEnd || params.debug)
 
     input:
     set val(name), file(reads) from read_files_fusion_inspector
     file reference from fusion_inspector_ref
-    file summary_fusions
+    file fusion_inspector_input_list
 
     output:
     file '*.{fa,gtf,bed,bam,bai,txt}' into fusion_inspector_output
@@ -555,7 +560,7 @@ process fusion_inspector {
     script:
     """
     FusionInspector \\
-        --fusions ${summary_fusions} \\
+        --fusions ${fusion_inspector_input_list} \\
         --genome_lib ${reference} \\
         --left_fq ${reads[0]} \\
         --right_fq ${reads[1]} \\
@@ -576,7 +581,7 @@ process fusion_inspector {
 process get_software_versions {
 
     when:
-    !params.test
+    !params.debug
 
     output:
     file 'software_versions_mqc.yaml' into software_versions_yaml
@@ -587,12 +592,13 @@ process get_software_versions {
     echo $workflow.nextflow.version > v_nextflow.txt
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
-    cat $baseDir/tools/fusioncatcher/environment.yml | grep "fusioncatcher" > v_fusioncatcher.txt
-    cat $baseDir/tools/fusion-inspector/environment.yml | grep "fusion-inspector" > v_fusion_inspector.txt
-    cat $baseDir/tools/star-fusion/environment.yml | grep "star-fusion" > v_star_fusion.txt
-    cat $baseDir/tools/ericscript/environment.yml | grep "ericscript" > v_ericscript.txt
-    cat $baseDir/tools/pizzly/environment.yml | grep "pizzly" > v_pizzly.txt
-    cat $baseDir/tools/squid/environment.yml | grep "squid" > v_squid.txt
+    cat $baseDir/tools/fusioncatcher/environment.yml > v_fusioncatcher.txt
+    cat $baseDir/tools/fusion-inspector/environment.yml > v_fusion_inspector.txt
+    cat $baseDir/tools/star-fusion/environment.yml > v_star_fusion.txt
+    cat $baseDir/tools/ericscript/environment.yml > v_ericscript.txt
+    cat $baseDir/tools/pizzly/environment.yml > v_pizzly.txt
+    cat $baseDir/tools/squid/environment.yml > v_squid.txt
+    cat $baseDir/environment.yml > v_fusion_report.txt
     scrape_software_versions.py > software_versions_mqc.yaml
     """
 }
@@ -606,7 +612,7 @@ process fastqc {
         saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
 
     when:
-    !params.test
+    !params.debug
 
     input:
     set val(name), file(reads) from read_files_fastqc
@@ -628,7 +634,7 @@ process multiqc {
     publishDir "${params.outdir}/MultiQC", mode: 'copy'
 
     when:
-    !params.test
+    !params.debug
 
     input:
     set val(name), file(reads) from read_files_multiqc
@@ -646,7 +652,6 @@ process multiqc {
     rtitle = custom_runName ? "--title \"$custom_runName\"" : ''
     rfilename = custom_runName ? "--filename " + custom_runName.replaceAll('\\W','_').replaceAll('_+','_') + "_multiqc_report" : ''
     """
-    create_mqc_section.py -i ${fusions_mq} -s "${name}"
     multiqc -f $rtitle $rfilename --config $multiqc_config .
     """
 }
@@ -658,7 +663,7 @@ process output_documentation {
     publishDir "${params.outdir}/Documentation", mode: 'copy'
 
     when:
-    !params.test
+    !params.debug
 
     input:
     file output_docs

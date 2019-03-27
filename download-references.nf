@@ -32,11 +32,16 @@ def helpMessage() {
       
     Options:
       --all                         Download all references except iGenome
-      --star_fusion                 Download STAR-Fusion references
+      --star_fusion                 Download STAR-Fusion references [NCBI version by default]
+      --star_fusion_ensembl         Download STAR-Fusion references [Ensebml, have to build manually]
       --fusioncatcher               Download Fusioncatcher references
       --ericscript                  Download Ericscript references 
       --pizzly                      Download pizzly references
-      --igenome                     Download iGenome Homo Sapiens version NCBI/GRCh38
+      --databases                   Download databases for fusion-report
+        --cosmic_usr                [Required] COSMIC username
+        --cosmic_passwd             [Required] COSMIC password
+      --igenomesIgnore              Download iGenome Homo Sapiens version NCBI/GRCh38.
+                                    Ignored on default
     """.stripIndent()
     log.info "${nfcore_logo}${nfcore_help}"
 }
@@ -55,14 +60,17 @@ params.running_tools = []
 if (!params.outdir) {
     exit 1, "Output directory not specified!"
 }
-if (params.all) {
+if (params.download_all) {
     params.running_tools.add("All")
 }
 if (params.igenome) {
     params.running_tools.add("iGenome")
 }
 if (params.star_fusion) {
-    params.running_tools.add("STAR-Fusion")
+    params.running_tools.add("STAR-Fusion NCBI version")
+}
+if (params.star_fusion_ensembl) {
+    params.running_tools.add("STAR-Fusion Ensembl version")
 }
 if (params.fusioncatcher) {
     params.running_tools.add("Fusioncatcher")
@@ -72,6 +80,12 @@ if (params.ericscript) {
 }
 if (params.pizzly) {
     params.running_tools.add("Pizzly")
+}
+if (params.databases) {
+    if (!params.cosmic_usr && params.cosmic_passwd) {
+        exit 1, "Database credentials are required parameter!"
+    }
+    params.running_tools.add('Databases')
 }
 
 // Header log info
@@ -101,7 +115,7 @@ process download_star_fusion {
     publishDir "${params.outdir}/star_fusion_ref", mode: 'copy'
     
     when:
-    params.star_fusion || params.all
+    params.star_fusion || params.download_all
 
     output:
     file '*'
@@ -113,11 +127,36 @@ process download_star_fusion {
     """
 }
 
+process download_star_fusion_ensembl {
+    publishDir "${params.outdir}/star_fusion_ensembl_ref", mode: 'copy'
+    
+    when:
+    params.star_fusion_ensembl || params.download_all
+
+    output:
+    file '*'
+
+    script:
+    """
+    wget ftp://ftp.ensembl.org/pub/release-77/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{1..22}.fa.gz
+    wget ftp://ftp.ensembl.org/pub/release-77/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{MT,X,Y}.fa.gz
+    gunzip -c Homo_sapiens.GRCh38.dna.chromosome.* > Homo_sapiens.GRCh38_r77.all.fa
+    wget ftp://ftp.ensembl.org/pub/release-77/gtf/homo_sapiens/Homo_sapiens.GRCh38.77.chr.gtf.gz
+    wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
+    gunzip Pfam-A.hmm.gz && hmmpress Pfam-A.hmm
+    prep_genome_lib.pl \\
+        --genome_fa Homo_sapiens.GRCh38_r77.all.fa \\
+        --gtf Homo_sapiens.GRCh38.77.chr.gtf \\
+        --pfam_db Pfam-A.hmm \\
+        --CPU 10
+    """
+}
+
 process download_fusioncatcher {
     publishDir "${params.outdir}/fusioncatcher_ref", mode: 'copy'
     
     when:
-    params.fusioncatcher || params.all
+    params.fusioncatcher || params.download_all
 
     output:
     file '*'
@@ -137,7 +176,7 @@ process download_ericscript {
     publishDir "${params.outdir}/ericscript_ref", mode: 'copy'
     
     when:
-    params.ericscript || params.all
+    params.ericscript || params.download_all
 
     output:
     file '*'
@@ -156,7 +195,7 @@ process download_pizzly {
     publishDir "${params.outdir}/pizzly_ref", mode: 'copy'
     
     when:
-    params.pizzly || params.all
+    params.pizzly || params.download_all
 
     output:
     file '*'
@@ -168,11 +207,26 @@ process download_pizzly {
     """
 }
 
+process download_databases {
+    publishDir "${params.outdir}/databases", mode: 'copy'
+    
+    when:
+    params.databases || params.download_all
+
+    output:
+    file '*'
+
+    script:
+    """
+    fusion_report download --cosmic_usr ${params.cosmic_usr} --cosmic_passwd ${cosmic_passwd} .
+    """
+}
+
 process download_igenome {
     publishDir "${params.outdir}/igenome", mode: 'copy'
     
     when:
-    params.igenome
+    !params.igenomesIgnore
 
     output:
     file '*'
