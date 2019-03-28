@@ -342,7 +342,7 @@ You can find the keys to specify the genomes in the [iGenomes config file](../co
 * Human
   * `--genome GRCh38` (recommended)
 
-> **TL;DR** The pipeline only supports Homo Sapiens. We recommend using fasta nad gtf from Ensembl database and build custom STAR-Fusion reference. Most of the tools references are based on Ensembl.
+> **TL;DR:** The pipeline only supports Homo Sapiens. We recommend using fasta nad gtf from Ensembl database and build custom STAR-Fusion reference. Most of the tools references are based on Ensembl.
 
 Note that you can use the same configuration setup to save sets of reference files for your own use, even if they are not part of the iGenomes resource. See the [Nextflow documentation](https://www.nextflow.io/docs/latest/config.html) for instructions on where to save such a file.
 
