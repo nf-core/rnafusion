@@ -40,8 +40,8 @@ def helpMessage() {
       --pizzly                      Run Pizzly
       --squid                       Run Squid
       --debug                       Flag to run only specific fusion tool/s and not the whole pipeline. Only works on tool flags.
-      --tool_cutoff                 Number of tools to pass threshold required for showing fusion in the report. [Default = 2]
       --databases                   Database path for fusion-report
+      --fr_extra_options            fusion-report extra parameters
 
     Visualization flags:
       --fusion_inspector            Run Fusion-Inspector
