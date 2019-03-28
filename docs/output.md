@@ -9,10 +9,11 @@ and processes data using the following steps:
 
 * [FastQC](#fastqc) - read quality control
 * [Star-Fusion](#star-fusion)
-* [Fusioncatcher](#fusioncatcher)
-* [Ericscript](#ericscript)
+* [FusionCatcher](#fusioncatcher)
+* [EricScript](#ericscript)
 * [Pizzly](#pizzly)
 * [Squid](#squid)
+* [FusionInspector](#fusion-inspector)
 * [fusion-report](#fusion-report)
 * [MultiQC](#multiqc) - aggregate report, describing results of the whole pipeline
 
@@ -87,7 +88,7 @@ For more info check the [documentation](https://github.com/STAR-Fusion/STAR-Fusi
 
 For more info check the [documentation](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md#62---output-data-output-data).
 
-## Ericscript
+## EricScript
 
 **Output directory: `results/tools/Ericscript/tmp`**
 
