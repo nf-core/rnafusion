@@ -31,7 +31,7 @@ def helpMessage() {
       --outdir                      Output directory for downloading
       
     Options:
-      --all                         Download all references except iGenome
+      --all                         Download all references except iGenome and STAR-Fusion
       --star_fusion                 Download STAR-Fusion references [NCBI version by default]
       --star_fusion_ensembl         Download STAR-Fusion references [Ensebml, have to build manually]
       --fusioncatcher               Download Fusioncatcher references
@@ -115,7 +115,7 @@ process download_star_fusion {
     publishDir "${params.outdir}/star_fusion_ref", mode: 'copy'
     
     when:
-    params.star_fusion || params.download_all
+    params.star_fusion
 
     output:
     file '*'
@@ -131,7 +131,7 @@ process download_star_fusion_ensembl {
     publishDir "${params.outdir}/star_fusion_ensembl_ref", mode: 'copy'
     
     when:
-    params.star_fusion_ensembl || params.download_all
+    params.star_fusion_ensembl
 
     output:
     file '*'
