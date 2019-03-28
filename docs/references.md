@@ -2,30 +2,66 @@
 
 ## 1. Using nextflow helper script
 
+Downloading references manually is a tedious long process. To make the pipeline easier to work with, we provide a script to download all necessary references for fusion detection tools.
+
+> **TL;DR:** Most of the tool references are based on Ensembl database.
+
 ```bash
-nextflow run nf-core/rnafusion/download-singularity-img.nf --all --outdir <PATH>
+# This example will not download STAR-Fusion reference and iGenomes
+nextflow run nf-core/rnafusion/download-references.nf --all --outdir <PATH>
 ```
 
 For additional optional parameters run:
 
 ```bash
-nextflow run nf-core/rnafusion/download-singularity-img.nf --help
+nextflow run nf-core/rnafusion/download-references.nf --help
 ```
 
 ## 2.  Manual download
 
-### STAR-Fusion
+### STAR-Fusion (NCBI)
 
 ```bash
 wget -N -N https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz -O GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz
 tar -xvzf GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz
 ```
 
-> Update the config file to include the directory
+> Update your custom configuration file to include the directory
 
 ```groovy
 params {
   star_fusion_ref = "/path/to/GRCh38_v27_CTAT_lib_Feb092018/ctat_genome_lib_build_dir"
+}
+```
+
+### STAR-Fusion (Custom Ensembl example)
+
+```bash
+# download all chromosomes from ensembl
+wget ftp://ftp.ensembl.org/pub/release-77/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{1..22}.fa.gz
+wget ftp://ftp.ensembl.org/pub/release-77/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{MT,X,Y}.fa.gz
+gunzip -c Homo_sapiens.GRCh38.dna.chromosome.* > Homo_sapiens.GRCh38_r77.all.fa
+
+# download fasta file
+wget ftp://ftp.ensembl.org/pub/release-77/gtf/homo_sapiens/Homo_sapiens.GRCh38.77.chr.gtf.gz
+
+# download
+wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
+gunzip Pfam-A.hmm.gz
+hmmpress Pfam-A.hmm
+
+prep_genome_lib.pl
+  --genome_fa Homo_sapiens.GRCh38_r77.all.fa
+  --gtf Homo_sapiens.GRCh38.77.chr.gtf
+  --pfam_db Pfam-A.hmm
+  --CPU 10
+```
+
+> Update your custom configuration file to include the directory
+
+```groovy
+params {
+  star_fusion_ref = "/path/to/ctat_genome_lib_build_dir"
 }
 ```
 
@@ -39,7 +75,7 @@ wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v90.tar.g
 cat human_v90.tar.gz.* | tar xz
 ```
 
-> Update the config file to include the directory
+> Update your custom configuration file to include the directory
 
 ```groovy
 params {
@@ -56,7 +92,7 @@ wget -N https://raw.githubusercontent.com/circulosmeos/gdown.pl/dfd6dc910a38a42d
 && rm gdown.pl
 ```
 
-> Update the config file to include the directory
+> Update your custom configuration file to include the directory
 
 ```groovy
 params {
@@ -74,7 +110,7 @@ wget -N ftp://ftp.ensembl.org/pub/release-94/fasta/homo_sapiens/cdna/Homo_sapien
 wget -N ftp://ftp.ensembl.org/pub/release-94/gtf/homo_sapiens/Homo_sapiens.GRCh38.94.gtf.gz && gunzip Homo_sapiens.GRCh38.94.gtf.gz
 ```
 
-> Update the config file to include the directory
+> Update your custom configuration file to include the directory
 
 ```groovy
 params {
@@ -96,22 +132,8 @@ aws s3 --no-sign-request --region eu-west-1 sync s3://ngi-igenomes/igenomes/Homo
 
 > Uses reference genome from STAR-Fusion (ctat_genome_lib_build_dir)
 
-## Custom summary report
+## fusion-report
 
-The final summary report is made so that the user can customize it easily. These are the supported changes:
-
-* Custom title, date format
-* Add institution logo
-* Change styling of the report
-
-```yaml
-# Report customization configuration
-report_title: 'Some really cool title'
-institution: 'assets/img/scilifelab.jpg'
-date_format: '%Y-%m-%d'
-assets:
-  css:
-    - assets/css/something.css
-  js:
-    - assets/js/something.js
+```bash
+fusion_report download --cosmic_usr <username> --cosmic_passwd <password> /output/databases
 ```

@@ -13,7 +13,7 @@ and processes data using the following steps:
 * [Ericscript](#ericscript)
 * [Pizzly](#pizzly)
 * [Squid](#squid)
-* [Summary report](#summary-report)
+* [fusion-report](#fusion-report)
 * [MultiQC](#multiqc) - aggregate report, describing results of the whole pipeline
 
 ## FastQC
@@ -195,18 +195,33 @@ For more info and help check [wiki page](https://github.com/FusionInspector/Fusi
 
 **Output directory: `results/Report-<READS_BASE_NAME>`**
 
+* `fusions.json`
+  * contains all main information about found fusions (fusion name, score, explanation of the score calculation, cherry picked output from fusion tools)
 * `index.html`
   * main dashboard containing the list of all detected fusions
 * `*.html`
   * each fusion gets a custom page with fetched data from the local database
+* `fusions_list_filtered.txt`
+  * filtered list of found fusions (uses tool cutoff as filter, by default: 2, can be adjusted by adding `-t <num>` when running the tool)
+* `fusions_list.txt`
+  * unfiltered list of found fusions
+  
+### Tool detection
 
 Graphs displaying ratio of fusion genes caught by different tools. The last part *all tools* is an intersection of all tools.
+
 ![Tool detection](images/summary_graph_1.png)
 
-Displays how many fusions were found in a local database of the summary report. The report is currently using [FusionGDB](https://ccsm.uth.edu/FusionGDB/index.html).
+### Found in database
+
+Displays how many fusions were found in a downloaded databases of the summary report.
+
 ![Known/unknown fusions](images/summary_graph_2.png)
 
+### Tool detection distribution
+
 For each fusion a sum of detected tools is calculated. This counts are then visualized in the graph below.
+
 ![Known/unknown fusions](images/summary_graph_3.png)
 
 ## MultiQC

@@ -13,9 +13,9 @@ https://img.shields.io/badge/singularity-available-7E4C74.svg)
 
 **nfcore/rnafusion** uses RNA-seq data to detect fusions genes.
 
-The workflow processes RNA-sequencing data from FastQ files. It runs quality control on the raw data ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)), detects fusion genes ([STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion), [Fusioncatcher](https://github.com/ndaniel/fusioncatcher), [Ericscript](https://sites.google.com/site/bioericscript/), [Pizzly](https://github.com/pmelsted/pizzly), [Squid](https://github.com/Kingsford-Group/squid)), gathers information ([FusionGDB](https://ccsm.uth.edu/FusionGDB/index.html)), visualizes the fusions ([FusionInspector](https://github.com/FusionInspector/FusionInspector)), performs quality-control on the results ([MultiQC](http://multiqc.info)) and finally generates custom summary report. 
+The workflow processes RNA-sequencing data from FastQ files. It runs quality control on the raw data ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)), detects fusion genes ([STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion), [Fusioncatcher](https://github.com/ndaniel/fusioncatcher), [Ericscript](https://sites.google.com/site/bioericscript/), [Pizzly](https://github.com/pmelsted/pizzly), [Squid](https://github.com/Kingsford-Group/squid)), gathers information ([FusionGDB](https://ccsm.uth.edu/FusionGDB/index.html), [Mitelman](https://cgap.nci.nih.gov/Chromosomes/Mitelman), [COSMIC](https://cancer.sanger.ac.uk/cosmic/fusion)), visualizes the fusions ([FusionInspector](https://github.com/FusionInspector/FusionInspector)), performs quality-control on the results ([MultiQC](http://multiqc.info)) and finally generates custom summary report witch scored fusions ([fusion-report](https://github.com/matq007/fusion-report)).
 
-> Check out this live **demo [here](https://matq007.github.io/fusion-report/example/)**.
+> Live **demo** output **[here](https://matq007.github.io/fusion-report/example/)**.
 
 The pipeline works with both single-end and paired-end data, though not all fusion detection tools work with single-end data (Ericscript, Pizzly, Squid and FusionInspector).
 
@@ -53,7 +53,7 @@ Use predefined configuration for desired Institution cluster provided at [nfcore
 
 ## Credits
 
-This pipeline was written by Martin Proks ([@matq007](https://github.com/matq007)) in collaboration with Karolinska Institutet, SciLifeLab and University of Southern Denmark as a master thesis. This is a follow-up development started by Rickard Hammarén ([@Hammarn](https://github.com/Hammarn)). Special thanks goes to all supervisors: Teresita Díaz de Ståhl, PhD., Assoc. Prof., Monica Nistér, MD, PhD, Maxime U Garcia PhD, Szilveszter Juhos, Phil Ewels PhD and Lars Grøntved, PhD., Assoc. Prof.
+This pipeline was written by Martin Proks ([@matq007](https://github.com/matq007)) in collaboration with Karolinska Institutet, SciLifeLab and University of Southern Denmark as a master thesis. This is a follow-up development started by Rickard Hammarén ([@Hammarn](https://github.com/Hammarn)). Special thanks goes to all supervisors: Teresita Díaz de Ståhl, PhD., Assoc. Prof., Monica Nistér, MD, PhD, Maxime U Garcia PhD([@MaxUlysse](https://github.com/MaxUlysse)), Szilveszter Juhos ([@szilvajuhos](https://github.com/szilvajuhos)), Phil Ewels ([@ewels](https://github.com/ewels)) PhD and Lars Grøntved, PhD., Assoc. Prof.
 
 ## Tool References
 
@@ -67,6 +67,7 @@ bioRxiv 120295; doi: [https://doi.org/10.1101/120295](https://doi.org/10.1101/12
 Páll Melsted, Shannon Hateley, Isaac Charles Joseph, Harold Pimentel, Nicolas L Bray, Lior Pachter, bioRxiv 166322; doi: [https://doi.org/10.1101/166322](https://doi.org/10.1101/166322)
 * **SQUID: transcriptomic structural variation detection from RNA-seq** Cong Ma, Mingfu Shao and Carl Kingsford, Genome Biology, 2018, doi: [https://doi.org/10.1186/s13059-018-1421-5](https://doi.org/10.1186/s13059-018-1421-5)
 * **Fusion-Inspector** download: [https://github.com/FusionInspector](https://github.com/FusionInspector)
+* Martin Proks. (2019, March 26). matq007/fusion-report: **fusion-report:1.0** (Version 1.0). Zenodo. http://doi.org/10.5281/zenodo.2609227
 * **FastQC** download: [https://www.bioinformatics.babraham.ac.uk/projects/fastqc/](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 * **MultiQC** Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics , 32(19), 3047–3048. [https://doi.org/10.1093/bioinformatics/btw354](https://doi.org/10.1093/bioinformatics/btw354) Download: [https://multiqc.info/](https://multiqc.info/)
 
