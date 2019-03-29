@@ -27,6 +27,7 @@ results['FusionCatcher'] = '<span style="color:#999999;\">N/A</span>'
 results['Fusion-Inspector'] = '<span style="color:#999999;\">N/A</span>'
 results['Pizzly'] = '<span style="color:#999999;\">N/A</span>'
 results['Squid'] = '<span style="color:#999999;\">N/A</span>'
+results['fusion-report'] = '<span style="color:#999999;\">N/A</span>'
 
 # Search each file using its regex
 for k, v in regexes.items():
