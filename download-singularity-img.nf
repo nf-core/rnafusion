@@ -25,7 +25,7 @@ def helpMessage() {
 
     The typical command for downloading singularity images is as follows:
 
-    nextflow run nf-core/rnafusion download-singularity-img.nf [OPTIONS] --outdir /path/to/output
+    nextflow run nf-core/rnafusion/download-singularity-img.nf [OPTIONS] --outdir /path/to/output
 
     By default main image is downloaded.
 
