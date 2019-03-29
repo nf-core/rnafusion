@@ -25,7 +25,7 @@ def helpMessage() {
 
     The typical command for downloading references is as follows:
 
-    nextflow run nf-core/rnafusion download-references.nf [OPTIONS] --outdir /path/to/output
+    nextflow run nf-core/rnafusion/download-references.nf [OPTIONS] --outdir /path/to/output
 
     Mandatory arguments:
       --outdir                      Output directory for downloading
@@ -138,11 +138,11 @@ process download_star_fusion_ensembl {
 
     script:
     """
-    wget ftp://ftp.ensembl.org/pub/release-77/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{1..22}.fa.gz
-    wget ftp://ftp.ensembl.org/pub/release-77/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{MT,X,Y}.fa.gz
+    wget -N ftp://ftp.ensembl.org/pub/release-77/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{1..22}.fa.gz
+    wget -N ftp://ftp.ensembl.org/pub/release-77/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{MT,X,Y}.fa.gz
     gunzip -c Homo_sapiens.GRCh38.dna.chromosome.* > Homo_sapiens.GRCh38_r77.all.fa
-    wget ftp://ftp.ensembl.org/pub/release-77/gtf/homo_sapiens/Homo_sapiens.GRCh38.77.chr.gtf.gz
-    wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
+    wget -N ftp://ftp.ensembl.org/pub/release-77/gtf/homo_sapiens/Homo_sapiens.GRCh38.77.chr.gtf.gz
+    wget -N ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
     gunzip Pfam-A.hmm.gz && hmmpress Pfam-A.hmm
     prep_genome_lib.pl \\
         --genome_fa Homo_sapiens.GRCh38_r77.all.fa \\
