@@ -218,7 +218,7 @@ process download_databases {
 
     script:
     """
-    fusion_report download --cosmic_usr ${params.cosmic_usr} --cosmic_passwd ${cosmic_passwd} .
+    fusion_report download --cosmic_usr ${params.cosmic_usr} --cosmic_passwd ${params.cosmic_passwd} .
     """
 }
 
