@@ -22,7 +22,7 @@ nextflow run nf-core/rnafusion/download-references.nf --help
 ### STAR-Fusion (NCBI)
 
 ```bash
-wget -N -N https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz -O GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz
+wget -N https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz -O GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz
 tar -xvzf GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz
 ```
 
@@ -68,7 +68,7 @@ params {
 ## Fusioncatcher
 
 ```bash
-wget -N -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v90.tar.gz.aa
+wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v90.tar.gz.aa
 wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v90.tar.gz.ab
 wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v90.tar.gz.ac
 wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v90.tar.gz.ad
