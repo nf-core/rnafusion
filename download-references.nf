@@ -82,7 +82,7 @@ if (params.pizzly) {
     params.running_tools.add("Pizzly")
 }
 if (params.databases) {
-    if (!params.cosmic_usr && params.cosmic_passwd) {
+    if (!params.cosmic_usr || !params.cosmic_passwd) {
         exit 1, "Database credentials are required parameter!"
     }
     params.running_tools.add('Databases')
