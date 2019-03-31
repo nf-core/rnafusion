@@ -33,7 +33,7 @@ def helpMessage() {
       --outdir                      Output directory for downloading
       
     Options:
-      --all                         Download all images
+      --download_all                Download all images
       --star_fusion                 Download STAR-Fusion image
       --fusioncatcher               Download Fusioncatcher image
       --ericscript                  Download Ericscript image 
