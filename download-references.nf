@@ -31,7 +31,6 @@ def helpMessage() {
       --outdir                      Output directory for downloading
       
     Options:
-      --all                         Download all references except iGenome and STAR-Fusion
       --star_fusion                 Download STAR-Fusion references [NCBI version by default]
       --star_fusion_ensembl         Download STAR-Fusion references [Ensebml, have to build manually]
       --fusioncatcher               Download Fusioncatcher references
@@ -59,9 +58,6 @@ if (params.help){
 params.running_tools = []
 if (!params.outdir) {
     exit 1, "Output directory not specified!"
-}
-if (params.download_all) {
-    params.running_tools.add("All")
 }
 if (params.igenome) {
     params.running_tools.add("iGenome")
@@ -156,7 +152,7 @@ process download_fusioncatcher {
     publishDir "${params.outdir}/fusioncatcher_ref", mode: 'copy'
     
     when:
-    params.fusioncatcher || params.download_all
+    params.fusioncatcher
 
     output:
     file '*'
@@ -176,7 +172,7 @@ process download_ericscript {
     publishDir "${params.outdir}/ericscript_ref", mode: 'copy'
     
     when:
-    params.ericscript || params.download_all
+    params.ericscript
 
     output:
     file '*'
@@ -195,7 +191,7 @@ process download_pizzly {
     publishDir "${params.outdir}/pizzly_ref", mode: 'copy'
     
     when:
-    params.pizzly || params.download_all
+    params.pizzly
 
     output:
     file '*'
@@ -211,7 +207,7 @@ process download_databases {
     publishDir "${params.outdir}/databases", mode: 'copy'
     
     when:
-    params.databases || params.download_all
+    params.databases
 
     output:
     file '*'
