@@ -22,12 +22,13 @@ pipeline {
         stage('Build') {
             steps {
                 // sh "nextflow run kraken,jenkins nf-core/rnafusion"
-                nextflow run nf-core/rnafusion --help
-                nextflow run nf-core/rnafusion/download-references.nf -profile jenkins --help
-                nextflow run nf-core/rnafusion/download-singularity-img.nf -profile jenkins --help
+                sh "nextflow run nf-core/rnafusion -r dev --help"
+                sh "nextflow run nf-core/rnafusion/download-references.nf -r dev --help"
+                sh "nextflow run nf-core/rnafusion/download-singularity-img.nf -r dev --help"
             }
         }
     }
+    
     post {
         failure {
             script {
