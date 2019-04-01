@@ -19,17 +19,14 @@ pipeline {
                 sh "markdownlint $WORKSPACE -c $WORKSPACE/.github/markdownlint.yml"
             }
         }
-        stage('Lint python code') {
-            steps {
-                sh "pylint --rcfile=$WORKSPACE/.github/pylintrc $WORKSPACE/bin/*/*.py --ignore=scrape_software_versions.py"
-            }
-        }
-        /*
         stage('Build') {
             steps {
-                sh "nextflow run kraken,jenkins nf-core/rnafusion"
+                // sh "nextflow run kraken,jenkins nf-core/rnafusion"
+                nextflow run nf-core/rnafusion --help
+                nextflow run nf-core/rnafusion/download-references.nf -profile jenkins --help
+                nextflow run nf-core/rnafusion/download-singularity-img.nf -profile jenkins --help
             }
-        }*/
+        }
     }
     post {
         failure {
