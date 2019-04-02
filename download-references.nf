@@ -36,7 +36,7 @@ def helpMessage() {
       --fusioncatcher               Download Fusioncatcher references
       --ericscript                  Download Ericscript references 
       --pizzly                      Download pizzly references
-      --databases                   Download databases for fusion-report
+      --fusion_report               Download databases for fusion-report
         --cosmic_usr                [Required] COSMIC username
         --cosmic_passwd             [Required] COSMIC password
       --igenomesIgnore              Download iGenome Homo Sapiens version NCBI/GRCh38.
@@ -59,7 +59,7 @@ params.running_tools = []
 if (!params.outdir) {
     exit 1, "Output directory not specified!"
 }
-if (params.igenome) {
+if (!params.igenomesIgnore) {
     params.running_tools.add("iGenome")
 }
 if (params.star_fusion) {
@@ -77,11 +77,11 @@ if (params.ericscript) {
 if (params.pizzly) {
     params.running_tools.add("Pizzly")
 }
-if (params.databases) {
+if (params.fusion_report) {
     if (!params.cosmic_usr || !params.cosmic_passwd) {
         exit 1, "Database credentials are required parameter!"
     }
-    params.running_tools.add('Databases')
+    params.running_tools.add('fusion-report')
 }
 
 // Header log info
@@ -207,7 +207,7 @@ process download_databases {
     publishDir "${params.outdir}/databases", mode: 'copy'
     
     when:
-    params.databases
+    params.fusion_report
 
     output:
     file '*'
