@@ -25,10 +25,12 @@ def helpMessage() {
 
     The typical command for downloading references is as follows:
 
-    nextflow run nf-core/rnafusion/download-references.nf [OPTIONS] --outdir /path/to/output
+    nextflow run nf-core/rnafusion/download-references.nf -profile [PROFILE] [OPTIONS] --outdir /path/to/output
 
     Mandatory arguments:
       --outdir                      Output directory for downloading
+      -profile                      Configuration profile to use. Can use multiple (comma separated)
+                                    Available: standard, conda, docker, singularity, awsbatch, test
       
     Options:
       --star_fusion                 Download STAR-Fusion references [NCBI version by default]
