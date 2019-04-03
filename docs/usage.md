@@ -76,7 +76,7 @@ The typical command for running the whole pipeline is as follows:
 
 ### Running the pipeline using Docker
 
-This will launch the pipeline with the `docker` configuration profile with `example-docker.config`. See below for more information about profiles.
+This will launch the pipeline using `docker` with configuration profile [example-docker.config](https://github.com/nf-core/rnafusion/blob/master/example/custom-docker.config). See below for more information about profiles.
 
 ```bash
 # With custom fasta and gtf (Ensembl example)
@@ -117,7 +117,7 @@ nextflow run nf-core/rnafusion/download-singularity-img.nf --all --outdir /path
 cd utils && sh download-singularity-img.sh /path/to/images
 ```
 
-To launch the pipeline with the `singularity` configuration profile run:
+This will launch the pipeline using `singularity` with configuration profile [example-singularity.config](https://github.com/nf-core/rnafusion/blob/master/example/custom-singularity.config). See below for more information about profiles.
 
 ```bash
 # With custom fasta and gtf (Ensembl example)
@@ -153,7 +153,7 @@ It is also possible to execute **only** specific tools:
 ```bash
 nextflow run nf-core/rnafusion
   --reads '*_R{1,2}.fastq.gz'
-  --genome GRCh38 -profile docker -c '/path/to/custom/custom.config'
+  --genome GRCh38 -profile docker -c 'example/custom-docker.config'
   --fusioncatcher
   --ericscript
 ```
