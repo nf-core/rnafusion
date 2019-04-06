@@ -525,13 +525,14 @@ process summary {
     file '*' into report
     
     script:
+    def tools = params.fusioncatcher ? "--fusioncatcher ${fusioncatcher} " : ''
+    tools += params.star_fusion ? "--starfusion ${starfusion} " : ''
+    tools += params.ericscript ? "--ericscript ${ericscript} " : ''
+    tools += params.pizzly ? "--pizzly ${pizzly} " : ''
+    tools += params.squid ? "--squid ${squid} " : ''
     """
     fusion_report run ${name} . ${params.databases} \\
-        --ericscript ${ericscript} \\
-        --starfusion ${starfusion} \\
-        --fusioncatcher ${fusioncatcher} \\
-        --squid ${squid} \\
-        --pizzly ${pizzly} ${params.fr_extra_options}
+        ${tools} ${params.fr_extra_options}
     """
 }
 
