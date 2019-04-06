@@ -8,7 +8,7 @@
 * Fixed centralized nf-core/config [#64](https://github.com/nf-core/rnafusion/issues/64)
 * Added [fusion-report](https://github.com/matq007/fusion-report) into the stack [#62](https://github.com/nf-core/rnafusion/issues/62)[#55](https://github.com/nf-core/rnafusion/issues/55)[#53](https://github.com/nf-core/rnafusion/issues/53)[#51](https://github.com/nf-core/rnafusion/issues/51)
 * Added nextflow helper script `download-singularity-img.nf`
-* Added nextflow helper script `download-rederences.nf`
+* Added nextflow helper script `download-references.nf`
 * Fixed `scrape_software_versions.py` to parse tools versions correctly
 * Added `Jenkinsfile` for in-house testing
 * Updated installation of `FusionCatcher` (available now on bioconda)
