@@ -21,11 +21,11 @@ First, to generate the singularity image, run the following command. Note that y
 First, pull the image file where you have an internet connection:
 
 > NB: The "tag" at the end of this command corresponds to the pipeline version.
-> Here, we're pulling the docker image for version 1.0 of the nfcore/rnafusion pipeline
+> Here, we're pulling the docker image for version 1.0.1 of the nfcore/rnafusion pipeline
 > Make sure that this tag corresponds to the version of the pipeline that you're using
 
 ```bash
-singularity pull --name nfcore-rnafusion-1.0.img docker://nfcore/rnafusion:1.0
+singularity pull --name nfcore-rnafusion-1.0.1.img docker://nfcore/rnafusion:1.0.1
 pwd # Prints path to your singularity container
 ```
 
@@ -36,9 +36,9 @@ or `.tar.gz` file). Once transferred, extract the pipeline files.
 For example, with a `.zip` file:
 
 ```bash
-unzip 1.0.zip
-mv nfcore-rnafusion-1.0 nfcore-rnafusion # rename the folder
-cd nfcore-rnafusion-1.0
+unzip 1.0.1.zip
+mv nfcore-rnafusion-1.0.1 nfcore-rnafusion # rename the folder
+cd nfcore-rnafusion-1.0.1
 pwd # Prints full path to your pipeline
 ```
 
@@ -47,12 +47,12 @@ and execute Nextflow with the path to the pipeline, as so:
 
 ```bash
 cd /path/to/my/data/analysis
-nextflow run /path/to/nfcore-rnafusion-1.0 -with-singularity /path/to/singularity/nfcore-rnafusion-1.0.img
+nextflow run /path/to/nfcore-rnafusion-1.0.1 -with-singularity /path/to/singularity/nfcore-rnafusion-1.0.1.img
 ```
 
 (Note that you'll need the other common flags such as `--reads` and `--genome` in addition to this command).
 
-> NB: Note that you should _not_ use the `-r 1.0` flag recommended elsewhere. This tells Nextflow to download
+> NB: Note that you should _not_ use the `-r 1.0.1` flag recommended elsewhere. This tells Nextflow to download
 > that version of the code when it runs. Here, you have already downloaded the code, so it generates an error.
 
 ## Environment modules and development

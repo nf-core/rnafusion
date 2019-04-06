@@ -10,7 +10,7 @@ before_install:
   # PRs made to 'master' branch should always orginate from another repo or the 'dev' branch
   - '[ $TRAVIS_PULL_REQUEST = "false" ] || [ $TRAVIS_BRANCH != "master" ] || ([ $TRAVIS_PULL_REQUEST_SLUG = $TRAVIS_REPO_SLUG ] && [ $TRAVIS_PULL_REQUEST_BRANCH = "dev" ])'
   - docker pull nfcore/rnafusion:dev
-  - docker tag nfcore/rnafusion:dev nfcore/rnafusion:1.0
+  - docker tag nfcore/rnafusion:dev nfcore/rnafusion:1.0.1
 
 env:
   - NXF_VER='0.32.0' # Specify a minimum NF version that should be tested and work
@@ -25,8 +25,6 @@ install:
   - pip install nf-core
   # Install markdownlint-cli
   - sudo apt-get install npm && npm install -g markdownlint-cli
-  # Install pylint
-  - pip install pylint
   # Reset 
   - mkdir ${TRAVIS_BUILD_DIR}/tests && cd ${TRAVIS_BUILD_DIR}
 
@@ -34,14 +32,12 @@ script:
   # Create and download test data
   - |
     touch tests/genome.fa tests/genes.gtf
-    mkdir tests/star_index
+    mkdir tests/star_index tests/databases
     wget http://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/reads_1.fq.gz -O tests/reads_1.fq.gz
     wget http://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/reads_2.fq.gz -O tests/reads_2.fq.gz
   # Lint the pipeline code
   - nf-core lint ${TRAVIS_BUILD_DIR}
   # Lint markdown
   - markdownlint ${TRAVIS_BUILD_DIR} -c ${TRAVIS_BUILD_DIR}/.github/markdownlint.yml
-  # Lint python code
-  - pylint --rcfile=${TRAVIS_BUILD_DIR}/.github/pylintrc ${TRAVIS_BUILD_DIR}/bin/*/*.py --ignore=scrape_software_versions.py
   # Running the pipeline
   - nextflow run ${TRAVIS_BUILD_DIR} -profile test,docker

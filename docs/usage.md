@@ -4,6 +4,8 @@
 
 * [Introduction](#general-nextflow-info)
 * [Running the pipeline](#running-the-pipeline)
+  * [using Docker](#running-the-pipeline-using-docker)
+  * [using Singularity](#running-the-pipeline-using-singularity)
 * [Updating the pipeline](#updating-the-pipeline)
 * [Reproducibility](#reproducibility)
 * [Main arguments](#main-arguments)
@@ -16,15 +18,17 @@
   * [`--reads`](#--reads)
 * [Tool flags](#tool-flags)
   * [`--star_fusion`](#--star_fusion)
+    * [`--star_fusion_opt`](#--star_fusion_opt)
   * [`--fusioncatcher`](#--fusioncatcher)
-    * [`--fc_extra_options`](#--fc_extra_options)
+    * [`--fusioncatcher_opt`](#--fusioncatcher_opt)
   * [`--ericscript`](#--ericscript)
   * [`--pizzly`](#--pizzly)  
   * [`--squid`](#--squid)
-  * [`--tool_cutoff`](#--tool-cutoff)
-  * [`--test`](#--test)
-* [Reference Genomes](#reference-genomes)
-  * [`--genome`](#--genome)
+  * [`--fusion_report_opt`](#--fusion_report_opt)
+  * [`--debug`](#--debug)
+* [Visualization flags](#visualization-flags)
+  * [`--fusion_inspector`](#--fusion_inspector)
+* [References](#references)
   * [`--fasta`](#--fasta)
   * [`--gtf`](#--gtf)
   * [`--star_index`](#--star_index)
@@ -33,6 +37,10 @@
   * [`--ericscript_ref`](#--ericscript_ref)
   * [`--pizzly_fasta`](#--pizzly_fasta)
   * [`--pizzly_gtf`](#--pizzly_gtf)
+* [Options](#options-flags)
+  * [`--genome`](#--genome)
+  * [`--read_length`](#--read_length)
+  * [`--singleEnd`](#--singleEnd)
 * [Job Resources](#job-resources)
 * [Automatic resubmission](#automatic-resubmission)
 * [Custom resource requests](#custom-resource-requests)
@@ -41,8 +49,6 @@
     * [`--awsqueue`](#--awsqueue)
     * [`--awsregion`](#--awsregion)
 * [Other command line parameters](#other-command-line-parameters)
-  * [`--read_length`](#--read_length)
-  * [`--singleEnd`](#--singleend)
   * [`--outdir`](#--outdir)
   * [`--email`](#--email)
   * [`-name`](#-name-single-dash)
@@ -69,16 +75,88 @@ NXF_OPTS='-Xms1g -Xmx4g'
 
 The typical command for running the whole pipeline is as follows:
 
+### Running the pipeline using Docker
+
+This will launch the pipeline using `docker` with configuration profile [example-docker.config](https://github.com/nf-core/rnafusion/blob/master/example/custom-docker.config). See below for more information about profiles.
+
 ```bash
-nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile docker --star_fusion --fusioncatcher --ericscript --pizzly --squid --fusion_inspector
+# With custom fasta and gtf (Ensembl example)
+nextflow run nf-core/rnafusion
+  --reads '*_R{1,2}.fastq.gz'
+  -profile docker -c 'example/custom-docker.config'
+  --fasta 'Homo_sapiens.GRCh38.95.all.fa'
+  --gtf '/Homo_sapiens.GRCh38.95.chr.gtf'
+  --star_fusion
+  --fusioncatcher
+  --ericscript
+  --pizzly
+  --squid
+  --fusion_inspector
+
+# With NCBI GRCh38 genome reference
+nextflow run nf-core/rnafusion
+  --reads '*_R{1,2}.fastq.gz'
+  -profile docker -c 'example/custom-docker.config'
+  --genome GRCh38
+  --star_fusion
+  --fusioncatcher
+  --ericscript
+  --pizzly
+  --squid
+  --fusion_inspector
 ```
 
-This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
+### Running the pipeline using Singularity
 
-Is is also possible to execute specific tools:
+First start by downloading singularity images. Sometimes the pipeline can crash if you are not using downloaded images (might be some network issues).
 
 ```bash
-nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile docker --fusioncatcher --ericscript
+nextflow run nf-core/rnafusion/download-singularity-img.nf --all --outdir /path
+
+# or
+
+cd utils && sh download-singularity-img.sh /path/to/images
+```
+
+This will launch the pipeline using `singularity` with configuration profile [example-singularity.config](https://github.com/nf-core/rnafusion/blob/master/example/custom-singularity.config). See below for more information about profiles.
+
+```bash
+# With custom fasta and gtf (Ensembl example)
+nextflow run nf-core/rnafusion
+  --reads '*_R{1,2}.fastq.gz'
+  -profile singularity -c 'example/custom-singularity.config'
+  --fasta 'Homo_sapiens.GRCh38.95.all.fa'
+  --gtf '/Homo_sapiens.GRCh38.95.chr.gtf'
+  --star_fusion
+  --fusioncatcher
+  --ericscript
+  --pizzly
+  --squid
+  --fusion_inspector
+
+# With NCBI GRCh38 genome reference
+nextflow run nf-core/rnafusion
+  --reads '*_R{1,2}.fastq.gz'
+  -profile singularity -c 'example/custom-singularity.config'
+  --genome GRCh38
+  --star_fusion
+  --fusioncatcher
+  --ericscript
+  --pizzly
+  --squid
+  --fusion_inspector
+```
+
+---
+
+It is also possible to execute **only** specific tools:
+
+```bash
+nextflow run nf-core/rnafusion
+  --reads '*_R{1,2}.fastq.gz'
+  --genome GRCh38 -profile docker -c 'example/custom-docker.config'
+  --fusioncatcher
+  --ericscript
 ```
 
 Note that the pipeline will create the following files in your working directory:
@@ -150,12 +228,17 @@ It is not possible to run a mixture of single-end and paired-end files in one ru
 
 If enabled, executes `STAR-Fusion` tool.
 
+* `--star_fusion_opt`
+  * Parameter for specifying additional parameters. For more info, please refer to the [documentation](https://github.com/STAR-Fusion/STAR-Fusion/wiki) of the tool.
+  * **Has to be specified in custom configuration file. Will not work from a command line.**
+
 ### `--fusioncatcher`
 
 If enabled, executes `Fusioncatcher` tool.
 
-* `--fc_extra_options`
-  * Parameter for specifying additional parameters. For more info, please refer to the documentation of the tool.
+* `--fusioncatcher_opt`
+  * Parameter for specifying additional parameters. For more info, please refer to the [documentation](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) of the tool.
+  * **Has to be specified in custom configuration file. Will not work from a command line.**
 
 ### `--ericscript`
 
@@ -169,46 +252,28 @@ If enabled, executes `Pizzly` tool.
 
 If enabled, executes `Squid` tool.
 
-### `--tool_cutoff`
+### `--fusion_report_opt`
 
-This is a summary-report parameter which serves as a filter for how many tools are required to detect a fusion. The default number is 2. If a fusion is not detected by at least 2 tools it will not be displayed in the final report. Secondly, if number of tools used in the pipeline is less than 2, this filter is being ignored.
+* Parameter for specifying additional parameters. For more info, please refer to the fusion-report [documentation](https://matq007.github.io/fusion-report/usage.html).
+* **Has to be specified in custom configuration file. Will not work from a command line.**
 
-### `--test`
+### `--debug`
 
-To run only a specific tool (testing freshly implemented tool) just add `--test` parameter. This parameter only works on **fusion tools only**!
+To run only a specific tool (testing freshly implemented tool) just add `--debug` parameter. This parameter only works on **fusion tools only**!
 
 ```bash
 nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile docker --star_fusion --test
 ```
 
-## Reference Genomes
+## Visualization flags
+
+### `--fusion_inspector`
+
+If enabled, executes `Fusion-Inspector` tool.
+
+## References
 
 The pipeline config files come bundled with paths to the illumina iGenomes reference index files. If running with docker or AWS, the configuration is set up to use the [AWS-iGenomes](https://ewels.github.io/AWS-iGenomes/) resource.
-
-### `--genome` (using iGenomes)
-
-There are 31 different species supported in the iGenomes references. To run the pipeline, you must specify which to use with the `--genome` flag.
-You can find the keys to specify the genomes in the [iGenomes config file](../conf/igenomes.config). Common genomes that are supported are:
-
-* Human
-  * `--genome GRCh38` (recommended)
-
-> **TL;DR** For now the pipeline only supports Human genome GRCh38.
-
-Note that you can use the same configuration setup to save sets of reference files for your own use, even if they are not part of the iGenomes resource. See the [Nextflow documentation](https://www.nextflow.io/docs/latest/config.html) for instructions on where to save such a file.
-
-The syntax for this reference configuration is as follows:
-
-```nextflow
-params {
-  genomes {
-    'GRCh37' {
-      fasta   = '<path to the genome fasta file>' // Used if no star index given
-    }
-    // Any number of additional genomes, key is used with --genome
-  }
-}
-```
 
 ### `--fasta`
 
@@ -274,6 +339,45 @@ Required reference in order to run `Pizzly`.
 --pizzly_gtf '[path to Pizzly GTF annotation]'
 ```
 
+## Options
+
+### `--genome` (using iGenomes)
+
+There are 31 different species supported in the iGenomes references. To run the pipeline, you must specify which to use with the `--genome` flag.
+You can find the keys to specify the genomes in the [iGenomes config file](../conf/igenomes.config). Common genomes that are supported are:
+
+* Human
+  * `--genome GRCh38` (recommended)
+
+> **TL;DR:** The pipeline only supports Homo Sapiens. We recommend using fasta nad gtf from Ensembl database and build custom STAR-Fusion reference. Most of the tools references are based on Ensembl.
+
+Note that you can use the same configuration setup to save sets of reference files for your own use, even if they are not part of the iGenomes resource. See the [Nextflow documentation](https://www.nextflow.io/docs/latest/config.html) for instructions on where to save such a file.
+
+The syntax for this reference configuration is as follows:
+
+```nextflow
+params {
+  genomes {
+    'GRCh37' {
+      fasta   = '<path to the genome fasta file>' // Used if no star index given
+    }
+    // Any number of additional genomes, key is used with --genome
+  }
+}
+```
+
+### `--read_length`
+
+Length is used to build a STAR index. Default is 100bp (Illumina).
+
+### `--singleEnd`
+
+By default, the pipeline expects paired-end data. If you have single-end data, you need to specify `--singleEnd` on the command line when you launch the pipeline. A normal glob pattern, enclosed in quotation marks, can then be used for `--reads`. For example:
+
+```bash
+--singleEnd --reads '*.fastq.gz'
+```
+
 ## Job Resources
 
 ### Automatic resubmission
@@ -298,18 +402,6 @@ The AWS region to run your job in. Default is set to `eu-west-1` but can be adju
 Please make sure to also set the `-w/--work-dir` and `--outdir` parameters to a S3 storage bucket of your choice - you'll get an error message notifying you if you didn't.
 
 ## Other command line parameters
-
-### `--read_length`
-
-Length is used to build a STAR index. Default is 100bp (Illumina).
-
-### `--singleEnd`
-
-By default, the pipeline expects paired-end data. If you have single-end data, you need to specify `--singleEnd` on the command line when you launch the pipeline. A normal glob pattern, enclosed in quotation marks, can then be used for `--reads`. For example:
-
-```bash
---singleEnd --reads '*.fastq.gz'
-```
 
 ### `--outdir`
 
