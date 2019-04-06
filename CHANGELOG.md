@@ -1,17 +1,30 @@
 # nfcore/rnafusion
 
-## nfcore/rnafusion version 1.0.1 -
+## nfcore/rnafusion version 1.0.1 - 2018/04/06
 
+### Added
+
+* Added support for extra parameters for tools STAR-Fusion, FusionCatcher and fusion-report
 * Added example configuration for `singularity` and `docker`
-* Removed `Singularity`
-* Fixed FASTA issues [#60](https://github.com/nf-core/rnafusion/issues/60)
-* Fixed centralized nf-core/config [#64](https://github.com/nf-core/rnafusion/issues/64)
-* Added [fusion-report](https://github.com/matq007/fusion-report) into the stack [#62](https://github.com/nf-core/rnafusion/issues/62)[#55](https://github.com/nf-core/rnafusion/issues/55)[#53](https://github.com/nf-core/rnafusion/issues/53)[#51](https://github.com/nf-core/rnafusion/issues/51)
+* Added [fusion-report](https://github.com/matq007/fusion-report) into the stack [#62](https://github.com/nf-core/rnafusion/issues/62), [#55](https://github.com/nf-core/rnafusion/issues/55), [#53](https://github.com/nf-core/rnafusion/issues/53), [#51](https://github.com/nf-core/rnafusion/issues/51)
 * Added nextflow helper script `download-singularity-img.nf`
 * Added nextflow helper script `download-references.nf`
-* Fixed `scrape_software_versions.py` to parse tools versions correctly
 * Added `Jenkinsfile` for in-house testing
+
+### Changed
+
 * Updated installation of `FusionCatcher` (available now on bioconda)
+
+### Fixed
+
+* Fixed empty symlinks (`input.X`) in fusion-report [#68](https://github.com/nf-core/rnafusion/issues/68)
+* Fixed FASTA issues [#60](https://github.com/nf-core/rnafusion/issues/60)
+* Fixed centralized nf-core/config [#64](https://github.com/nf-core/rnafusion/issues/64)
+* Fixed `scrape_software_versions.py` to parse tools versions correctly [#65](https://github.com/nf-core/rnafusion/issues/65)
+
+### Removed
+
+* Removed `Singularity`
 
 ## nfcore/rnafusion version 1.0 - 2018/02/14
 
