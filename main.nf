@@ -34,14 +34,15 @@ def helpMessage() {
 
     Tool flags:
       --star_fusion                 Run STAR-Fusion
+        --star_fusion_opt           Extra parameter for STAR-Fusion
       --fusioncatcher               Run FusionCatcher
-        --fc_extra_options          Extra parameters for FusionCatcher. Can be found at https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md
+        --fusioncatcher_opt         Extra parameters for FusionCatcher
       --ericscript                  Run Ericscript
       --pizzly                      Run Pizzly
       --squid                       Run Squid
       --debug                       Flag to run only specific fusion tool/s and not the whole pipeline. Only works on tool flags.
       --databases                   Database path for fusion-report
-      --fr_extra_options            fusion-report extra parameters
+      --fusion_report_opt           fusion-report extra parameters
 
     Visualization flags:
       --fusion_inspector            Run Fusion-Inspector
@@ -340,6 +341,7 @@ process star_fusion {
     script:
     def avail_mem = task.memory ? "--limitBAMsortRAM ${task.memory.toBytes() - 100000000}" : ''
     option = params.singleEnd ? "--left_fq ${reads[0]}" : "--left_fq ${reads[0]} --right_fq ${reads[1]}"
+    def extra_params = params.star_fusion_opt ? "${params.star_fusion_opt}" : ''
     """
     STAR \\
         --genomeDir ${star_index_star_fusion} \\
@@ -364,7 +366,7 @@ process star_fusion {
         ${option} \\
         --CPU ${task.cpus} \\
         --examine_coding_effect \\
-        --output_dir .
+        --output_dir . ${extra_params}
     """
 }
 
@@ -388,14 +390,14 @@ process fusioncatcher {
 
     script:
     option = params.singleEnd ? reads[0] : "${reads[0]},${reads[1]}"
+    def extra_params = params.fusioncatcher_opt ? "${params.fusioncatcher_opt}" : ''
     """
     fusioncatcher \\
         -d ${data_dir} \\
         -i ${option} \\
         --threads ${task.cpus} \\
         -o . \\
-        --skip-blat \\
-        ${params.fc_extra_options}
+        --skip-blat ${extra_params}
     """
 }
 
@@ -525,6 +527,7 @@ process summary {
     file '*' into report
     
     script:
+    def extra_params = params.fusion_report_opt ? "${params.fusion_report_opt}" : ''
     def tools = params.fusioncatcher ? "--fusioncatcher ${fusioncatcher} " : ''
     tools += params.star_fusion ? "--starfusion ${starfusion} " : ''
     tools += params.ericscript ? "--ericscript ${ericscript} " : ''
@@ -532,7 +535,7 @@ process summary {
     tools += params.squid ? "--squid ${squid} " : ''
     """
     fusion_report run ${name} . ${params.databases} \\
-        ${tools} ${params.fr_extra_options}
+        ${tools} ${extra_params}
     """
 }
 

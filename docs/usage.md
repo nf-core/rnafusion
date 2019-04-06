@@ -18,12 +18,13 @@
   * [`--reads`](#--reads)
 * [Tool flags](#tool-flags)
   * [`--star_fusion`](#--star_fusion)
+    * [`--star_fusion_opt`](#--star_fusion_opt)
   * [`--fusioncatcher`](#--fusioncatcher)
-    * [`--fc_extra_options`](#--fc_extra_options)
+    * [`--fusioncatcher_opt`](#--fusioncatcher_opt)
   * [`--ericscript`](#--ericscript)
   * [`--pizzly`](#--pizzly)  
   * [`--squid`](#--squid)
-  * [`--fr_extra_options`](#--fr_extra_options)
+  * [`--fusion_report_opt`](#--fusion_report_opt)
   * [`--debug`](#--debug)
 * [Visualization flags](#visualization-flags)
   * [`--fusion_inspector`](#--fusion_inspector)
@@ -227,12 +228,17 @@ It is not possible to run a mixture of single-end and paired-end files in one ru
 
 If enabled, executes `STAR-Fusion` tool.
 
+* `--star_fusion_opt`
+  * Parameter for specifying additional parameters. For more info, please refer to the [documentation](https://github.com/STAR-Fusion/STAR-Fusion/wiki) of the tool.
+  * **Has to be specified in custom configuration file. Will not work from a command line.**
+
 ### `--fusioncatcher`
 
 If enabled, executes `Fusioncatcher` tool.
 
-* `--fc_extra_options`
-  * Parameter for specifying additional parameters. For more info, please refer to the documentation of the tool.
+* `--fusioncatcher_opt`
+  * Parameter for specifying additional parameters. For more info, please refer to the [documentation](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) of the tool.
+  * **Has to be specified in custom configuration file. Will not work from a command line.**
 
 ### `--ericscript`
 
@@ -246,9 +252,10 @@ If enabled, executes `Pizzly` tool.
 
 If enabled, executes `Squid` tool.
 
-### `--fr_extra_options`
+### `--fusion_report_opt`
 
 * Parameter for specifying additional parameters. For more info, please refer to the fusion-report [documentation](https://matq007.github.io/fusion-report/usage.html).
+* **Has to be specified in custom configuration file. Will not work from a command line.**
 
 ### `--debug`
 
