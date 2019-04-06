@@ -15,7 +15,7 @@ regexes = {
     'EricScript': ['v_ericscript.txt', r"ericscript=(\S+)"],
     'Pizzly': ['v_pizzly.txt', r"pizzly=(\S+)"],
     'Squid': ['v_squid.txt', r"squid=(\S+)"],
-    'fusion-report': ['v_fusion_report.txt', r"fusion_report=(\S+)"]
+    'fusion-report': ['v_fusion_report.txt', r"fusion-report=(\S+)"]
 }
 results = OrderedDict()
 results['nf-core/rnafusion'] = '<span style="color:#999999;\">N/A</span>'
