@@ -8,8 +8,6 @@
 
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](http://bioconda.github.io/)
 [![Docker](https://img.shields.io/docker/automated/nfcore/rnafusion.svg)](https://hub.docker.com/r/nfcore/rnafusion)
-![Singularity Container available](
-https://img.shields.io/badge/singularity-available-7E4C74.svg)
 
 **nfcore/rnafusion** uses RNA-seq data to detect fusions genes.
 
