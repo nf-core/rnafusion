@@ -116,7 +116,7 @@ nextflow run nf-core/rnafusion
 First start by downloading singularity images. Sometimes the pipeline can crash if you are not using downloaded images (might be some network issues).
 
 ```bash
-nextflow run nf-core/rnafusion/download-singularity-img.nf --all --outdir /path
+nextflow run nf-core/rnafusion/download-singularity-img.nf --download_all --outdir /path
 
 # or
 
