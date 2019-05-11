@@ -62,7 +62,7 @@ bioRxiv 120295; doi: [https://doi.org/10.1101/120295](https://doi.org/10.1101/12
 Páll Melsted, Shannon Hateley, Isaac Charles Joseph, Harold Pimentel, Nicolas L Bray, Lior Pachter, bioRxiv 166322; doi: [https://doi.org/10.1101/166322](https://doi.org/10.1101/166322)
 * **SQUID: transcriptomic structural variation detection from RNA-seq** Cong Ma, Mingfu Shao and Carl Kingsford, Genome Biology, 2018, doi: [https://doi.org/10.1186/s13059-018-1421-5](https://doi.org/10.1186/s13059-018-1421-5)
 * **Fusion-Inspector** download: [https://github.com/FusionInspector](https://github.com/FusionInspector)
-* Martin Proks. (2019, March 26). matq007/fusion-report: **fusion-report:1.0** (Version 1.0). Zenodo. http://doi.org/10.5281/zenodo.2609227
+* Martin Proks. (2019, March 26). matq007/fusion-report: **fusion-report:1.0** (Version 1.0). Zenodo. [http://doi.org/10.5281/zenodo.2609227](http://doi.org/10.5281/zenodo.2609227)
 * **FastQC** download: [https://www.bioinformatics.babraham.ac.uk/projects/fastqc/](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 * **MultiQC** Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics , 32(19), 3047–3048. [https://doi.org/10.1093/bioinformatics/btw354](https://doi.org/10.1093/bioinformatics/btw354) Download: [https://multiqc.info/](https://multiqc.info/)
 

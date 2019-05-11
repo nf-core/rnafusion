@@ -14,7 +14,7 @@ before_install:
   - docker pull nfcore/rnafusion:dev
   # Fake the tag locally so that the pipeline runs properly
   # Looks weird when this is :dev to :dev, but makes sense when testing code for a release (:dev to :1.0.1)
-  - docker tag nfcore/rnafusion:dev nfcore/rnafusion:dev
+  - docker tag nfcore/rnafusion:dev nfcore/rnafusion:1.0.1
 
 install:
   # Install Nextflow
@@ -24,25 +24,23 @@ install:
   # Install nf-core/tools
   - pip install --upgrade pip
   - pip install nf-core
-  # Reset
-  - mkdir ${TRAVIS_BUILD_DIR}/tests && cd ${TRAVIS_BUILD_DIR}/tests
   # Install markdownlint-cli
   - sudo apt-get install npm && npm install -g markdownlint-cli
+  # Reset
+  - mkdir ${TRAVIS_BUILD_DIR}/tests && cd ${TRAVIS_BUILD_DIR}/tests
 
 env:
   - NXF_VER='0.32.0' # Specify a minimum NF version that should be tested and work
   - NXF_VER='' # Plus: get the latest NF version and check that it works
 
 script:
-  # Create and download test data
-  - |
-    touch tests/genome.fa tests/genes.gtf
-    mkdir tests/star_index tests/databases
-    wget http://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/reads_1.fq.gz -O tests/reads_1.fq.gz
-    wget http://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/reads_2.fq.gz -O tests/reads_2.fq.gz
   # Lint the pipeline code
   - nf-core lint ${TRAVIS_BUILD_DIR}
   # Lint the documentation
   - markdownlint ${TRAVIS_BUILD_DIR} -c ${TRAVIS_BUILD_DIR}/.github/markdownlint.yml
-  # Run the pipeline with the test profile
-  - nextflow run ${TRAVIS_BUILD_DIR} -profile test,docker
+  # Test pipeline help page
+  - nextflow run ${TRAVIS_BUILD_DIR} --help
+  # Test downloading references help page
+  - nextflow run ${TRAVIS_BUILD_DIR}/download-references.nf --help
+  # Test downloading singularity images help page
+  - nextflow run ${TRAVIS_BUILD_DIR}/download-singularity-img.nf --help
