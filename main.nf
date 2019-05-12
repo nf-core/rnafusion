@@ -337,7 +337,7 @@ process star_fusion {
     file reference from star_fusion_ref
 
     output:
-    file '*fusion_predictions.tsv' into star_fusion_fusions
+    file '*fusion_predictions.tsv' optional true into star_fusion_fusions
     file '*.{tsv,txt}' into star_fusion_output
 
     script:
@@ -387,7 +387,7 @@ process fusioncatcher {
     file data_dir from fusioncatcher_ref
 
     output:
-    file 'final-list_candidate-fusion-genes.txt' into fusioncatcher_fusions
+    file 'final-list_candidate-fusion-genes.txt' optional true into fusioncatcher_fusions
     file '*.{txt,zip,log}' into fusioncatcher_output
 
     script:
@@ -418,8 +418,8 @@ process ericscript {
     file reference from ericscript_ref
 
     output:
-    file './tmp/fusions.results.filtered.tsv' into ericscript_fusions
-    file './tmp/fusions.results.total.tsv' into ericscript_output
+    file './tmp/fusions.results.filtered.tsv' optional true into ericscript_fusions
+    file './tmp/fusions.results.total.tsv' optional true into ericscript_output
 
     script:
     """
@@ -449,7 +449,7 @@ process pizzly {
     file gtf from pizzly_gtf
     
     output:
-    file 'pizzly_fusions.txt' into pizzly_fusions
+    file 'pizzly_fusions.txt' optional true into pizzly_fusions
     file '*.{json,txt}' into pizzly_output
 
     script:
@@ -483,7 +483,7 @@ process squid {
     file gtf from gtf_squid
     
     output:
-    file '*_annotated.txt' into squid_fusions
+    file '*_annotated.txt' optional true into squid_fusions
     file '*.txt' into squid_output
 
     script:
@@ -530,11 +530,11 @@ process summary {
     
     script:
     def extra_params = params.fusion_report_opt ? "${params.fusion_report_opt}" : ''
-    def tools = params.fusioncatcher ? "--fusioncatcher ${fusioncatcher} " : ''
-    tools += params.star_fusion ? "--starfusion ${starfusion} " : ''
-    tools += params.ericscript ? "--ericscript ${ericscript} " : ''
-    tools += params.pizzly ? "--pizzly ${pizzly} " : ''
-    tools += params.squid ? "--squid ${squid} " : ''
+    def tools = !fusioncatcher.empty() ? "--fusioncatcher ${fusioncatcher} " : ''
+    tools += !starfusion.empty() ? "--starfusion ${starfusion} " : ''
+    tools += !ericscript.empty() ? "--ericscript ${ericscript} " : ''
+    tools += !pizzly.empty() ? "--pizzly ${pizzly} " : ''
+    tools += !squid.empty() ? "--squid ${squid} " : ''
     """
     fusion_report run ${name} . ${params.databases} \\
         ${tools} ${extra_params}
