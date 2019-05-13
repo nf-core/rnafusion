@@ -10,8 +10,7 @@ pipeline {
         stage('Setup environment') {
             steps {
                 sh "pip install nf-core"
-                sh "docker pull nfcore/rnafusion:dev"
-                sh "docker tag nfcore/rnafusion:dev nfcore/rnafusion:1.0.1"
+                sh "docker pull nfcore/rnafusion:1.0.2"
             }
         }
         stage('Lint markdown') {
