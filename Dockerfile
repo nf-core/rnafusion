@@ -4,4 +4,4 @@ LABEL authors="Martin Proks <martin.proks@scilifelab.se>" \
 
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
-ENV PATH /opt/conda/envs/nf-core-rnafusion-1.0.1/bin:$PATH
+ENV PATH /opt/conda/envs/nf-core-rnafusion-1.0.2/bin:$PATH

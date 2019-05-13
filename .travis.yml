@@ -14,7 +14,7 @@ before_install:
   - docker pull nfcore/rnafusion:dev
   # Fake the tag locally so that the pipeline runs properly
   # Looks weird when this is :dev to :dev, but makes sense when testing code for a release (:dev to :1.0.1)
-  - docker tag nfcore/rnafusion:dev nfcore/rnafusion:1.0.1
+  - docker tag nfcore/rnafusion:dev nfcore/rnafusion:1.0.2
 
 install:
   # Install Nextflow
