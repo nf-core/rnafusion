@@ -7,4 +7,3 @@ blanks-around-lists: false
 header-increment: false
 no-duplicate-header:
     siblings_only: true
-no-bare-urls: false # tools only - the {{ jinja variables }} break URLs and cause this to error

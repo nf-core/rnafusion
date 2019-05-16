@@ -2,10 +2,13 @@
 
 ## Table of contents
 
-* [Introduction](#general-nextflow-info)
+<!-- Install Atom plugin markdown-toc-auto for this ToC to auto-update on save -->
+<!-- TOC START min:2 max:3 link:true asterisk:true update:true -->
+* [Table of contents](#table-of-contents)
+* [Introduction](#introduction)
 * [Running the pipeline](#running-the-pipeline)
-  * [using Docker](#running-the-pipeline-using-docker)
-  * [using Singularity](#running-the-pipeline-using-singularity)
+  * [Using Docker](#running-the-pipeline-using-docker)
+  * [Using Singularity](#running-the-pipeline-using-singularity)
 * [Updating the pipeline](#updating-the-pipeline)
 * [Reproducibility](#reproducibility)
 * [Main arguments](#main-arguments)
@@ -16,6 +19,7 @@
     * [`singularity`](#singularity)
     * [`test`](#test)
   * [`--reads`](#--reads)
+  * [`--singleEnd`](#--singleend)
 * [Tool flags](#tool-flags)
   * [`--star_fusion`](#--star_fusion)
     * [`--star_fusion_opt`](#--star_fusion_opt)
@@ -28,7 +32,7 @@
   * [`--debug`](#--debug)
 * [Visualization flags](#visualization-flags)
   * [`--fusion_inspector`](#--fusion_inspector)
-* [References](#references)
+* [Reference genomes](#reference-genomes)
   * [`--fasta`](#--fasta)
   * [`--gtf`](#--gtf)
   * [`--star_index`](#--star_index)
@@ -37,31 +41,32 @@
   * [`--ericscript_ref`](#--ericscript_ref)
   * [`--pizzly_fasta`](#--pizzly_fasta)
   * [`--pizzly_gtf`](#--pizzly_gtf)
-* [Options](#options-flags)
-  * [`--genome`](#--genome)
-  * [`--read_length`](#--read_length)
-  * [`--singleEnd`](#--singleEnd)
-* [Job Resources](#job-resources)
-* [Automatic resubmission](#automatic-resubmission)
-* [Custom resource requests](#custom-resource-requests)
-* [AWS batch specific parameters](#aws-batch-specific-parameters)
-  * [`-awsbatch`](#-awsbatch)
-    * [`--awsqueue`](#--awsqueue)
-    * [`--awsregion`](#--awsregion)
+  * [`--genome` (using iGenomes)](#--genome-using-igenomes)
+  * [`--igenomesIgnore`](#--igenomesignore)
+* [Job resources](#job-resources)
+  * [Automatic resubmission](#automatic-resubmission)
+  * [Custom resource requests](#custom-resource-requests)
+* [AWS Batch specific parameters](#aws-batch-specific-parameters)
+  * [`--awsqueue`](#--awsqueue)
+  * [`--awsregion`](#--awsregion)
 * [Other command line parameters](#other-command-line-parameters)
+  * [`--read_length`](#--read_length)
   * [`--outdir`](#--outdir)
   * [`--email`](#--email)
-  * [`-name`](#-name-single-dash)
-  * [`-resume`](#-resume-single-dash)
-  * [`-c`](#-c-single-dash)
+  * [`-name`](#-name)
+  * [`-resume`](#-resume)
+  * [`-c`](#-c)
+  * [`--custom_config_version`](#--custom_config_version)
+  * [`--custom_config_base`](#--custom_config_base)
   * [`--max_memory`](#--max_memory)
   * [`--max_time`](#--max_time)
   * [`--max_cpus`](#--max_cpus)
-  * [`--plaintext_emails`](#--plaintext_emails)
-  * [`--sampleLevel`](#--sampleLevel)
+  * [`--plaintext_email`](#--plaintext_email)
+  * [`--monochrome_logs`](#--monochrome_logs)
   * [`--multiqc_config`](#--multiqc_config)
+<!-- TOC END -->
 
-## General Nextflow info
+## Introduction
 
 Nextflow handles job submissions on SLURM or other environments, and supervises running the jobs. Thus the Nextflow process must run until the pipeline is finished. We recommend that you put the process running in the background through `screen` / `tmux` or similar tool. Alternatively you can run nextflow within a cluster job submitted your job scheduler.
 
@@ -111,7 +116,7 @@ nextflow run nf-core/rnafusion
 First start by downloading singularity images. Sometimes the pipeline can crash if you are not using downloaded images (might be some network issues).
 
 ```bash
-nextflow run nf-core/rnafusion/download-singularity-img.nf --all --outdir /path
+nextflow run nf-core/rnafusion/download-singularity-img.nf --download_all --outdir /path
 
 # or
 
@@ -184,25 +189,28 @@ First, go to the [nf-core/rnafusion releases page](https://github.com/nf-core/rn
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.
 
-## Main Arguments
+## Main arguments
 
 ### `-profile`
 
 Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments. Note that multiple profiles can be loaded, for example: `-profile docker` - the order of arguments is important!
 
+If `-profile` is not specified at all the pipeline will be run locally and expects all software to be installed and available on the `PATH`.
+
 * `awsbatch`
   * A generic configuration profile to be used with AWS Batch.
 * `conda`
   * A generic configuration profile to be used with [conda](https://conda.io/docs/)
+  * Pulls most software from [Bioconda](https://bioconda.github.io/)
 * `docker`
   * A generic configuration profile to be used with [Docker](http://docker.com/)
-    * Pulls software from dockerhub: [`nfcore/rnafusion`](http://hub.docker.com/r/nfcore/rnafusion/)
+  * Pulls software from dockerhub: [`nfcore/rnafusion`](http://hub.docker.com/r/nfcore/rnafusion/)
 * `singularity`
   * A generic configuration profile to be used with [Singularity](http://singularity.lbl.gov/)
-    * Pulls software from docker-hub
+  * Pulls software from DockerHub: [`nfcore/rnafusion`](http://hub.docker.com/r/nfcore/rnafusion/)
 * `test`
   * A profile with a complete configuration for automated testing
-    * Includes links to test data so needs no other parameters
+  * Includes links to test data so needs no other parameters
 
 ### `--reads`
 
@@ -221,6 +229,14 @@ Please note the following requirements:
 If left unspecified, a default pattern is used: `data/*{1,2}.fastq.gz`
 
 It is not possible to run a mixture of single-end and paired-end files in one run.
+
+### `--singleEnd`
+
+By default, the pipeline expects paired-end data. If you have single-end data, you need to specify `--singleEnd` on the command line when you launch the pipeline. A normal glob pattern, enclosed in quotation marks, can then be used for `--reads`. For example:
+
+```bash
+--singleEnd --reads '*.fastq.gz'
+```
 
 ## Tool flags
 
@@ -271,7 +287,7 @@ nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -prof
 
 If enabled, executes `Fusion-Inspector` tool.
 
-## References
+## Reference genomes
 
 The pipeline config files come bundled with paths to the illumina iGenomes reference index files. If running with docker or AWS, the configuration is set up to use the [AWS-iGenomes](https://ewels.github.io/AWS-iGenomes/) resource.
 
@@ -339,8 +355,6 @@ Required reference in order to run `Pizzly`.
 --pizzly_gtf '[path to Pizzly GTF annotation]'
 ```
 
-## Options
-
 ### `--genome` (using iGenomes)
 
 There are 31 different species supported in the iGenomes references. To run the pipeline, you must specify which to use with the `--genome` flag.
@@ -358,7 +372,7 @@ The syntax for this reference configuration is as follows:
 ```nextflow
 params {
   genomes {
-    'GRCh37' {
+    'GRCh38' {
       fasta   = '<path to the genome fasta file>' // Used if no star index given
     }
     // Any number of additional genomes, key is used with --genome
@@ -366,19 +380,11 @@ params {
 }
 ```
 
-### `--read_length`
+### `--igenomesIgnore`
 
-Length is used to build a STAR index. Default is 100bp (Illumina).
+Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`.
 
-### `--singleEnd`
-
-By default, the pipeline expects paired-end data. If you have single-end data, you need to specify `--singleEnd` on the command line when you launch the pipeline. A normal glob pattern, enclosed in quotation marks, can then be used for `--reads`. For example:
-
-```bash
---singleEnd --reads '*.fastq.gz'
-```
-
-## Job Resources
+## Job resources
 
 ### Automatic resubmission
 
@@ -386,7 +392,11 @@ Each step in the pipeline has a default set of requirements for number of CPUs, 
 
 ### Custom resource requests
 
-Wherever process-specific requirements are set in the pipeline, the default value can be changed by creating a custom config file. See the files in [`conf`](../conf) for examples.
+Wherever process-specific requirements are set in the pipeline, the default value can be changed by creating a custom config file. See the files hosted at [`nf-core/configs`](https://github.com/nf-core/configs/tree/master/conf) for examples.
+
+If you are likely to be running `nf-core` pipelines regularly it may be a good idea to request that your custom config file is uploaded to the `nf-core/configs` git repository. Before you do this please can you test that the config file works with your pipeline of choice using the `-c` parameter (see definition below). You can then create a pull request to the `nf-core/configs` repository with the addition of your config file, associated documentation file (see examples in [`nf-core/configs/docs`](https://github.com/nf-core/configs/tree/master/docs)), and amending [`nfcore_custom.config`](https://github.com/nf-core/configs/blob/master/nfcore_custom.config) to include your custom profile.
+
+If you have any questions or issues please send us a message on [Slack](https://nf-core-invite.herokuapp.com/).
 
 ## AWS Batch specific parameters
 
@@ -403,13 +413,17 @@ Please make sure to also set the `-w/--work-dir` and `--outdir` parameters to a 
 
 ## Other command line parameters
 
+### `--read_length`
+
+Length is used to build a STAR index. Default is 100bp (Illumina).
+
 ### `--outdir`
 
 The output directory where the results will be saved.
 
 ### `--email`
 
-Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to speicfy this on the command line for every run.
+Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.
 
 ### `-name`
 
@@ -431,16 +445,42 @@ Specify the path to a specific config file (this is a core NextFlow command).
 
 **NB:** Single hyphen (core Nextflow option)
 
-Note - you can use this to override defaults. For example, you can specify a config file using `-c` that contains the following:
+Note - you can use this to override pipeline defaults.
 
-```nextflow
-process.$multiqc.module = []
+### `--custom_config_version`
+
+Provide git commit id for custom Institutional configs hosted at `nf-core/configs`. This was implemented for reproducibility purposes. Default is set to `master`.
+
+```bash
+## Download and use config file with following git commid id
+--custom_config_version d52db660777c4bf36546ddb188ec530c3ada1b96
 ```
+
+### `--custom_config_base`
+
+If you're running offline, nextflow will not be able to fetch the institutional config files
+from the internet. If you don't need them, then this is not a problem. If you do need them,
+you should download the files from the repo and tell nextflow where to find them with the
+`custom_config_base` option. For example:
+
+```bash
+## Download and unzip the config files
+cd /path/to/my/configs
+wget https://github.com/nf-core/configs/archive/master.zip
+unzip master.zip
+
+## Run the pipeline
+cd /path/to/my/data
+nextflow run /path/to/pipeline/ --custom_config_base /path/to/my/configs/configs-master/
+```
+
+> Note that the nf-core/tools helper package has a `download` command to download all required pipeline
+> files + singularity containers + institutional configs in one go for you, to make this process easier.
 
 ### `--max_memory`
 
 Use to set a top-limit for the default memory requirement for each process.
-Should be a string in the format integer-unit. eg. `--max_memory '8.GB'``
+Should be a string in the format integer-unit. eg. `--max_memory '8.GB'`
 
 ### `--max_time`
 
@@ -455,6 +495,10 @@ Should be a string in the format integer-unit. eg. `--max_cpus 1`
 ### `--plaintext_email`
 
 Set to receive plain-text e-mails instead of HTML formatted.
+
+### `--monochrome_logs`
+
+Set to disable colourful command line output and live life in monochrome.
 
 ### `--multiqc_config`
 

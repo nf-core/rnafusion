@@ -1,5 +1,17 @@
 # nfcore/rnafusion
 
+## nfcore/rnafusion version 1.0.2 - 2018/05/13
+
+### Changed
+
+* Bumped nf-core template to 1.6 [#69](https://github.com/nf-core/rnafusion/pull/69)
+
+### Fixed
+
+* Fixed COSMIC parameters not wrapped in quotes [#75](https://github.com/nf-core/rnafusion/issues/75)
+* Implemented output output for fusion tools [#72](https://github.com/nf-core/rnafusion/issues/72)
+* Fixed reference download link for STAR-Fusion [#71](https://github.com/nf-core/rnafusion/issues/71)
+
 ## nfcore/rnafusion version 1.0.1 - 2018/04/06
 
 ### Added
