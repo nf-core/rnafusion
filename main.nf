@@ -96,7 +96,7 @@ Channel
     .ifEmpty { exit 1, "GTF annotation file not found: ${params.gtf}" }
     .into { gtf; gtf_squid }
 
-if (!params.star_index && (!params.fasta && !params..gtf)) {
+if (!params.star_index && (!params.fasta && !params.gtf)) {
     exit 1, "Either specify STAR-INDEX or fasta and gtf file!"
 }
 

@@ -32,8 +32,7 @@ def helpMessage() {
       --fusion_report               Download databases for fusion-report
         --cosmic_usr                [Required] COSMIC username
         --cosmic_passwd             [Required] COSMIC password
-      --igenomesIgnore              Download iGenome Homo Sapiens version NCBI/GRCh38.
-                                    Ignored on default
+      --igenomes                    Download iGenome Homo Sapiens version NCBI/GRCh38.
     """.stripIndent()
 }
 
@@ -51,7 +50,7 @@ params.running_tools = []
 if (!params.outdir) {
     exit 1, "Output directory not specified!"
 }
-if (!params.igenomesIgnore) {
+if (params.igenomes) {
     params.running_tools.add("iGenome")
 }
 if (params.star_fusion) {
@@ -215,7 +214,7 @@ process download_igenome {
     publishDir "${params.outdir}/igenome", mode: 'copy'
     
     when:
-    !params.igenomesIgnore
+    params.igenomes
 
     output:
     file '*'

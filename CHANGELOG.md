@@ -1,5 +1,11 @@
 # nfcore/rnafusion
 
+## nfcore/rnafusion version 1.0.3 - 
+
+### Changed
+
+* Parameter `igenomesIgnore` renamed to `igenome` [#81](https://github.com/nf-core/rnafusion/issues/81)
+
 ## nfcore/rnafusion version 1.0.2 - 2018/05/13
 
 ### Changed

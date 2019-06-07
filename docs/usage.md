@@ -42,7 +42,7 @@
   * [`--pizzly_fasta`](#--pizzly_fasta)
   * [`--pizzly_gtf`](#--pizzly_gtf)
   * [`--genome` (using iGenomes)](#--genome-using-igenomes)
-  * [`--igenomesIgnore`](#--igenomesignore)
+  * [`--igenomes`](#--igenomes)
 * [Job resources](#job-resources)
   * [Automatic resubmission](#automatic-resubmission)
   * [Custom resource requests](#custom-resource-requests)
@@ -90,7 +90,7 @@ nextflow run nf-core/rnafusion
   --reads '*_R{1,2}.fastq.gz'
   -profile docker -c 'example/custom-docker.config'
   --fasta 'Homo_sapiens.GRCh38.95.all.fa'
-  --gtf '/Homo_sapiens.GRCh38.95.chr.gtf'
+  --gtf 'Homo_sapiens.GRCh38.95.chr.gtf'
   --star_fusion
   --fusioncatcher
   --ericscript
@@ -103,6 +103,7 @@ nextflow run nf-core/rnafusion
   --reads '*_R{1,2}.fastq.gz'
   -profile docker -c 'example/custom-docker.config'
   --genome GRCh38
+  --igenomes_base '/path/to/igenomes'
   --star_fusion
   --fusioncatcher
   --ericscript
@@ -131,7 +132,7 @@ nextflow run nf-core/rnafusion
   --reads '*_R{1,2}.fastq.gz'
   -profile singularity -c 'example/custom-singularity.config'
   --fasta 'Homo_sapiens.GRCh38.95.all.fa'
-  --gtf '/Homo_sapiens.GRCh38.95.chr.gtf'
+  --gtf 'Homo_sapiens.GRCh38.95.chr.gtf'
   --star_fusion
   --fusioncatcher
   --ericscript
@@ -144,6 +145,7 @@ nextflow run nf-core/rnafusion
   --reads '*_R{1,2}.fastq.gz'
   -profile singularity -c 'example/custom-singularity.config'
   --genome GRCh38
+  --igenomes_base '/path/to/igenomes'
   --star_fusion
   --fusioncatcher
   --ericscript
@@ -380,9 +382,9 @@ params {
 }
 ```
 
-### `--igenomesIgnore`
+### `--igenomes`
 
-Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`.
+Load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`.
 
 ## Job resources
 
