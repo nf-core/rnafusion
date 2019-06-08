@@ -110,8 +110,8 @@ process download_star_fusion {
 
     script:
     """
-    wget -N https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/__genome_libs_StarFv1.3/GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz -O GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz
-    tar -xvzf GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz && rm GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz
+    wget -N https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/GRCh38_gencode_v29_CTAT_lib_Mar272019.plug-n-play.tar.gz -O GRCh38_gencode_v29_CTAT_lib_Mar272019.plug-n-play.tar.gz
+    tar -xvzf GRCh38_gencode_v29_CTAT_lib_Mar272019.plug-n-play.tar.gz && rm GRCh38_gencode_v29_CTAT_lib_Mar272019.plug-n-play.tar.gz
     """
 }
 

@@ -1,7 +1,9 @@
 name: star-fusion
 channels:
   - bioconda
+  - conda-forge
 dependencies:
-  - bioconda::star=2.6.1b
-  - star-fusion=1.5.0
-  - trinity=2.6.6
+  - bioconda::star=2.7.0f
+  - bioconda::star-fusion=1.6.0
+  - bioconda::trinity=2.6.6
+  - conda-forge::perl-carp-assert

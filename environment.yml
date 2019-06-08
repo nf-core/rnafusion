@@ -7,7 +7,7 @@ channels:
   - defaults
 dependencies:
   - anaconda::openjdk=8.0.152 # Needed for FastQC - conda build hangs without this
-  - bioconda::star=2.6.1b # update STAR-Fusion and Fusion-Inspector
+  - bioconda::star=2.7.0f # update STAR-Fusion and Fusion-Inspector
   - conda-forge::r-data.table=1.12.0
   - conda-forge::r-gplots=3.0.1.1
   - bioconda::bioconductor-edger=3.24.1

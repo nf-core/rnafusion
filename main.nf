@@ -359,7 +359,16 @@ process star_fusion {
         --alignSJstitchMismatchNmax 5 -1 5 5 \\
         --runThreadN ${task.cpus} \\
         --outSAMstrandField intronMotif ${avail_mem} \\
+        --outSAMunmapped Within \\
+        --outSAMtype BAM Unsorted \\
+        --outSAMattrRGline ID:GRPundef \\
+        --chimMultimapScoreRange 10 \\
+        --chimMultimapNmax 10 \\
+        --chimNonchimScoreDropMin 10 \\
+        --peOverlapNbasesMin 12 \\
+        --peOverlapMMp 0.1 \\
         --readFilesCommand zcat \\
+        --sjdbOverhang ${params.read_length - 1} \\
         --chimOutJunctionFormat 1
 
     STAR-Fusion \\

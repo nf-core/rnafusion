@@ -1,9 +1,10 @@
 # nfcore/rnafusion
 
-## nfcore/rnafusion version 1.0.3 - 
+## nfcore/rnafusion version 1.0.3 -
 
 ### Changed
 
+* Upgraded `STAR-Fusion v1.5.0` to `STAR-Fusion v1.6.0` [#83](https://github.com/nf-core/rnafusion/issues/83)
 * Parameter `igenomesIgnore` renamed to `igenome` [#81](https://github.com/nf-core/rnafusion/issues/81)
 
 ## nfcore/rnafusion version 1.0.2 - 2018/05/13
