@@ -2,6 +2,10 @@
 
 ## nfcore/rnafusion version 1.0.3 -
 
+### Added
+
+* Added `Arriba 1.1.0` [#63](https://github.com/nf-core/rnafusion/issues/63)
+
 ### Changed
 
 * Updated `Squid STAR` version to `2.7.0f`

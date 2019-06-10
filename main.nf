@@ -25,6 +25,8 @@ def helpMessage() {
                                     Available: conda, docker, singularity, awsbatch, test and more.
 
     Tool flags:
+      --arriba                      Run Arriba
+        --arriba_opt                Extra parameter for Arriba
       --star_fusion                 Run STAR-Fusion
         --star_fusion_opt           Extra parameter for STAR-Fusion
       --fusioncatcher               Run FusionCatcher
@@ -37,6 +39,7 @@ def helpMessage() {
       --fusion_report_opt           fusion-report extra parameters
 
     Visualization flags:
+      --arriba_vis                  Generate a PDF visualization per detected fusion
       --fusion_inspector            Run Fusion-Inspector
 
     References                      If not specified in the configuration file or you wish to overwrite any of the references.
@@ -87,14 +90,15 @@ if (params.genomes && params.genome && !params.genomes.containsKey(params.genome
 params.fasta = params.genome ? params.genomes[ params.genome ].fasta ?: false : false
 params.gtf = params.genome ? params.genomes[ params.genome ].gtf ?: false : false
 
-fasta = Channel
+Channel
     .fromPath(params.fasta)
     .ifEmpty { exit 1, "Fasta file not found: ${params.fasta}" }
+    .into { fasta; fasta_arriba }
 
 Channel
     .fromPath(params.gtf)
     .ifEmpty { exit 1, "GTF annotation file not found: ${params.gtf}" }
-    .into { gtf; gtf_squid }
+    .into { gtf; gtf_arriba; gtf_arriba_vis; gtf_squid }
 
 if (!params.star_index && (!params.fasta && !params.gtf)) {
     exit 1, "Either specify STAR-INDEX or fasta and gtf file!"
@@ -102,6 +106,22 @@ if (!params.star_index && (!params.fasta && !params.gtf)) {
 
 if (!params.databases) {
     exit 1, "Database path for fusion-report has to be specified!"
+}
+
+arriba_ref = false
+if (params.arriba) {
+    params.running_tools.add("Arriba")
+    arriba_ref = Channel
+        .fromPath(params.arriba_ref)
+        .ifEmpty { exit 1, "Arriba reference directory not found!" }
+}
+
+arriba_vis_ref = false
+if (params.arriba_vis) {
+    params.running_tools.add("ArribaVisualization")
+    arriba_vis_ref = Channel
+        .fromPath(params.arriba_ref)
+        .ifEmpty { exit 1, "Arriba reference directory not found!" }
 }
 
 star_fusion_ref = false
@@ -207,21 +227,21 @@ if(params.readPaths){
             .map { row -> [ row[0], [file(row[1][0])]] }
             .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
             .into { read_files_fastqc; read_files_summary; read_files_multiqc; read_files_star_fusion; read_files_fusioncatcher; 
-                read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
+                read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid; read_files_arriba }
     } else {
         Channel
             .from(params.readPaths)
             .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
             .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
             .into { read_files_fastqc; read_files_summary; read_files_multiqc; read_files_star_fusion; read_files_fusioncatcher; 
-                read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
+                read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid; read_files_arriba }
     }
 } else {
     Channel
         .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
         .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
         .into { read_files_fastqc; read_files_summary; read_files_multiqc; read_files_star_fusion; read_files_fusioncatcher; 
-            read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid }
+            read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid; read_files_arriba }
 }
 
 // Header log info
@@ -288,7 +308,7 @@ if (params.star_index) {
     Channel
         .fromPath(params.star_index)
         .ifEmpty { exit 1, "STAR index not found: ${params.star_index}" }
-        .into { star_index_squid; star_index_star_fusion }
+        .into { star_index_squid; star_index_star_fusion; star_index_arriba }
 } else {
     process build_star_index {
         tag "$fasta"
@@ -299,7 +319,7 @@ if (params.star_index) {
         file gtf
 
         output:
-        file "star" into star_index_squid, star_index_star_fusion
+        file "star" into star_index_squid, star_index_star_fusion, star_index_arriba
 
         script:
         def avail_mem = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
@@ -320,6 +340,66 @@ if (params.star_index) {
 /*************************************************************
  * Fusion pipeline
  ************************************************************/
+
+/*
+ * Arriba
+ */
+process arriba {
+    tag "$name"
+    publishDir "${params.outdir}/tools/Arriba", mode: 'copy'
+
+    when:
+    params.arriba && (!params.singleEnd || params.debug)
+
+    input:
+    set val(name), file(reads) from read_files_arriba
+    file reference from arriba_ref
+    file star_index_arriba
+    file fasta_arriba
+    file gtf_arriba
+
+    output:
+    file 'fusions.tsv' optional true into arriba_fusions1, arriba_fusions2
+    file 'Aligned.out.bam' optional true into arriba_bam
+    file '*.{tsv,txt}' into arriba_output
+
+    script:
+    def extra_params = params.arriba_opt ? "${params.arriba_opt}" : ''
+    """
+    STAR \\
+        --genomeDir ${star_index_arriba} \\
+        --runThreadN ${task.cpus} \\
+        --readFilesIn ${reads} \\
+        --outStd BAM_Unsorted \\
+        --outSAMtype BAM Unsorted \\
+        --outSAMunmapped Within \\
+        --outBAMcompression 0 \\
+        --outFilterMultimapNmax 1 \\
+        --outFilterMismatchNmax 3 \\
+        --chimSegmentMin 10 \\
+        --chimOutType WithinBAM SoftClip \\
+        --chimJunctionOverhangMin 10 \\
+        --chimScoreMin 1 \\
+        --chimScoreDropMax 30 \\
+        --chimScoreJunctionNonGTAG 0 \\
+        --chimScoreSeparation 1 \\
+        --alignSJstitchMismatchNmax 5 -1 5 5 \\
+        --chimSegmentReadGapMax 3 \\
+        --readFilesCommand zcat \\
+        --sjdbOverhang ${params.read_length - 1} |
+    
+    tee Aligned.out.bam |
+
+    arriba \\
+        -x /dev/stdin \\
+        -a ${fasta_arriba} \\
+        -g ${gtf_arriba} \\
+        -b ${reference}/blacklist_hg38_GRCh38_2018-11-04.tsv \\
+        -o fusions.tsv -O fusions.discarded.tsv \\
+        -T -P \\
+        ${extra_params}
+    """
+}
 
 /*
  * STAR-Fusion
@@ -522,10 +602,11 @@ process summary {
     publishDir "${params.outdir}/Report-${name}", mode: 'copy'
  
     when:
-    !params.debug && (params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
+    !params.debug && (params.arriba || params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
     
     input:
     set val(name), file(reads) from read_files_summary
+    file arriba from arriba_fusions1.ifEmpty('')
     file fusioncatcher from fusioncatcher_fusions.ifEmpty('')
     file starfusion from star_fusion_fusions.ifEmpty('')
     file ericscript from ericscript_fusions.ifEmpty('')
@@ -539,7 +620,8 @@ process summary {
     
     script:
     def extra_params = params.fusion_report_opt ? "${params.fusion_report_opt}" : ''
-    def tools = !fusioncatcher.empty() ? "--fusioncatcher ${fusioncatcher} " : ''
+    def tools = !arriba.empty() ? "--arriba ${arriba} " : ''
+    tools += !fusioncatcher.empty() ? "--fusioncatcher ${fusioncatcher} " : ''
     tools += !starfusion.empty() ? "--starfusion ${starfusion} " : ''
     tools += !ericscript.empty() ? "--ericscript ${ericscript} " : ''
     tools += !pizzly.empty() ? "--pizzly ${pizzly} " : ''
@@ -553,6 +635,41 @@ process summary {
 /*************************************************************
  * Visualization
  ************************************************************/
+
+/*
+ * Arriba Visualization
+ */
+process arriba_visualization {
+    tag "$name"
+    publishDir "${params.outdir}/tools/Arriba", mode: 'copy'
+
+    when:
+    params.arriba_vis && (!params.singleEnd || params.debug)
+
+    input:
+    file reference from arriba_vis_ref
+    file fusions from arriba_fusions2
+    file bam from arriba_bam
+    file gtf from gtf_arriba_vis
+
+    output:
+    file 'visualization.pdf' optional true into arriba_visualization_output
+
+    script:
+    def suff_mem = ("${(task.memory.toBytes() - 6000000000) / task.cpus}" > 2000000000) ? 'true' : 'false'
+    def avail_mem = (task.memory && suff_mem) ? "-m" + "${(task.memory.toBytes() - 6000000000) / task.cpus}" : ''
+    """
+    samtools sort -@ ${task.cpus} ${avail_mem} -O bam ${bam} > Aligned.sortedByCoord.out.bam
+    samtools index Aligned.sortedByCoord.out.bam
+    draw_fusions.R \\
+        --fusions=${fusions} \\
+        --alignments=Aligned.sortedByCoord.out.bam \\
+        --output=visualization.pdf \\
+        --annotation=${gtf} \\
+        --cytobands=${reference}/cytobands_hg38_GRCh38_2018-02-23.tsv \\
+        --proteinDomains=${reference}/protein_domains_hg38_GRCh38_2018-03-06.gff3
+    """
+}
 
 /*
  * Fusion Inspector
@@ -613,6 +730,7 @@ process get_software_versions {
     echo $workflow.nextflow.version > v_nextflow.txt
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
+    cat $baseDir/tools/arriba/environment.yml > v_arriba.txt
     cat $baseDir/tools/fusioncatcher/environment.yml > v_fusioncatcher.txt
     cat $baseDir/tools/fusion-inspector/environment.yml > v_fusion_inspector.txt
     cat $baseDir/tools/star-fusion/environment.yml > v_star_fusion.txt

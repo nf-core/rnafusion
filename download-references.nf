@@ -24,6 +24,7 @@ def helpMessage() {
                                     Available: standard, conda, docker, singularity, awsbatch, test
       
     Options:
+      --arriba                      Download Arriba references
       --star_fusion                 Download STAR-Fusion references [NCBI version by default]
       --star_fusion_ensembl         Download STAR-Fusion references [Ensebml, have to build manually]
       --fusioncatcher               Download Fusioncatcher references
@@ -49,6 +50,9 @@ if (params.help){
 params.running_tools = []
 if (!params.outdir) {
     exit 1, "Output directory not specified!"
+}
+if (params.arriba) {
+    params.running_tools.add("Arriba")
 }
 if (params.igenomes) {
     params.running_tools.add("iGenome")
@@ -98,6 +102,22 @@ if(workflow.profile == 'awsbatch'){
 }
 log.info summary.collect { k,v -> "${k.padRight(18)}: $v" }.join("\n")
 log.info "\033[2m----------------------------------------------------\033[0m"
+
+process download_arriba {
+    publishDir "${params.outdir}/arriba_ref", mode: 'copy'
+    
+    when:
+    params.arriba
+
+    output:
+    file '*'
+
+    script:
+    """
+    wget -N https://github.com/suhrig/arriba/releases/download/v1.1.0/arriba_v1.1.0.tar.gz -O arriba_v1.1.0.tar.gz
+    tar -xvzf arriba_v1.1.0.tar.gz && mv arriba_v1.1.0/database/* . && gunzip * && rm -rf arriba_*
+    """
+}
 
 process download_star_fusion {
     publishDir "${params.outdir}/star_fusion_ref", mode: 'copy'

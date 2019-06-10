@@ -9,6 +9,7 @@ regexes = {
     'Nextflow': ['v_nextflow.txt', r"(\S+)"],
     'FastQC': ['v_fastqc.txt', r"FastQC v(\S+)"],
     'MultiQC': ['v_multiqc.txt', r"multiqc, version (\S+)"],
+    'Arriba': ['v_arriba.txt', r"arriba=(\S+)"],
     'STAR-Fusion': ['v_star_fusion.txt', r"star-fusion=(\S+)"],
     'FusionCatcher': ['v_fusioncatcher.txt', r"fusioncatcher=(\S+)"],
     'Fusion-Inspector': ['v_fusion_inspector.txt', r"fusion-inspector=(\S+)"],
@@ -22,6 +23,7 @@ results['nf-core/rnafusion'] = '<span style="color:#999999;\">N/A</span>'
 results['Nextflow'] = '<span style="color:#999999;\">N/A</span>'
 results['FastQC'] = '<span style="color:#999999;\">N/A</span>'
 results['MultiQC'] = '<span style="color:#999999;\">N/A</span>'
+results['Arriba'] = '<span style="color:#999999;\">N/A</span>'
 results['STAR-Fusion'] = '<span style="color:#999999;\">N/A</span>'
 results['FusionCatcher'] = '<span style="color:#999999;\">N/A</span>'
 results['Fusion-Inspector'] = '<span style="color:#999999;\">N/A</span>'

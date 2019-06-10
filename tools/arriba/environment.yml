@@ -1,0 +1,11 @@
+name: arriba
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - arriba=1.1.0
+  - bioconda::star=2.7.0f
+  - bioconda::samtools=1.9
+  - conda-forge::r-circlize
+  - bioconda::bioconductor-genomicalignments
+  - bioconda::bioconductor-genomicranges

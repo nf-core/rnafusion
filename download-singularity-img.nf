@@ -28,12 +28,14 @@ def helpMessage() {
       
     Options:
       --download_all                Download all images
-      --star_fusion                 Download STAR-Fusion image
-      --fusioncatcher               Download Fusioncatcher image
+      --arriba                      Download Arriba image
       --ericscript                  Download Ericscript image 
+      --fusioncatcher               Download Fusioncatcher image
+      --fusion_inspector            Download Fusion-Inspector image
       --pizzly                      Download Pizzly image
       --squid                       Download Squid image
-      --fusion_inspector            Download Fusion-Inspector image
+      --star_fusion                 Download STAR-Fusion image
+      
     """.stripIndent()
 }
 
@@ -53,6 +55,9 @@ if (!params.outdir) {
 }
 if (params.download_all) {
     params.running_tools.add("All")
+}
+if (params.arriba) {
+    params.running_tools.add("Arriba")
 }
 if (params.star_fusion) {
     params.running_tools.add("STAR-Fusion")
@@ -112,18 +117,33 @@ process download_base_image {
     """
 }
 
-process download_star_fusion {
+process download_arriba {
     publishDir "${params.outdir}", mode: 'copy'
     
     when:
-    params.star_fusion || params.download_all
+    params.arriba || params.download_all
 
     output:
-    file "rnafusion_star-fusion_v${params.star_fusion_version}.img"
+    file "rnafusion_arriba_v${params.arriba_version}.img"
 
     script:
     """
-    singularity pull --name "rnafusion_star-fusion_v${params.star_fusion_version}.img" docker://nfcore/rnafusion:star-fusion_v${params.star_fusion_version}
+    singularity pull --name "rnafusion_arriba_v${params.arriba_version}.img" docker://nfcore/rnafusion:arriba_v${params.arriba_version}
+    """
+}
+
+process download_ericscript {
+    publishDir "${params.outdir}", mode: 'copy'
+    
+    when:
+    params.ericscript || params.download_all
+
+    output:
+    file "rnafusion_ericscript_v${params.ericscript_version}.img"
+
+    script:
+    """
+    singularity pull --name "rnafusion_ericscript_v${params.ericscript_version}.img" docker://nfcore/rnafusion:ericscript_v${params.ericscript_version}
     """
 }
 
@@ -142,18 +162,18 @@ process download_fusioncatcher {
     """
 }
 
-process download_ericscript {
+process download_fusion_inspector {
     publishDir "${params.outdir}", mode: 'copy'
     
     when:
-    params.ericscript || params.download_all
+    params.fusion_inspector || params.download_all
 
     output:
-    file "rnafusion_ericscript_v${params.ericscript_version}.img"
+    file "rnafusion_fusion-inspector_v${params.fusion_inspector_version}.img"
 
     script:
     """
-    singularity pull --name "rnafusion_ericscript_v${params.ericscript_version}.img" docker://nfcore/rnafusion:ericscript_v${params.ericscript_version}
+    singularity pull --name "rnafusion_fusion-inspector_v${params.fusion_inspector_version}.img" docker://nfcore/rnafusion:fusion-inspector_v${params.fusion_inspector_version}
     """
 }
 
@@ -187,18 +207,18 @@ process download_squid {
     """
 }
 
-process download_fusion_inspector {
+process download_star_fusion {
     publishDir "${params.outdir}", mode: 'copy'
     
     when:
-    params.fusion_inspector || params.download_all
+    params.star_fusion || params.download_all
 
     output:
-    file "rnafusion_fusion-inspector_v${params.fusion_inspector_version}.img"
+    file "rnafusion_star-fusion_v${params.star_fusion_version}.img"
 
     script:
     """
-    singularity pull --name "rnafusion_fusion-inspector_v${params.fusion_inspector_version}.img" docker://nfcore/rnafusion:fusion-inspector_v${params.fusion_inspector_version}
+    singularity pull --name "rnafusion_star-fusion_v${params.star_fusion_version}.img" docker://nfcore/rnafusion:star-fusion_v${params.star_fusion_version}
     """
 }
 
