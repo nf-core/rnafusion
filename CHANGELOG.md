@@ -8,6 +8,7 @@
 
 ### Changed
 
+* Divided `running_tools` into fusion and visualization tools
 * Updated `Squid STAR` version to `2.7.0f`
 * Upgraded `STAR-Fusion v1.5.0` to `STAR-Fusion v1.6.0` [#83](https://github.com/nf-core/rnafusion/issues/83)
 * Parameter `igenomesIgnore` renamed to `igenome` [#81](https://github.com/nf-core/rnafusion/issues/81)
