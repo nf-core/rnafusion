@@ -17,11 +17,13 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 | Tool            | Single-end reads | CPU (recommended) | RAM (recommended) |
 | --------------- |:----------------:|:-----------------:|:-----------------:|
-| [Star-Fusion](https://github.com/STAR-Fusion/STAR-Fusion/wiki) | Yes              | >=16 cores        | ~30GB             |
-| [FusionCatcher](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) | Yes              | >=16 cores        | ~64GB             |
+| [Arriba](https://github.com/suhrig/arriba) | **No**           | >=16 cores        | ~30GB             |
 | [EricScript](https://sites.google.com/site/bioericscript/getting-started) | **No**           | >=16 cores        | ~30GB             |
+| [FusionCatcher](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) | Yes              | >=16 cores        | ~64GB             |
+| [fusion-report](https://github.com/matq007/fusion-report) | -              | -        | -             |
 | [Pizzly](https://github.com/pmelsted/pizzly) | **No**           | >=16 cores        | ~30GB             |
 | [Squid](https://github.com/Kingsford-Group/squid) | **No**           | >=16 cores        | ~30GB             |
+| [Star-Fusion](https://github.com/STAR-Fusion/STAR-Fusion/wiki) | Yes              | >=16 cores        | ~30GB             |
 | [FusionInspector](https://github.com/FusionInspector/FusionInspector/wiki) | **No**           | >=16 cores        | ~30GB             |
 
 For available parameters or help run:
@@ -48,7 +50,7 @@ Use predefined configuration for desired Institution cluster provided at [nfcore
 
 ## Credits
 
-This pipeline was written by Martin Proks ([@matq007](https://github.com/matq007)) in collaboration with Karolinska Institutet, SciLifeLab and University of Southern Denmark as a master thesis. This is a follow-up development started by Rickard Hammarén ([@Hammarn](https://github.com/Hammarn)). Special thanks goes to all supervisors: Teresita Díaz de Ståhl, PhD., Assoc. Prof., Monica Nistér, MD, PhD, Maxime U Garcia PhD([@MaxUlysse](https://github.com/MaxUlysse)), Szilveszter Juhos ([@szilvajuhos](https://github.com/szilvajuhos)), Phil Ewels ([@ewels](https://github.com/ewels)) PhD and Lars Grøntved, PhD., Assoc. Prof.
+This pipeline was written by Martin Proks ([@matq007](https://github.com/matq007)) in collaboration with Karolinska Institutet, SciLifeLab and University of Southern Denmark as a master thesis. This is a follow-up development started by Rickard Hammarén ([@Hammarn](https://github.com/Hammarn)). Special thanks goes to all supervisors: Teresita Díaz de Ståhl, PhD., Assoc. Prof.; Monica Nistér, MD, PhD; Maxime U Garcia PhD ([@MaxUlysse](https://github.com/MaxUlysse)); Szilveszter Juhos ([@szilvajuhos](https://github.com/szilvajuhos)); Phil Ewels PhD ([@ewels](https://github.com/ewels)) and Lars Grøntved, PhD., Assoc. Prof.
 
 ## Tool References
 
@@ -62,7 +64,7 @@ bioRxiv 120295; doi: [https://doi.org/10.1101/120295](https://doi.org/10.1101/12
 Páll Melsted, Shannon Hateley, Isaac Charles Joseph, Harold Pimentel, Nicolas L Bray, Lior Pachter, bioRxiv 166322; doi: [https://doi.org/10.1101/166322](https://doi.org/10.1101/166322)
 * **SQUID: transcriptomic structural variation detection from RNA-seq** Cong Ma, Mingfu Shao and Carl Kingsford, Genome Biology, 2018, doi: [https://doi.org/10.1186/s13059-018-1421-5](https://doi.org/10.1186/s13059-018-1421-5)
 * **Fusion-Inspector** download: [https://github.com/FusionInspector](https://github.com/FusionInspector)
-* Martin Proks. (2019, March 26). matq007/fusion-report: **fusion-report:1.0** (Version 1.0). Zenodo. [http://doi.org/10.5281/zenodo.2609227](http://doi.org/10.5281/zenodo.2609227)
+* **fusion-report** download: [https://github.com/matq007/fusion-report](https://github.com/matq007/fusion-report)
 * **FastQC** download: [https://www.bioinformatics.babraham.ac.uk/projects/fastqc/](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 * **MultiQC** Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics , 32(19), 3047–3048. [https://doi.org/10.1093/bioinformatics/btw354](https://doi.org/10.1093/bioinformatics/btw354) Download: [https://multiqc.info/](https://multiqc.info/)
 
