@@ -74,6 +74,7 @@ def helpMessage() {
  */
 
 params.running_tools = []
+params.visualization_tools = []
 
 // Show help emssage
 if (params.help){
@@ -111,6 +112,7 @@ if (!params.databases) {
 arriba_ref = false
 if (params.arriba) {
     params.running_tools.add("Arriba")
+    params.visualization_tools.add("Arriba")
     arriba_ref = Channel
         .fromPath(params.arriba_ref)
         .ifEmpty { exit 1, "Arriba reference directory not found!" }
@@ -186,7 +188,7 @@ if (params.squid) {
 
 fusion_inspector_ref = false
 if (params.fusion_inspector) {
-    params.running_tools.add("FusionInspector")
+    params.visualization_tools.add("FusionInspector")
     if (!params.star_fusion_ref) {
         exit 1, "Reference not specified (using star-fusion reference path)!"
     } else {
@@ -253,7 +255,8 @@ summary['Reads']        = params.reads
 summary['Fasta Ref']    = params.fasta
 summary['GTF Ref']      = params.gtf
 summary['STAR Index']   = params.star_index ? params.star_index : 'Not specified, building'
-summary['Tools']        = params.running_tools.size() == 0 ? 'None' : params.running_tools.join(", ")
+summary['Fusion tools']        = params.running_tools.size() == 0 ? 'None' : params.running_tools.join(", ")
+summary['Visualization tools'] = params.visualization_tools.size() == 0 ? 'None': params.visualization_tools.join(", ")
 summary['Data Type']    = params.singleEnd ? 'Single-End' : 'Paired-End'
 summary['Max Resources']    = "$params.max_memory memory, $params.max_cpus cpus, $params.max_time time per job"
 if(workflow.containerEngine) summary['Container'] = "$workflow.containerEngine - $workflow.container"
