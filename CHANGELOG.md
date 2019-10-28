@@ -1,6 +1,6 @@
 # nfcore/rnafusion
 
-## nfcore/rnafusion version 1.0.3 -
+## nfcore/rnafusion version 1.1.0 -
 
 ### Added
 
@@ -8,12 +8,17 @@
 
 ### Changed
 
+* Upgraded `fusion-report v1.0.0` to `fusion-report v2.0`
 * Divided `running_tools` into fusion and visualization tools
-* Updated `Squid STAR` version to `2.7.0f`
-* Upgraded `STAR-Fusion v1.5.0` to `STAR-Fusion v1.6.0` [#83](https://github.com/nf-core/rnafusion/issues/83)
+* Updated `STAR` in `Squid`, `Fusion-Inspector` version to `2.7.0f`
+* Upgraded `STAR-Fusion v1.5.0` to `STAR-Fusion v1.7.0` [#83](https://github.com/nf-core/rnafusion/issues/83)
 * Parameter `igenomesIgnore` renamed to `igenome` [#81](https://github.com/nf-core/rnafusion/issues/81)
 
-## nfcore/rnafusion version 1.0.2 - 2018/05/13
+### Fixed
+
+* iGenomes optional, but not really [#91](https://github.com/nf-core/rnafusion/issues/91)
+
+## nfcore/rnafusion version 1.0.2 - 2019/05/13
 
 ### Changed
 
@@ -25,7 +30,7 @@
 * Implemented output output for fusion tools [#72](https://github.com/nf-core/rnafusion/issues/72)
 * Fixed reference download link for STAR-Fusion [#71](https://github.com/nf-core/rnafusion/issues/71)
 
-## nfcore/rnafusion version 1.0.1 - 2018/04/06
+## nfcore/rnafusion version 1.0.1 - 2019/04/06
 
 ### Added
 
