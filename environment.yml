@@ -1,17 +1,18 @@
 # You can use this file to create a conda environment for this pipeline:
 #   conda env create -f environment.yml
-name: nf-core-rnafusion-1.0.2
+name: nf-core-rnafusion-1.1.0
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
   - anaconda::openjdk=8.0.152 # Needed for FastQC - conda build hangs without this
-  - bioconda::star=2.7.0f # update STAR-Fusion and Fusion-Inspector
+  - bioconda::star=2.7.0f # update STAR-Fusion and Fusion-Inspector, Arriba
   - conda-forge::r-data.table=1.12.0
   - conda-forge::r-gplots=3.0.1.1
   - bioconda::bioconductor-edger=3.24.1
   - conda-forge::r-markdown=0.9
-  - bioconda::fusion-report=1.0.0
+  - bioconda::fusion-report=2.0.1
   - bioconda::fastqc=0.11.8
   - bioconda::multiqc=1.7
+  - matplotlib=3.0.3 # Current 3.1.0 build incompatible with multiqc=1.7
