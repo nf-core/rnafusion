@@ -4,9 +4,8 @@ PREFIX="nfcore/rnafusion"
 
 create_container() {
     TOOL_PATH=$1
-    TOOL=$2
-    VERSION="$(cat $TOOL_PATH/environment.yml | grep "$TOOL=" | cut -d"=" -f2)"
-    CONTAINER_NAME="$PREFIX:${TOOL}_v$VERSION"
+    VERSION="$(cat $TOOL_PATH/environment.yml | grep "name:" | cut -d":" -f2 | cut -d " " -f2)"
+    CONTAINER_NAME="$PREFIX:$VERSION"
     echo "Building [$CONTAINER_NAME]"
     docker build $TOOL_PATH -t $CONTAINER_NAME
     docker push $CONTAINER_NAME
@@ -45,6 +44,6 @@ else
         echo "The tool doesn't exist"
         exit 1
     else
-        create_container $TOOL_PATH $TOOL
+        create_container $TOOL_PATH
     fi
 fi

@@ -1,4 +1,4 @@
-name: star-fusion
+name: star-fusion_v1.6.0
 channels:
   - bioconda
   - conda-forge
@@ -7,3 +7,6 @@ dependencies:
   - bioconda::star-fusion=1.6.0
   - bioconda::trinity=2.6.6
   - conda-forge::perl-carp-assert
+  - bioconda::hmmer=3.2.1
+  - conda-forge::unzip=6.0
+  - bioconda::dfam=2.0

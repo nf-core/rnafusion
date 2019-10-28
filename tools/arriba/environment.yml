@@ -1,4 +1,4 @@
-name: arriba
+name: arriba_v1.1.0
 channels:
   - conda-forge
   - bioconda

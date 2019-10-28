@@ -1,4 +1,4 @@
-name: fusioncatcher
+name: fusioncatcher_v1.00
 channels:
   - bioconda
   - conda-forge

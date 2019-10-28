@@ -5,6 +5,6 @@ LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.
 
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
-ENV PATH /opt/conda/envs/fusion-inspector/bin:$PATH
+ENV PATH /opt/conda/envs/fusion-inspector_v1.3.1-star2.7.0f/bin:$PATH
 
 RUN ln -s /lib/x86_64-linux-gnu/libcrypt.so.1 /lib/x86_64-linux-gnu/libcrypto.so.1.0.0

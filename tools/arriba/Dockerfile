@@ -5,4 +5,4 @@ LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.
 
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
-ENV PATH /opt/conda/envs/arriba/bin:$PATH
+ENV PATH /opt/conda/envs/arriba_v1.1.0/bin:$PATH

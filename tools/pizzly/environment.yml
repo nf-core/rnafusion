@@ -1,6 +1,8 @@
-name: pizzly
+name: pizzly_v0.37.3
 channels:
   - bioconda
+  - conda-forge
 dependencies:
-  - pizzly=0.37.3
-  - kallisto=0.44.0
+  - bioconda::pizzly=0.37.3
+  - bioconda::kallisto=0.44.0
+  - conda-forge::pigz=2.3.4

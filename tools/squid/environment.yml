@@ -1,4 +1,4 @@
-name: squid
+name: squid_v1.5-star2.7.0f
 channels:
   - bioconda
   - conda-forge
