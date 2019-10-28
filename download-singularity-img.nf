@@ -53,28 +53,25 @@ params.running_tools = ["nf-core/rnafusion/${workflow.manifest.version}"]
 if (!params.outdir) {
     exit 1, "Output directory not specified!"
 }
-if (params.download_all) {
-    params.running_tools.add("All")
-}
-if (params.arriba) {
+if (params.arriba || download_all) {
     params.running_tools.add("Arriba")
 }
-if (params.star_fusion) {
+if (params.star_fusion || download_all) {
     params.running_tools.add("STAR-Fusion")
 }
-if (params.fusioncatcher) {
+if (params.fusioncatcher || download_all) {
     params.running_tools.add("Fusioncatcher")
 }
-if (params.ericscript) {
+if (params.ericscript || download_all) {
     params.running_tools.add("Ericscript")
 }
-if (params.pizzly) {
+if (params.pizzly || download_all) {
     params.running_tools.add("Pizzly")
 }
-if (params.squid) {
+if (params.squid || download_all) {
     params.running_tools.add("Squid")
 }
-if (params.fusion_inspector) {
+if (params.fusion_inspector || download_all) {
     params.running_tools.add("Fusion-Inspector")
 }
 
@@ -84,21 +81,11 @@ def summary = [:]
 summary['Pipeline Name']  = 'nf-core/rnafusion/download-singularity-img.nf'
 summary['Pipeline Version'] = workflow.manifest.version
 summary['Tool images']      = params.running_tools.size() == 0 ? 'None' : params.running_tools.join(", ")
+if(workflow.containerEngine) summary['Container'] = "$workflow.containerEngine - $workflow.container"
 summary['Max Resources']    = "$params.max_memory memory, $params.max_cpus cpus, $params.max_time time per job"
 summary['Output dir']   = params.outdir
-summary['Working dir']  = workflow.workDir
-summary['Launch dir']   = workflow.launchDir
-summary['Working dir']  = workflow.workDir
-summary['Script dir']   = workflow.projectDir
 summary['User']         = workflow.userName
 summary['Config Profile'] = workflow.profile
-if(params.config_profile_description) summary['Config Description'] = params.config_profile_description
-if(params.config_profile_contact)     summary['Config Contact']     = params.config_profile_contact
-if(params.config_profile_url)         summary['Config URL']         = params.config_profile_url
-if(workflow.profile == 'awsbatch'){
-   summary['AWS Region'] = params.awsregion
-   summary['AWS Queue'] = params.awsqueue
-}
 log.info summary.collect { k,v -> "${k.padRight(18)}: $v" }.join("\n")
 log.info "\033[2m----------------------------------------------------\033[0m"
 
@@ -226,7 +213,7 @@ process download_star_fusion {
  * Completion
  */
 workflow.onComplete {
-    log.info "[nf-core/rnafusion] Pipeline Complete"
+    log.info "[nf-core/rnafusion/download-singularity-img.nf] Pipeline Complete"
 }
 
 def nfcoreHeader(){
