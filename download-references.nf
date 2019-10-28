@@ -19,21 +19,20 @@ def helpMessage() {
     nextflow run nf-core/rnafusion/download-references.nf -profile [PROFILE] [OPTIONS] --outdir /path/to/output
 
     Mandatory arguments:
+      --reference_release           Release number of Ensembl reference for FASTA and GTF
+                                    example: 97 -> ftp://ftp.ensembl.org/pub/release-97
       --outdir                      Output directory for downloading
-      -profile                      Configuration profile to use. Can use multiple (comma separated)
-                                    Available: standard, conda, docker, singularity, awsbatch, test
+      -profile                      Configuration profile [https://github.com/nf-core/configs]
       
     Options:
+      --download_all                Download all references
       --arriba                      Download Arriba references
-      --star_fusion                 Download STAR-Fusion references [NCBI version by default]
-      --star_fusion_ensembl         Download STAR-Fusion references [Ensebml, have to build manually]
+      --star_fusion                 Build STAR-Fusion references from FASTA ANF GTF
       --fusioncatcher               Download Fusioncatcher references
       --ericscript                  Download Ericscript references 
-      --pizzly                      Download pizzly references
       --fusion_report               Download databases for fusion-report
         --cosmic_usr                [Required] COSMIC username
         --cosmic_passwd             [Required] COSMIC password
-      --igenomes                    Download iGenome Homo Sapiens version NCBI/GRCh38.
     """.stripIndent()
 }
 
@@ -47,36 +46,31 @@ if (params.help){
     exit 0
 }
 
+if (!params.reference_release) {
+    exit 1, "You did not specify the release number of reference!"
+}
+
 params.running_tools = []
 if (!params.outdir) {
     exit 1, "Output directory not specified!"
 }
-if (params.arriba) {
+if (params.arriba || params.download_all) {
     params.running_tools.add("Arriba")
 }
-if (params.igenomes) {
-    params.running_tools.add("iGenome")
+if (params.star_fusion || params.download_all) {
+    params.running_tools.add("STAR-Fusion")
 }
-if (params.star_fusion) {
-    params.running_tools.add("STAR-Fusion NCBI version")
-}
-if (params.star_fusion_ensembl) {
-    params.running_tools.add("STAR-Fusion Ensembl version")
-}
-if (params.fusioncatcher) {
+if (params.fusioncatcher || params.download_all) {
     params.running_tools.add("Fusioncatcher")
 }
-if (params.ericscript) {
+if (params.ericscript || params.download_all) {
     params.running_tools.add("Ericscript")
 }
-if (params.pizzly) {
-    params.running_tools.add("Pizzly")
-}
-if (params.fusion_report) {
+if (params.download_all) {
+    params.running_tools.add('fusion-report')
     if (!params.cosmic_usr || !params.cosmic_passwd) {
         exit 1, "Database credentials are required parameter!"
     }
-    params.running_tools.add('fusion-report')
 }
 
 // Header log info
@@ -85,29 +79,38 @@ def summary = [:]
 summary['Pipeline Name']  = 'nf-core/rnafusion/download-references.nf'
 summary['Pipeline Version'] = workflow.manifest.version
 summary['References']       = params.running_tools.size() == 0 ? 'None' : params.running_tools.join(", ")
+if(workflow.containerEngine) summary['Container'] = "$workflow.containerEngine - $workflow.container"
 summary['Max Resources']    = "$params.max_memory memory, $params.max_cpus cpus, $params.max_time time per job"
 summary['Output dir']   = params.outdir
-summary['Working dir']  = workflow.workDir
-summary['Launch dir']   = workflow.launchDir
-summary['Working dir']  = workflow.workDir
-summary['Script dir']   = workflow.projectDir
 summary['User']         = workflow.userName
-summary['Config Profile'] = workflow.profile
-if(params.config_profile_description) summary['Config Description'] = params.config_profile_description
-if(params.config_profile_contact)     summary['Config Contact']     = params.config_profile_contact
-if(params.config_profile_url)         summary['Config URL']         = params.config_profile_url
-if(workflow.profile == 'awsbatch'){
-   summary['AWS Region'] = params.awsregion
-   summary['AWS Queue'] = params.awsqueue
-}
 log.info summary.collect { k,v -> "${k.padRight(18)}: $v" }.join("\n")
 log.info "\033[2m----------------------------------------------------\033[0m"
 
+process download_base {
+    publishDir "${params.outdir}/", mode: 'move'
+    
+    output:
+    file "Homo_sapiens.GRCh38_r${params.reference_release}.all.fa" into fasta
+    file "Homo_sapiens.GRCh38_r${params.reference_release}.gtf" into gtf
+    file "Homo_sapiens.GRCh38_${params.reference_release}.cdna.all.fa.gz" into transcript
+
+
+    script:
+    """
+    wget ftp://ftp.ensembl.org/pub/release-${params.reference_release}/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{1..22}.fa.gz
+    wget ftp://ftp.ensembl.org/pub/release-${params.reference_release}/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{MT,X,Y}.fa.gz
+    gunzip -c Homo_sapiens.GRCh38.dna.chromosome.* > Homo_sapiens.GRCh38_r${params.reference_release}.all.fa
+    wget ftp://ftp.ensembl.org/pub/release-${params.reference_release}/gtf/homo_sapiens/Homo_sapiens.GRCh38.${params.reference_release}.chr.gtf.gz -O Homo_sapiens.GRCh38_r${params.reference_release}.gtf.gz
+    gunzip Homo_sapiens.GRCh38_r${params.reference_release}.gtf.gz
+    wget ftp://ftp.ensembl.org/pub/release-${params.reference_release}/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz -O Homo_sapiens.GRCh38_${params.reference_release}.cdna.all.fa.gz
+    """
+}
+
 process download_arriba {
-    publishDir "${params.outdir}/arriba_ref", mode: 'copy'
+    publishDir "${params.outdir}/arriba", mode: 'move'
     
     when:
-    params.arriba
+    params.arriba || params.download_all
 
     output:
     file '*'
@@ -120,51 +123,49 @@ process download_arriba {
 }
 
 process download_star_fusion {
-    publishDir "${params.outdir}/star_fusion_ref", mode: 'copy'
+    publishDir "${params.outdir}/star-fusion", mode: 'move'
     
     when:
-    params.star_fusion
+    params.star_fusion || params.download_all
+
+    input:
+    file fasta
+    file gtf
 
     output:
     file '*'
 
     script:
-    """
-    wget -N https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/GRCh38_gencode_v29_CTAT_lib_Mar272019.plug-n-play.tar.gz -O GRCh38_gencode_v29_CTAT_lib_Mar272019.plug-n-play.tar.gz
-    tar -xvzf GRCh38_gencode_v29_CTAT_lib_Mar272019.plug-n-play.tar.gz && rm GRCh38_gencode_v29_CTAT_lib_Mar272019.plug-n-play.tar.gz
-    """
-}
-
-process download_star_fusion_ensembl {
-    publishDir "${params.outdir}/star_fusion_ensembl_ref", mode: 'copy'
-    
-    when:
-    params.star_fusion_ensembl
-
-    output:
-    file '*'
-
-    script:
-    """
-    wget -N ftp://ftp.ensembl.org/pub/release-77/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{1..22}.fa.gz
-    wget -N ftp://ftp.ensembl.org/pub/release-77/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{MT,X,Y}.fa.gz
-    gunzip -c Homo_sapiens.GRCh38.dna.chromosome.* > Homo_sapiens.GRCh38_r77.all.fa
-    wget -N ftp://ftp.ensembl.org/pub/release-77/gtf/homo_sapiens/Homo_sapiens.GRCh38.77.chr.gtf.gz
+    """    
     wget -N ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
     gunzip Pfam-A.hmm.gz && hmmpress Pfam-A.hmm
+
+    wget https://github.com/FusionAnnotator/CTAT_HumanFusionLib/releases/download/v0.2.0/fusion_lib.Mar2019.dat.gz -O CTAT_HumanFusionLib.dat.gz
+    
+    # Dfam
+    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm
+    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3f
+    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3i
+    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3m
+    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3p
+
     prep_genome_lib.pl \\
-        --genome_fa Homo_sapiens.GRCh38_r77.all.fa \\
-        --gtf Homo_sapiens.GRCh38.77.chr.gtf \\
+        --genome_fa ${fasta} \\
+        --gtf ${gtf} \\
+        --fusion_annot_lib CTAT_HumanFusionLib.dat.gz \\
+        --annot_filter_rule AnnotFilterRule.pm \\
         --pfam_db Pfam-A.hmm \\
-        --CPU 10
+        --dfam_db homo_sapiens_dfam.hmm \\
+        --human_gencode_filter \\
+        --CPU ${task.cpus}
     """
 }
 
 process download_fusioncatcher {
-    publishDir "${params.outdir}/fusioncatcher_ref", mode: 'copy'
+    publishDir "${params.outdir}/fusioncatcher", mode: 'move'
     
     when:
-    params.fusioncatcher
+    params.fusioncatcher || params.download_all
 
     output:
     file '*'
@@ -181,10 +182,10 @@ process download_fusioncatcher {
 }
 
 process download_ericscript {
-    publishDir "${params.outdir}/ericscript_ref", mode: 'copy'
+    publishDir "${params.outdir}/ericscript", mode: 'move'
     
     when:
-    params.ericscript
+    params.ericscript || params.download_all
 
     output:
     file '*'
@@ -199,27 +200,8 @@ process download_ericscript {
     """
 }
 
-process download_pizzly {
-    publishDir "${params.outdir}/pizzly_ref", mode: 'copy'
-    
-    when:
-    params.pizzly
-
-    output:
-    file '*'
-
-    script:
-    """
-    wget -N ftp://ftp.ensembl.org/pub/release-94/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz
-    wget -N ftp://ftp.ensembl.org/pub/release-94/gtf/homo_sapiens/Homo_sapiens.GRCh38.94.gtf.gz && gunzip Homo_sapiens.GRCh38.94.gtf.gz
-    """
-}
-
 process download_databases {
-    publishDir "${params.outdir}/databases", mode: 'copy'
-    
-    when:
-    params.fusion_report
+    publishDir "${params.outdir}/databases", mode: 'move'
 
     output:
     file '*'
@@ -230,26 +212,11 @@ process download_databases {
     """
 }
 
-process download_igenome {
-    publishDir "${params.outdir}/igenome", mode: 'copy'
-    
-    when:
-    params.igenomes
-
-    output:
-    file '*'
-
-    script:
-    """
-    aws s3 --no-sign-request --region eu-west-1 sync s3://ngi-igenomes/igenomes/Homo_sapiens/NCBI/GRCh38/ .
-    """
-}
-
 /*
  * Completion
  */
 workflow.onComplete {
-    log.info "[nf-core/rnafusion] Pipeline Complete"
+    log.info "[nf-core/rnafusion/download-references.nf] Pipeline Complete"
 }
 
 def nfcoreHeader(){
