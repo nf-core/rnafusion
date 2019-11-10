@@ -300,29 +300,34 @@ if (params.star_index) {
  * Arriba
  */
 process arriba {
-    tag "$name"
-    publishDir "${params.outdir}/tools/Arriba", mode: 'copy'
+    tag "$sample"
+    publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy',
+        saveAs: {filename -> 
+            if (filename == "fusions.tsv") "${sample}_arriba.tsv"
+            else if (filename == "Aligned.out.bam") "${sample}_arriba.bam"
+            else filename
+        }
 
     when:
     params.arriba && (!params.singleEnd || params.debug)
 
     input:
-    set val(name), file(reads) from read_files_arriba
-    file reference from reference.arriba
-    file star_index_arriba
-    file fasta_arriba
-    file gtf_arriba
+    set val(sample), file(reads) from read_files_arriba
+    file reference from reference.arriba.collect()
+    file star_index from star_index_arriba.collect()
+    file fasta from fasta_arriba.collect()
+    file gtf from gtf_arriba.collect()
 
     output:
-    file 'fusions.tsv' optional true into arriba_fusions1, arriba_fusions2
-    file 'Aligned.out.bam' optional true into arriba_bam
+    file "${sample}_arriba.tsv" optional true into arriba_fusions1, arriba_fusions2
+    file "${sample}_arriba.bam" optional true into arriba_bam
     file '*.{tsv,txt}' into arriba_output
 
     script:
     def extra_params = params.arriba_opt ? "${params.arriba_opt}" : ''
     """
     STAR \\
-        --genomeDir ${star_index_arriba} \\
+        --genomeDir ${star_index} \\
         --runThreadN ${task.cpus} \\
         --readFilesIn ${reads} \\
         --outStd BAM_Unsorted \\
@@ -347,8 +352,8 @@ process arriba {
 
     arriba \\
         -x /dev/stdin \\
-        -a ${fasta_arriba} \\
-        -g ${gtf_arriba} \\
+        -a ${fasta} \\
+        -g ${gtf} \\
         -b ${reference}/blacklist_hg38_GRCh38_2018-11-04.tsv \\
         -o fusions.tsv -O fusions.discarded.tsv \\
         -T -P \\
@@ -360,19 +365,20 @@ process arriba {
  * STAR-Fusion
  */
 process star_fusion {
-    tag "$name"
-    publishDir "${params.outdir}/tools/Star-Fusion", mode: 'copy'
+    tag "$sample"
+    publishDir "${params.outdir}/tools/Star-Fusion/${sample}", mode: 'copy',
+        saveAs: {filename -> filename == "star-fusion.fusion_predictions.tsv" ? "${sample}_star-fusion.tsv" : filename}
 
     when:
     params.star_fusion || (params.star_fusion && params.debug)
 
     input:
-    set val(name), file(reads) from read_files_star_fusion
-    file reference from reference.star_fusion
-    file star_index_star_fusion
+    set val(sample), file(reads) from read_files_star_fusion
+    file reference from reference.star_fusion.collect()
+    file star_index from star_index_star_fusion.collect()
 
     output:
-    file '*fusion_predictions.tsv' optional true into star_fusion_fusions
+    file "${sample}_star-fusion.tsv" optional true into star_fusion_fusions
     file '*.{tsv,txt}' into star_fusion_output
 
     script:
@@ -381,7 +387,7 @@ process star_fusion {
     def extra_params = params.star_fusion_opt ? "${params.star_fusion_opt}" : ''
     """
     STAR \\
-        --genomeDir ${star_index_star_fusion} \\
+        --genomeDir ${star_index} \\
         --readFilesIn ${reads} \\
         --twopassMode Basic \\
         --outReadsUnmapped None \\
@@ -420,18 +426,19 @@ process star_fusion {
  * Fusioncatcher
  */
 process fusioncatcher {
-    tag "$name"
-    publishDir "${params.outdir}/tools/Fusioncatcher", mode: 'copy'
+    tag "$sample"
+    publishDir "${params.outdir}/tools/Fusioncatcher/${sample}", mode: 'copy',
+        saveAs: {filename -> filename == "final-list_candidate-fusion-genes.txt" ? "${sample}_fusioncatcher.txt" : filename}
 
     when:
     params.fusioncatcher || (params.fusioncatcher && params.debug)
 
     input:
-    set val(name), file(reads) from read_files_fusioncatcher
-    file data_dir from reference.fusioncatcher
+    set val(sample), file(reads) from read_files_fusioncatcher
+    file data_dir from reference.fusioncatcher.collect()
 
     output:
-    file 'final-list_candidate-fusion-genes.txt' optional true into fusioncatcher_fusions
+    file "${sample}_fusioncatcher.txt" optional true into fusioncatcher_fusions
     file '*.{txt,zip,log}' into fusioncatcher_output
 
     script:
@@ -451,18 +458,19 @@ process fusioncatcher {
  * Ericscript
  */
 process ericscript {
-    tag "$name"
-    publishDir "${params.outdir}/tools/EricScript", mode: 'copy'
+    tag "$sample"
+    publishDir "${params.outdir}/tools/EricScript/${sample}", mode: 'copy',
+        saveAs: {filename -> filename == "fusions.results.filtered.tsv" ? "${sample}_ericscript.tsv" : filename}
 
     when:
     params.ericscript && (!params.singleEnd || params.debug)
 
     input:
-    set val(name), file(reads) from read_files_ericscript
-    file reference from reference.ericscript
+    set val(sample), file(reads) from read_files_ericscript
+    file reference from reference.ericscript.collect()
 
     output:
-    file './tmp/fusions.results.filtered.tsv' optional true into ericscript_fusions
+    file "./tmp/${sample}_ericscript.tsv" optional true into ericscript_fusions
     file './tmp/fusions.results.total.tsv' optional true into ericscript_output
 
     script:
@@ -472,8 +480,7 @@ process ericscript {
         -name fusions \\
         -p ${task.cpus} \\
         -o ./tmp \\
-        ${reads[0]} \\
-        ${reads[1]}
+        ${reads}
     """
 }
 
@@ -481,19 +488,20 @@ process ericscript {
  * Pizzly
  */
 process pizzly {
-    tag "$name"
-    publishDir "${params.outdir}/tools/Pizzly", mode: 'copy'
+    tag "$sample"
+    publishDir "${params.outdir}/tools/Pizzly/${sample}", mode: 'copy',
+        saveAs: {filename -> filename == "pizzly_fusions.txt" ? "${sample}_pizzly.txt" : filename}
 
     when:
     params.pizzly && (!params.singleEnd || params.debug)
 
     input:
-    set val(name), file(reads) from read_files_pizzly
-    file gtf from pizzly_gtf
-    file transcript
+    set val(sample), file(reads) from read_files_pizzly
+    file gtf from pizzly_gtf.collect()
+    file transcript from transcript.collect()
     
     output:
-    file 'pizzly_fusions.txt' optional true into pizzly_fusions
+    file "${sample}_pizzly.txt" optional true into pizzly_fusions
     file '*.{json,txt}' into pizzly_output
 
     script:
@@ -515,36 +523,37 @@ process pizzly {
  * Squid
  */
 process squid {
-    tag "$name"
-    publishDir "${params.outdir}/tools/Squid", mode: 'copy'
+    tag "$sample"
+    publishDir "${params.outdir}/tools/Squid/${sample}", mode: 'copy',
+        saveAs: {filename -> filename == "fusions_annotated.txt" ? "${sample}_fusions_annotated.txt" : filename}
 
     when:
     params.squid && (!params.singleEnd || params.debug)
 
     input:
-    set val(name), file(reads) from read_files_squid
-    file star_index_squid
-    file gtf from gtf_squid
+    set val(sample), file(reads) from read_files_squid
+    file star_index from star_index_squid.collect()
+    file gtf from gtf_squid.collect()
     
     output:
-    file '*_annotated.txt' optional true into squid_fusions
+    file "${sample}_fusions_annotated.txt" optional true into squid_fusions
     file '*.txt' into squid_output
 
     script:
     def avail_mem = task.memory ? "--limitBAMsortRAM ${task.memory.toBytes() - 100000000}" : ''
     """
     STAR \\
-        --genomeDir ${star_index_squid} \\
+        --genomeDir ${star_index} \\
         --sjdbGTFfile ${gtf} \\
         --runThreadN ${task.cpus} \\
-        --readFilesIn ${reads[0]} ${reads[1]} \\
+        --readFilesIn ${reads} \\
         --twopassMode Basic \\
         --chimOutType SeparateSAMold --chimSegmentMin 20 --chimJunctionOverhangMin 12 --alignSJDBoverhangMin 10 --outReadsUnmapped Fastx --outSAMstrandField intronMotif \\
         --outSAMtype BAM SortedByCoordinate ${avail_mem} \\
         --readFilesCommand zcat
-    mv Aligned.sortedByCoord.out.bam ${name}Aligned.sortedByCoord.out.bam
-    samtools view -bS Chimeric.out.sam > ${name}Chimeric.out.bam
-    squid -b ${name}Aligned.sortedByCoord.out.bam -c ${name}Chimeric.out.bam -o fusions
+    mv Aligned.sortedByCoord.out.bam ${sample}Aligned.sortedByCoord.out.bam
+    samtools view -bS Chimeric.out.sam > ${sample}Chimeric.out.bam
+    squid -b ${sample}Aligned.sortedByCoord.out.bam -c ${sample}Chimeric.out.bam -o fusions
     AnnotateSQUIDOutput.py ${gtf} fusions_sv.txt fusions_annotated.txt
     """
 }
@@ -552,25 +561,25 @@ process squid {
 /*************************************************************
  * Summarizing results from tools
  ************************************************************/
-process summary {
-    tag "$name"
-    publishDir "${params.outdir}/Report-${name}", mode: 'copy'
+ process summary {
+    tag "$sample"
+    publishDir "${params.outdir}/Reports/${sample}", mode: 'copy'
  
     when:
     !params.debug && (params.arriba || params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
     
     input:
-    set val(name), file(reads) from read_files_summary
-    file arriba from arriba_fusions1.ifEmpty('')
-    file fusioncatcher from fusioncatcher_fusions.ifEmpty('')
-    file starfusion from star_fusion_fusions.ifEmpty('')
-    file ericscript from ericscript_fusions.ifEmpty('')
-    file pizzly from pizzly_fusions.ifEmpty('')
-    file squid from squid_fusions.ifEmpty('')
+    set val(sample), file(reads) from read_files_summary
+    file arriba from arriba_fusions1.collect().ifEmpty('')
+    file fusioncatcher from fusioncatcher_fusions.collect().ifEmpty('')
+    file starfusion from star_fusion_fusions.collect().ifEmpty('')
+    file ericscript from ericscript_fusions.collect().ifEmpty('')
+    file pizzly from pizzly_fusions.collect().ifEmpty('')
+    file squid from squid_fusions.collect().ifEmpty('')
 
     output:
-    file 'fusion_list.tsv' into fusion_inspector_input_list
-    file 'fusion_genes_mqc.json' into summary_fusions_mq
+    file "${sample}_fusion_list.tsv" into fusion_inspector_input_list
+    file "${sample}_fusion_genes_mqc.json" into summary_fusions_mq
     file '*' into report
     
     script:
@@ -582,8 +591,10 @@ process summary {
     tools += !pizzly.empty() ? "--pizzly ${pizzly} " : ''
     tools += !squid.empty() ? "--squid ${squid} " : ''
     """
-    fusion_report run ${name} . ${params.databases} \\
+    fusion_report run ${sample} . ${params.databases} \\
         ${tools} ${extra_params}
+    mv fusion_list.tsv ${sample}_fusion_list.tsv
+    mv fusion_genes_mqc.json ${sample}_fusion_genes_mqc.json
     """
 }
 
@@ -595,20 +606,21 @@ process summary {
  * Arriba Visualization
  */
 process arriba_visualization {
-    tag "$name"
-    publishDir "${params.outdir}/tools/Arriba", mode: 'copy'
+    tag "$sample"
+    publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy',
+        saveAs: {filename -> filename == "visualization.pdf" ? "${sample}.pdf" : filename}
 
     when:
     params.arriba_vis && (!params.singleEnd || params.debug)
 
     input:
-    file reference from reference.arriba_vis
-    file fusions from arriba_fusions2
-    file bam from arriba_bam
-    file gtf from gtf_arriba_vis
+    file reference from reference.arriba_vis.collect()
+    file fusions from arriba_fusions2.collect()
+    file bam from arriba_bam.collect()
+    file gtf from gtf_arriba_vis.collect()
 
     output:
-    file 'visualization.pdf' optional true into arriba_visualization_output
+    file "${sample}.pdf" optional true into arriba_visualization_output
 
     script:
     def suff_mem = ("${(task.memory.toBytes() - 6000000000) / task.cpus}" > 2000000000) ? 'true' : 'false'
@@ -630,16 +642,16 @@ process arriba_visualization {
  * Fusion Inspector
  */
 process fusion_inspector {
-    tag "$name"
-    publishDir "${params.outdir}/tools/FusionInspector", mode: 'copy'
+    tag "$sample"
+    publishDir "${params.outdir}/tools/FusionInspector/${sample}", mode: 'copy'
 
     when:
     params.fusion_inspector && (!params.singleEnd || params.debug)
 
     input:
-    set val(name), file(reads) from read_files_fusion_inspector
-    file reference from reference.fusion_inspector
-    file fusion_inspector_input_list
+    set val(sample), file(reads) from read_files_fusion_inspector
+    file reference from reference.fusion_inspector.collect()
+    file fi_input_list from fusion_inspector_input_list.collect()
 
     output:
     file '*.{fa,gtf,bed,bam,bai,txt}' into fusion_inspector_output
@@ -648,7 +660,7 @@ process fusion_inspector {
     def extra_params = params.fusion_inspector_opt ? "${params.fusion_inspector_opt}" : ''
     """
     FusionInspector \\
-        --fusions ${fusion_inspector_input_list} \\
+        --fusions ${fi_input_list} \\
         --genome_lib ${reference} \\
         --left_fq ${reads[0]} \\
         --right_fq ${reads[1]} \\
@@ -736,7 +748,7 @@ process multiqc {
     file ('fastqc/*') from fastqc_results.collect().ifEmpty([])
     file ('software_versions/*') from software_versions_yaml.collect()
     file workflow_summary from create_workflow_summary(summary)
-    file fusions_mq from summary_fusions_mq.ifEmpty('')
+    file fusions_mq from summary_fusions_mq.collect().ifEmpty([])
 
     output:
     file "*multiqc_report.html" into multiqc_report
