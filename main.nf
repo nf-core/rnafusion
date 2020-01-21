@@ -605,30 +605,30 @@ process squid {
 /*
  * Arriba Visualization
  */
-process arriba_visualization {
-    tag "$sample"
-    publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy'
+// process arriba_visualization {
+//     tag "$sample"
+//     publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy'
     
-    // when:
-    // params.arriba_vis && (!params.singleEnd || params.debug)
+//     // when:
+//     // params.arriba_vis && (!params.singleEnd || params.debug)
 
-    input:
-    set val(sample), file(reads) from read_arriba_vis
-    // file fusions from arriba_fusions1.collect().ifEmpty([])
-    file reference from reference.arriba_vis.collect().ifEmpty([])
-    file bam from arriba_bam.collect().ifEmpty([])
-    file gtf from gtf_arriba_vis.collect().ifEmpty([])
+//     input:
+//     set val(sample), file(reads) from read_arriba_vis
+//     // file fusions from arriba_fusions1.collect().ifEmpty([])
+//     file reference from reference.arriba_vis.collect().ifEmpty([])
+//     file bam from arriba_bam.collect().ifEmpty([])
+//     file gtf from gtf_arriba_vis.collect().ifEmpty([])
 
-    // output:
-    // file "${sample}.pdf" optional true into arriba_visualization_output
-    println(arriba_fusions1)
-    script:
-    """
-    echo "hi"
-    """
-    // def suff_mem = ("${(task.memory.toBytes() - 6000000000) / task.cpus}" > 2000000000) ? 'true' : 'false'
-    // def avail_mem = (task.memory && suff_mem) ? "-m" + "${(task.memory.toBytes() - 6000000000) / task.cpus}" : ''
-}
+//     // output:
+//     // file "${sample}.pdf" optional true into arriba_visualization_output
+//     println(arriba_fusions1)
+//     script:
+//     """
+//     echo "hi"
+//     """
+//     // def suff_mem = ("${(task.memory.toBytes() - 6000000000) / task.cpus}" > 2000000000) ? 'true' : 'false'
+//     // def avail_mem = (task.memory && suff_mem) ? "-m" + "${(task.memory.toBytes() - 6000000000) / task.cpus}" : ''
+// }
 
 /*
  * Fusion Inspector
