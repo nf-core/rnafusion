@@ -323,7 +323,8 @@ process arriba {
     file gtf from gtf_arriba.collect()
 
     output:
-    file "${sample}_arriba.tsv" optional true into arriba_fusions1, arriba_fusions2
+    set val(sample), file("${sample}_arriba.tsv") optional true into arriba_fusions_summary
+    file "${sample}_arriba.tsv" optional true into arriba_fusions_visualization
     file "${sample}_arriba.bam" optional true into arriba_bam
     file '*.{tsv,txt}' into arriba_output
 
@@ -382,7 +383,7 @@ process star_fusion {
     file star_index from star_index_star_fusion.collect()
 
     output:
-    file "${sample}_star-fusion.tsv" optional true into star_fusion_fusions
+    set val(sample), file("${sample}_star-fusion.tsv") optional true into star_fusion_fusions
     file '*.{tsv,txt}' into star_fusion_output
 
     script:
@@ -442,7 +443,7 @@ process fusioncatcher {
     file data_dir from reference.fusioncatcher.collect()
 
     output:
-    file "${sample}_fusioncatcher.txt" optional true into fusioncatcher_fusions
+    set val(sample), file("${sample}_fusioncatcher.txt") optional true into fusioncatcher_fusions
     file '*.{txt,zip,log}' into fusioncatcher_output
 
     script:
@@ -474,7 +475,7 @@ process ericscript {
     file reference from reference.ericscript.collect()
 
     output:
-    file "./tmp/${sample}_ericscript.tsv" optional true into ericscript_fusions
+    set val(sample), file("./tmp/${sample}_ericscript.tsv") optional true into ericscript_fusions
     file './tmp/fusions.results.total.tsv' optional true into ericscript_output
 
     script:
@@ -505,7 +506,7 @@ process pizzly {
     file transcript from transcript.collect()
     
     output:
-    file "${sample}_pizzly.txt" optional true into pizzly_fusions
+    set val(sample), file("${sample}_pizzly.txt") optional true into pizzly_fusions
     file '*.{json,txt}' into pizzly_output
 
     script:
@@ -540,7 +541,7 @@ process squid {
     file gtf from gtf_squid.collect()
     
     output:
-    file "${sample}_fusions_annotated.txt" optional true into squid_fusions
+    set val(sample), file("${sample}_fusions_annotated.txt") optional true into squid_fusions
     file '*.txt' into squid_output
 
     script:
@@ -562,6 +563,14 @@ process squid {
     """
 }
 
+read_files_summary
+    .join(arriba_fusions_summary)
+    .join(ericscript_fusions)
+    .join(fusioncatcher_fusions
+    .join(pizzly_fusions)
+    .join(squid_fusions)
+    .join(star_fusion_fusions)
+
 /*************************************************************
  * Summarizing results from tools
  ************************************************************/
@@ -573,13 +582,7 @@ process squid {
     !params.debug && (params.arriba || params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
     
     input:
-    set val(sample), file(reads) from read_files_summary
-    file arriba from arriba_fusions1.collect().ifEmpty('')
-    file fusioncatcher from fusioncatcher_fusions.collect().ifEmpty('')
-    file starfusion from star_fusion_fusions.collect().ifEmpty('')
-    file ericscript from ericscript_fusions.collect().ifEmpty('')
-    file pizzly from pizzly_fusions.collect().ifEmpty('')
-    file squid from squid_fusions.collect().ifEmpty('')
+    set val(sample), file(reads), file(reports) from read_files_summary
 
     output:
     file "${sample}_fusion_list.tsv" into fusion_inspector_input_list
@@ -619,7 +622,7 @@ process arriba_visualization {
 
     input:
     file reference from reference.arriba_vis.collect()
-    file fusions from arriba_fusions2.collect()
+    file fusions from arriba_fusions_visualization.collect()
     file bam from arriba_bam.collect()
     file gtf from gtf_arriba_vis.collect()
 
