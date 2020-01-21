@@ -180,22 +180,22 @@ if(params.readPaths){
             .from(params.readPaths)
             .map { row -> [ row[0], [file(row[1][0])]] }
             .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-            .into { read_files_fastqc; read_files_summary; read_files_multiqc; read_files_star_fusion; read_files_fusioncatcher; 
-                read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid; read_files_arriba }
+            .into { read_files_fastqc; read_files_multiqc; read_files_star_fusion; read_files_fusioncatcher; 
+                read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid; read_files_arriba; read_files_summary; read_arriba_vis }
     } else {
         Channel
             .from(params.readPaths)
             .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
             .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-            .into { read_files_fastqc; read_files_summary; read_files_multiqc; read_files_star_fusion; read_files_fusioncatcher; 
-                read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid; read_files_arriba }
+            .into { read_files_fastqc; read_files_multiqc; read_files_star_fusion; read_files_fusioncatcher; 
+                read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid; read_files_arriba; read_files_summary; read_arriba_vis }
     }
 } else {
     Channel
         .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
         .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
-        .into { read_files_fastqc; read_files_summary; read_files_multiqc; read_files_star_fusion; read_files_fusioncatcher; 
-            read_files_gfusion; read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid; read_files_arriba }
+        .into { read_files_fastqc; read_files_multiqc; read_files_star_fusion; read_files_fusioncatcher; 
+            read_files_fusion_inspector; read_files_ericscript; read_files_pizzly; read_files_squid; read_files_arriba; read_files_summary; read_arriba_vis }
 }
 
 // Header log info
@@ -319,7 +319,7 @@ process arriba {
     file gtf from gtf_arriba.collect()
 
     output:
-    file "${sample}_arriba.tsv" optional true into arriba_fusions1, arriba_fusions2
+    file "${sample}_arriba.tsv" optional true into (arriba_fusions1, arriba_fusions2)
     file "${sample}_arriba.bam" optional true into arriba_bam
     file '*.{tsv,txt}' into arriba_output
 
@@ -561,42 +561,42 @@ process squid {
 /*************************************************************
  * Summarizing results from tools
  ************************************************************/
- process summary {
-    tag "$sample"
-    publishDir "${params.outdir}/Reports/${sample}", mode: 'copy'
+//  process summary {
+//     tag "$sample"
+//     publishDir "${params.outdir}/Reports/${sample}", mode: 'copy'
  
-    when:
-    !params.debug && (params.arriba || params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
+//     when:
+//     !params.debug && (params.arriba || params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
     
-    input:
-    set val(sample), file(reads) from read_files_summary
-    file arriba from arriba_fusions1.collect().ifEmpty('')
-    file fusioncatcher from fusioncatcher_fusions.collect().ifEmpty('')
-    file starfusion from star_fusion_fusions.collect().ifEmpty('')
-    file ericscript from ericscript_fusions.collect().ifEmpty('')
-    file pizzly from pizzly_fusions.collect().ifEmpty('')
-    file squid from squid_fusions.collect().ifEmpty('')
+//     input:
+//     set val(sample), file(reads) from read_files_summary
+//     file arriba from arriba_fusions1.collect().ifEmpty('')
+//     file fusioncatcher from fusioncatcher_fusions.collect().ifEmpty('')
+//     file starfusion from star_fusion_fusions.collect().ifEmpty('')
+//     file ericscript from ericscript_fusions.collect().ifEmpty('')
+//     file pizzly from pizzly_fusions.collect().ifEmpty('')
+//     file squid from squid_fusions.collect().ifEmpty('')
 
-    output:
-    file "${sample}_fusion_list.tsv" into fusion_inspector_input_list
-    file "${sample}_fusion_genes_mqc.json" into summary_fusions_mq
-    file '*' into report
+//     output:
+//     file "${sample}_fusion_list.tsv" into fusion_inspector_input_list
+//     file "${sample}_fusion_genes_mqc.json" into summary_fusions_mq
+//     file '*' into report
     
-    script:
-    def extra_params = params.fusion_report_opt ? "${params.fusion_report_opt}" : ''
-    def tools = !arriba.empty() ? "--arriba ${arriba} " : ''
-    tools += !fusioncatcher.empty() ? "--fusioncatcher ${fusioncatcher} " : ''
-    tools += !starfusion.empty() ? "--starfusion ${starfusion} " : ''
-    tools += !ericscript.empty() ? "--ericscript ${ericscript} " : ''
-    tools += !pizzly.empty() ? "--pizzly ${pizzly} " : ''
-    tools += !squid.empty() ? "--squid ${squid} " : ''
-    """
-    fusion_report run ${sample} . ${params.databases} \\
-        ${tools} ${extra_params}
-    mv fusion_list.tsv ${sample}_fusion_list.tsv
-    mv fusion_genes_mqc.json ${sample}_fusion_genes_mqc.json
-    """
-}
+//     script:
+//     def extra_params = params.fusion_report_opt ? "${params.fusion_report_opt}" : ''
+//     def tools = !arriba.empty() ? "--arriba ${arriba} " : ''
+//     tools += !fusioncatcher.empty() ? "--fusioncatcher ${fusioncatcher} " : ''
+//     tools += !starfusion.empty() ? "--starfusion ${starfusion} " : ''
+//     tools += !ericscript.empty() ? "--ericscript ${ericscript} " : ''
+//     tools += !pizzly.empty() ? "--pizzly ${pizzly} " : ''
+//     tools += !squid.empty() ? "--squid ${squid} " : ''
+//     """
+//     fusion_report run ${sample} . ${params.databases} \\
+//         ${tools} ${extra_params}
+//     mv fusion_list.tsv ${sample}_fusion_list.tsv
+//     mv fusion_genes_mqc.json ${sample}_fusion_genes_mqc.json
+//     """
+// }
 
 /*************************************************************
  * Visualization
@@ -607,69 +607,61 @@ process squid {
  */
 process arriba_visualization {
     tag "$sample"
-    publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy',
-        saveAs: {filename -> filename == "visualization.pdf" ? "${sample}.pdf" : filename}
-
-    when:
-    params.arriba_vis && (!params.singleEnd || params.debug)
+    publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy'
+    
+    // when:
+    // params.arriba_vis && (!params.singleEnd || params.debug)
 
     input:
-    file reference from reference.arriba_vis.collect()
-    file fusions from arriba_fusions2.collect()
-    file bam from arriba_bam.collect()
-    file gtf from gtf_arriba_vis.collect()
+    set val(sample), file(reads) from read_arriba_vis
+    // file fusions from arriba_fusions1.collect().ifEmpty([])
+    file reference from reference.arriba_vis.collect().ifEmpty([])
+    file bam from arriba_bam.collect().ifEmpty([])
+    file gtf from gtf_arriba_vis.collect().ifEmpty([])
 
-    output:
-    file "${sample}.pdf" optional true into arriba_visualization_output
-
+    // output:
+    // file "${sample}.pdf" optional true into arriba_visualization_output
+    println(arriba_fusions1)
     script:
-    def suff_mem = ("${(task.memory.toBytes() - 6000000000) / task.cpus}" > 2000000000) ? 'true' : 'false'
-    def avail_mem = (task.memory && suff_mem) ? "-m" + "${(task.memory.toBytes() - 6000000000) / task.cpus}" : ''
     """
-    samtools sort -@ ${task.cpus} ${avail_mem} -O bam ${bam} > Aligned.sortedByCoord.out.bam
-    samtools index Aligned.sortedByCoord.out.bam
-    draw_fusions.R \\
-        --fusions=${fusions} \\
-        --alignments=Aligned.sortedByCoord.out.bam \\
-        --output=visualization.pdf \\
-        --annotation=${gtf} \\
-        --cytobands=${reference}/cytobands_hg38_GRCh38_2018-02-23.tsv \\
-        --proteinDomains=${reference}/protein_domains_hg38_GRCh38_2018-03-06.gff3
+    echo "hi"
     """
+    // def suff_mem = ("${(task.memory.toBytes() - 6000000000) / task.cpus}" > 2000000000) ? 'true' : 'false'
+    // def avail_mem = (task.memory && suff_mem) ? "-m" + "${(task.memory.toBytes() - 6000000000) / task.cpus}" : ''
 }
 
 /*
  * Fusion Inspector
  */
-process fusion_inspector {
-    tag "$sample"
-    publishDir "${params.outdir}/tools/FusionInspector/${sample}", mode: 'copy'
+// process fusion_inspector {
+//     tag "$sample"
+//     publishDir "${params.outdir}/tools/FusionInspector/${sample}", mode: 'copy'
 
-    when:
-    params.fusion_inspector && (!params.singleEnd || params.debug)
+//     when:
+//     params.fusion_inspector && (!params.singleEnd || params.debug)
 
-    input:
-    set val(sample), file(reads) from read_files_fusion_inspector
-    file reference from reference.fusion_inspector.collect()
-    file fi_input_list from fusion_inspector_input_list.collect()
+//     input:
+//     set val(sample), file(reads) from read_files_fusion_inspector
+//     file reference from reference.fusion_inspector.collect()
+//     file fi_input_list from fusion_inspector_input_list.collect()
 
-    output:
-    file '*.{fa,gtf,bed,bam,bai,txt}' into fusion_inspector_output
+//     output:
+//     file '*' into fusion_inspector_output
 
-    script:
-    def extra_params = params.fusion_inspector_opt ? "${params.fusion_inspector_opt}" : ''
-    """
-    FusionInspector \\
-        --fusions ${fi_input_list} \\
-        --genome_lib ${reference} \\
-        --left_fq ${reads[0]} \\
-        --right_fq ${reads[1]} \\
-        --CPU ${task.cpus} \\
-        --out_dir . \\
-        --out_prefix finspector \\
-        --vis ${extra_params} 
-    """
-}
+//     script:
+//     def extra_params = params.fusion_inspector_opt ? "${params.fusion_inspector_opt}" : ''
+//     """
+//     FusionInspector \\
+//         --fusions ${fi_input_list} \\
+//         --genome_lib ${reference} \\
+//         --left_fq ${reads[0]} \\
+//         --right_fq ${reads[1]} \\
+//         --CPU ${task.cpus} \\
+//         --out_dir . \\
+//         --out_prefix finspector \\
+//         --vis ${extra_params} 
+//     """
+// }
 
 /*************************************************************
  * Quality check & software verions
@@ -748,7 +740,7 @@ process multiqc {
     file ('fastqc/*') from fastqc_results.collect().ifEmpty([])
     file ('software_versions/*') from software_versions_yaml.collect()
     file workflow_summary from create_workflow_summary(summary)
-    file fusions_mq from summary_fusions_mq.collect().ifEmpty([])
+    // file fusions_mq from summary_fusions_mq.collect().ifEmpty([])
 
     output:
     file "*multiqc_report.html" into multiqc_report
