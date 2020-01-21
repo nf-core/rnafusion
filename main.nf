@@ -1,8 +1,8 @@
 #!/usr/bin/env nextflow
 /*
-========================================================================================
-                         nf-core/rnafusion
-========================================================================================
+================================================================================
+                                nf-core/rnafusion
+================================================================================
 nf-core/rnafusion:
  RNA-seq analysis pipeline for detection gene-fusions
 --------------------------------------------------------------------------------
@@ -90,71 +90,67 @@ visualization_tools = []
 reference = [
     arriba: false,
     arriba_vis: false,
-    star_fusion: false,
-    fusioncatcher: false,
     ericscript: false,
-    fusion_inspector: false
+    fusion_inspector: false,
+    fusioncatcher: false,
+    star_fusion: false
 ]
 
 Channel.fromPath(params.fasta, checkIfExists: true)
-    .ifEmpty { exit 1, "Fasta file not found: ${params.fasta}" }
-    .into{ fasta; fasta_arriba }
+    .ifEmpty{exit 1, "Fasta file not found: ${params.fasta}"}
+    .into{fasta; fasta_arriba}
 
 Channel.fromPath(params.gtf, checkIfExists: true)
-    .ifEmpty { exit 1, "GTF annotation file not found: ${params.gtf}" }
-    .into{ gtf; gtf_arriba; gtf_arriba_vis; gtf_squid; pizzly_gtf }
+    .ifEmpty{exit 1, "GTF annotation file not found: ${params.gtf}"}
+    .into{gtf; gtf_arriba; gtf_arriba_vis; gtf_pizzly; gtf_squid}
 
 Channel.fromPath(params.transcript, checkIfExists: true)
-    .ifEmpty { exit 1, "Transcript file not found: ${params.transcript}" }
-    .set { transcript }
+    .ifEmpty{exit 1, "Transcript file not found: ${params.transcript}"}
+    .set {transcript}
 
-if (!params.star_index && (!params.fasta && !params.gtf)) {
-    exit 1, "Either specify STAR-INDEX or Fasta and GTF!"
-}
+if (!params.star_index && (!params.fasta && !params.gtf)) exit 1, "Either specify STAR-INDEX or Fasta and GTF!"
 
-if (!params.databases) {
-    exit 1, "Database path for fusion-report has to be specified!"
-}
+if (!params.databases) exit 1, "Database path for fusion-report has to be specified!"
 
 if (params.arriba) {
     running_tools.add("Arriba")
     reference.arriba = Channel.fromPath(params.arriba_ref, checkIfExists: true)
-        .ifEmpty { exit 1, "Arriba reference directory not found!" }
+        .ifEmpty{exit 1, "Arriba reference directory not found!"}
 }
 
 if (params.arriba_vis) {
     visualization_tools.add("Arriba")
     reference.arriba_vis = Channel.fromPath(params.arriba_ref, checkIfExists: true)
-        .ifEmpty { exit 1, "Arriba visualization reference directory not found!" }
-}
-
-if (params.star_fusion) {
-    running_tools.add("STAR-Fusion")
-    reference.star_fusion = Channel.fromPath(params.star_fusion_ref, checkIfExists: true)
-        .ifEmpty { exit 1, "Star-Fusion reference directory not found!" }
-}
-
-if (params.fusion_inspector) {
-    visualization_tools.add("Fusion-Inspector")
-    reference.fusion_inspector = Channel.fromPath(params.star_fusion_ref, checkIfExists: true)
-        .ifEmpty { exit 1, "Fusion-Inspector reference not found" }
-}
-
-if (params.fusioncatcher) {
-    running_tools.add("Fusioncatcher")
-    reference.fusioncatcher = Channel.fromPath(params.fusioncatcher_ref, checkIfExists: true)
-        .ifEmpty { exit 1, "Fusioncatcher data directory not found!" }
+        .ifEmpty{exit 1, "Arriba visualization reference directory not found!"}
 }
 
 if (params.ericscript) {
     running_tools.add("EricScript")
     reference.ericscript = Channel.fromPath(params.ericscript_ref, checkIfExists: true)
-        .ifEmpty { exit 1, "EricsSript reference not found!" }
+        .ifEmpty{exit 1, "EricsSript reference not found!"}
 }
 
-if (params.squid) { running_tools.add("Squid") }
+if (params.fusioncatcher) {
+    running_tools.add("Fusioncatcher")
+    reference.fusioncatcher = Channel.fromPath(params.fusioncatcher_ref, checkIfExists: true)
+        .ifEmpty{exit 1, "Fusioncatcher data directory not found!"}
+}
 
-if (params.pizzly) { running_tools.add("Pizzly") }
+if (params.fusion_inspector) {
+    visualization_tools.add("Fusion-Inspector")
+    reference.fusion_inspector = Channel.fromPath(params.star_fusion_ref, checkIfExists: true)
+        .ifEmpty{exit 1, "Fusion-Inspector reference not found" }
+}
+
+if (params.pizzly) running_tools.add("Pizzly")
+
+if (params.star_fusion) {
+    running_tools.add("STAR-Fusion")
+    reference.star_fusion = Channel.fromPath(params.star_fusion_ref, checkIfExists: true)
+        .ifEmpty{exit 1, "Star-Fusion reference directory not found!"}
+}
+
+if (params.squid) running_tools.add("Squid")
 
 // Has the run name been specified by the user?
 // This has the bonus effect of catching both -name and --name
@@ -182,17 +178,17 @@ if(params.readPaths) {
     if(params.singleEnd) {
         Channel.from(params.readPaths)
             .map { row -> [ row[0], [file(row[1][0])]] }
-            .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
+            .ifEmpty{exit 1, "params.readPaths was empty - no input files supplied" }
             .into{read_files_arriba; read_files_ericscript; read_files_fastqc; read_files_fusion_inspector; read_files_fusioncatcher; read_files_multiqc; read_files_pizzly; read_files_squid; read_files_star_fusion; read_files_summary}
     } else {
         Channel.from(params.readPaths)
             .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
-            .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
+            .ifEmpty{exit 1, "params.readPaths was empty - no input files supplied" }
             .into{read_files_arriba; read_files_ericscript; read_files_fastqc; read_files_fusion_inspector; read_files_fusioncatcher; read_files_multiqc; read_files_pizzly; read_files_squid; read_files_star_fusion; read_files_summary}
     }
 } else {
     Channel.fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
-        .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
+        .ifEmpty{exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
         .into{read_files_arriba; read_files_ericscript; read_files_fastqc; read_files_fusion_inspector; read_files_fusioncatcher; read_files_multiqc; read_files_pizzly; read_files_squid; read_files_star_fusion; read_files_summary}
 }
 
@@ -268,8 +264,8 @@ ${summary.collect { k,v -> "            <dt>$k</dt><dd><samp>${v ?: '<span style
 if (params.star_index) {
     Channel
         .fromPath(params.star_index)
-        .ifEmpty { exit 1, "STAR index not found: ${params.star_index}" }
-        .into{star_index_arriba; star_index_squid; star_index_star_fusion}
+        .ifEmpty{exit 1, "STAR index not found: ${params.star_index}" }
+        .into{star_index_arriba; star_index_star_fusion; star_index_squid}
 } else {
     process build_star_index {
         tag "$fasta"
@@ -280,7 +276,7 @@ if (params.star_index) {
         file gtf
 
         output:
-        file "star" into star_index_squid, star_index_star_fusion, star_index_arriba
+        file "star" into star_index_arriba, star_index_squid, star_index_star_fusion
 
         script:
         def avail_mem = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
@@ -505,7 +501,7 @@ process pizzly {
 
     input:
     set val(sample), file(reads) from read_files_pizzly
-    file gtf from pizzly_gtf.collect()
+    file gtf from gtf_pizzly.collect()
     file transcript from transcript.collect()
     
     output:
@@ -745,7 +741,6 @@ process fastqc {
  * MultiQC
  */
 process multiqc {
-    tag "$name"
     publishDir "${params.outdir}/MultiQC", mode: 'copy'
 
     when:
@@ -788,7 +783,7 @@ process output_documentation {
 
     script:
     """
-    markdown_to_html.r $output_docs results_description.html
+    markdown_to_html.r ${output_docs} results_description.html
     """
 }
 
