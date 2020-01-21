@@ -561,42 +561,42 @@ process squid {
 /*************************************************************
  * Summarizing results from tools
  ************************************************************/
-//  process summary {
-//     tag "$sample"
-//     publishDir "${params.outdir}/Reports/${sample}", mode: 'copy'
+ process summary {
+    tag "$sample"
+    publishDir "${params.outdir}/Reports/${sample}", mode: 'copy'
  
-//     when:
-//     !params.debug && (params.arriba || params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
+    when:
+    !params.debug && (params.arriba || params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
     
-//     input:
-//     set val(sample), file(reads) from read_files_summary
-//     file arriba from arriba_fusions1.collect().ifEmpty('')
-//     file fusioncatcher from fusioncatcher_fusions.collect().ifEmpty('')
-//     file starfusion from star_fusion_fusions.collect().ifEmpty('')
-//     file ericscript from ericscript_fusions.collect().ifEmpty('')
-//     file pizzly from pizzly_fusions.collect().ifEmpty('')
-//     file squid from squid_fusions.collect().ifEmpty('')
+    input:
+    set val(sample), file(reads) from read_files_summary
+    file arriba from arriba_fusions1.collect().ifEmpty('')
+    file fusioncatcher from fusioncatcher_fusions.collect().ifEmpty('')
+    file starfusion from star_fusion_fusions.collect().ifEmpty('')
+    file ericscript from ericscript_fusions.collect().ifEmpty('')
+    file pizzly from pizzly_fusions.collect().ifEmpty('')
+    file squid from squid_fusions.collect().ifEmpty('')
 
-//     output:
-//     file "${sample}_fusion_list.tsv" into fusion_inspector_input_list
-//     file "${sample}_fusion_genes_mqc.json" into summary_fusions_mq
-//     file '*' into report
+    output:
+    file "${sample}_fusion_list.tsv" into fusion_inspector_input_list
+    file "${sample}_fusion_genes_mqc.json" into summary_fusions_mq
+    file '*' into report
     
-//     script:
-//     def extra_params = params.fusion_report_opt ? "${params.fusion_report_opt}" : ''
-//     def tools = !arriba.empty() ? "--arriba ${arriba} " : ''
-//     tools += !fusioncatcher.empty() ? "--fusioncatcher ${fusioncatcher} " : ''
-//     tools += !starfusion.empty() ? "--starfusion ${starfusion} " : ''
-//     tools += !ericscript.empty() ? "--ericscript ${ericscript} " : ''
-//     tools += !pizzly.empty() ? "--pizzly ${pizzly} " : ''
-//     tools += !squid.empty() ? "--squid ${squid} " : ''
-//     """
-//     fusion_report run ${sample} . ${params.databases} \\
-//         ${tools} ${extra_params}
-//     mv fusion_list.tsv ${sample}_fusion_list.tsv
-//     mv fusion_genes_mqc.json ${sample}_fusion_genes_mqc.json
-//     """
-// }
+    script:
+    def extra_params = params.fusion_report_opt ? "${params.fusion_report_opt}" : ''
+    def tools = !arriba.empty() ? "--arriba ${arriba} " : ''
+    tools += !fusioncatcher.empty() ? "--fusioncatcher ${fusioncatcher} " : ''
+    tools += !starfusion.empty() ? "--starfusion ${starfusion} " : ''
+    tools += !ericscript.empty() ? "--ericscript ${ericscript} " : ''
+    tools += !pizzly.empty() ? "--pizzly ${pizzly} " : ''
+    tools += !squid.empty() ? "--squid ${squid} " : ''
+    """
+    fusion_report run ${sample} . ${params.databases} \\
+        ${tools} ${extra_params}
+    mv fusion_list.tsv ${sample}_fusion_list.tsv
+    mv fusion_genes_mqc.json ${sample}_fusion_genes_mqc.json
+    """
+}
 
 /*************************************************************
  * Visualization
