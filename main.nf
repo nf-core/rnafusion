@@ -565,11 +565,11 @@ process squid {
 
 files_and_reports_summary = read_files_summary
     .join(arriba_fusions_summary)
-    .join(ericscript_fusions)
-    .join(fusioncatcher_fusions)
-    .join(pizzly_fusions)
-    .join(squid_fusions)
-    .join(star_fusion_fusions)
+// .join(ericscript_fusions)
+// .join(fusioncatcher_fusions)
+// .join(pizzly_fusions)
+// .join(squid_fusions)
+// .join(star_fusion_fusions)
 
 /*
 ================================================================================
