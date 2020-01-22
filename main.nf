@@ -560,7 +560,7 @@ process squid {
     squid -b ${sample}Aligned.sortedByCoord.out.bam -c ${sample}Chimeric.out.bam -o fusions
     AnnotateSQUIDOutput.py ${gtf} fusions_sv.txt fusions_annotated.txt
 
-    fusions_annotated.txt ${sample}_fusions_annotated.txt
+    mv fusions_annotated.txt ${sample}_fusions_annotated.txt
     """
 }
 
