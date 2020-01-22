@@ -334,9 +334,7 @@ process arriba {
         --readFilesCommand zcat \\
         --sjdbOverhang ${params.read_length - 1} |
     
-    mv Aligned.out.bam ${sample}_arriba.bam
-  
-    tee ${sample}_arriba.bam |
+    tee Aligned.out.bam |
 
     arriba \\
         -x /dev/stdin \\
@@ -346,6 +344,8 @@ process arriba {
         -o ${sample}_arriba.tsv -O ${sample}_discarded_arriba.tsv \\
         -T -P \\
         ${extra_params}
+
+    mv Aligned.out.bam ${sample}_arriba.bam
     """
 }
 
