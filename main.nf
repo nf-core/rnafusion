@@ -261,38 +261,38 @@ ${summary.collect { k,v -> "            <dt>$k</dt><dd><samp>${v ?: '<span style
 /*
  * Build STAR index
  */
-if (params.star_index) {
-    Channel
-        .fromPath(params.star_index)
-        .ifEmpty{exit 1, "STAR index not found: ${params.star_index}" }
-        .into{star_index_arriba; star_index_star_fusion; star_index_squid}
-} else {
-    process build_star_index {
-        tag "$fasta"
-        publishDir "${params.outdir}/star-index", mode: 'copy'
 
-        input:
-        file fasta
-        file gtf
+process build_star_index {
+    tag "$fasta"
+    publishDir "${params.outdir}/star-index", mode: 'copy'
 
-        output:
-        file "star" into star_index_arriba, star_index_squid, star_index_star_fusion
+    input:
+    file fasta
+    file gtf
 
-        script:
-        def avail_mem = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
-        """
-        mkdir star
-        STAR \\
-            --runMode genomeGenerate \\
-            --runThreadN ${task.cpus} \\
-            --sjdbGTFfile ${gtf} \\
-            --sjdbOverhang ${params.read_length - 1} \\
-            --genomeDir star/ \\
-            --genomeFastaFiles ${fasta} \\
-            $avail_mem
-        """
-    }
+    output:
+    file "star" into star_index
+
+    when: !(params.star_index)
+
+    script:
+    def avail_mem = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
+    """
+    mkdir star
+    STAR \\
+        --runMode genomeGenerate \\
+        --runThreadN ${task.cpus} \\
+        --sjdbGTFfile ${gtf} \\
+        --sjdbOverhang ${params.read_length - 1} \\
+        --genomeDir star/ \\
+        --genomeFastaFiles ${fasta} \\
+        $avail_mem
+    """
 }
+
+ch_star_index = params.star_index ? Channel.fromPath(params.star_index).ifEmpty{exit 1, "STAR index not found: ${params.star_index}" } : star_index
+
+ch_star_index = ch_star_index.dump(tag:'ch_star_index')
 
 /*
 ================================================================================
@@ -318,7 +318,7 @@ process arriba {
     input:
     set val(sample), file(reads) from read_files_arriba
     file reference from reference.arriba.collect()
-    file star_index from star_index_arriba.collect()
+    file(star_index) from ch_star_index
     file fasta from fasta_arriba.collect()
     file gtf from gtf_arriba.collect()
 
@@ -380,7 +380,7 @@ process star_fusion {
     input:
     set val(sample), file(reads) from read_files_star_fusion
     file reference from reference.star_fusion.collect()
-    file star_index from star_index_star_fusion.collect()
+    file(star_index) from ch_star_index
 
     output:
     set val(sample), file("${sample}_star-fusion.tsv") optional true into star_fusion_fusions
@@ -537,7 +537,7 @@ process squid {
 
     input:
     set val(sample), file(reads) from read_files_squid
-    file star_index from star_index_squid.collect()
+    file(star_index) from ch_star_index
     file gtf from gtf_squid.collect()
     
     output:
