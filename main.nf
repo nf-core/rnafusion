@@ -290,7 +290,7 @@ process build_star_index {
     """
 }
 
-ch_star_index = params.star_index ? Channel.fromPath(params.star_index).ifEmpty{exit 1, "STAR index not found: ${params.star_index}" } : star_index
+ch_star_index = params.star_index ? Channel.value(file(params.star_index)).ifEmpty{exit 1, "STAR index not found: ${params.star_index}" } : star_index
 
 ch_star_index = ch_star_index.dump(tag:'ch_star_index')
 
