@@ -96,17 +96,9 @@ reference = [
     star_fusion: false
 ]
 
-Channel.fromPath(params.fasta, checkIfExists: true)
-    .ifEmpty{exit 1, "Fasta file not found: ${params.fasta}"}
-    .into{fasta; fasta_arriba}
-
-Channel.fromPath(params.gtf, checkIfExists: true)
-    .ifEmpty{exit 1, "GTF annotation file not found: ${params.gtf}"}
-    .into{gtf; gtf_arriba; gtf_arriba_vis; gtf_pizzly; gtf_squid}
-
-Channel.fromPath(params.transcript, checkIfExists: true)
-    .ifEmpty{exit 1, "Transcript file not found: ${params.transcript}"}
-    .set {transcript}
+ch_fasta = Channel.value(file(params.fasta)).ifEmpty{exit 1, "Fasta file not found: ${params.fasta}"}
+ch_gtf = Channel.value(file(params.gtf)).ifEmpty{exit 1, "GTF annotation file not found: ${params.gtf}"}
+ch_transcript = Channel.value(file(params.transcript)).ifEmpty{exit 1, "Transcript file not found: ${params.transcript}"}
 
 if (!params.star_index && (!params.fasta && !params.gtf)) exit 1, "Either specify STAR-INDEX or Fasta and GTF!"
 
@@ -267,11 +259,11 @@ process build_star_index {
     publishDir "${params.outdir}/star-index", mode: 'copy'
 
     input:
-    file fasta
-    file gtf
+    file(fasta) from ch_fasta
+    file(gtf) from ch_gtf
 
     output:
-    file "star" into star_index
+    file("star") into star_index
 
     when: !(params.star_index)
 
@@ -317,16 +309,16 @@ process arriba {
 
     input:
     set val(sample), file(reads) from read_files_arriba
-    file reference from reference.arriba.collect()
+    file(reference) from reference.arriba.collect()
     file(star_index) from ch_star_index
-    file fasta from fasta_arriba.collect()
-    file gtf from gtf_arriba.collect()
+    file(fasta) from ch_fasta
+    file(gtf) from ch_gtf
 
     output:
     set val(sample), file("${sample}_arriba.tsv") optional true into arriba_fusions_summary
-    file "${sample}_arriba.tsv" optional true into arriba_fusions_visualization
-    file "${sample}_arriba.bam" optional true into arriba_bam
-    file '*.{tsv,txt}' into arriba_output
+    file("${sample}_arriba.tsv") optional true into arriba_fusions_visualization
+    file("${sample}_arriba.bam") optional true into arriba_bam
+    file("*.{tsv,txt}") into arriba_output
 
     script:
     def extra_params = params.arriba_opt ? "${params.arriba_opt}" : ''
@@ -379,12 +371,12 @@ process star_fusion {
 
     input:
     set val(sample), file(reads) from read_files_star_fusion
-    file reference from reference.star_fusion.collect()
+    file(reference) from reference.star_fusion.collect()
     file(star_index) from ch_star_index
 
     output:
     set val(sample), file("${sample}_star-fusion.tsv") optional true into star_fusion_fusions
-    file '*.{tsv,txt}' into star_fusion_output
+    file("*.{tsv,txt}") into star_fusion_output
 
     script:
     def avail_mem = task.memory ? "--limitBAMsortRAM ${task.memory.toBytes() - 100000000}" : ''
@@ -440,11 +432,11 @@ process fusioncatcher {
 
     input:
     set val(sample), file(reads) from read_files_fusioncatcher
-    file data_dir from reference.fusioncatcher.collect()
+    file(data_dir) from reference.fusioncatcher.collect()
 
     output:
     set val(sample), file("${sample}_fusioncatcher.txt") optional true into fusioncatcher_fusions
-    file '*.{txt,zip,log}' into fusioncatcher_output
+    file("*.{txt,zip,log}") into fusioncatcher_output
 
     script:
     option = params.singleEnd ? reads[0] : "${reads[0]},${reads[1]}"
@@ -472,11 +464,11 @@ process ericscript {
 
     input:
     set val(sample), file(reads) from read_files_ericscript
-    file reference from reference.ericscript.collect()
+    file(reference) from reference.ericscript.collect()
 
     output:
     set val(sample), file("./tmp/${sample}_ericscript.tsv") optional true into ericscript_fusions
-    file './tmp/fusions.results.total.tsv' optional true into ericscript_output
+    file("./tmp/fusions.results.total.tsv") optional true into ericscript_output
 
     script:
     """
@@ -502,12 +494,12 @@ process pizzly {
 
     input:
     set val(sample), file(reads) from read_files_pizzly
-    file gtf from gtf_pizzly.collect()
-    file transcript from transcript.collect()
+    file(gtf) from ch_gtf
+    file(transcript) from ch_transcript
     
     output:
     set val(sample), file("${sample}_pizzly.txt") optional true into pizzly_fusions
-    file '*.{json,txt}' into pizzly_output
+    file("*.{json,txt}") into pizzly_output
 
     script:
     """
@@ -538,11 +530,11 @@ process squid {
     input:
     set val(sample), file(reads) from read_files_squid
     file(star_index) from ch_star_index
-    file gtf from gtf_squid.collect()
+    file(gtf) from ch_gtf
     
     output:
     set val(sample), file("${sample}_fusions_annotated.txt") optional true into squid_fusions
-    file '*.txt' into squid_output
+    file("*.txt") into squid_output
 
     script:
     def avail_mem = task.memory ? "--limitBAMsortRAM ${task.memory.toBytes() - 100000000}" : ''
@@ -591,9 +583,9 @@ process summary {
     set val(sample), file(reads), file(reports) from files_and_reports_summary
 
     output:
-    file "${sample}_fusion_list.tsv" into fusion_inspector_input_list
-    file "${sample}_fusion_genes_mqc.json" into summary_fusions_mq
-    file '*' into report
+    file("${sample}_fusion_list.tsv") into fusion_inspector_input_list
+    file("${sample}_fusion_genes_mqc.json") into summary_fusions_mq
+    file("*") into report
     
     script:
     def extra_params = params.fusion_report_opt ? "${params.fusion_report_opt}" : ''
@@ -627,13 +619,13 @@ process arriba_visualization {
     params.arriba_vis && (!params.singleEnd || params.debug)
 
     input:
-    file reference from reference.arriba_vis.collect()
-    file fusions from arriba_fusions_visualization.collect()
-    file bam from arriba_bam.collect()
-    file gtf from gtf_arriba_vis.collect()
+    file(reference) from reference.arriba_vis.collect()
+    file(fusions) from arriba_fusions_visualization.collect()
+    file(bam) from arriba_bam.collect()
+    file(gtf) from ch_gtf
 
     output:
-    file "${sample}.pdf" optional true into arriba_visualization_output
+    file("${sample}.pdf") optional true into arriba_visualization_output
 
     script:
     def suff_mem = ("${(task.memory.toBytes() - 6000000000) / task.cpus}" > 2000000000) ? 'true' : 'false'
@@ -663,11 +655,11 @@ process fusion_inspector {
 
     input:
     set val(sample), file(reads) from read_files_fusion_inspector
-    file reference from reference.fusion_inspector.collect()
-    file fi_input_list from fusion_inspector_input_list.collect()
+    file(reference) from reference.fusion_inspector.collect()
+    file(fi_input_list) from fusion_inspector_input_list.collect()
 
     output:
-    file '*.{fa,gtf,bed,bam,bai,txt}' into fusion_inspector_output
+    file("*.{fa,gtf,bed,bam,bai,txt}") into fusion_inspector_output
 
     script:
     def extra_params = params.fusion_inspector_opt ? "${params.fusion_inspector_opt}" : ''
@@ -702,8 +694,8 @@ process get_software_versions {
     !params.debug
 
     output:
-    file 'software_versions_mqc.yaml' into software_versions_yaml
-    file "software_versions.csv"
+    file('software_versions_mqc.yaml') into software_versions_yaml
+    file('software_versions.csv')
 
     script:
     """
@@ -738,7 +730,7 @@ process fastqc {
     set val(name), file(reads) from read_files_fastqc
 
     output:
-    file "*_fastqc.{zip,html}" into fastqc_results
+    file("*_fastqc.{zip,html}") into fastqc_results
 
     script:
     """
@@ -756,16 +748,16 @@ process multiqc {
     !params.debug
 
     input:
-    file multiqc_config from ch_multiqc_config
-    file ('fastqc/*') from fastqc_results.collect().ifEmpty([])
-    file ('software_versions/*') from software_versions_yaml.collect()
-    file workflow_summary from create_workflow_summary(summary)
-    file fusions_mq from summary_fusions_mq.collect().ifEmpty([])
+    file(multiqc_config) from ch_multiqc_config
+    file("fastqc/*") from fastqc_results.collect().ifEmpty([])
+    file("software_versions/*") from software_versions_yaml.collect()
+    file(workflow_summary) from create_workflow_summary(summary)
+    file(fusions_mq) from summary_fusions_mq.collect().ifEmpty([])
 
     output:
-    file "*multiqc_report.html" into multiqc_report
-    file "*_data"
-    file "multiqc_plots"
+    file("*multiqc_report.html") into multiqc_report
+    file("*_data")
+    file("multiqc_plots")
 
     script:
     rtitle = custom_runName ? "--title \"$custom_runName\"" : ''
@@ -785,10 +777,10 @@ process output_documentation {
     !params.debug
 
     input:
-    file output_docs from ch_output_docs
+    file(output_docs) from ch_output_docs
 
     output:
-    file "results_description.html"
+    file("results_description.html")
 
     script:
     """
