@@ -563,6 +563,9 @@ process squid {
     """
 }
 
+read_files_summary = read_files_summary.dump(tag:'read_files_summary')
+arriba_fusions_summary = arriba_fusions_summary.dump(tag:'arriba_fusions_summary')
+
 files_and_reports_summary = read_files_summary
     .join(arriba_fusions_summary)
 // .join(ericscript_fusions)
