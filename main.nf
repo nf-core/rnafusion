@@ -567,12 +567,12 @@ read_files_summary = read_files_summary.dump(tag:'read_files_summary')
 arriba_fusions_summary = arriba_fusions_summary.dump(tag:'arriba_fusions_summary')
 
 files_and_reports_summary = read_files_summary
-    .join(pizzly_fusions)
-// .join(arriba_fusions_summary)
-// .join(ericscript_fusions)
-// .join(fusioncatcher_fusions)
-// .join(squid_fusions)
-// .join(star_fusion_fusions)
+    .join(arriba_fusions_summary, remainder: true)
+    .join(ericscript_fusions, remainder: true)
+    .join(fusioncatcher_fusions, remainder: true)
+    .join(pizzly_fusions, remainder: true)
+    .join(squid_fusions, remainder: true)
+    .join(star_fusion_fusions, remainder: true)
 
 /*
 ================================================================================
@@ -588,7 +588,7 @@ process summary {
     !params.debug && (params.arriba || params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
     
     input:
-    set val(sample), file(reads), file(reports) from files_and_reports_summary
+    set val(sample), file(reads), file(arriba), file(ericscript), file(fusioncatcher), file(pizzly), file(squid), file(starfusion) from files_and_reports_summary
 
     output:
     file("${sample}_fusion_list.tsv") into fusion_inspector_input_list
@@ -598,11 +598,11 @@ process summary {
     script:
     def extra_params = params.fusion_report_opt ? "${params.fusion_report_opt}" : ''
     def tools = !arriba.empty() ? "--arriba ${arriba} " : ''
-    tools += !fusioncatcher.empty() ? "--fusioncatcher ${fusioncatcher} " : ''
-    tools += !starfusion.empty() ? "--starfusion ${starfusion} " : ''
     tools += !ericscript.empty() ? "--ericscript ${ericscript} " : ''
+    tools += !fusioncatcher.empty() ? "--fusioncatcher ${fusioncatcher} " : ''
     tools += !pizzly.empty() ? "--pizzly ${pizzly} " : ''
     tools += !squid.empty() ? "--squid ${squid} " : ''
+    tools += !starfusion.empty() ? "--starfusion ${starfusion} " : ''
     """
     fusion_report run ${sample} . ${params.databases} \\
         ${tools} ${extra_params}
