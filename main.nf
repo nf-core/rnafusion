@@ -291,12 +291,7 @@ ch_star_index = ch_star_index.dump(tag:'ch_star_index')
  */
 process arriba {
     tag "$sample"
-    publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy',
-        saveAs: {filename -> 
-            if (filename == "fusions.tsv") "${sample}_arriba.tsv"
-            else if (filename == "Aligned.out.bam") "${sample}_arriba.bam"
-            else filename
-        }
+    publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy'
 
     when:
     params.arriba && (!params.singleEnd || params.debug)
@@ -339,14 +334,16 @@ process arriba {
         --readFilesCommand zcat \\
         --sjdbOverhang ${params.read_length - 1} |
     
-    tee Aligned.out.bam |
+    mv Aligned.out.bam ${sample}_arriba.bam
+  
+    tee ${sample}_arriba.bam |
 
     arriba \\
         -x /dev/stdin \\
         -a ${fasta} \\
         -g ${gtf} \\
         -b ${reference}/blacklist_hg38_GRCh38_2018-11-04.tsv \\
-        -o fusions.tsv -O fusions.discarded.tsv \\
+        -o ${sample}_arriba.tsv -O ${sample}_discarded_arriba.tsv \\
         -T -P \\
         ${extra_params}
     """
@@ -359,8 +356,7 @@ arriba_fusions_summary = arriba_fusions_summary.dump(tag:'arriba_fusions_summary
  */
 process star_fusion {
     tag "$sample"
-    publishDir "${params.outdir}/tools/Star-Fusion/${sample}", mode: 'copy',
-        saveAs: {filename -> filename == "star-fusion.fusion_predictions.tsv" ? "${sample}_star-fusion.tsv" : filename}
+    publishDir "${params.outdir}/tools/Star-Fusion/${sample}", mode: 'copy'
 
     when:
     params.star_fusion || (params.star_fusion && params.debug)
@@ -412,6 +408,8 @@ process star_fusion {
         --CPU ${task.cpus} \\
         --examine_coding_effect \\
         --output_dir . ${extra_params}
+
+    mv star-fusion.fusion_predictions.tsv ${sample}_star-fusion.tsv
     """
 }
 
@@ -422,8 +420,7 @@ star_fusion_fusions = star_fusion_fusions.dump(tag:'star_fusion_fusions')
  */
 process fusioncatcher {
     tag "$sample"
-    publishDir "${params.outdir}/tools/Fusioncatcher/${sample}", mode: 'copy',
-        saveAs: {filename -> filename == "final-list_candidate-fusion-genes.txt" ? "${sample}_fusioncatcher.txt" : filename}
+    publishDir "${params.outdir}/tools/Fusioncatcher/${sample}", mode: 'copy'
 
     when:
     params.fusioncatcher || (params.fusioncatcher && params.debug)
@@ -446,6 +443,8 @@ process fusioncatcher {
         --threads ${task.cpus} \\
         -o . \\
         --skip-blat ${extra_params}
+
+    mv final-list_candidate-fusion-genes.txt ${sample}_fusioncatcher.txt
     """
 }
 
@@ -456,8 +455,7 @@ fusioncatcher_fusions = fusioncatcher_fusions.dump(tag:'fusioncatcher_fusions')
  */
 process ericscript {
     tag "$sample"
-    publishDir "${params.outdir}/tools/EricScript/${sample}", mode: 'copy',
-        saveAs: {filename -> filename == "fusions.results.filtered.tsv" ? "${sample}_ericscript.tsv" : filename}
+    publishDir "${params.outdir}/tools/EricScript/${sample}", mode: 'copy'
 
     when:
     params.ericscript && (!params.singleEnd || params.debug)
@@ -478,6 +476,8 @@ process ericscript {
         -p ${task.cpus} \\
         -o ./tmp \\
         ${reads}
+
+    mv fusions.results.filtered.tsv ${sample}_ericscript.tsv
     """
 }
 
@@ -488,8 +488,7 @@ ericscript_fusions = ericscript_fusions.dump(tag:'ericscript_fusions')
  */
 process pizzly {
     tag "$sample"
-    publishDir "${params.outdir}/tools/Pizzly/${sample}", mode: 'copy',
-        saveAs: {filename -> filename == "pizzly_fusions.txt" ? "${sample}_pizzly.txt" : filename}
+    publishDir "${params.outdir}/tools/Pizzly/${sample}", mode: 'copy'
 
     when:
     params.pizzly && (!params.singleEnd || params.debug)
@@ -515,6 +514,8 @@ process pizzly {
         --fasta ${transcript} \\
         --output pizzly_fusions output/fusion.txt
     pizzly_flatten_json.py pizzly_fusions.json pizzly_fusions.txt
+
+    mv pizzly_fusions.txt ${sample}_pizzly.txt
     """
 }
 
@@ -525,8 +526,7 @@ pizzly_fusions = pizzly_fusions.dump(tag:'pizzly_fusions')
  */
 process squid {
     tag "$sample"
-    publishDir "${params.outdir}/tools/Squid/${sample}", mode: 'copy',
-        saveAs: {filename -> filename == "fusions_annotated.txt" ? "${sample}_fusions_annotated.txt" : filename}
+    publishDir "${params.outdir}/tools/Squid/${sample}", mode: 'copy'
 
     when:
     params.squid && (!params.singleEnd || params.debug)
@@ -556,6 +556,8 @@ process squid {
     samtools view -bS Chimeric.out.sam > ${sample}Chimeric.out.bam
     squid -b ${sample}Aligned.sortedByCoord.out.bam -c ${sample}Chimeric.out.bam -o fusions
     AnnotateSQUIDOutput.py ${gtf} fusions_sv.txt fusions_annotated.txt
+
+    fusions_annotated.txt ${sample}_fusions_annotated.txt
     """
 }
 
