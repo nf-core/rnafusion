@@ -563,7 +563,7 @@ process squid {
     """
 }
 
-read_files_summary
+files_and_reports_summary = read_files_summary
     .join(arriba_fusions_summary)
     .join(ericscript_fusions)
     .join(fusioncatcher_fusions
@@ -582,7 +582,7 @@ read_files_summary
     !params.debug && (params.arriba || params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
     
     input:
-    set val(sample), file(reads), file(reports) from read_files_summary
+    set val(sample), file(reads), file(reports) from files_and_reports_summary
 
     output:
     file "${sample}_fusion_list.tsv" into fusion_inspector_input_list
