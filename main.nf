@@ -352,6 +352,8 @@ process arriba {
     """
 }
 
+arriba_fusions_summary = arriba_fusions_summary.dump(tag:'arriba_fusions_summary')
+
 /*
  * STAR-Fusion
  */
@@ -413,6 +415,8 @@ process star_fusion {
     """
 }
 
+star_fusion_fusions = star_fusion_fusions.dump(tag:'star_fusion_fusions')
+
 /*
  * Fusioncatcher
  */
@@ -445,6 +449,8 @@ process fusioncatcher {
     """
 }
 
+fusioncatcher_fusions = fusioncatcher_fusions.dump(tag:'fusioncatcher_fusions')
+
 /*
  * Ericscript
  */
@@ -474,6 +480,8 @@ process ericscript {
         ${reads}
     """
 }
+
+ericscript_fusions = ericscript_fusions.dump(tag:'ericscript_fusions')
 
 /*
  * Pizzly
@@ -509,6 +517,8 @@ process pizzly {
     pizzly_flatten_json.py pizzly_fusions.json pizzly_fusions.txt
     """
 }
+
+pizzly_fusions = pizzly_fusions.dump(tag:'pizzly_fusions')
 
 /*
  * Squid
@@ -549,14 +559,16 @@ process squid {
     """
 }
 
+squid_fusions = squid_fusions.dump(tag:'squid_fusions')
+
 read_files_summary = read_files_summary.dump(tag:'read_files_summary')
 arriba_fusions_summary = arriba_fusions_summary.dump(tag:'arriba_fusions_summary')
 
 files_and_reports_summary = read_files_summary
-    .join(arriba_fusions_summary)
+    .join(pizzly_fusions)
+// .join(arriba_fusions_summary)
 // .join(ericscript_fusions)
 // .join(fusioncatcher_fusions)
-// .join(pizzly_fusions)
 // .join(squid_fusions)
 // .join(star_fusion_fusions)
 
