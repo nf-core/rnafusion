@@ -515,7 +515,10 @@ process pizzly {
         --output pizzly_fusions output/fusion.txt
     pizzly_flatten_json.py pizzly_fusions.json pizzly_fusions.txt
 
+    mv index.cache.txt ${sample}_pizzly_cache.txt
+    mv pizzly_fusions.json ${sample}_pizzly.txt
     mv pizzly_fusions.txt ${sample}_pizzly.txt
+    mv pizzly_fusions.unfiltered.json ${sample}_unfiltered_pizzly.json
     """
 }
 
@@ -564,7 +567,6 @@ process squid {
 squid_fusions = squid_fusions.dump(tag:'squid_fusions')
 
 read_files_summary = read_files_summary.dump(tag:'read_files_summary')
-arriba_fusions_summary = arriba_fusions_summary.dump(tag:'arriba_fusions_summary')
 
 files_and_reports_summary = read_files_summary
     .join(arriba_fusions_summary, remainder: true)
@@ -573,6 +575,8 @@ files_and_reports_summary = read_files_summary
     .join(pizzly_fusions, remainder: true)
     .join(squid_fusions, remainder: true)
     .join(star_fusion_fusions, remainder: true)
+
+files_and_reports_summary = files_and_reports_summary.dump(tag:'files_and_reports_summary')
 
 /*
 ================================================================================
