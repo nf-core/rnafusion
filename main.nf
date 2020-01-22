@@ -34,16 +34,16 @@ def helpMessage() {
 
     Tool flags:
       --arriba                      Run Arriba
-      --arriba_opt                  Extra parameter for Arriba
+      --arriba_opt                  Specify extra parameters for Arriba
       --star_fusion                 Run STAR-Fusion
-      --star_fusion_opt             Extra parameter for STAR-Fusion
+      --star_fusion_opt             Specify extra parameters for STAR-Fusion
       --fusioncatcher               Run FusionCatcher
-      --fusioncatcher_opt           Extra parameters for FusionCatcher
+      --fusioncatcher_opt           Specify extra parameters for FusionCatcher
       --ericscript                  Run Ericscript
       --pizzly                      Run Pizzly
       --squid                       Run Squid
       --databases                   Database path for fusion-report
-      --fusion_report_opt           fusion-report extra parameters
+      --fusion_report_opt           Specify extra parameters for fusion-report
 
     Visualization flags:
       --arriba_vis                  Generate a PDF visualization per detected fusion
@@ -57,7 +57,7 @@ def helpMessage() {
       --star_fusion_ref             Path to STAR-Fusion reference
       --fusioncatcher_ref           Path to Fusioncatcher reference
       --ericscript_ref              Path to Ericscript reference
-      --arriba_ref                  Path to Arriba references
+      --arriba_ref                  Path to Arriba reference
 
     Options:
       --read_length                 Length of the reads. Default: 100
@@ -106,40 +106,34 @@ if (!params.databases) exit 1, "Database path for fusion-report has to be specif
 
 if (params.arriba) {
     running_tools.add("Arriba")
-    reference.arriba = Channel.fromPath(params.arriba_ref, checkIfExists: true)
-        .ifEmpty{exit 1, "Arriba reference directory not found!"}
+    reference.arriba = Channel.value(file(params.arriba_ref)).ifEmpty{exit 1, "Arriba reference directory not found!"}
 }
 
 if (params.arriba_vis) {
     visualization_tools.add("Arriba")
-    reference.arriba_vis = Channel.fromPath(params.arriba_ref, checkIfExists: true)
-        .ifEmpty{exit 1, "Arriba visualization reference directory not found!"}
+    reference.arriba_vis = Channel.value(file(params.arriba_ref)).ifEmpty{exit 1, "Arriba visualization reference directory not found!"}
 }
 
 if (params.ericscript) {
     running_tools.add("EricScript")
-    reference.ericscript = Channel.fromPath(params.ericscript_ref, checkIfExists: true)
-        .ifEmpty{exit 1, "EricsSript reference not found!"}
+    reference.ericscript = Channel.value(file(params.ericscript_ref)).ifEmpty{exit 1, "EricsSript reference not found!"}
 }
 
 if (params.fusioncatcher) {
     running_tools.add("Fusioncatcher")
-    reference.fusioncatcher = Channel.fromPath(params.fusioncatcher_ref, checkIfExists: true)
-        .ifEmpty{exit 1, "Fusioncatcher data directory not found!"}
+    reference.fusioncatcher = Channel.value(file(params.fusioncatcher_ref)).ifEmpty{exit 1, "Fusioncatcher data directory not found!"}
 }
 
 if (params.fusion_inspector) {
     visualization_tools.add("Fusion-Inspector")
-    reference.fusion_inspector = Channel.fromPath(params.star_fusion_ref, checkIfExists: true)
-        .ifEmpty{exit 1, "Fusion-Inspector reference not found" }
+    reference.fusion_inspector = Channel.value(file(params.star_fusion_ref)).ifEmpty{exit 1, "Fusion-Inspector reference not found" }
 }
 
 if (params.pizzly) running_tools.add("Pizzly")
 
 if (params.star_fusion) {
     running_tools.add("STAR-Fusion")
-    reference.star_fusion = Channel.fromPath(params.star_fusion_ref, checkIfExists: true)
-        .ifEmpty{exit 1, "Star-Fusion reference directory not found!"}
+    reference.star_fusion = Channel.value(file(params.star_fusion_ref)).ifEmpty{exit 1, "Star-Fusion reference directory not found!"}
 }
 
 if (params.squid) running_tools.add("Squid")
@@ -309,7 +303,7 @@ process arriba {
 
     input:
     set val(sample), file(reads) from read_files_arriba
-    file(reference) from reference.arriba.collect()
+    file(reference) from reference.arriba
     file(star_index) from ch_star_index
     file(fasta) from ch_fasta
     file(gtf) from ch_gtf
@@ -371,7 +365,7 @@ process star_fusion {
 
     input:
     set val(sample), file(reads) from read_files_star_fusion
-    file(reference) from reference.star_fusion.collect()
+    file(reference) from reference.star_fusion
     file(star_index) from ch_star_index
 
     output:
@@ -432,7 +426,7 @@ process fusioncatcher {
 
     input:
     set val(sample), file(reads) from read_files_fusioncatcher
-    file(data_dir) from reference.fusioncatcher.collect()
+    file(data_dir) from reference.fusioncatcher
 
     output:
     set val(sample), file("${sample}_fusioncatcher.txt") optional true into fusioncatcher_fusions
@@ -464,7 +458,7 @@ process ericscript {
 
     input:
     set val(sample), file(reads) from read_files_ericscript
-    file(reference) from reference.ericscript.collect()
+    file(reference) from reference.ericscript
 
     output:
     set val(sample), file("./tmp/${sample}_ericscript.tsv") optional true into ericscript_fusions
@@ -619,7 +613,7 @@ process arriba_visualization {
     params.arriba_vis && (!params.singleEnd || params.debug)
 
     input:
-    file(reference) from reference.arriba_vis.collect()
+    file(reference) from reference.arriba_vis
     file(fusions) from arriba_fusions_visualization.collect()
     file(bam) from arriba_bam.collect()
     file(gtf) from ch_gtf
@@ -655,7 +649,7 @@ process fusion_inspector {
 
     input:
     set val(sample), file(reads) from read_files_fusion_inspector
-    file(reference) from reference.fusion_inspector.collect()
+    file(reference) from reference.fusion_inspector
     file(fi_input_list) from fusion_inspector_input_list.collect()
 
     output:
