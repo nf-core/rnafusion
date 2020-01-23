@@ -477,7 +477,7 @@ process ericscript {
         -o ./tmp \\
         ${reads}
 
-    mv fusions.results.filtered.tsv ${sample}_ericscript.tsv
+    mv ./tmp/fusions.results.filtered.tsv ./tmp/${sample}_ericscript.tsv
     """
 }
 
