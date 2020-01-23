@@ -439,7 +439,7 @@ process fusioncatcher {
     option = params.singleEnd ? reads[0] : "${reads[0]},${reads[1]}"
     def extra_params = params.fusioncatcher_opt ? "${params.fusioncatcher_opt}" : ''
     """
-    fusioncatcher \\
+    fusioncatcher.py \\
         -d ${data_dir} \\
         -i ${option} \\
         --threads ${task.cpus} \\

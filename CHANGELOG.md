@@ -14,10 +14,12 @@
 * Updated `STAR` in `Squid`, `Fusion-Inspector` version to `2.7.0f`
 * Upgraded `STAR-Fusion v1.5.0` to `STAR-Fusion v1.7.0` [#83](https://github.com/nf-core/rnafusion/issues/83)
 * Parameter `igenomesIgnore` renamed to `igenome` [#81](https://github.com/nf-core/rnafusion/issues/81)
+* Finished STAR-Fusion file renaming [#18](https://github.com/nf-core/rnafusion/issues/18)
 
 ### Fixed
 
 * iGenomes optional, but not really [#91](https://github.com/nf-core/rnafusion/issues/91)
+* Updated `fusioncatcher` to latest `1.20` version also solving [#95](https://github.com/nf-core/rnafusion/issues/95)
 
 ## nfcore/rnafusion version 1.0.2 - 2019/05/13
 
