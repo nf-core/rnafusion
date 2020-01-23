@@ -410,6 +410,8 @@ process star_fusion {
         --output_dir . ${extra_params}
 
     mv star-fusion.fusion_predictions.tsv ${sample}_star-fusion.tsv
+    mv star-fusion.fusion_predictions.abridged.tsv ${sample}_abridged.tsv
+    mv star-fusion.fusion_predictions.abridged.coding_effect.tsv ${sample}_abridged.coding_effect.tsv
     """
 }
 
