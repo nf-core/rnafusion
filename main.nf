@@ -290,7 +290,8 @@ ch_star_index = ch_star_index.dump(tag:'ch_star_index')
  * Arriba
  */
 process arriba {
-    tag "$sample"
+    tag {sample}
+
     publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy'
 
     when:
@@ -305,8 +306,7 @@ process arriba {
 
     output:
     set val(sample), file("${sample}_arriba.tsv") optional true into arriba_fusions_summary
-    file("${sample}_arriba.tsv") optional true into arriba_fusions_visualization
-    file("${sample}_arriba.bam") optional true into arriba_bam
+    set val(sample), file("${sample}_arriba.bam"), file("${sample}_arriba.tsv") optional true into arriba_visualization
     file("*.{tsv,txt}") into arriba_output
 
     script:
@@ -355,7 +355,8 @@ arriba_fusions_summary = arriba_fusions_summary.dump(tag:'arriba_fusions_summary
  * STAR-Fusion
  */
 process star_fusion {
-    tag "$sample"
+    tag {sample}
+
     publishDir "${params.outdir}/tools/Star-Fusion/${sample}", mode: 'copy'
 
     when:
@@ -419,7 +420,8 @@ star_fusion_fusions = star_fusion_fusions.dump(tag:'star_fusion_fusions')
  * Fusioncatcher
  */
 process fusioncatcher {
-    tag "$sample"
+    tag {sample}
+
     publishDir "${params.outdir}/tools/Fusioncatcher/${sample}", mode: 'copy'
 
     when:
@@ -454,7 +456,8 @@ fusioncatcher_fusions = fusioncatcher_fusions.dump(tag:'fusioncatcher_fusions')
  * Ericscript
  */
 process ericscript {
-    tag "$sample"
+    tag {sample}
+
     publishDir "${params.outdir}/tools/EricScript/${sample}", mode: 'copy'
 
     when:
@@ -487,7 +490,8 @@ ericscript_fusions = ericscript_fusions.dump(tag:'ericscript_fusions')
  * Pizzly
  */
 process pizzly {
-    tag "$sample"
+    tag {sample}
+
     publishDir "${params.outdir}/tools/Pizzly/${sample}", mode: 'copy'
 
     when:
@@ -528,7 +532,8 @@ pizzly_fusions = pizzly_fusions.dump(tag:'pizzly_fusions')
  * Squid
  */
 process squid {
-    tag "$sample"
+    tag {sample}
+
     publishDir "${params.outdir}/tools/Squid/${sample}", mode: 'copy'
 
     when:
@@ -585,7 +590,8 @@ files_and_reports_summary = files_and_reports_summary.dump(tag:'files_and_report
 */
 
 process summary {
-    tag "$sample"
+    tag {sample}
+
     publishDir "${params.outdir}/Reports/${sample}", mode: 'copy'
  
     when:
@@ -623,7 +629,8 @@ process summary {
  * Arriba Visualization
  */
 process arriba_visualization {
-    tag "$sample"
+    tag {sample}
+
     publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy',
         saveAs: {filename -> filename == "visualization.pdf" ? "${sample}.pdf" : filename}
 
@@ -632,8 +639,7 @@ process arriba_visualization {
 
     input:
     file(reference) from reference.arriba_vis
-    file(fusions) from arriba_fusions_visualization.collect()
-    file(bam) from arriba_bam.collect()
+    set sample, file(bam), file(fusions) from arriba_visualization
     file(gtf) from ch_gtf
 
     output:
@@ -659,7 +665,8 @@ process arriba_visualization {
  * Fusion Inspector
  */
 process fusion_inspector {
-    tag "$sample"
+    tag {sample}
+
     publishDir "${params.outdir}/tools/FusionInspector/${sample}", mode: 'copy'
 
     when:
