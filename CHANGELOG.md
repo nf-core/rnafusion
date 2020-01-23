@@ -5,6 +5,7 @@
 ### Added
 
 * Added `Arriba 1.1.0` [#63](https://github.com/nf-core/rnafusion/issues/63)
+* Added Batch mode [#54](https://github.com/nf-core/rnafusion/issues/54)
 
 ### Changed
 
