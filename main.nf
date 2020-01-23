@@ -631,8 +631,7 @@ process summary {
 process arriba_visualization {
     tag {sample}
 
-    publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy',
-        saveAs: {filename -> filename == "visualization.pdf" ? "${sample}.pdf" : filename}
+    publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy'
 
     when:
     params.arriba_vis && (!params.singleEnd || params.debug)
@@ -654,7 +653,7 @@ process arriba_visualization {
     draw_fusions.R \\
         --fusions=${fusions} \\
         --alignments=Aligned.sortedByCoord.out.bam \\
-        --output=visualization.pdf \\
+        --output=${sample}.pdf \\
         --annotation=${gtf} \\
         --cytobands=${reference}/cytobands_hg38_GRCh38_2018-02-23.tsv \\
         --proteinDomains=${reference}/protein_domains_hg38_GRCh38_2018-03-06.gff3
