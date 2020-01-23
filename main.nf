@@ -155,7 +155,7 @@ if (workflow.profile == 'awsbatch') {
 
 // Stage config files
 ch_multiqc_config = Channel.fromPath(params.multiqc_config)
-ch_output_docs = Channel.fromPath("$baseDir/docs/output.md")
+ch_output_docs = Channel.fromPath("${baseDir}/docs/output.md")
 
 /*
  * Create a channel for input read files
@@ -249,15 +249,16 @@ ${summary.collect { k,v -> "            <dt>$k</dt><dd><samp>${v ?: '<span style
  */
 
 process build_star_index {
-    tag "$fasta"
+    tag {fasta}
+
     publishDir "${params.outdir}/star-index", mode: 'copy'
 
     input:
-    file(fasta) from ch_fasta
-    file(gtf) from ch_gtf
+        file(fasta) from ch_fasta
+        file(gtf) from ch_gtf
 
     output:
-    file("star") into star_index
+        file("star") into star_index
 
     when: !(params.star_index)
 
@@ -294,20 +295,19 @@ process arriba {
 
     publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy'
 
-    when:
-    params.arriba && (!params.singleEnd || params.debug)
-
     input:
-    set val(sample), file(reads) from read_files_arriba
-    file(reference) from reference.arriba
-    file(star_index) from ch_star_index
-    file(fasta) from ch_fasta
-    file(gtf) from ch_gtf
+        set val(sample), file(reads) from read_files_arriba
+        file(reference) from reference.arriba
+        file(star_index) from ch_star_index
+        file(fasta) from ch_fasta
+        file(gtf) from ch_gtf
 
     output:
-    set val(sample), file("${sample}_arriba.tsv") optional true into arriba_fusions_summary
-    set val(sample), file("${sample}_arriba.bam"), file("${sample}_arriba.tsv") optional true into arriba_visualization
-    file("*.{tsv,txt}") into arriba_output
+        set val(sample), file("${sample}_arriba.tsv") optional true into arriba_fusions_summary
+        set val(sample), file("${sample}_arriba.bam"), file("${sample}_arriba.tsv") optional true into arriba_visualization
+        file("*.{tsv,txt}") into arriba_output
+
+    when: params.arriba && (!params.singleEnd || params.debug)
 
     script:
     def extra_params = params.arriba_opt ? "${params.arriba_opt}" : ''
@@ -359,17 +359,16 @@ process star_fusion {
 
     publishDir "${params.outdir}/tools/Star-Fusion/${sample}", mode: 'copy'
 
-    when:
-    params.star_fusion || (params.star_fusion && params.debug)
-
     input:
-    set val(sample), file(reads) from read_files_star_fusion
-    file(reference) from reference.star_fusion
-    file(star_index) from ch_star_index
+        set val(sample), file(reads) from read_files_star_fusion
+        file(reference) from reference.star_fusion
+        file(star_index) from ch_star_index
 
     output:
-    set val(sample), file("${sample}_star-fusion.tsv") optional true into star_fusion_fusions
-    file("*.{tsv,txt}") into star_fusion_output
+        set val(sample), file("${sample}_star-fusion.tsv") optional true into star_fusion_fusions
+        file("*.{tsv,txt}") into star_fusion_output
+
+    when: params.star_fusion || (params.star_fusion && params.debug)
 
     script:
     def avail_mem = task.memory ? "--limitBAMsortRAM ${task.memory.toBytes() - 100000000}" : ''
@@ -424,16 +423,15 @@ process fusioncatcher {
 
     publishDir "${params.outdir}/tools/Fusioncatcher/${sample}", mode: 'copy'
 
-    when:
-    params.fusioncatcher || (params.fusioncatcher && params.debug)
-
     input:
-    set val(sample), file(reads) from read_files_fusioncatcher
-    file(data_dir) from reference.fusioncatcher
+        set val(sample), file(reads) from read_files_fusioncatcher
+        file(data_dir) from reference.fusioncatcher
 
     output:
-    set val(sample), file("${sample}_fusioncatcher.txt") optional true into fusioncatcher_fusions
-    file("*.{txt,zip,log}") into fusioncatcher_output
+        set val(sample), file("${sample}_fusioncatcher.txt") optional true into fusioncatcher_fusions
+        file("*.{txt,zip,log}") into fusioncatcher_output
+
+    when: params.fusioncatcher || (params.fusioncatcher && params.debug)
 
     script:
     option = params.singleEnd ? reads[0] : "${reads[0]},${reads[1]}"
@@ -460,16 +458,15 @@ process ericscript {
 
     publishDir "${params.outdir}/tools/EricScript/${sample}", mode: 'copy'
 
-    when:
-    params.ericscript && (!params.singleEnd || params.debug)
-
     input:
-    set val(sample), file(reads) from read_files_ericscript
-    file(reference) from reference.ericscript
+        set val(sample), file(reads) from read_files_ericscript
+        file(reference) from reference.ericscript
 
     output:
-    set val(sample), file("./tmp/${sample}_ericscript.tsv") optional true into ericscript_fusions
-    file("./tmp/fusions.results.total.tsv") optional true into ericscript_output
+        set val(sample), file("./tmp/${sample}_ericscript.tsv") optional true into ericscript_fusions
+        file("./tmp/fusions.results.total.tsv") optional true into ericscript_output
+
+    when: params.ericscript && (!params.singleEnd || params.debug)
 
     script:
     """
@@ -494,17 +491,16 @@ process pizzly {
 
     publishDir "${params.outdir}/tools/Pizzly/${sample}", mode: 'copy'
 
-    when:
-    params.pizzly && (!params.singleEnd || params.debug)
-
     input:
-    set val(sample), file(reads) from read_files_pizzly
-    file(gtf) from ch_gtf
-    file(transcript) from ch_transcript
+        set val(sample), file(reads) from read_files_pizzly
+        file(gtf) from ch_gtf
+        file(transcript) from ch_transcript
     
     output:
-    set val(sample), file("${sample}_pizzly.txt") optional true into pizzly_fusions
-    file("*.{json,txt}") into pizzly_output
+        set val(sample), file("${sample}_pizzly.txt") optional true into pizzly_fusions
+        file("*.{json,txt}") into pizzly_output
+
+    when: params.pizzly && (!params.singleEnd || params.debug)
 
     script:
     """
@@ -536,17 +532,16 @@ process squid {
 
     publishDir "${params.outdir}/tools/Squid/${sample}", mode: 'copy'
 
-    when:
-    params.squid && (!params.singleEnd || params.debug)
-
     input:
-    set val(sample), file(reads) from read_files_squid
-    file(star_index) from ch_star_index
-    file(gtf) from ch_gtf
+        set val(sample), file(reads) from read_files_squid
+        file(star_index) from ch_star_index
+        file(gtf) from ch_gtf
     
     output:
-    set val(sample), file("${sample}_fusions_annotated.txt") optional true into squid_fusions
-    file("*.txt") into squid_output
+        set val(sample), file("${sample}_fusions_annotated.txt") optional true into squid_fusions
+        file("*.txt") into squid_output
+
+    when: params.squid && (!params.singleEnd || params.debug)
 
     script:
     def avail_mem = task.memory ? "--limitBAMsortRAM ${task.memory.toBytes() - 100000000}" : ''
@@ -594,17 +589,16 @@ process summary {
 
     publishDir "${params.outdir}/Reports/${sample}", mode: 'copy'
  
-    when:
-    !params.debug && (params.arriba || params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
-    
     input:
-    set val(sample), file(reads), file(arriba), file(ericscript), file(fusioncatcher), file(pizzly), file(squid), file(starfusion) from files_and_reports_summary
+        set val(sample), file(reads), file(arriba), file(ericscript), file(fusioncatcher), file(pizzly), file(squid), file(starfusion) from files_and_reports_summary
 
     output:
-    file("${sample}_fusion_list.tsv") into fusion_inspector_input_list
-    file("${sample}_fusion_genes_mqc.json") into summary_fusions_mq
-    file("*") into report
+        file("${sample}_fusion_list.tsv") into fusion_inspector_input_list
+        file("${sample}_fusion_genes_mqc.json") into summary_fusions_mq
+        file("*") into report
     
+    when: !params.debug && (params.arriba || params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
+
     script:
     def extra_params = params.fusion_report_opt ? "${params.fusion_report_opt}" : ''
     def tools = !arriba.empty() ? "--arriba ${arriba} " : ''
@@ -633,16 +627,15 @@ process arriba_visualization {
 
     publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy'
 
-    when:
-    params.arriba_vis && (!params.singleEnd || params.debug)
-
     input:
-    file(reference) from reference.arriba_vis
-    set sample, file(bam), file(fusions) from arriba_visualization
-    file(gtf) from ch_gtf
+        file(reference) from reference.arriba_vis
+        set sample, file(bam), file(fusions) from arriba_visualization
+        file(gtf) from ch_gtf
 
     output:
-    file("${sample}.pdf") optional true into arriba_visualization_output
+        file("${sample}.pdf") optional true into arriba_visualization_output
+
+    when: params.arriba_vis && (!params.singleEnd || params.debug)
 
     script:
     def suff_mem = ("${(task.memory.toBytes() - 6000000000) / task.cpus}" > 2000000000) ? 'true' : 'false'
@@ -668,16 +661,15 @@ process fusion_inspector {
 
     publishDir "${params.outdir}/tools/FusionInspector/${sample}", mode: 'copy'
 
-    when:
-    params.fusion_inspector && (!params.singleEnd || params.debug)
-
     input:
-    set val(sample), file(reads) from read_files_fusion_inspector
-    file(reference) from reference.fusion_inspector
-    file(fi_input_list) from fusion_inspector_input_list.collect()
+        set val(sample), file(reads) from read_files_fusion_inspector
+        file(reference) from reference.fusion_inspector
+        file(fi_input_list) from fusion_inspector_input_list.collect()
 
     output:
-    file("*.{fa,gtf,bed,bam,bai,txt}") into fusion_inspector_output
+        file("*.{fa,gtf,bed,bam,bai,txt}") into fusion_inspector_output
+
+    when: params.fusion_inspector && (!params.singleEnd || params.debug)
 
     script:
     def extra_params = params.fusion_inspector_opt ? "${params.fusion_inspector_opt}" : ''
@@ -708,27 +700,26 @@ process get_software_versions {
         else null
     }
 
-    when:
-    !params.debug
-
     output:
-    file('software_versions_mqc.yaml') into software_versions_yaml
-    file('software_versions.csv')
+        file('software_versions_mqc.yaml') into software_versions_yaml
+        file('software_versions.csv')
+
+    when: !params.debug
 
     script:
     """
-    echo $workflow.manifest.version > v_pipeline.txt
-    echo $workflow.nextflow.version > v_nextflow.txt
+    echo ${workflow.manifest.version} > v_pipeline.txt
+    echo ${workflow.nextflow.version} > v_nextflow.txt
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
-    cat $baseDir/tools/arriba/environment.yml > v_arriba.txt
-    cat $baseDir/tools/fusioncatcher/environment.yml > v_fusioncatcher.txt
-    cat $baseDir/tools/fusion-inspector/environment.yml > v_fusion_inspector.txt
-    cat $baseDir/tools/star-fusion/environment.yml > v_star_fusion.txt
-    cat $baseDir/tools/ericscript/environment.yml > v_ericscript.txt
-    cat $baseDir/tools/pizzly/environment.yml > v_pizzly.txt
-    cat $baseDir/tools/squid/environment.yml > v_squid.txt
-    cat $baseDir/environment.yml > v_fusion_report.txt
+    cat ${baseDir}/tools/arriba/environment.yml > v_arriba.txt
+    cat ${baseDir}/tools/fusioncatcher/environment.yml > v_fusioncatcher.txt
+    cat ${baseDir}/tools/fusion-inspector/environment.yml > v_fusion_inspector.txt
+    cat ${baseDir}/tools/star-fusion/environment.yml > v_star_fusion.txt
+    cat ${baseDir}/tools/ericscript/environment.yml > v_ericscript.txt
+    cat ${baseDir}/tools/pizzly/environment.yml > v_pizzly.txt
+    cat ${baseDir}/tools/squid/environment.yml > v_squid.txt
+    cat ${baseDir}/environment.yml > v_fusion_report.txt
     scrape_software_versions.py &> software_versions_mqc.yaml
     """
 }
@@ -737,18 +728,17 @@ process get_software_versions {
  * FastQC
  */
 process fastqc {
-    tag "$name"
+    tag {name}
     publishDir "${params.outdir}/fastqc", mode: 'copy',
         saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
 
-    when:
-    !params.debug
-
     input:
-    set val(name), file(reads) from read_files_fastqc
+        set val(name), file(reads) from read_files_fastqc
 
     output:
-    file("*_fastqc.{zip,html}") into fastqc_results
+        file("*_fastqc.{zip,html}") into fastqc_results
+
+    when: !params.debug
 
     script:
     """
@@ -762,20 +752,19 @@ process fastqc {
 process multiqc {
     publishDir "${params.outdir}/MultiQC", mode: 'copy'
 
-    when:
-    !params.debug
-
     input:
-    file(multiqc_config) from ch_multiqc_config
-    file("fastqc/*") from fastqc_results.collect().ifEmpty([])
-    file("software_versions/*") from software_versions_yaml.collect()
-    file(workflow_summary) from create_workflow_summary(summary)
-    file(fusions_mq) from summary_fusions_mq.collect().ifEmpty([])
+        file(multiqc_config) from ch_multiqc_config
+        file("fastqc/*") from fastqc_results.collect().ifEmpty([])
+        file("software_versions/*") from software_versions_yaml.collect()
+        file(workflow_summary) from create_workflow_summary(summary)
+        file(fusions_mq) from summary_fusions_mq.collect().ifEmpty([])
 
     output:
-    file("*multiqc_report.html") into multiqc_report
-    file("*_data")
-    file("multiqc_plots")
+        file("*multiqc_report.html") into multiqc_report
+        file("*_data")
+        file("multiqc_plots")
+
+    when: !params.debug
 
     script:
     rtitle = custom_runName ? "--title \"$custom_runName\"" : ''
@@ -791,14 +780,13 @@ process multiqc {
 process output_documentation {
     publishDir "${params.outdir}/pipeline_info", mode: 'copy'
 
-    when:
-    !params.debug
-
     input:
-    file(output_docs) from ch_output_docs
+        file(output_docs) from ch_output_docs
 
     output:
-    file("results_description.html")
+        file("results_description.html")
+
+    when: !params.debug
 
     script:
     """
@@ -856,18 +844,18 @@ workflow.onComplete {
 
     // Render the TXT template
     def engine = new groovy.text.GStringTemplateEngine()
-    def tf = new File("$baseDir/assets/email_template.txt")
+    def tf = new File("${baseDir}/assets/email_template.txt")
     def txt_template = engine.createTemplate(tf).make(email_fields)
     def email_txt = txt_template.toString()
 
     // Render the HTML template
-    def hf = new File("$baseDir/assets/email_template.html")
+    def hf = new File("${baseDir}/assets/email_template.html")
     def html_template = engine.createTemplate(hf).make(email_fields)
     def email_html = html_template.toString()
 
     // Render the sendmail template
-    def smail_fields = [ email: params.email, subject: subject, email_txt: email_txt, email_html: email_html, baseDir: "$baseDir", mqcFile: mqc_report, mqcMaxSize: params.maxMultiqcEmailFileSize.toBytes() ]
-    def sf = new File("$baseDir/assets/sendmail_template.txt")
+    def smail_fields = [ email: params.email, subject: subject, email_txt: email_txt, email_html: email_html, baseDir: "${baseDir}", mqcFile: mqc_report, mqcMaxSize: params.maxMultiqcEmailFileSize.toBytes() ]
+    def sf = new File("${baseDir}/assets/sendmail_template.txt")
     def sendmail_template = engine.createTemplate(sf).make(smail_fields)
     def sendmail_html = sendmail_template.toString()
 
@@ -896,9 +884,9 @@ workflow.onComplete {
     output_tf.withWriter { w -> w << email_txt }
 
     c_reset = params.monochrome_logs ? '' : "\033[0m";
-    c_purple = params.monochrome_logs ? '' : "\033[0;35m";
-    c_green = params.monochrome_logs ? '' : "\033[0;32m";
     c_red = params.monochrome_logs ? '' : "\033[0;31m";
+    c_green = params.monochrome_logs ? '' : "\033[0;32m";
+    c_purple = params.monochrome_logs ? '' : "\033[0;35m";
 
     if (workflow.stats.ignoredCountFmt > 0 && workflow.success) {
       log.info "${c_purple}Warning, pipeline completed, but with errored process(es) ${c_reset}"
