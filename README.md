@@ -68,6 +68,6 @@ Páll Melsted, Shannon Hateley, Isaac Charles Joseph, Harold Pimentel, Nicolas L
 * **FastQC** download: [https://www.bioinformatics.babraham.ac.uk/projects/fastqc/](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 * **MultiQC** Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics , 32(19), 3047–3048. [https://doi.org/10.1093/bioinformatics/btw354](https://doi.org/10.1093/bioinformatics/btw354) Download: [https://multiqc.info/](https://multiqc.info/)
 
-| | | |
-:-:|:-:|:-:|
-![nf-core/rnafusion](docs/images/ngi-logo.png) | ![nf-core/rnafusion](docs/images/ki-logo.png) | ![nf-core/rnafusion](docs/images/sdu-logo.png)
+[![Barntumörbanken](docs/images/BTB_logo.png)](https://ki.se/forskning/barntumorbanken-0) | [![SciLifeLab](docs/images/SciLifeLab_logo.png)](https://scilifelab.se)
+:-:|:-:
+[![National Genomics Infrastructure](docs/images/NGI_logo.png)](https://ngisweden.scilifelab.se/) | [![University of Southern Denmark](docs/images/SDU_logo.png)](https://www.sdu.dk/da)
