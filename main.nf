@@ -684,7 +684,7 @@ process fusion_inspector {
         --CPU ${task.cpus} \\
         --out_dir . \\
         --out_prefix finspector \\
-        --vis ${extra_params} 
+        ${extra_params} 
     """
 }
 
