@@ -9,7 +9,8 @@
 
 ### Changed
 
-* Upgraded `fusion-report v1.0.0` to `fusion-report v2.0`
+* Updated examples and configurations
+* Upgraded `fusion-report v1.0.0` to `fusion-report v2.0.1`
 * Divided `running_tools` into fusion and visualization tools
 * Updated `STAR` in `Squid`, `Fusion-Inspector` version to `2.7.0f`
 * Upgraded `STAR-Fusion v1.5.0` to `STAR-Fusion v1.7.0` [#83](https://github.com/nf-core/rnafusion/issues/83)
@@ -20,6 +21,12 @@
 
 * iGenomes optional, but not really [#91](https://github.com/nf-core/rnafusion/issues/91)
 * Updated `fusioncatcher` to latest `1.20` version also solving [#95](https://github.com/nf-core/rnafusion/issues/95)
+
+### Removed
+
+* Variables `pizzly_fasta` and `pizzly_gtf` have been removed and replaced with `transcript` and `gtf`
+* Jenkisfile, test configuration, pylintrc
+* Removed `igenomes.config` because the pipeline only supports Ensembl version
 
 ## nfcore/rnafusion version 1.0.2 - 2019/05/13
 
