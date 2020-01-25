@@ -46,31 +46,17 @@ if (params.help){
     exit 0
 }
 
-if (!params.reference_release) {
-    exit 1, "You did not specify the release number of reference!"
-}
+if (!params.reference_release) exit 1, "You did not specify the release number of reference!"
+if (!params.outdir) exit 1, "Output directory not specified!"
 
 params.running_tools = []
-if (!params.outdir) {
-    exit 1, "Output directory not specified!"
-}
-if (params.arriba || params.download_all) {
-    params.running_tools.add("Arriba")
-}
-if (params.star_fusion || params.download_all) {
-    params.running_tools.add("STAR-Fusion")
-}
-if (params.fusioncatcher || params.download_all) {
-    params.running_tools.add("Fusioncatcher")
-}
-if (params.ericscript || params.download_all) {
-    params.running_tools.add("Ericscript")
-}
+if (params.arriba || params.download_all) params.running_tools.add("Arriba")
+if (params.star_fusion || params.download_all) params.running_tools.add("STAR-Fusion")
+if (params.fusioncatcher || params.download_all) params.running_tools.add("Fusioncatcher")
+if (params.ericscript || params.download_all) params.running_tools.add("Ericscript")
 if (params.download_all) {
     params.running_tools.add('fusion-report')
-    if (!params.cosmic_usr || !params.cosmic_passwd) {
-        exit 1, "Database credentials are required parameter!"
-    }
+    if (!params.cosmic_usr || !params.cosmic_passwd) exit 1, "Database credentials are required parameter!"
 }
 
 // Header log info
@@ -93,7 +79,6 @@ process download_base {
     file "Homo_sapiens.GRCh38_r${params.reference_release}.all.fa" into fasta
     file "Homo_sapiens.GRCh38_r${params.reference_release}.gtf" into gtf
     file "Homo_sapiens.GRCh38_${params.reference_release}.cdna.all.fa.gz" into transcript
-
 
     script:
     """
