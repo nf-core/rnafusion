@@ -410,6 +410,8 @@ process star_fusion {
         --output_dir . ${extra_params}
 
     mv star-fusion.fusion_predictions.tsv ${sample}_star-fusion.tsv
+    mv star-fusion.fusion_predictions.abridged.tsv ${sample}_abridged.tsv
+    mv star-fusion.fusion_predictions.abridged.coding_effect.tsv ${sample}_abridged.coding_effect.tsv
     """
 }
 
@@ -437,7 +439,7 @@ process fusioncatcher {
     option = params.singleEnd ? reads[0] : "${reads[0]},${reads[1]}"
     def extra_params = params.fusioncatcher_opt ? "${params.fusioncatcher_opt}" : ''
     """
-    fusioncatcher \\
+    fusioncatcher.py \\
         -d ${data_dir} \\
         -i ${option} \\
         --threads ${task.cpus} \\
@@ -477,7 +479,7 @@ process ericscript {
         -o ./tmp \\
         ${reads}
 
-    mv fusions.results.filtered.tsv ${sample}_ericscript.tsv
+    mv ./tmp/fusions.results.filtered.tsv ./tmp/${sample}_ericscript.tsv
     """
 }
 
@@ -682,7 +684,7 @@ process fusion_inspector {
         --CPU ${task.cpus} \\
         --out_dir . \\
         --out_prefix finspector \\
-        --vis ${extra_params} 
+        ${extra_params} 
     """
 }
 

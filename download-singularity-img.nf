@@ -50,30 +50,15 @@ if (params.help){
 }
 
 params.running_tools = ["nf-core/rnafusion/${workflow.manifest.version}"]
-if (!params.outdir) {
-    exit 1, "Output directory not specified!"
-}
-if (params.arriba || download_all) {
-    params.running_tools.add("Arriba")
-}
-if (params.star_fusion || download_all) {
-    params.running_tools.add("STAR-Fusion")
-}
-if (params.fusioncatcher || download_all) {
-    params.running_tools.add("Fusioncatcher")
-}
-if (params.ericscript || download_all) {
-    params.running_tools.add("Ericscript")
-}
-if (params.pizzly || download_all) {
-    params.running_tools.add("Pizzly")
-}
-if (params.squid || download_all) {
-    params.running_tools.add("Squid")
-}
-if (params.fusion_inspector || download_all) {
-    params.running_tools.add("Fusion-Inspector")
-}
+if (!params.outdir) exit 1, "Output directory not specified!"
+
+if (params.arriba || download_all) params.running_tools.add("Arriba")
+if (params.star_fusion || download_all) params.running_tools.add("STAR-Fusion")
+if (params.fusioncatcher || download_all) params.running_tools.add("Fusioncatcher")
+if (params.ericscript || download_all) params.running_tools.add("Ericscript")
+if (params.pizzly || download_all) params.running_tools.add("Pizzly")
+if (params.squid || download_all) params.running_tools.add("Squid")
+if (params.fusion_inspector || download_all) params.running_tools.add("Fusion-Inspector")
 
 // Header log info
 log.info nfcoreHeader()
