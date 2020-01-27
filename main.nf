@@ -891,16 +891,16 @@ workflow.onComplete {
     c_purple = params.monochrome_logs ? '' : "\033[0;35m";
 
     if (workflow.stats.ignoredCountFmt > 0 && workflow.success) {
-      log.info "${c_purple}Warning, pipeline completed, but with errored process(es) ${c_reset}"
-      log.info "${c_red}Number of ignored errored process(es) : ${workflow.stats.ignoredCountFmt} ${c_reset}"
-      log.info "${c_green}Number of successfully ran process(es) : ${workflow.stats.succeedCountFmt} ${c_reset}"
+      log.info "-${c_purple}Warning, pipeline completed, but with errored process(es) ${c_reset}-"
+      log.info "-${c_red}Number of ignored errored process(es) : ${workflow.stats.ignoredCountFmt} ${c_reset}-"
+      log.info "-${c_green}Number of successfully ran process(es) : ${workflow.stats.succeedCountFmt} ${c_reset}-"
     }
 
     if(workflow.success) {
-        log.info "${c_purple}[nf-core/rnafusion]${c_green} Pipeline completed successfully${c_reset}"
+        log.info "-${c_purple}[nf-core/rnafusion]${c_green} Pipeline completed successfully${c_reset}-"
     } else {
         checkHostname()
-        log.info "${c_purple}[nf-core/rnafusion]${c_red} Pipeline completed with errors${c_reset}"
+        log.info "-${c_purple}[nf-core/rnafusion]${c_red} Pipeline completed with errors${c_reset}-"
     }
 
 }
@@ -917,14 +917,14 @@ def nfcoreHeader() {
     c_cyan = params.monochrome_logs ? '' : "\033[0;36m";
     c_white = params.monochrome_logs ? '' : "\033[0;37m";
 
-    return """    ${c_dim}----------------------------------------------------${c_reset}
+    return """    -${c_dim}--------------------------------------------------${c_reset}-
                                             ${c_green},--.${c_black}/${c_green},-.${c_reset}
     ${c_blue}        ___     __   __   __   ___     ${c_green}/,-._.--~\'${c_reset}
     ${c_blue}  |\\ | |__  __ /  ` /  \\ |__) |__         ${c_yellow}}  {${c_reset}
     ${c_blue}  | \\| |       \\__, \\__/ |  \\ |___     ${c_green}\\`-._,-`-,${c_reset}
                                             ${c_green}`._,._,\'${c_reset}
     ${c_purple}  nf-core/rnafusion v${workflow.manifest.version}${c_reset}
-    ${c_dim}----------------------------------------------------${c_reset}
+    -${c_dim}--------------------------------------------------${c_reset}-
     """.stripIndent()
 }
 
