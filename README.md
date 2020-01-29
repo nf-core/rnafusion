@@ -1,12 +1,13 @@
-# ![nf-core/rnafusion](https://raw.githubusercontent.com/nf-core/rnafusion/master/docs/images/rnafusion_logo.png)
+
+# ![nf-core/rnafusion](docs/images/nf-core-rnafusion_logo.png)
 
 **Nextflow rnafusion analysis pipeline, part of the nf-core community.**.
 
-[![Build Status](https://travis-ci.org/nf-core/rnafusion.svg?branch=master)](https://travis-ci.org/nf-core/rnafusion)
-[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A50.32.0-brightgreen.svg)](https://www.nextflow.io/)
+[![Build Status](https://travis-ci.com/nf-core/rnafusion.svg?branch=master)](https://travis-ci.com/nf-core/rnafusion)
+[![GitHub Actions CI Status](https://github.com/nf-core/rnafusion/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/rnafusion/actions)
+[![GitHub Actions Linting Status](https://github.com/nf-core/rnafusion/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/rnafusion/actions)
+[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A519.10.0-brightgreen.svg)](https://www.nextflow.io/)
 [![DOI](https://zenodo.org/badge/151721952.svg)](https://zenodo.org/badge/latestdoi/151721952)
-[![Slack Status](https://nf-core-invite.herokuapp.com/badge.svg)](https://nf-core-invite.herokuapp.com)
-[![MIT License](https://img.shields.io/github/license/nf-core/rnafusion.svg)](https://github.com/nf-core/rnafusion/blob/master/LICENSE)
 
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](http://bioconda.github.io/)
 [![Docker](https://img.shields.io/docker/automated/nfcore/rnafusion.svg)](https://hub.docker.com/r/nfcore/rnafusion)
@@ -32,6 +33,30 @@ For available parameters or help run:
 nextflow run nf-core/rnafusion --help
 ```
 
+## Quick Start
+
+i. Install [`nextflow`](https://nf-co.re/usage/installation)
+
+ii. Install one of [`docker`](https://docs.docker.com/engine/installation/), [`singularity`](https://www.sylabs.io/guides/3.0/user-guide/) or [`conda`](https://conda.io/miniconda.html)
+
+iii. Download the pipeline and test it on a minimal dataset with a single command
+
+```bash
+nextflow run nf-core/rnafusion -profile test,<docker/singularity/conda/institute>
+```
+
+> Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile institute` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
+
+iv. Start running your own analysis!
+
+<!-- TODO nf-core: Update the default command above used to run the pipeline -->
+
+```bash
+nextflow run nf-core/rnafusion -profile docker --reads '*_R{1,2}.fastq.gz'
+```
+
+See [usage docs](docs/usage.md) for all of the available options when running the pipeline.
+
 ## Documentation
 
 The nf-core/rnafusion pipeline comes with documentation about the pipeline, found in the `docs/` directory:
@@ -50,7 +75,7 @@ Use predefined configuration for desired Institution cluster provided at [nfcore
 
 ## Credits
 
-This pipeline was written by Martin Proks ([@matq007](https://github.com/matq007)) in collaboration with Karolinska Institutet, SciLifeLab and University of Southern Denmark as a master thesis. This is a follow-up development started by Rickard Hammarén ([@Hammarn](https://github.com/Hammarn)). Special thanks goes to all supervisors: Teresita Díaz de Ståhl, PhD., Assoc. Prof.; Monica Nistér, MD, PhD; Maxime U Garcia PhD ([@MaxUlysse](https://github.com/MaxUlysse)); Szilveszter Juhos ([@szilvajuhos](https://github.com/szilvajuhos)); Phil Ewels PhD ([@ewels](https://github.com/ewels)) and Lars Grøntved, PhD., Assoc. Prof.
+This pipeline was originally written by Martin Proks ([@matq007](https://github.com/matq007)) in collaboration with Karolinska Institutet, SciLifeLab and University of Southern Denmark as a master thesis. This is a follow-up development started by Rickard Hammarén ([@Hammarn](https://github.com/Hammarn)). Special thanks goes to all supervisors: Teresita Díaz de Ståhl, PhD., Assoc. Prof.; Monica Nistér, MD, PhD; Maxime U Garcia PhD ([@MaxUlysse](https://github.com/MaxUlysse)); Szilveszter Juhos ([@szilvajuhos](https://github.com/szilvajuhos)); Phil Ewels PhD ([@ewels](https://github.com/ewels)) and Lars Grøntved, PhD., Assoc. Prof.
 
 ## Tool References
 
@@ -67,6 +92,21 @@ Páll Melsted, Shannon Hateley, Isaac Charles Joseph, Harold Pimentel, Nicolas L
 * **fusion-report** download: [https://github.com/matq007/fusion-report](https://github.com/matq007/fusion-report); doi: [https://doi.org/10.5281/zenodo.3520171](https://doi.org/10.5281/zenodo.3520171)
 * **FastQC** download: [https://www.bioinformatics.babraham.ac.uk/projects/fastqc/](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 * **MultiQC** Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics , 32(19), 3047–3048. [https://doi.org/10.1093/bioinformatics/btw354](https://doi.org/10.1093/bioinformatics/btw354) Download: [https://multiqc.info/](https://multiqc.info/)
+
+## Contributions and Support
+
+If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
+
+For further information or help, don't hesitate to get in touch on [Slack](https://nfcore.slack.com/channels/rnafusion) (you can join with [this invite](https://nf-co.re/join/slack)).
+
+## Citation
+
+<!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi. -->
+<!-- If you use  nf-core/rnafusion for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
+
+You can cite the `nf-core` pre-print as follows:  
+
+> Ewels PA, Peltzer A, Fillinger S, Alneberg JA, Patel H, Wilm A, Garcia MU, Di Tommaso P, Nahnsen S. **nf-core: Community curated bioinformatics pipelines**. *bioRxiv*. 2019. p. 610741. [doi: 10.1101/610741](https://www.biorxiv.org/content/10.1101/610741v1).
 
 [![Barntumörbanken](docs/images/BTB_logo.png)](https://ki.se/forskning/barntumorbanken-0) | [![SciLifeLab](docs/images/SciLifeLab_logo.png)](https://scilifelab.se)
 :-:|:-:

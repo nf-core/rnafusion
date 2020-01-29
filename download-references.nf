@@ -1,12 +1,20 @@
 #!/usr/bin/env nextflow
 /*
-========================================================================================
-                         nf-core/rnafusion
-========================================================================================
- nf-core/rnafusion Analysis Pipeline.
- #### Homepage / Documentation
+================================================================================
+                                nf-core/rnafusion
+================================================================================
+nf-core/rnafusion:
+ RNA-seq analysis pipeline for detection gene-fusions
+--------------------------------------------------------------------------------
+ @Homepage
+ https://nf-co.re/rnafusion
+--------------------------------------------------------------------------------
+ @Documentation
+ https://nf-co.re/rnafusion/docs
+--------------------------------------------------------------------------------
+ @Repository
  https://github.com/nf-core/rnafusion
-----------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 */
 
 def helpMessage() {
@@ -19,20 +27,20 @@ def helpMessage() {
     nextflow run nf-core/rnafusion/download-references.nf -profile [PROFILE] [OPTIONS] --outdir /path/to/output
 
     Mandatory arguments:
-      --reference_release           Release number of Ensembl reference for FASTA and GTF
+      --reference_release [int]     Release number of Ensembl reference for FASTA and GTF
                                     example: 97 -> ftp://ftp.ensembl.org/pub/release-97
-      --outdir                      Output directory for downloading
-      -profile                      Configuration profile [https://github.com/nf-core/configs]
+      --outdir [path]               Output directory for downloading
+      -profile [str]                Configuration profile [https://github.com/nf-core/configs]
       
     Options:
-      --download_all                Download all references
-      --arriba                      Download Arriba references
-      --star_fusion                 Build STAR-Fusion references from FASTA ANF GTF
-      --fusioncatcher               Download Fusioncatcher references
-      --ericscript                  Download Ericscript references 
-      --fusion_report               Download databases for fusion-report
-        --cosmic_usr                [Required] COSMIC username
-        --cosmic_passwd             [Required] COSMIC password
+      --download_all [bool]         Download all references
+      --arriba [bool]               Download Arriba references
+      --star_fusion [bool]          Build STAR-Fusion references from FASTA ANF GTF
+      --fusioncatcher [bool]        Download Fusioncatcher references
+      --ericscript [bool]           Download Ericscript references 
+      --fusion_report [bool]        Download databases for fusion-report
+        --cosmic_usr [str]          [Required] COSMIC username
+        --cosmic_passwd [str]       [Required] COSMIC password
     """.stripIndent()
 }
 
@@ -41,10 +49,7 @@ def helpMessage() {
  */
 
 // Show help emssage
-if (params.help){
-    helpMessage()
-    exit 0
-}
+if (params.help) exit 0, helpMessage()
 
 if (!params.reference_release) exit 1, "You did not specify the release number of reference!"
 if (!params.outdir) exit 1, "Output directory not specified!"
@@ -71,6 +76,15 @@ summary['Output dir']   = params.outdir
 summary['User']         = workflow.userName
 log.info summary.collect { k,v -> "${k.padRight(18)}: $v" }.join("\n")
 log.info "\033[2m----------------------------------------------------\033[0m"
+
+// Check the hostnames against configured profiles
+checkHostname()
+
+/*
+================================================================================
+                                  DOWNLOAD
+================================================================================
+*/
 
 process download_base {
     publishDir "${params.outdir}/", mode: 'move'
@@ -108,6 +122,7 @@ process download_arriba {
 }
 
 process download_star_fusion {
+    label 'process_high'
     publishDir "${params.outdir}/star-fusion", mode: 'move'
     
     when:
@@ -204,25 +219,46 @@ workflow.onComplete {
     log.info "[nf-core/rnafusion/download-references.nf] Pipeline Complete"
 }
 
-def nfcoreHeader(){
+def nfcoreHeader() {
     // Log colors ANSI codes
-    c_reset = params.monochrome_logs ? '' : "\033[0m";
-    c_dim = params.monochrome_logs ? '' : "\033[2m";
     c_black = params.monochrome_logs ? '' : "\033[0;30m";
-    c_green = params.monochrome_logs ? '' : "\033[0;32m";
-    c_yellow = params.monochrome_logs ? '' : "\033[0;33m";
     c_blue = params.monochrome_logs ? '' : "\033[0;34m";
-    c_purple = params.monochrome_logs ? '' : "\033[0;35m";
     c_cyan = params.monochrome_logs ? '' : "\033[0;36m";
+    c_dim = params.monochrome_logs ? '' : "\033[2m";
+    c_green = params.monochrome_logs ? '' : "\033[0;32m";
+    c_purple = params.monochrome_logs ? '' : "\033[0;35m";
+    c_reset = params.monochrome_logs ? '' : "\033[0m";
     c_white = params.monochrome_logs ? '' : "\033[0;37m";
+    c_yellow = params.monochrome_logs ? '' : "\033[0;33m";
 
-    return """    ${c_dim}----------------------------------------------------${c_reset}
+    return """    -${c_dim}--------------------------------------------------${c_reset}-
                                             ${c_green},--.${c_black}/${c_green},-.${c_reset}
     ${c_blue}        ___     __   __   __   ___     ${c_green}/,-._.--~\'${c_reset}
     ${c_blue}  |\\ | |__  __ /  ` /  \\ |__) |__         ${c_yellow}}  {${c_reset}
     ${c_blue}  | \\| |       \\__, \\__/ |  \\ |___     ${c_green}\\`-._,-`-,${c_reset}
                                             ${c_green}`._,._,\'${c_reset}
     ${c_purple}  nf-core/rnafusion v${workflow.manifest.version}${c_reset}
-    ${c_dim}----------------------------------------------------${c_reset}
+    -${c_dim}--------------------------------------------------${c_reset}-
     """.stripIndent()
+}
+
+def checkHostname() {
+    def c_reset = params.monochrome_logs ? '' : "\033[0m"
+    def c_white = params.monochrome_logs ? '' : "\033[0;37m"
+    def c_red = params.monochrome_logs ? '' : "\033[1;91m"
+    def c_yellow_bold = params.monochrome_logs ? '' : "\033[1;93m"
+    if (params.hostnames) {
+        def hostname = "hostname".execute().text.trim()
+        params.hostnames.each { prof, hnames ->
+            hnames.each { hname ->
+                if (hostname.contains(hname) && !workflow.profile.contains(prof)) {
+                    log.error "====================================================\n" +
+                            "  ${c_red}WARNING!${c_reset} You are running with `-profile $workflow.profile`\n" +
+                            "  but your machine hostname is ${c_white}'$hostname'${c_reset}\n" +
+                            "  ${c_yellow_bold}It's highly recommended that you use `-profile $prof${c_reset}`\n" +
+                            "============================================================"
+                }
+            }
+        }
+    }
 }
