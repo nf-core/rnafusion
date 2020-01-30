@@ -342,16 +342,6 @@ Required reference in order to run `Ericscript`.
 --ericscript_ref '[path to Ericscript reference]'
 ```
 
-<!-- TODO nf-core: Describe reference path flags -->
-
-### `--fasta`
-
-If you prefer, you can specify the full path to your reference genome when you run the pipeline:
-
-```bash
---fasta '[path to Fasta reference]'
-```
-
 ## Job resources
 
 ### Automatic resubmission
