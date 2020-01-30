@@ -168,17 +168,17 @@ if(params.readPaths) {
         Channel.from(params.readPaths)
             .map { row -> [ row[0], [file(row[1][0])]] }
             .ifEmpty{exit 1, "params.readPaths was empty - no input files supplied" }
-            .into{read_files_arriba; read_files_ericscript; read_files_fastqc; read_files_fusion_inspector; read_files_fusioncatcher; read_files_multiqc; read_files_pizzly; read_files_squid; read_files_star_fusion; read_files_summary}
+            .into{read_files_arriba; read_files_ericscript; ch_read_files_fastqc; read_files_fusion_inspector; read_files_fusioncatcher; read_files_multiqc; read_files_pizzly; read_files_squid; read_files_star_fusion; read_files_summary}
     } else {
         Channel.from(params.readPaths)
             .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
             .ifEmpty{exit 1, "params.readPaths was empty - no input files supplied" }
-            .into{read_files_arriba; read_files_ericscript; read_files_fastqc; read_files_fusion_inspector; read_files_fusioncatcher; read_files_multiqc; read_files_pizzly; read_files_squid; read_files_star_fusion; read_files_summary}
+            .into{read_files_arriba; read_files_ericscript; ch_read_files_fastqc; read_files_fusion_inspector; read_files_fusioncatcher; read_files_multiqc; read_files_pizzly; read_files_squid; read_files_star_fusion; read_files_summary}
     }
 } else {
     Channel.fromFilePairs( params.reads, size: params.single_end ? 1 : 2 )
         .ifEmpty{exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --single_end on the command line." }
-        .into{read_files_arriba; read_files_ericscript; read_files_fastqc; read_files_fusion_inspector; read_files_fusioncatcher; read_files_multiqc; read_files_pizzly; read_files_squid; read_files_star_fusion; read_files_summary}
+        .into{read_files_arriba; read_files_ericscript; ch_read_files_fastqc; read_files_fusion_inspector; read_files_fusioncatcher; read_files_multiqc; read_files_pizzly; read_files_squid; read_files_star_fusion; read_files_summary}
 }
 
 /*
@@ -610,7 +610,8 @@ process summary {
         file("${sample}_fusion_genes_mqc.json") into summary_fusions_mq
         file("*") into report
     
-    when: !params.debug && (params.arriba || params.fusioncatcher || params.star_fusion || params.ericscript || params.pizzly || params.squid)
+    when: !params.debug && (running_tools.size() > 0)
+    
 
     script:
     def extra_params = params.fusion_report_opt ? "${params.fusion_report_opt}" : ''
@@ -770,7 +771,6 @@ process multiqc {
 
     input:
     file multiqc_config from ch_multiqc_config
-    // TODO nf-core: Add in log files from your new processes for MultiQC to find!
     file ('fastqc/*') from ch_fastqc_results.collect().ifEmpty([])
     file ('software_versions/*') from ch_software_versions_yaml.collect()
     file workflow_summary from create_workflow_summary(summary)
@@ -844,7 +844,6 @@ workflow.onComplete {
     email_fields['summary']['Nextflow Build'] = workflow.nextflow.build
     email_fields['summary']['Nextflow Compile Timestamp'] = workflow.nextflow.timestamp
 
-    // TODO nf-core: If not using MultiQC, strip out this code (including params.max_multiqc_email_size)
     // On success try attach the multiqc report
     def mqc_report = null
     try {
