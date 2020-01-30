@@ -22,8 +22,12 @@ jobs:
       - name: Pull docker image
         run: |
           docker pull nfcore/rnafusion:dev && docker tag nfcore/rnafusion:dev nfcore/rnafusion:dev
-      - name: Run pipeline with test data
+      - name: Run pipeline
         run: |
-          # TODO nf-core: You can customise CI pipeline run tests as required
-          # (eg. adding multiple test runs with different parameters)
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker
+          nextflow run ${GITHUB_WORKSPACE} --help
+      - name: Run pipeline for downloading references
+        run: |
+          nextflow run ${GITHUB_WORKSPACE}/download-references.nf --help
+      - name: Run pipeline for downloading singularity images
+        run: |
+          nextflow run ${GITHUB_WORKSPACE}/download-singularity-img.nf --help
