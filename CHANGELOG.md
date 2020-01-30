@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 * Parameter `igenomesIgnore` renamed to `igenome` [#81](https://github.com/nf-core/rnafusion/issues/81)
 * Finished STAR-Fusion file renaming [#18](https://github.com/nf-core/rnafusion/issues/18)
 * Updated logos
+* Updated to nf-core `1.8` TEMPLATE
 
 ### Fixed
 
