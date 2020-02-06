@@ -42,7 +42,7 @@ ii. Install one of [`docker`](https://docs.docker.com/engine/installation/), [`s
 iii. Download the pipeline and test it on a minimal dataset with a single command
 
 ```bash
-nextflow run nf-core/rnafusion -profile test,<docker/singularity/conda/institute>
+nextflow run nf-core/rnafusion --help
 ```
 
 > Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile institute` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
@@ -50,7 +50,7 @@ nextflow run nf-core/rnafusion -profile test,<docker/singularity/conda/institute
 iv. Start running your own analysis!
 
 ```bash
-nextflow run nf-core/rnafusion -profile docker --reads '*_R{1,2}.fastq.gz'
+nextflow run NGI-RNAfusion/ -profile <profile> -c './example/custom-docker.config' --reads '*_R{1,2}.fastq.gz' --arriba --star_fusion --fusioncatcher --ericscript --pizzly --squid --arriba_vis --fusion_inspector
 ```
 
 See [usage docs](docs/usage.md) for all of the available options when running the pipeline.
@@ -61,10 +61,9 @@ The nf-core/rnafusion pipeline comes with documentation about the pipeline, foun
 
 1. [Installation](https://nf-co.re/usage/installation)
 2. Pipeline configuration
-    * [Download references for tools](docs/references.md)
+    * [Download references](docs/references.md)
     * [Local installation](https://nf-co.re/usage/local_installation)
     * [Adding your own system config](https://nf-co.re/usage/adding_own_config)
-    * [Reference genomes](https://nf-co.re/usage/reference_genomes)
 3. [Running the pipeline](docs/usage.md)
 4. [Output and how to interpret the results](docs/output.md)
 5. [Troubleshooting](https://nf-co.re/usage/troubleshooting)
