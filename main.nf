@@ -33,30 +33,32 @@ def helpMessage() {
                                     Available: conda, docker, singularity, test, awsbatch and more
     Tool flags:
       --arriba [bool]                 Run Arriba
-      --arriba_opt [bool]             Specify extra parameters for Arriba
-      --star_fusion [bool]            Run STAR-Fusion
-      --star_fusion_opt [str]         Specify extra parameters for STAR-Fusion
+      --arriba_opt [str]              Specify extra parameters for Arriba
+      --ericscript [bool]             Run Ericscript  
       --fusioncatcher [bool]          Run FusionCatcher
       --fusioncatcher_opt [srt]       Specify extra parameters for FusionCatcher
-      --ericscript [bool]             Run Ericscript
-      --pizzly [bool]                 Run Pizzly
-      --squid [bool]                  Run Squid
-      --databases [path]              Database path for fusion-report
       --fusion_report_opt [str]       Specify extra parameters for fusion-report
-
+      --pizzly [bool]                 Run Pizzly
+        --pizzly_k [int]              Number of k-mers. Deafult 31
+      --squid [bool]                  Run Squid
+      --star_fusion [bool]            Run STAR-Fusion
+      --star_fusion_opt [str]         Specify extra parameters for STAR-Fusion
+    
     Visualization flags:
       --arriba_vis [bool]             Generate a PDF visualization per detected fusion
       --fusion_inspector [bool]       Run Fusion-Inspector
+      --fusion_inspector_opt [str]    Specify extra parameters for Fusion-Inspector
 
     References                      If not specified in the configuration file or you wish to overwrite any of the references.
+      --arriba_ref [file]             Path to Arriba reference
+      --databases [path]              Database path for fusion-report
+      --ericscript_ref [file]         Path to Ericscript reference
       --fasta [file]                  Path to fasta reference
+      --fusioncatcher_ref [file]      Path to Fusioncatcher reference
       --gtf [file]                    Path to GTF annotation
-      --transcript [file]             Path to transcript
       --star_index [file]             Path to STAR-Index reference
       --star_fusion_ref [file]        Path to STAR-Fusion reference
-      --fusioncatcher_ref [file]      Path to Fusioncatcher reference
-      --ericscript_ref [file]         Path to Ericscript reference
-      --arriba_ref [file]             Path to Arriba reference
+      --transcript [file]             Path to transcript
 
     Options:
       --read_length [int]             Length of the reads. Default: 100
