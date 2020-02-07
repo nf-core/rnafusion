@@ -50,7 +50,7 @@ nextflow run nf-core/rnafusion --help
 iv. Start running your own analysis!
 
 ```bash
-nextflow run NGI-RNAfusion/ -profile <profile> -c './example/custom-docker.config' --reads '*_R{1,2}.fastq.gz' --arriba --star_fusion --fusioncatcher --ericscript --pizzly --squid --arriba_vis --fusion_inspector
+nextflow run nf-core/rnafusion -profile <profile> -c './example/custom-docker.config' --reads '*_R{1,2}.fastq.gz' --arriba --star_fusion --fusioncatcher --ericscript --pizzly --squid --arriba_vis --fusion_inspector
 ```
 
 See [usage docs](docs/usage.md) for all of the available options when running the pipeline.
