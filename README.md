@@ -24,7 +24,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 | [fusion-report](https://github.com/matq007/fusion-report) | -              | -        | -             |
 | [Pizzly](https://github.com/pmelsted/pizzly) | **No**           | >=16 cores        | ~30GB             |
 | [Squid](https://github.com/Kingsford-Group/squid) | **No**           | >=16 cores        | ~30GB             |
-| [Star-Fusion](https://github.com/STAR-Fusion/STAR-Fusion/wiki) | Yes              | >=16 cores        | ~30GB             |
+| [Star-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) | Yes              | >=16 cores        | ~30GB             |
 | [FusionInspector](https://github.com/FusionInspector/FusionInspector) | **No**           | >=16 cores        | ~30GB             |
 
 For available parameters or help run:
