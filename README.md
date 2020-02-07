@@ -1,7 +1,7 @@
 
 # ![nf-core/rnafusion](docs/images/nf-core-rnafusion_logo.png)
 
-**RNA sequencing analysis pipeline with curated list of tools for detecting and visualizing fusion genes.**.
+**RNA sequencing analysis pipeline with curated list of tools for detecting and visualizing fusion genes.**
 
 [![Build Status](https://travis-ci.com/nf-core/rnafusion.svg?branch=master)](https://travis-ci.com/nf-core/rnafusion)
 [![GitHub Actions CI Status](https://github.com/nf-core/rnafusion/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/rnafusion/actions)
