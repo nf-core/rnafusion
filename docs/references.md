@@ -32,7 +32,7 @@ nextflow run nf-core/rnafusion/download-references.nf \
   --outdir <PATH>
 ```
 
-## 2. Tool reference requirements
+## Tool reference requirements
 
 ### STAR-Fusion
 
