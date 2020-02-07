@@ -5,4 +5,4 @@ LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.
 
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
-ENV PATH /opt/conda/envs/pizzly/bin:$PATH
+ENV PATH /opt/conda/envs/pizzly_v0.37.3/bin:$PATH

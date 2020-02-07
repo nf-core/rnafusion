@@ -5,6 +5,4 @@ LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.
 
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
-ENV PATH /opt/conda/envs/fusion-inspector_v1.3.1-star2.7.0f/bin:$PATH
-
-RUN ln -s /lib/x86_64-linux-gnu/libcrypt.so.1 /lib/x86_64-linux-gnu/libcrypto.so.1.0.0
+ENV PATH /opt/conda/envs/arriba_v1.1.0/bin:$PATH

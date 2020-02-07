@@ -5,4 +5,4 @@ LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.
 
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
-ENV PATH /opt/conda/envs/fusioncatcher/bin:$PATH
+ENV PATH /opt/conda/envs/fusioncatcher_v1.20/bin:$PATH

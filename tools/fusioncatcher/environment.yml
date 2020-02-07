@@ -1,6 +1,6 @@
-name: fusioncatcher
+name: fusioncatcher_v1.20
 channels:
   - bioconda
   - conda-forge
 dependencies:
-  - bioconda::fusioncatcher=1.00
+  - bioconda::fusioncatcher=1.20

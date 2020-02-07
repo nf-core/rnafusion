@@ -1,4 +1,4 @@
-name: ericscript
+name: ericscript_v0.5.5
 channels:
   - bioconda
 dependencies:

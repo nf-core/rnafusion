@@ -1,6 +1,40 @@
-# nfcore/rnafusion
+# nfcore/rnafusion: Changelog
 
-## nfcore/rnafusion version 1.0.2 - 2018/05/13
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
+## [1.1.0] nfcore/rnafusion -
+
+### Added
+
+* Added `Arriba 1.1.0` [#63](https://github.com/nf-core/rnafusion/issues/63)
+* Added Batch mode [#54](https://github.com/nf-core/rnafusion/issues/54)
+
+### Changed
+
+* Updated examples and configurations
+* Upgraded `fusion-report v1.0.0` to `fusion-report v2.0.1`
+* Divided `running_tools` into fusion and visualization tools
+* Updated `STAR` in `Squid`, `Fusion-Inspector` version to `2.7.0f`
+* Upgraded `STAR-Fusion v1.5.0` to `STAR-Fusion v1.7.0` [#83](https://github.com/nf-core/rnafusion/issues/83)
+* Parameter `igenomesIgnore` renamed to `igenome` [#81](https://github.com/nf-core/rnafusion/issues/81)
+* Finished STAR-Fusion file renaming [#18](https://github.com/nf-core/rnafusion/issues/18)
+* Updated logos
+* Updated to nf-core `1.8` TEMPLATE
+
+### Fixed
+
+* iGenomes optional, but not really [#91](https://github.com/nf-core/rnafusion/issues/91)
+* Updated `fusioncatcher` to latest `1.20` version also solving [#95](https://github.com/nf-core/rnafusion/issues/95)
+
+### Removed
+
+* Variables `pizzly_fasta` and `pizzly_gtf` have been removed and replaced with `transcript` and `gtf`
+* Jenkisfile, test configuration, pylintrc
+* Removed `igenomes.config` because the pipeline only supports Ensembl version
+
+## [1.0.2] nfcore/rnafusion - 2019/05/13
 
 ### Changed
 
@@ -12,7 +46,7 @@
 * Implemented output output for fusion tools [#72](https://github.com/nf-core/rnafusion/issues/72)
 * Fixed reference download link for STAR-Fusion [#71](https://github.com/nf-core/rnafusion/issues/71)
 
-## nfcore/rnafusion version 1.0.1 - 2018/04/06
+## [1.0.1] nfcore/rnafusion - 2019/04/06
 
 ### Added
 
@@ -38,10 +72,10 @@
 
 * Removed `Singularity`
 
-## nfcore/rnafusion version 1.0 - 2018/02/14
+## [1.0] nfcore/rnafusion - 2018/02/14
 
-Version 1.0 marks the first production release of this pipeline under the nf-core flag. The pipeline includes
-additional help scripts to download references for fusion tools and Singularity images.
+Version 1.0 marks the first production release of this pipeline under the nf-core flag.
+The pipeline includes additional help scripts to download references for fusion tools and Singularity images.
 
 * Fusion gene detection tools:
   * `STAR-Fusion v1.5.0`
@@ -57,10 +91,11 @@ additional help scripts to download references for fusion tools and Singularity 
   * `MultiQC v1.7`
   * `FusionGDB updated 2019/01/23`
 
-## SciLifeLab/NGI-RNAfusion version 0.1 (ARCHIVED) - 2018/10/05
+## [0.1] SciLifeLab/NGI-RNAfusion (ARCHIVED) - 2018/10/05
 
-Initial release of NGI-RNAfusion, created with the [nf-core](http://nf-co.re/) template. Source code can be found
-at [SciLifeLab/NGI-RNAfusion](https://github.com/SciLifeLab/NGI-RNAfusion). The solution works with Docker and Singularity.
+Initial release of NGI-RNAfusion, created with the [nf-core](http://nf-co.re/) template.
+Source code can be found at [SciLifeLab/NGI-RNAfusion](https://github.com/SciLifeLab/NGI-RNAfusion).
+The solution works with Docker and Singularity.
 
 * Tools:
   * STAR-Fusion

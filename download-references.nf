@@ -1,12 +1,20 @@
 #!/usr/bin/env nextflow
 /*
-========================================================================================
-                         nf-core/rnafusion
-========================================================================================
- nf-core/rnafusion Analysis Pipeline.
- #### Homepage / Documentation
+================================================================================
+                                nf-core/rnafusion
+================================================================================
+nf-core/rnafusion:
+ RNA-seq analysis pipeline for detection gene-fusions
+--------------------------------------------------------------------------------
+ @Homepage
+ https://nf-co.re/rnafusion
+--------------------------------------------------------------------------------
+ @Documentation
+ https://nf-co.re/rnafusion/docs
+--------------------------------------------------------------------------------
+ @Repository
  https://github.com/nf-core/rnafusion
-----------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 */
 
 def helpMessage() {
@@ -19,21 +27,20 @@ def helpMessage() {
     nextflow run nf-core/rnafusion/download-references.nf -profile [PROFILE] [OPTIONS] --outdir /path/to/output
 
     Mandatory arguments:
-      --outdir                      Output directory for downloading
-      -profile                      Configuration profile to use. Can use multiple (comma separated)
-                                    Available: standard, conda, docker, singularity, awsbatch, test
+      --reference_release [int]     Release number of Ensembl reference for FASTA and GTF
+                                    example: 97 -> ftp://ftp.ensembl.org/pub/release-97
+      --outdir [path]               Output directory for downloading
+      -profile [str]                Configuration profile [https://github.com/nf-core/configs]
       
     Options:
-      --star_fusion                 Download STAR-Fusion references [NCBI version by default]
-      --star_fusion_ensembl         Download STAR-Fusion references [Ensebml, have to build manually]
-      --fusioncatcher               Download Fusioncatcher references
-      --ericscript                  Download Ericscript references 
-      --pizzly                      Download pizzly references
-      --fusion_report               Download databases for fusion-report
-        --cosmic_usr                [Required] COSMIC username
-        --cosmic_passwd             [Required] COSMIC password
-      --igenomesIgnore              Download iGenome Homo Sapiens version NCBI/GRCh38.
-                                    Ignored on default
+      --download_all [bool]         Download all references
+      --arriba [bool]               Download Arriba references
+      --star_fusion [bool]          Build STAR-Fusion references from FASTA ANF GTF
+      --fusioncatcher [bool]        Download Fusioncatcher references
+      --ericscript [bool]           Download Ericscript references 
+      --fusion_report [bool]        Download databases for fusion-report
+        --cosmic_usr [str]          [Required] COSMIC username
+        --cosmic_passwd [str]       [Required] COSMIC password
     """.stripIndent()
 }
 
@@ -42,38 +49,19 @@ def helpMessage() {
  */
 
 // Show help emssage
-if (params.help){
-    helpMessage()
-    exit 0
-}
+if (params.help) exit 0, helpMessage()
+
+if (!params.reference_release) exit 1, "You did not specify the release number of reference!"
+if (!params.outdir) exit 1, "Output directory not specified!"
 
 params.running_tools = []
-if (!params.outdir) {
-    exit 1, "Output directory not specified!"
-}
-if (!params.igenomesIgnore) {
-    params.running_tools.add("iGenome")
-}
-if (params.star_fusion) {
-    params.running_tools.add("STAR-Fusion NCBI version")
-}
-if (params.star_fusion_ensembl) {
-    params.running_tools.add("STAR-Fusion Ensembl version")
-}
-if (params.fusioncatcher) {
-    params.running_tools.add("Fusioncatcher")
-}
-if (params.ericscript) {
-    params.running_tools.add("Ericscript")
-}
-if (params.pizzly) {
-    params.running_tools.add("Pizzly")
-}
-if (params.fusion_report) {
-    if (!params.cosmic_usr || !params.cosmic_passwd) {
-        exit 1, "Database credentials are required parameter!"
-    }
+if (params.arriba || params.download_all) params.running_tools.add("Arriba")
+if (params.star_fusion || params.download_all) params.running_tools.add("STAR-Fusion")
+if (params.fusioncatcher || params.download_all) params.running_tools.add("Fusioncatcher")
+if (params.ericscript || params.download_all) params.running_tools.add("Ericscript")
+if (params.download_all) {
     params.running_tools.add('fusion-report')
+    if (!params.cosmic_usr || !params.cosmic_passwd) exit 1, "Database credentials are required parameter!"
 }
 
 // Header log info
@@ -82,90 +70,122 @@ def summary = [:]
 summary['Pipeline Name']  = 'nf-core/rnafusion/download-references.nf'
 summary['Pipeline Version'] = workflow.manifest.version
 summary['References']       = params.running_tools.size() == 0 ? 'None' : params.running_tools.join(", ")
+if(workflow.containerEngine) summary['Container'] = "$workflow.containerEngine - $workflow.container"
 summary['Max Resources']    = "$params.max_memory memory, $params.max_cpus cpus, $params.max_time time per job"
 summary['Output dir']   = params.outdir
-summary['Working dir']  = workflow.workDir
-summary['Launch dir']   = workflow.launchDir
-summary['Working dir']  = workflow.workDir
-summary['Script dir']   = workflow.projectDir
 summary['User']         = workflow.userName
-summary['Config Profile'] = workflow.profile
-if(params.config_profile_description) summary['Config Description'] = params.config_profile_description
-if(params.config_profile_contact)     summary['Config Contact']     = params.config_profile_contact
-if(params.config_profile_url)         summary['Config URL']         = params.config_profile_url
-if(workflow.profile == 'awsbatch'){
-   summary['AWS Region'] = params.awsregion
-   summary['AWS Queue'] = params.awsqueue
-}
 log.info summary.collect { k,v -> "${k.padRight(18)}: $v" }.join("\n")
 log.info "\033[2m----------------------------------------------------\033[0m"
 
-process download_star_fusion {
-    publishDir "${params.outdir}/star_fusion_ref", mode: 'copy'
-    
-    when:
-    params.star_fusion
+// Check the hostnames against configured profiles
+checkHostname()
 
+/*
+================================================================================
+                                  DOWNLOAD
+================================================================================
+*/
+
+process download_base {
+    publishDir "${params.outdir}/", mode: 'move'
+    
     output:
-    file '*'
+    file "Homo_sapiens.GRCh38_r${params.reference_release}.all.fa" into fasta
+    file "Homo_sapiens.GRCh38_r${params.reference_release}.gtf" into gtf
+    file "Homo_sapiens.GRCh38_${params.reference_release}.cdna.all.fa.gz" into transcript
 
     script:
     """
-    wget -N https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/__genome_libs_StarFv1.3/GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz -O GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz
-    tar -xvzf GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz && rm GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz
+    wget ftp://ftp.ensembl.org/pub/release-${params.reference_release}/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{1..22}.fa.gz
+    wget ftp://ftp.ensembl.org/pub/release-${params.reference_release}/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{MT,X,Y}.fa.gz
+    gunzip -c Homo_sapiens.GRCh38.dna.chromosome.* > Homo_sapiens.GRCh38_r${params.reference_release}.all.fa
+    wget ftp://ftp.ensembl.org/pub/release-${params.reference_release}/gtf/homo_sapiens/Homo_sapiens.GRCh38.${params.reference_release}.chr.gtf.gz -O Homo_sapiens.GRCh38_r${params.reference_release}.gtf.gz
+    gunzip Homo_sapiens.GRCh38_r${params.reference_release}.gtf.gz
+    wget ftp://ftp.ensembl.org/pub/release-${params.reference_release}/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz -O Homo_sapiens.GRCh38_${params.reference_release}.cdna.all.fa.gz
     """
 }
 
-process download_star_fusion_ensembl {
-    publishDir "${params.outdir}/star_fusion_ensembl_ref", mode: 'copy'
+process download_arriba {
+    publishDir "${params.outdir}/arriba", mode: 'move'
     
     when:
-    params.star_fusion_ensembl
+    params.arriba || params.download_all
 
     output:
     file '*'
 
     script:
     """
-    wget -N ftp://ftp.ensembl.org/pub/release-77/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{1..22}.fa.gz
-    wget -N ftp://ftp.ensembl.org/pub/release-77/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{MT,X,Y}.fa.gz
-    gunzip -c Homo_sapiens.GRCh38.dna.chromosome.* > Homo_sapiens.GRCh38_r77.all.fa
-    wget -N ftp://ftp.ensembl.org/pub/release-77/gtf/homo_sapiens/Homo_sapiens.GRCh38.77.chr.gtf.gz
+    wget -N https://github.com/suhrig/arriba/releases/download/v1.1.0/arriba_v1.1.0.tar.gz -O arriba_v1.1.0.tar.gz
+    tar -xvzf arriba_v1.1.0.tar.gz && mv arriba_v1.1.0/database/* . && gunzip * && rm -rf arriba_*
+    """
+}
+
+process download_star_fusion {
+    label 'process_high'
+    publishDir "${params.outdir}/star-fusion", mode: 'move'
+    
+    when:
+    params.star_fusion || params.download_all
+
+    input:
+    file fasta
+    file gtf
+
+    output:
+    file '*'
+
+    script:
+    """    
     wget -N ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
     gunzip Pfam-A.hmm.gz && hmmpress Pfam-A.hmm
+
+    wget https://github.com/FusionAnnotator/CTAT_HumanFusionLib/releases/download/v0.2.0/fusion_lib.Mar2019.dat.gz -O CTAT_HumanFusionLib.dat.gz
+    
+    # Dfam
+    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm
+    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3f
+    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3i
+    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3m
+    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3p
+
     prep_genome_lib.pl \\
-        --genome_fa Homo_sapiens.GRCh38_r77.all.fa \\
-        --gtf Homo_sapiens.GRCh38.77.chr.gtf \\
+        --genome_fa ${fasta} \\
+        --gtf ${gtf} \\
+        --fusion_annot_lib CTAT_HumanFusionLib.dat.gz \\
+        --annot_filter_rule AnnotFilterRule.pm \\
         --pfam_db Pfam-A.hmm \\
-        --CPU 10
+        --dfam_db homo_sapiens_dfam.hmm \\
+        --human_gencode_filter \\
+        --CPU ${task.cpus}
     """
 }
 
 process download_fusioncatcher {
-    publishDir "${params.outdir}/fusioncatcher_ref", mode: 'copy'
+    publishDir "${params.outdir}/fusioncatcher", mode: 'move'
     
     when:
-    params.fusioncatcher
+    params.fusioncatcher || params.download_all
 
     output:
     file '*'
 
     script:
     """
-    wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v90.tar.gz.aa
-    wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v90.tar.gz.ab
-    wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v90.tar.gz.ac
-    wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v90.tar.gz.ad
-    cat human_v90.tar.gz.* | tar xz
-    rm human_v90.tar*
+    wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v98.tar.gz.aa
+    wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v98.tar.gz.ab
+    wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v98.tar.gz.ac
+    wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v98.tar.gz.ad
+    cat human_v98.tar.gz.* | tar xz
+    rm human_v98.tar*
     """
 }
 
 process download_ericscript {
-    publishDir "${params.outdir}/ericscript_ref", mode: 'copy'
+    publishDir "${params.outdir}/ericscript", mode: 'move'
     
     when:
-    params.ericscript
+    params.ericscript || params.download_all
 
     output:
     file '*'
@@ -180,27 +200,8 @@ process download_ericscript {
     """
 }
 
-process download_pizzly {
-    publishDir "${params.outdir}/pizzly_ref", mode: 'copy'
-    
-    when:
-    params.pizzly
-
-    output:
-    file '*'
-
-    script:
-    """
-    wget -N ftp://ftp.ensembl.org/pub/release-94/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz
-    wget -N ftp://ftp.ensembl.org/pub/release-94/gtf/homo_sapiens/Homo_sapiens.GRCh38.94.gtf.gz && gunzip Homo_sapiens.GRCh38.94.gtf.gz
-    """
-}
-
 process download_databases {
-    publishDir "${params.outdir}/databases", mode: 'copy'
-    
-    when:
-    params.fusion_report
+    publishDir "${params.outdir}/databases", mode: 'move'
 
     output:
     file '*'
@@ -211,47 +212,53 @@ process download_databases {
     """
 }
 
-process download_igenome {
-    publishDir "${params.outdir}/igenome", mode: 'copy'
-    
-    when:
-    !params.igenomesIgnore
-
-    output:
-    file '*'
-
-    script:
-    """
-    aws s3 --no-sign-request --region eu-west-1 sync s3://ngi-igenomes/igenomes/Homo_sapiens/NCBI/GRCh38/ .
-    """
-}
-
 /*
  * Completion
  */
 workflow.onComplete {
-    log.info "[nf-core/rnafusion] Pipeline Complete"
+    log.info "[nf-core/rnafusion/download-references.nf] Pipeline Complete"
 }
 
-def nfcoreHeader(){
+def nfcoreHeader() {
     // Log colors ANSI codes
-    c_reset = params.monochrome_logs ? '' : "\033[0m";
-    c_dim = params.monochrome_logs ? '' : "\033[2m";
     c_black = params.monochrome_logs ? '' : "\033[0;30m";
-    c_green = params.monochrome_logs ? '' : "\033[0;32m";
-    c_yellow = params.monochrome_logs ? '' : "\033[0;33m";
     c_blue = params.monochrome_logs ? '' : "\033[0;34m";
-    c_purple = params.monochrome_logs ? '' : "\033[0;35m";
     c_cyan = params.monochrome_logs ? '' : "\033[0;36m";
+    c_dim = params.monochrome_logs ? '' : "\033[2m";
+    c_green = params.monochrome_logs ? '' : "\033[0;32m";
+    c_purple = params.monochrome_logs ? '' : "\033[0;35m";
+    c_reset = params.monochrome_logs ? '' : "\033[0m";
     c_white = params.monochrome_logs ? '' : "\033[0;37m";
+    c_yellow = params.monochrome_logs ? '' : "\033[0;33m";
 
-    return """    ${c_dim}----------------------------------------------------${c_reset}
+    return """    -${c_dim}--------------------------------------------------${c_reset}-
                                             ${c_green},--.${c_black}/${c_green},-.${c_reset}
     ${c_blue}        ___     __   __   __   ___     ${c_green}/,-._.--~\'${c_reset}
     ${c_blue}  |\\ | |__  __ /  ` /  \\ |__) |__         ${c_yellow}}  {${c_reset}
     ${c_blue}  | \\| |       \\__, \\__/ |  \\ |___     ${c_green}\\`-._,-`-,${c_reset}
                                             ${c_green}`._,._,\'${c_reset}
     ${c_purple}  nf-core/rnafusion v${workflow.manifest.version}${c_reset}
-    ${c_dim}----------------------------------------------------${c_reset}
+    -${c_dim}--------------------------------------------------${c_reset}-
     """.stripIndent()
+}
+
+def checkHostname() {
+    def c_reset = params.monochrome_logs ? '' : "\033[0m"
+    def c_white = params.monochrome_logs ? '' : "\033[0;37m"
+    def c_red = params.monochrome_logs ? '' : "\033[1;91m"
+    def c_yellow_bold = params.monochrome_logs ? '' : "\033[1;93m"
+    if (params.hostnames) {
+        def hostname = "hostname".execute().text.trim()
+        params.hostnames.each { prof, hnames ->
+            hnames.each { hname ->
+                if (hostname.contains(hname) && !workflow.profile.contains(prof)) {
+                    log.error "====================================================\n" +
+                            "  ${c_red}WARNING!${c_reset} You are running with `-profile $workflow.profile`\n" +
+                            "  but your machine hostname is ${c_white}'$hostname'${c_reset}\n" +
+                            "  ${c_yellow_bold}It's highly recommended that you use `-profile $prof${c_reset}`\n" +
+                            "============================================================"
+                }
+            }
+        }
+    }
 }

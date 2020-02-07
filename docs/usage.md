@@ -2,13 +2,12 @@
 
 ## Table of contents
 
-<!-- Install Atom plugin markdown-toc-auto for this ToC to auto-update on save -->
-<!-- TOC START min:2 max:3 link:true asterisk:true update:true -->
 * [Table of contents](#table-of-contents)
 * [Introduction](#introduction)
 * [Running the pipeline](#running-the-pipeline)
   * [Using Docker](#running-the-pipeline-using-docker)
   * [Using Singularity](#running-the-pipeline-using-singularity)
+  * [Running specific tools](#running-specific-tools)
 * [Updating the pipeline](#updating-the-pipeline)
 * [Reproducibility](#reproducibility)
 * [Main arguments](#main-arguments)
@@ -19,40 +18,47 @@
     * [`singularity`](#singularity)
     * [`test`](#test)
   * [`--reads`](#--reads)
-  * [`--singleEnd`](#--singleend)
+  * [`--single_end`](#--single_end)
 * [Tool flags](#tool-flags)
-  * [`--star_fusion`](#--star_fusion)
-    * [`--star_fusion_opt`](#--star_fusion_opt)
+  * [`--arriba`](#--arriba)
+    * [`--arriba_opt`](#--arriba_opt)
+  * [`--ericscript`](#--ericscript)
+    * [`--ericscript_opt`](#--ericscript_opt)
   * [`--fusioncatcher`](#--fusioncatcher)
     * [`--fusioncatcher_opt`](#--fusioncatcher_opt)
-  * [`--ericscript`](#--ericscript)
-  * [`--pizzly`](#--pizzly)  
-  * [`--squid`](#--squid)
   * [`--fusion_report_opt`](#--fusion_report_opt)
-  * [`--debug`](#--debug)
+  * [`--pizzly`](#--pizzly)
+    * [`--pizzly_k`](#--pizzly_k)
+  * [`--squid`](#--squid)
+  * [`--star_fusion`](#--star_fusion)
+    * [`--star_fusion_opt`](#--star_fusion_opt)
 * [Visualization flags](#visualization-flags)
+  * [`--arriba_vis`](#--arriba_vis)
   * [`--fusion_inspector`](#--fusion_inspector)
 * [Reference genomes](#reference-genomes)
+  * [`--arriba_ref`](#--arriba_ref)
+  * [`--databases`](#--databases)
+  * [`--ericscript_ref`](#--ericscript_ref)
   * [`--fasta`](#--fasta)
+  * [`--fusioncatcher_ref`](#--fusioncatcher_ref)
   * [`--gtf`](#--gtf)
   * [`--star_index`](#--star_index)
   * [`--star_fusion_ref`](#--star_fusion_ref)
-  * [`--fusioncatcher_ref`](#--fusioncatcher_ref)
-  * [`--ericscript_ref`](#--ericscript_ref)
-  * [`--pizzly_fasta`](#--pizzly_fasta)
-  * [`--pizzly_gtf`](#--pizzly_gtf)
-  * [`--genome` (using iGenomes)](#--genome-using-igenomes)
-  * [`--igenomesIgnore`](#--igenomesignore)
+  * [`--transcript`](#--transcript)
 * [Job resources](#job-resources)
   * [Automatic resubmission](#automatic-resubmission)
   * [Custom resource requests](#custom-resource-requests)
 * [AWS Batch specific parameters](#aws-batch-specific-parameters)
   * [`--awsqueue`](#--awsqueue)
   * [`--awsregion`](#--awsregion)
+  * [`--awscli`](#--awscli)
 * [Other command line parameters](#other-command-line-parameters)
+  * [`--debug`](#--debug)
   * [`--read_length`](#--read_length)
   * [`--outdir`](#--outdir)
   * [`--email`](#--email)
+  * [`--email_on_fail`](#--email_on_fail)
+  * [`--max_multiqc_email_size`](#--max_multiqc_email_size)
   * [`-name`](#-name)
   * [`-resume`](#-resume)
   * [`-c`](#-c)
@@ -78,90 +84,64 @@ NXF_OPTS='-Xms1g -Xmx4g'
 
 ## Running the pipeline
 
-The typical command for running the whole pipeline is as follows:
+The typical command for running the pipeline is as follows.
 
 ### Running the pipeline using Docker
 
 This will launch the pipeline using `docker` with configuration profile [example-docker.config](https://github.com/nf-core/rnafusion/blob/master/example/custom-docker.config). See below for more information about profiles.
 
 ```bash
-# With custom fasta and gtf (Ensembl example)
-nextflow run nf-core/rnafusion
-  --reads '*_R{1,2}.fastq.gz'
-  -profile docker -c 'example/custom-docker.config'
-  --fasta 'Homo_sapiens.GRCh38.95.all.fa'
-  --gtf '/Homo_sapiens.GRCh38.95.chr.gtf'
-  --star_fusion
-  --fusioncatcher
-  --ericscript
-  --pizzly
-  --squid
-  --fusion_inspector
-
-# With NCBI GRCh38 genome reference
-nextflow run nf-core/rnafusion
-  --reads '*_R{1,2}.fastq.gz'
-  -profile docker -c 'example/custom-docker.config'
-  --genome GRCh38
-  --star_fusion
-  --fusioncatcher
-  --ericscript
-  --pizzly
-  --squid
+nextflow run nf-core/rnafusion \
+  -profile docker -c 'example/custom-docker.config' \
+  --reads '*_R{1,2}.fastq.gz' \
+  --arriba \
+  --star_fusion \
+  --fusioncatcher \
+  --ericscript \
+  --pizzly \
+  --squid \
+  --arriba_vis \
   --fusion_inspector
 ```
 
 ### Running the pipeline using Singularity
 
-First start by downloading singularity images. Sometimes the pipeline can crash if you are not using downloaded images (might be some network issues).
+First start by downloading singularity images.
 
 ```bash
 nextflow run nf-core/rnafusion/download-singularity-img.nf --download_all --outdir /path
+```
 
-# or
+If the nextflow download script crashes (network issue), please use the bash script instead.
 
+```bash
 cd utils && sh download-singularity-img.sh /path/to/images
 ```
 
-This will launch the pipeline using `singularity` with configuration profile [example-singularity.config](https://github.com/nf-core/rnafusion/blob/master/example/custom-singularity.config). See below for more information about profiles.
+The command bellow will launch the pipeline using `singularity` with configuration profile [example-singularity.config](https://github.com/nf-core/rnafusion/blob/master/example/custom-singularity.config). See below for more information about profiles.
 
 ```bash
-# With custom fasta and gtf (Ensembl example)
-nextflow run nf-core/rnafusion
-  --reads '*_R{1,2}.fastq.gz'
-  -profile singularity -c 'example/custom-singularity.config'
-  --fasta 'Homo_sapiens.GRCh38.95.all.fa'
-  --gtf '/Homo_sapiens.GRCh38.95.chr.gtf'
-  --star_fusion
-  --fusioncatcher
-  --ericscript
-  --pizzly
-  --squid
-  --fusion_inspector
-
-# With NCBI GRCh38 genome reference
-nextflow run nf-core/rnafusion
-  --reads '*_R{1,2}.fastq.gz'
-  -profile singularity -c 'example/custom-singularity.config'
-  --genome GRCh38
-  --star_fusion
-  --fusioncatcher
-  --ericscript
-  --pizzly
-  --squid
+nextflow run nf-core/rnafusion \
+  -profile singularity -c 'example/custom-singularity.config' \
+  --reads '*_R{1,2}.fastq.gz' \
+  --arriba \
+  --star_fusion \
+  --fusioncatcher \
+  --ericscript \
+  --pizzly \
+  --squid \
+  --arriba_vis \
   --fusion_inspector
 ```
 
----
-
-It is also possible to execute **only** specific tools:
+### Running specific tools
 
 ```bash
-nextflow run nf-core/rnafusion
-  --reads '*_R{1,2}.fastq.gz'
-  --genome GRCh38 -profile docker -c 'example/custom-docker.config'
-  --fusioncatcher
-  --ericscript
+nextflow run nf-core/rnafusion \
+  -profile singularity -c 'example/custom-singularity.config' \
+  --reads '*_R{1,2}.fastq.gz' \
+  --arriba \
+  --squid
 ```
 
 Note that the pipeline will create the following files in your working directory:
@@ -193,18 +173,23 @@ This version number will be logged in reports when you run the pipeline, so that
 
 ### `-profile`
 
-Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments. Note that multiple profiles can be loaded, for example: `-profile docker` - the order of arguments is important!
+Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments.
 
-If `-profile` is not specified at all the pipeline will be run locally and expects all software to be installed and available on the `PATH`.
+Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Conda) - see below.
 
-* `awsbatch`
-  * A generic configuration profile to be used with AWS Batch.
+The pipeline also dynamically loads configurations from [https://github.com/nf-core/configs](https://github.com/nf-core/configs) when it runs, making multiple config profiles for various institutional clusters available at run time. For more information and to see if your system is available in these configs please see the [nf-core/configs documentation](https://github.com/nf-core/configs#documentation).
+
+Note that multiple profiles can be loaded, for example: `-profile test,docker` - the order of arguments is important!
+They are loaded in sequence, so later profiles can overwrite earlier profiles.
+
+If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended.
+
 * `conda`
   * A generic configuration profile to be used with [conda](https://conda.io/docs/)
   * Pulls most software from [Bioconda](https://bioconda.github.io/)
 * `docker`
   * A generic configuration profile to be used with [Docker](http://docker.com/)
-  * Pulls software from dockerhub: [`nfcore/rnafusion`](http://hub.docker.com/r/nfcore/rnafusion/)
+  * Pulls software from DockerHub: [`nfcore/rnafusion`](http://hub.docker.com/r/nfcore/rnafusion/)
 * `singularity`
   * A generic configuration profile to be used with [Singularity](http://singularity.lbl.gov/)
   * Pulls software from DockerHub: [`nfcore/rnafusion`](http://hub.docker.com/r/nfcore/rnafusion/)
@@ -228,7 +213,13 @@ Please note the following requirements:
 
 If left unspecified, a default pattern is used: `data/*{1,2}.fastq.gz`
 
-It is not possible to run a mixture of single-end and paired-end files in one run.
+### `--single_end`
+
+By default, the pipeline expects paired-end data. If you have single-end data, you need to specify `--single_end` on the command line when you launch the pipeline. A normal glob pattern, enclosed in quotation marks, can then be used for `--reads`. For example:
+
+```bash
+--single_end --reads '*.fastq'
+```
 
 ### `--singleEnd`
 
@@ -240,48 +231,54 @@ By default, the pipeline expects paired-end data. If you have single-end data, y
 
 ## Tool flags
 
-### `--star_fusion`
+### `--arriba`
 
-If enabled, executes `STAR-Fusion` tool.
+If enabled, executes `Arriba` tool.
 
-* `--star_fusion_opt`
-  * Parameter for specifying additional parameters. For more info, please refer to the [documentation](https://github.com/STAR-Fusion/STAR-Fusion/wiki) of the tool.
-  * **Has to be specified in custom configuration file. Will not work from a command line.**
+* `--arriba_opt`
+  * Specify additional parameters. For more info, please refer to the [documentation](http://arriba.readthedocs.io/en/latest/quickstart/) of the tool.
+
+### `--ericscript`
+
+If enabled, executes `Ericscript` tool.
+
+* `--ericscript_opt`
+  * Specify additional parameters. For more info, please refer to the [documentation](https://sites.google.com/site/bioericscript/home) of the tool.
 
 ### `--fusioncatcher`
 
 If enabled, executes `Fusioncatcher` tool.
 
 * `--fusioncatcher_opt`
-  * Parameter for specifying additional parameters. For more info, please refer to the [documentation](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) of the tool.
-  * **Has to be specified in custom configuration file. Will not work from a command line.**
+  * Specify additional parameters. For more info, please refer to the [documentation](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) of the tool.
 
-### `--ericscript`
+### `--fusion_report_opt`
 
-If enabled, executes `Ericscript` tool.
+Specify additional parameters. For more info, please refer to the [documentation](https://matq007.github.io/fusion-report/#/) of the tool.
 
 ### `--pizzly`
 
 If enabled, executes `Pizzly` tool.
 
+* `--pizzly_k`
+  * Number of k-mers. Deafult 31.
+
 ### `--squid`
 
 If enabled, executes `Squid` tool.
 
-### `--fusion_report_opt`
+### `--star_fusion`
 
-* Parameter for specifying additional parameters. For more info, please refer to the fusion-report [documentation](https://matq007.github.io/fusion-report/usage.html).
-* **Has to be specified in custom configuration file. Will not work from a command line.**
+If enabled, executes `STAR-Fusion` tool.
 
-### `--debug`
-
-To run only a specific tool (testing freshly implemented tool) just add `--debug` parameter. This parameter only works on **fusion tools only**!
-
-```bash
-nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' --genome GRCh38 -profile docker --star_fusion --test
-```
+* `--star_fusion_opt`
+  * Parameter for specifying additional parameters. For more info, please refer to the [documentation](https://github.com/STAR-Fusion/STAR-Fusion/wiki) of the tool.
 
 ## Visualization flags
+
+### `--arriba_vis`
+
+If enabled, executes build in `Arriba` visualization tool.
 
 ### `--fusion_inspector`
 
@@ -289,19 +286,49 @@ If enabled, executes `Fusion-Inspector` tool.
 
 ## Reference genomes
 
-The pipeline config files come bundled with paths to the illumina iGenomes reference index files. If running with docker or AWS, the configuration is set up to use the [AWS-iGenomes](https://ewels.github.io/AWS-iGenomes/) resource.
+### `--arriba_ref`
+
+Required reference in order to run `Arriba`.
+
+```bash
+--arriba_ref '[path to Arriba reference]'
+```
+
+### `--databases`
+
+Required databases in order to run `fusion-report`.
+
+```bash
+--databases '[path to fusion-report databases]'
+```
+
+### `--ericscript_ref`
+
+Required reference in order to run `EricScript`.
+
+```bash
+--ericscript_ref '[path to EricScript reference]'
+```
 
 ### `--fasta`
 
-If you prefer, you can specify the full path to your reference genome when you run the pipeline:
+Required reference genome.
 
 ```bash
 --fasta '[path to Fasta reference]'
 ```
 
+### `--fusioncatcher_ref`
+
+Required reference in order to run `Fusioncatcher`.
+
+```bash
+--fusioncatcher_ref '[path to Fusioncatcher reference]'
+```
+
 ### `--gtf`
 
-If you prefer, you can specify the full path to your annotation when you run the pipeline:
+Required annotation file.
 
 ```bash
 --gtf '[path to GTF annotation]'
@@ -323,66 +350,13 @@ Required reference in order to run `STAR-Fusion`.
 --star_fusion_ref '[path to STAR-Fusion reference]'
 ```
 
-### `--fusioncatcher_ref`
+### `--transcript`
 
-Required reference in order to run `Fusioncatcher`.
-
-```bash
---fusioncatcher_ref '[path to Fusioncatcher reference]'
-```
-
-### `--ericscript_ref`
-
-Required reference in order to run `Ericscript`.
+Required transcript file.
 
 ```bash
---ericscript_ref '[path to Ericscript reference]'
+--transcript '[path to transcript reference]'
 ```
-
-### `--pizzly_fasta`
-
-Required reference in order to run `Pizzly`.
-
-```bash
---pizzly_fasta '[path to Pizzly Fasta reference]'
-```
-
-### `--pizzly_gtf`
-
-Required reference in order to run `Pizzly`.
-
-```bash
---pizzly_gtf '[path to Pizzly GTF annotation]'
-```
-
-### `--genome` (using iGenomes)
-
-There are 31 different species supported in the iGenomes references. To run the pipeline, you must specify which to use with the `--genome` flag.
-You can find the keys to specify the genomes in the [iGenomes config file](../conf/igenomes.config). Common genomes that are supported are:
-
-* Human
-  * `--genome GRCh38` (recommended)
-
-> **TL;DR:** The pipeline only supports Homo Sapiens. We recommend using fasta nad gtf from Ensembl database and build custom STAR-Fusion reference. Most of the tools references are based on Ensembl.
-
-Note that you can use the same configuration setup to save sets of reference files for your own use, even if they are not part of the iGenomes resource. See the [Nextflow documentation](https://www.nextflow.io/docs/latest/config.html) for instructions on where to save such a file.
-
-The syntax for this reference configuration is as follows:
-
-```nextflow
-params {
-  genomes {
-    'GRCh38' {
-      fasta   = '<path to the genome fasta file>' // Used if no star index given
-    }
-    // Any number of additional genomes, key is used with --genome
-  }
-}
-```
-
-### `--igenomesIgnore`
-
-Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`.
 
 ## Job resources
 
@@ -396,11 +370,11 @@ Wherever process-specific requirements are set in the pipeline, the default valu
 
 If you are likely to be running `nf-core` pipelines regularly it may be a good idea to request that your custom config file is uploaded to the `nf-core/configs` git repository. Before you do this please can you test that the config file works with your pipeline of choice using the `-c` parameter (see definition below). You can then create a pull request to the `nf-core/configs` repository with the addition of your config file, associated documentation file (see examples in [`nf-core/configs/docs`](https://github.com/nf-core/configs/tree/master/docs)), and amending [`nfcore_custom.config`](https://github.com/nf-core/configs/blob/master/nfcore_custom.config) to include your custom profile.
 
-If you have any questions or issues please send us a message on [Slack](https://nf-core-invite.herokuapp.com/).
+If you have any questions or issues please send us a message on [Slack](https://nf-co.re/join/slack).
 
 ## AWS Batch specific parameters
 
-Running the pipeline on AWS Batch requires a couple of specific parameters to be set according to your AWS Batch configuration. Please use the `-awsbatch` profile and then specify all of the following parameters.
+Running the pipeline on AWS Batch requires a couple of specific parameters to be set according to your AWS Batch configuration. Please use [`-profile awsbatch`](https://github.com/nf-core/configs/blob/master/conf/awsbatch.config) and then specify all of the following parameters.
 
 ### `--awsqueue`
 
@@ -408,10 +382,20 @@ The JobQueue that you intend to use on AWS Batch.
 
 ### `--awsregion`
 
+The AWS region in which to run your job. Default is set to `eu-west-1` but can be adjusted to your needs.
+
+### `--awscli`
+
+The [AWS CLI](https://www.nextflow.io/docs/latest/awscloud.html#aws-cli-installation) path in your custom AMI. Default: `/home/ec2-user/miniconda/bin/aws`.
+
 The AWS region to run your job in. Default is set to `eu-west-1` but can be adjusted to your needs.
 Please make sure to also set the `-w/--work-dir` and `--outdir` parameters to a S3 storage bucket of your choice - you'll get an error message notifying you if you didn't.
 
 ## Other command line parameters
+
+### `--debug`
+
+To run only a specific tool (testing freshly implemented tool) just add `--debug` parameter. This parameter only works on **fusion tools only**!
 
 ### `--read_length`
 
@@ -425,7 +409,17 @@ The output directory where the results will be saved.
 
 Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.
 
+### `--email_on_fail`
+
+This works exactly as with `--email`, except emails are only sent if the workflow is not successful.
+
+### `--max_multiqc_email_size`
+
+Threshold size for MultiQC report to be attached in notification email. If file generated by pipeline exceeds the threshold, it will not be attached (Default: 25MB).
+
 ### `-name`
+
+Name for the pipeline run. If not specified, Nextflow will automatically generate a random mnemonic.
 
 Name for the pipeline run. If not specified, Nextflow will automatically generate a random mnemonic.
 This is used in the MultiQC report (if not default) and in the summary HTML / e-mail (always).
@@ -433,6 +427,8 @@ This is used in the MultiQC report (if not default) and in the summary HTML / e-
 **NB:** Single hyphen (core Nextflow option)
 
 ### `-resume`
+
+Specify this when restarting a pipeline. Nextflow will used cached results from any pipeline steps where the inputs are the same, continuing from where it got to previously.
 
 Specify this when restarting a pipeline. Nextflow will used cached results from any pipeline steps where the inputs are the same, continuing from where it got to previously.
 You can also supply a run name to resume a specific run: `-resume [run-name]`. Use the `nextflow log` command to show previous run names.
@@ -449,7 +445,7 @@ Note - you can use this to override pipeline defaults.
 
 ### `--custom_config_version`
 
-Provide git commit id for custom Institutional configs hosted at `nf-core/configs`. This was implemented for reproducibility purposes. Default is set to `master`.
+Provide git commit id for custom Institutional configs hosted at `nf-core/configs`. This was implemented for reproducibility purposes. Default: `master`.
 
 ```bash
 ## Download and use config file with following git commid id
