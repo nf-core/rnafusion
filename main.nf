@@ -673,8 +673,7 @@ process arriba_visualization {
 }
 
 
-fusion_inspector_input = fusion_inspector_input_list
-    .join(read_files_fusion_inspector, by:[0])
+fusion_inspector_input = fusion_inspector_input_list.join(read_files_fusion_inspector)
 
 fusion_inspector_input = fusion_inspector_input.dump(tag:'fusion_inspector_input')
 
