@@ -688,7 +688,7 @@ process fusion_inspector {
     publishDir "${params.outdir}/tools/FusionInspector/${sample}", mode: 'copy'
 
     input:
-        set val(sample), file(fi_input_list), files(reads) from fusion_inspector_input
+        set val(sample), file(fi_input_list), file(reads) from fusion_inspector_input
         file(reference) from reference.fusion_inspector
 
     output:
