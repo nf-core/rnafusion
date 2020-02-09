@@ -490,7 +490,9 @@ process ericscript {
         -o ./tmp \\
         ${reads}
 
-    mv ./tmp/fusions.results.filtered.tsv ./tmp/${sample}_ericscript.tsv
+    if [-f ./tmp/fusions.results.filtered.tsv]; then
+        mv ./tmp/fusions.results.filtered.tsv ./tmp/${sample}_ericscript.tsv
+    fi
     """
 }
 
@@ -608,7 +610,7 @@ process summary {
         set val(sample), file(reads), file(arriba), file(ericscript), file(fusioncatcher), file(pizzly), file(squid), file(starfusion) from files_and_reports_summary
 
     output:
-        file("${sample}_fusion_list.tsv") into fusion_inspector_input_list
+        set val(sample), file("${sample}_fusion_list.tsv") into fusion_inspector_input_list
         file("${sample}_fusion_genes_mqc.json") into summary_fusions_mq
         file("*") into report
     
@@ -670,6 +672,11 @@ process arriba_visualization {
     """
 }
 
+
+fusion_inspector_input = fusion_inspector_input_list.join(read_files_fusion_inspector)
+
+fusion_inspector_input = fusion_inspector_input.dump(tag:'fusion_inspector_input')
+
 /*
  * Fusion Inspector
  */
@@ -680,9 +687,8 @@ process fusion_inspector {
     publishDir "${params.outdir}/tools/FusionInspector/${sample}", mode: 'copy'
 
     input:
-        set val(sample), file(reads) from read_files_fusion_inspector
+        set val(sample), file(fi_input_list), file(reads) from fusion_inspector_input
         file(reference) from reference.fusion_inspector
-        file(fi_input_list) from fusion_inspector_input_list.collect()
 
     output:
         file("*.{fa,gtf,bed,bam,bai,txt}") into fusion_inspector_output
