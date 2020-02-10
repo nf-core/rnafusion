@@ -21,7 +21,7 @@ jobs:
           sudo mv nextflow /usr/local/bin/
       - name: Pull docker image
         run: |
-          docker pull nfcore/rnafusion:dev && docker tag nfcore/rnafusion:dev nfcore/rnafusion:1.1.0
+          docker pull nfcore/rnafusion:dev && docker tag nfcore/rnafusion:dev nfcore/rnafusion:dev
       - name: Run pipeline
         run: |
           nextflow run ${GITHUB_WORKSPACE} --help
