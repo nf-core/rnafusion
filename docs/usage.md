@@ -221,6 +221,14 @@ By default, the pipeline expects paired-end data. If you have single-end data, y
 --single_end --reads '*.fastq'
 ```
 
+### `--singleEnd`
+
+By default, the pipeline expects paired-end data. If you have single-end data, you need to specify `--singleEnd` on the command line when you launch the pipeline. A normal glob pattern, enclosed in quotation marks, can then be used for `--reads`. For example:
+
+```bash
+--singleEnd --reads '*.fastq.gz'
+```
+
 ## Tool flags
 
 ### `--arriba`

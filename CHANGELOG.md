@@ -4,7 +4,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] nfcore/rnafusion -
+## dev nfcore/rnafusion
+
+## [1.1.0] nfcore/rnafusion - 2020/02/10
+
+* Fusion gene detection tools:
+  * `Arriba v1.1.0`
+  * `Ericscript v0.5.5`
+  * `Fusioncatcher v1.20`
+  * `Pizzly v0.37.3`
+  * `Squid v1.5`
+  * `STAR-Fusion v1.6.0`
+* Visualization tools:
+  * `Arriba v1.1.0`
+  * `FusionInspector v1.3.1`
+* Other tools:
+  * `fusion-report v2.0.1`
+  * `FastQ v0.11.8`
+  * `MultiQC v1.7`
+  * `STAR aligner v2.7.0f`
 
 ### Added
 
@@ -17,7 +35,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 * Upgraded `fusion-report v1.0.0` to `fusion-report v2.0.1`
 * Divided `running_tools` into fusion and visualization tools
 * Updated `STAR` in `Squid`, `Fusion-Inspector` version to `2.7.0f`
-* Upgraded `STAR-Fusion v1.5.0` to `STAR-Fusion v1.7.0` [#83](https://github.com/nf-core/rnafusion/issues/83)
+* Upgraded `STAR-Fusion v1.5.0` to `STAR-Fusion v1.6.0` [#83](https://github.com/nf-core/rnafusion/issues/83)
 * Parameter `igenomesIgnore` renamed to `igenome` [#81](https://github.com/nf-core/rnafusion/issues/81)
 * Finished STAR-Fusion file renaming [#18](https://github.com/nf-core/rnafusion/issues/18)
 * Updated logos
@@ -31,8 +49,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Removed
 
 * Variables `pizzly_fasta` and `pizzly_gtf` have been removed and replaced with `transcript` and `gtf`
-* Jenkisfile, test configuration, pylintrc
-* Removed `igenomes.config` because the pipeline only supports Ensembl version
+* `Jenkisfile`, test configuration, pylintrc configuration
+* Removed `igenomes.config` because the pipeline only supports `Ensembl` version
+
+---
 
 ## [1.0.2] nfcore/rnafusion - 2019/05/13
 
@@ -45,6 +65,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 * Fixed COSMIC parameters not wrapped in quotes [#75](https://github.com/nf-core/rnafusion/issues/75)
 * Implemented output output for fusion tools [#72](https://github.com/nf-core/rnafusion/issues/72)
 * Fixed reference download link for STAR-Fusion [#71](https://github.com/nf-core/rnafusion/issues/71)
+
+---
 
 ## [1.0.1] nfcore/rnafusion - 2019/04/06
 
@@ -72,6 +94,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 * Removed `Singularity`
 
+---
+
 ## [1.0] nfcore/rnafusion - 2018/02/14
 
 Version 1.0 marks the first production release of this pipeline under the nf-core flag.
@@ -90,6 +114,8 @@ The pipeline includes additional help scripts to download references for fusion 
   * `FastQ v0.11.8`
   * `MultiQC v1.7`
   * `FusionGDB updated 2019/01/23`
+
+---
 
 ## [0.1] SciLifeLab/NGI-RNAfusion (ARCHIVED) - 2018/10/05
 
