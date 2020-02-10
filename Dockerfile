@@ -1,4 +1,4 @@
-FROM nfcore/base:1.8
+FROM nfcore/base:dev
 LABEL authors="Martin Proks" \
       description="Docker image containing all software requirements for the nf-core/rnafusion pipeline"
 
