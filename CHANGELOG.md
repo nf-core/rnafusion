@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## dev nfcore/rnafusion
 
+### Added
+
+* Added social preview image [#107](https://github.com/nf-core/rnafusion/issues/107)
+
 ## [1.1.0] nfcore/rnafusion - 2020/02/10
 
 * Fusion gene detection tools:
