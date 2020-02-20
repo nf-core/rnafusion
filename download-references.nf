@@ -136,7 +136,7 @@ process download_star_fusion {
     file '*'
 
     script:
-    """    
+    """
     wget -N ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
     gunzip Pfam-A.hmm.gz && hmmpress Pfam-A.hmm
 
@@ -149,14 +149,14 @@ process download_star_fusion {
     wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3m
     wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3p
 
+    export TMPDIR=/tmp
     prep_genome_lib.pl \\
         --genome_fa ${fasta} \\
         --gtf ${gtf} \\
+        --annot_filter_rule /opt/conda/envs/star-fusion_v1.6.0/ctat-genome-lib-builder-2830cd708c5bb9353878ca98069427e83acdd625/AnnotFilterRuleLib/AnnotFilterRule.pm \\
         --fusion_annot_lib CTAT_HumanFusionLib.dat.gz \\
-        --annot_filter_rule AnnotFilterRule.pm \\
         --pfam_db Pfam-A.hmm \\
         --dfam_db homo_sapiens_dfam.hmm \\
-        --human_gencode_filter \\
         --CPU ${task.cpus}
     """
 }
