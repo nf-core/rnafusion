@@ -30,7 +30,7 @@ def helpMessage() {
     Mandatory arguments:
       --reads [file]                Path to input data (must be surrounded with quotes)
       -profile [str]                Configuration profile to use. Can use multiple (comma separated)
-                                    Available: conda, docker, singularity, test, awsbatch and more
+                                    Available: conda, docker, singularity, test, awsbatch, <institute> and more
     Tool flags:
       --arriba [bool]                 Run Arriba
       --arriba_opt [str]              Specify extra parameters for Arriba
@@ -49,12 +49,13 @@ def helpMessage() {
       --fusion_inspector [bool]       Run Fusion-Inspector
       --fusion_inspector_opt [str]    Specify extra parameters for Fusion-Inspector
 
-    References                      If not specified in the configuration file or you wish to overwrite any of the references.
+    References                        If not specified in the configuration file or you wish to overwrite any of the references.
       --arriba_ref [file]             Path to Arriba reference
       --databases [path]              Database path for fusion-report
       --ericscript_ref [file]         Path to Ericscript reference
       --fasta [file]                  Path to fasta reference
       --fusioncatcher_ref [file]      Path to Fusioncatcher reference
+      --genome [str]                  Name of iGenomes reference
       --gtf [file]                    Path to GTF annotation
       --star_index [file]             Path to STAR-Index reference
       --star_fusion_ref [file]        Path to STAR-Fusion reference
@@ -159,7 +160,8 @@ if (workflow.profile.contains('awsbatch')) {
 }
 
 // Stage config files
-ch_multiqc_config = file(params.multiqc_config, checkIfExists: true)
+ch_multiqc_config = file("$baseDir/assets/multiqc_config.yaml", checkIfExists: true)
+ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config, checkIfExists: true) : Channel.empty()
 ch_output_docs = file("$baseDir/docs/output.md", checkIfExists: true)
 
 /*
@@ -227,9 +229,10 @@ log.info "-\033[2m--------------------------------------------------\033[0m-"
 // Check the hostnames against configured profiles
 checkHostname()
 
-def create_workflow_summary(summary) {
-    def yaml_file = workDir.resolve('workflow_summary_mqc.yaml')
-    yaml_file.text  = """
+Channel.from(summary.collect{ [it.key, it.value] })
+    .map { k,v -> "<dt>$k</dt><dd><samp>${v ?: '<span style=\"color:#999999;\">N/A</a>'}</samp></dd>" }
+    .reduce { a, b -> return [a, b].join("\n            ") }
+    .map { x -> """
     id: 'nf-core-rnafusion-summary'
     description: " - this information is collected when the pipeline is started."
     section_name: 'nf-core/rnafusion Workflow Summary'
@@ -237,12 +240,10 @@ def create_workflow_summary(summary) {
     plot_type: 'html'
     data: |
         <dl class=\"dl-horizontal\">
-${summary.collect { k,v -> "            <dt>$k</dt><dd><samp>${v ?: '<span style=\"color:#999999;\">N/A</a>'}</samp></dd>" }.join("\n")}
+            $x
         </dl>
-    """.stripIndent()
-
-   return yaml_file
-}
+    """.stripIndent() }
+    .set { ch_workflow_summary }
 
 /*
 ================================================================================
@@ -778,7 +779,8 @@ process multiqc {
     publishDir "${params.outdir}/MultiQC", mode: 'copy'
 
     input:
-    file multiqc_config from ch_multiqc_config
+    file (multiqc_config) from ch_multiqc_config
+    file (mqc_custom_config) from ch_multiqc_custom_config.collect().ifEmpty([])
     file ('fastqc/*') from ch_fastqc_results.collect().ifEmpty([])
     file ('software_versions/*') from ch_software_versions_yaml.collect()
     file workflow_summary from create_workflow_summary(summary)
@@ -794,8 +796,9 @@ process multiqc {
     script:
     rtitle = custom_runName ? "--title \"$custom_runName\"" : ''
     rfilename = custom_runName ? "--filename " + custom_runName.replaceAll('\\W','_').replaceAll('_+','_') + "_multiqc_report" : ''
+    custom_config_file = params.multiqc_config ? "--config $mqc_custom_config" : ''
     """
-    multiqc -f $rtitle $rfilename --config $multiqc_config .
+    multiqc -f $rtitle $rfilename $custom_config_file .
     """
 }
 
@@ -815,7 +818,7 @@ process output_documentation {
 
     script:
     """
-    markdown_to_html.r ${output_docs} results_description.html
+    markdown_to_html.py $output_docs -o results_description.html
     """
 }
 
@@ -852,7 +855,6 @@ workflow.onComplete {
     email_fields['summary']['Nextflow Build'] = workflow.nextflow.build
     email_fields['summary']['Nextflow Compile Timestamp'] = workflow.nextflow.timestamp
 
-    // On success try attach the multiqc report
     def mqc_report = null
     try {
         if (workflow.success) {
