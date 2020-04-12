@@ -1,6 +1,6 @@
-FROM nfcore/base
+FROM nfcore/base:1.9
 
-LABEL authors="rickard.hammaren@scilifelab.se, phil.ewels@scilifelab.se, martin.proks@scilifelab.se" \
+LABEL authors="Martin Proks" \
     description="Docker image containing all requirements for nfcore/rnafusion pipeline"
 
 COPY environment.yml /

@@ -10,3 +10,4 @@ dependencies:
   - bioconda::hmmer=3.2.1
   - conda-forge::unzip=6.0
   - bioconda::dfam=2.0
+  - conda-forge::awscli=1.18.39
