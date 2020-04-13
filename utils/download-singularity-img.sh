@@ -1,7 +1,7 @@
 #!/bin/bash
 
 get_tool_version() {
-    echo $(cat ../nextflow.config | grep "$1_version" | cut -d"=" -f2 | tr -d \' | tr -d ' ')
+    echo $(cat ../nextflow.config | grep -m1 "$1" | cut -d"=" -f2 | tr -d \' | tr -d ' ')
 }
 
 if [ $# -eq 0 ]; then
