@@ -54,23 +54,23 @@ def helpMessage() {
 // Show help emssage
 if (params.help) exit 0, helpMessage()
 
-params.running_tools = ["nf-core/rnafusion/${workflow.manifest.version}"]
+running_tools = ["nf-core/rnafusion/${workflow.manifest.version}"]
 if (!params.outdir) exit 1, "Output directory not specified!"
 
-if (params.arriba || params.download_all) params.running_tools.add("Arriba")
-if (params.star_fusion || params.download_all) params.running_tools.add("STAR-Fusion")
-if (params.fusioncatcher || params.download_all) params.running_tools.add("Fusioncatcher")
-if (params.ericscript || params.download_all) params.running_tools.add("Ericscript")
-if (params.pizzly || params.download_all) params.running_tools.add("Pizzly")
-if (params.squid || params.download_all) params.running_tools.add("Squid")
-if (params.fusion_inspector || params.download_all) params.running_tools.add("Fusion-Inspector")
+if (params.arriba || params.download_all) running_tools.add("Arriba")
+if (params.star_fusion || params.download_all) running_tools.add("STAR-Fusion")
+if (params.fusioncatcher || params.download_all) running_tools.add("Fusioncatcher")
+if (params.ericscript || params.download_all) running_tools.add("Ericscript")
+if (params.pizzly || params.download_all) running_tools.add("Pizzly")
+if (params.squid || params.download_all) running_tools.add("Squid")
+if (params.fusion_inspector || params.download_all) running_tools.add("Fusion-Inspector")
 
 // Header log info
 log.info nfcoreHeader()
 def summary = [:]
 summary['Pipeline Name']  = 'nf-core/rnafusion/download-singularity-img.nf'
 summary['Pipeline Version'] = workflow.manifest.version
-summary['Tool images']      = params.running_tools.size() == 0 ? 'None' : params.running_tools.join(", ")
+summary['Tool images']      = running_tools.size() == 0 ? 'None' : running_tools.join(", ")
 if(workflow.containerEngine) summary['Container'] = "$workflow.containerEngine - $workflow.container"
 summary['Max Resources']    = "$params.max_memory memory, $params.max_cpus cpus, $params.max_time time per job"
 summary['Output dir']   = params.outdir
@@ -110,11 +110,11 @@ process download_arriba {
     params.arriba || params.download_all
 
     output:
-    file "rnafusion_arriba_v${params.arriba_version}.img"
+    file "rnafusion_arriba_v${params.versions.arriba}.img"
 
     script:
     """
-    singularity pull --name "rnafusion_arriba_v${params.arriba_version}.img" docker://nfcore/rnafusion:arriba_v${params.arriba_version}
+    singularity pull --name "rnafusion_arriba_v${params.versions.arriba}.img" docker://nfcore/rnafusion:arriba_v${params.versions.arriba}
     """
 }
 
@@ -125,11 +125,11 @@ process download_ericscript {
     params.ericscript || params.download_all
 
     output:
-    file "rnafusion_ericscript_v${params.ericscript_version}.img"
+    file "rnafusion_ericscript_v${params.versions.ericscript}.img"
 
     script:
     """
-    singularity pull --name "rnafusion_ericscript_v${params.ericscript_version}.img" docker://nfcore/rnafusion:ericscript_v${params.ericscript_version}
+    singularity pull --name "rnafusion_ericscript_v${params.versions.ericscript}.img" docker://nfcore/rnafusion:ericscript_v${params.versions.ericscript}
     """
 }
 
@@ -140,11 +140,11 @@ process download_fusioncatcher {
     params.fusioncatcher || params.download_all
 
     output:
-    file "rnafusion_fusioncatcher_v${params.fusioncatcher_version}.img"
+    file "rnafusion_fusioncatcher_v${params.versions.fusioncatcher}.img"
 
     script:
     """
-    singularity pull --name "rnafusion_fusioncatcher_v${params.fusioncatcher_version}.img" docker://nfcore/rnafusion:fusioncatcher_v${params.fusioncatcher_version}
+    singularity pull --name "rnafusion_fusioncatcher_v${params.versions.fusioncatcher}.img" docker://nfcore/rnafusion:fusioncatcher_v${params.versions.fusioncatcher}
     """
 }
 
@@ -155,11 +155,11 @@ process download_fusion_inspector {
     params.fusion_inspector || params.download_all
 
     output:
-    file "rnafusion_fusion-inspector_v${params.fusion_inspector_version}.img"
+    file "rnafusion_fusion-inspector_v${params.versions.fusion_inspector}.img"
 
     script:
     """
-    singularity pull --name "rnafusion_fusion-inspector_v${params.fusion_inspector_version}.img" docker://nfcore/rnafusion:fusion-inspector_v${params.fusion_inspector_version}
+    singularity pull --name "rnafusion_fusion-inspector_v${params.versions.fusion_inspector}.img" docker://nfcore/rnafusion:fusion-inspector_v${params.versions.fusion_inspector}
     """
 }
 
@@ -170,11 +170,11 @@ process download_pizzly {
     params.pizzly || params.download_all
 
     output:
-    file "rnafusion_pizzly_v${params.pizzly_version}.img"
+    file "rnafusion_pizzly_v${params.versions.pizzly}.img"
 
     script:
     """
-    singularity pull --name "rnafusion_pizzly_v${params.pizzly_version}.img" docker://nfcore/rnafusion:pizzly_v${params.pizzly_version}
+    singularity pull --name "rnafusion_pizzly_v${params.versions.pizzly}.img" docker://nfcore/rnafusion:pizzly_v${params.versions.pizzly}
     """
 }
 
@@ -185,11 +185,11 @@ process download_squid {
     params.squid || params.download_all
 
     output:
-    file "rnafusion_squid_v${params.squid_version}.img"
+    file "rnafusion_squid_v${params.versions.squid}.img"
 
     script:
     """
-    singularity pull --name "rnafusion_squid_v${params.squid_version}.img" docker://nfcore/rnafusion:squid_v${params.squid_version}
+    singularity pull --name "rnafusion_squid_v${params.versions.squid}.img" docker://nfcore/rnafusion:squid_v${params.versions.squid}
     """
 }
 
@@ -200,11 +200,11 @@ process download_star_fusion {
     params.star_fusion || params.download_all
 
     output:
-    file "rnafusion_star-fusion_v${params.star_fusion_version}.img"
+    file "rnafusion_star-fusion_v${params.versions.star_fusion}.img"
 
     script:
     """
-    singularity pull --name "rnafusion_star-fusion_v${params.star_fusion_version}.img" docker://nfcore/rnafusion:star-fusion_v${params.star_fusion_version}
+    singularity pull --name "rnafusion_star-fusion_v${params.versions.star_fusion}.img" docker://nfcore/rnafusion:star-fusion_v${params.versions.star_fusion}
     """
 }
 
