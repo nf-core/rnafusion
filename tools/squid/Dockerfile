@@ -7,9 +7,10 @@ COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
 ENV PATH /opt/conda/envs/squid_v1.5-star2.7.0f/bin:$PATH
 
-RUN wget https://raw.githubusercontent.com/Kingsford-Group/squid/master/utils/AnnotateSQUIDOutput.py -O /AnnotateSQUIDOutput.py \
-    && chmod +x /AnnotateSQUIDOutput.py \
-    && ln -s /AnnotateSQUIDOutput.py /usr/local/bin \
-    && ln -s /opt/conda/envs/squid_v1.5-star2.7.0f/bin/python3 /bin/python 
+RUN cd /opt/conda/envs/squid_v1.5-star2.7.0f/bin \
+    && wget https://raw.githubusercontent.com/Kingsford-Group/squid/f45c9025d41cffd982ecbbdd52844e5a4f074de9/utils/AnnotateSQUIDOutput.py \
+    && chmod +x /opt/conda/envs/squid_v1.5-star2.7.0f/bin/AnnotateSQUIDOutput.py \
+    && ln -s /opt/conda/envs/squid_v1.5-star2.7.0f/bin/python3 /bin/python
 
-RUN ln -s /lib/x86_64-linux-gnu/libcrypt.so.1 /lib/x86_64-linux-gnu/libcrypto.so.1.0.0
+# Dump the details of the installed packages to a file for posterity
+RUN conda env export --name squid_v1.5-star2.7.0f > squid_v1.5-star2.7.0f.yml
