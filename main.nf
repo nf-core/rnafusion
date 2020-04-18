@@ -55,7 +55,6 @@ def helpMessage() {
       --ericscript_ref [file]         Path to Ericscript reference
       --fasta [file]                  Path to fasta reference
       --fusioncatcher_ref [file]      Path to Fusioncatcher reference
-      --genome [str]                  Name of iGenomes reference
       --gtf [file]                    Path to GTF annotation
       --star_index [file]             Path to STAR-Index reference
       --star_fusion_ref [file]        Path to STAR-Fusion reference
@@ -99,6 +98,8 @@ reference = [
     fusioncatcher: false,
     star_fusion: false
 ]
+
+if (!Channel.fromPath(params.referece_path, checkIfExists: true)) {exit 1, "Directory ${params.referece_path} doesn't exist."}
 
 ch_fasta = Channel.value(file(params.fasta)).ifEmpty{exit 1, "Fasta file not found: ${params.fasta}"}
 ch_gtf = Channel.value(file(params.gtf)).ifEmpty{exit 1, "GTF annotation file not found: ${params.gtf}"}
@@ -783,8 +784,8 @@ process multiqc {
     file (mqc_custom_config) from ch_multiqc_custom_config.collect().ifEmpty([])
     file ('fastqc/*') from ch_fastqc_results.collect().ifEmpty([])
     file ('software_versions/*') from ch_software_versions_yaml.collect()
-    file workflow_summary from create_workflow_summary(summary)
     file (fusions_mq) from summary_fusions_mq.collect().ifEmpty([])
+    file workflow_summary from ch_workflow_summary.collectFile(name: "workflow_summary_mqc.yaml")
 
     output:
     file "*multiqc_report.html" into ch_multiqc_report
