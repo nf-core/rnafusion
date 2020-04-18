@@ -19,3 +19,6 @@ ENV PATH /opt/conda/envs/star-fusion_v1.6.0/ctat-genome-lib-builder-2830cd708c5b
 
 RUN ln -s /opt/conda/envs/star-fusion_v1.6.0/lib/libssl.so /opt/conda/envs/star-fusion_v1.6.0/lib/libssl.so.1.0.0 && \
     ln -s /opt/conda/envs/star-fusion_v1.6.0/lib/libcrypto.so /opt/conda/envs/star-fusion_v1.6.0/lib/libcrypto.so.1.0.0
+
+# Dump the details of the installed packages to a file for posterity
+RUN conda env export --name star-fusion_v1.6.0 > star-fusion_v1.6.0.yml
