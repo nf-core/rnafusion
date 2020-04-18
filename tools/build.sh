@@ -33,7 +33,7 @@ if [ $1 == "all" ]; then
         create_container `pwd`/$TOOL ${TOOL%?}
     done
     # Build main cotainer
-    VERSION="$(cat ../nextflow.config | grep "container" | cut -d":" -f2 | cut -d "'" -f1)"
+    VERSION="$(cat ../nextflow.config | grep -m1 "container" | cut -d":" -f2 | cut -d "'" -f1)"
     CONTAINER_NAME=$PREFIX:$VERSION
     echo "Building [$CONTAINER_NAME]"
     docker build ../. -t $CONTAINER_NAME
