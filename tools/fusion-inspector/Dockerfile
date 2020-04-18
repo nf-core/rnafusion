@@ -7,4 +7,5 @@ COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
 ENV PATH /opt/conda/envs/fusion-inspector_v1.3.1-star2.7.0f/bin:$PATH
 
-RUN ln -s /lib/x86_64-linux-gnu/libcrypt.so.1 /lib/x86_64-linux-gnu/libcrypto.so.1.0.0
+# Dump the details of the installed packages to a file for posterity
+RUN conda env export --name fusion-inspector_v1.3.1-star2.7.0f > fusion-inspector_v1.3.1-star2.7.0f.yml
