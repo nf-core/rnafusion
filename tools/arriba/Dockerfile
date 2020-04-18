@@ -6,3 +6,6 @@ LABEL authors="Martin Proks" \
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
 ENV PATH /opt/conda/envs/arriba_v1.1.0/bin:$PATH
+
+# Dump the details of the installed packages to a file for posterity
+RUN conda env export --name arriba_v1.1.0 > arriba_v1.1.0.yml
