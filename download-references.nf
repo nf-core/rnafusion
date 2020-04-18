@@ -54,13 +54,13 @@ if (params.help) exit 0, helpMessage()
 if (!params.reference_release) exit 1, "You did not specify the release number of reference!"
 if (!params.outdir) exit 1, "Output directory not specified!"
 
-params.running_tools = []
-if (params.arriba || params.download_all) params.running_tools.add("Arriba")
-if (params.star_fusion || params.download_all) params.running_tools.add("STAR-Fusion")
-if (params.fusioncatcher || params.download_all) params.running_tools.add("Fusioncatcher")
-if (params.ericscript || params.download_all) params.running_tools.add("Ericscript")
+running_tools = []
+if (params.arriba || params.download_all) running_tools.add("Arriba")
+if (params.star_fusion || params.download_all) running_tools.add("STAR-Fusion")
+if (params.fusioncatcher || params.download_all) running_tools.add("Fusioncatcher")
+if (params.ericscript || params.download_all) running_tools.add("Ericscript")
 if (params.download_all) {
-    params.running_tools.add('fusion-report')
+    running_tools.add('fusion-report')
     if (!params.cosmic_usr || !params.cosmic_passwd) exit 1, "Database credentials are required parameter!"
 }
 
@@ -69,7 +69,7 @@ log.info nfcoreHeader()
 def summary = [:]
 summary['Pipeline Name']  = 'nf-core/rnafusion/download-references.nf'
 summary['Pipeline Version'] = workflow.manifest.version
-summary['References']       = params.running_tools.size() == 0 ? 'None' : params.running_tools.join(", ")
+summary['References']       = running_tools.size() == 0 ? 'None' : running_tools.join(", ")
 if(workflow.containerEngine) summary['Container'] = "$workflow.containerEngine - $workflow.container"
 summary['Max Resources']    = "$params.max_memory memory, $params.max_cpus cpus, $params.max_time time per job"
 summary['Output dir']   = params.outdir
@@ -128,36 +128,14 @@ process download_star_fusion {
     when:
     params.star_fusion || params.download_all
 
-    input:
-    file fasta
-    file gtf
-
     output:
     file '*'
 
     script:
     """
-    wget -N ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
-    gunzip Pfam-A.hmm.gz && hmmpress Pfam-A.hmm
-
-    wget https://github.com/FusionAnnotator/CTAT_HumanFusionLib/releases/download/v0.2.0/fusion_lib.Mar2019.dat.gz -O CTAT_HumanFusionLib.dat.gz
-    
-    # Dfam
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3f
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3i
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3m
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3p
-
-    export TMPDIR=/tmp
-    prep_genome_lib.pl \\
-        --genome_fa ${fasta} \\
-        --gtf ${gtf} \\
-        --annot_filter_rule /opt/conda/envs/star-fusion_v1.6.0/ctat-genome-lib-builder-2830cd708c5bb9353878ca98069427e83acdd625/AnnotFilterRuleLib/AnnotFilterRule.pm \\
-        --fusion_annot_lib CTAT_HumanFusionLib.dat.gz \\
-        --pfam_db Pfam-A.hmm \\
-        --dfam_db homo_sapiens_dfam.hmm \\
-        --CPU ${task.cpus}
+    aws s3 --no-sign-request --region eu-west-1 sync s3://ngi-igenomes/igenomes/Homo_sapiens/NCBI/GRCh38/Annotation/CTAT/ .
+    tar -xf GRCh38_gencode_v32_CTAT_lib_Dec062019.tar.xz --strip-components 5
+    rm GRCh38_gencode_v32_CTAT_lib_Dec062019.tar.xz
     """
 }
 
