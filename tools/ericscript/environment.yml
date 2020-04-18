@@ -1,5 +1,7 @@
 name: ericscript_v0.5.5
 channels:
   - bioconda
+  - conda-forge
 dependencies:
-  - ericscript=0.5.5
+  - conda-forge::ncurses=6.1
+  - bioconda::ericscript=0.5.5

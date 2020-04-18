@@ -5,8 +5,7 @@ LABEL authors="Martin Proks" \
 
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
-ENV PATH /opt/conda/envs/ericscript/bin:$PATH
+ENV PATH /opt/conda/envs/ericscript_v0.5.5/bin:$PATH
 
-RUN ln -s /lib/x86_64-linux-gnu/libreadline.so.7.0 /lib/x86_64-linux-gnu/libreadline.so.6
-RUN sed -i 's/system("R.*CheckDB.R");/#&/' /opt/conda/envs/ericscript_v0.5.5/bin/ericscript.pl
-RUN echo 1 > /opt/conda/envs/ericscript_v0.5.5/share/ericscript-0.5.5-3/lib/data/_resources/.flag.dbexists
+# Dump the details of the installed packages to a file for posterity
+RUN conda env export --name ericscript_v0.5.5 > ericscript_v0.5.5.yml
