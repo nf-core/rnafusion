@@ -30,7 +30,9 @@ def helpMessage() {
     Mandatory arguments:
       --reads [file]                Path to input data (must be surrounded with quotes)
       -profile [str]                Configuration profile to use. Can use multiple (comma separated)
-                                    Available: conda, docker, singularity, test, awsbatch, <institute> and more
+                                    Available: conda, docker, singularity, test, awsbatch, <institute> and more            
+      --reference_path [str]        Path to reference folder (includes fasta, gtf, fusion tool ref ...)
+
     Tool flags:
       --arriba [bool]                 Run Arriba
       --arriba_opt [str]              Specify extra parameters for Arriba
@@ -65,6 +67,7 @@ def helpMessage() {
       --single_end [bool]             Specifies that the input is single-end reads
 
     Other Options:
+      --image_path [str]              Path to singularity images when using Singularity.
       --debug [bool]                  Flag to run only specific fusion tool/s and not the whole pipeline. Only works on tool flags.
       --outdir [file]                 The output directory where the results will be saved
       --email [email]                 Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits
