@@ -99,7 +99,7 @@ reference = [
     star_fusion: false
 ]
 
-if (!Channel.fromPath(params.referece_path, checkIfExists: true)) {exit 1, "Directory ${params.referece_path} doesn't exist."}
+if (!Channel.fromPath(params.reference_path, checkIfExists: true)) {exit 1, "Directory ${params.reference_path} doesn't exist."}
 
 ch_fasta = Channel.value(file(params.fasta)).ifEmpty{exit 1, "Fasta file not found: ${params.fasta}"}
 ch_gtf = Channel.value(file(params.gtf)).ifEmpty{exit 1, "GTF annotation file not found: ${params.gtf}"}
