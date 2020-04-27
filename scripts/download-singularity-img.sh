@@ -1,7 +1,7 @@
 #!/bin/bash
 
 get_tool_version() {
-    echo $(cat ../nextflow.config | grep -m1 "$1" | cut -d"=" -f2 | tr -d \' | tr -d ' ')
+    echo $(cat nextflow.config | grep -m1 "$1" | cut -d"=" -f2 | tr -d \' | tr -d ' ')
 }
 
 if [ $# -eq 0 ]; then
@@ -14,7 +14,7 @@ if [ $1 == "-h" ]; then
     echo "Utility for downloading singularity images from DockerHub"
     echo
     echo "Usage: download-singularity-img.sh [output directory]"
-    echo "Example: sh download-singularity-img.sh /path"
+    echo "Example: sh scripts/download-singularity-img.sh /path"
     echo
     exit 0
 elif [ -d "$1" ]; then
@@ -23,7 +23,7 @@ elif [ -d "$1" ]; then
     FUSIONCATCHER=$(get_tool_version "fusioncatcher")
     FUSION_INSPECTOR=$(get_tool_version "fusion_inspector")
     PIZZLY=$(get_tool_version "pizzly")
-    RNAFUSION="$(cat ../nextflow.config | grep -m1 "container" | cut -d":" -f2 | cut -d "'" -f1)"
+    RNAFUSION="$(cat nextflow.config | grep -m1 "container" | cut -d":" -f2 | cut -d "'" -f1)"
     SQUID=$(get_tool_version "squid")
     STAR_FUSION=$(get_tool_version "star_fusion")
 
