@@ -67,7 +67,6 @@ def helpMessage() {
       --single_end [bool]             Specifies that the input is single-end reads
 
     Other Options:
-      --image_path [str]              Path to singularity images when using Singularity.
       --debug [bool]                  Flag to run only specific fusion tool/s and not the whole pipeline. Only works on tool flags.
       --outdir [file]                 The output directory where the results will be saved
       --email [email]                 Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits
