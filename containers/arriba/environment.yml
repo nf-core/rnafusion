@@ -4,10 +4,11 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - arriba=1.1.0
-  - bioconda::star=2.7.0f
-  - bioconda::samtools=1.9
-  - conda-forge::r-circlize
-  - conda-forge::readline=6.2
+  - bioconda::arriba=1.1.0
   - bioconda::bioconductor-genomicalignments
   - bioconda::bioconductor-genomicranges
+  - bioconda::samtools=1.9
+  - bioconda::star=2.7.0f
+  - conda-forge::openssl=1.0
+  - conda-forge::r-circlize
+  - conda-forge::readline=6.2
