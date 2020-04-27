@@ -29,12 +29,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   * `MultiQC v1.7`
   * `STAR aligner v2.7.0f`
 
-### Added - [1.1.0]
+### Added
 
 * Added `Arriba 1.1.0` [#63](https://github.com/nf-core/rnafusion/issues/63)
 * Added Batch mode [#54](https://github.com/nf-core/rnafusion/issues/54)
 
-### Changed - [1.1.0]
+### Changed
 
 * Updated examples and configurations
 * Upgraded `fusion-report v1.0.0` to `fusion-report v2.0.1`
@@ -46,12 +46,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Updated logos
 * Updated to nf-core `1.8` TEMPLATE
 
-### Fixed - [1.1.0]
+### Fixed
 
 * iGenomes optional, but not really [#91](https://github.com/nf-core/rnafusion/issues/91)
 * Updated `fusioncatcher` to latest `1.20` version also solving [#95](https://github.com/nf-core/rnafusion/issues/95)
 
-### Removed - [1.1.0]
+### Removed
 
 * Variables `pizzly_fasta` and `pizzly_gtf` have been removed and replaced with `transcript` and `gtf`
 * `Jenkisfile`, test configuration, pylintrc configuration
@@ -61,11 +61,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.0.2] nfcore/rnafusion - 2019/05/13
 
-### Changed - [1.0.2]
+### Changed
 
 * Bumped nf-core template to 1.6 [#69](https://github.com/nf-core/rnafusion/pull/69)
 
-### Fixed - [1.0.2]
+### Fixed
 
 * Fixed COSMIC parameters not wrapped in quotes [#75](https://github.com/nf-core/rnafusion/issues/75)
 * Implemented output output for fusion tools [#72](https://github.com/nf-core/rnafusion/issues/72)
@@ -75,7 +75,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.0.1] nfcore/rnafusion - 2019/04/06
 
-### Added - [1.0.1]
+### Added
 
 * Added support for extra parameters for tools STAR-Fusion, FusionCatcher and fusion-report
 * Added example configuration for `singularity` and `docker`
@@ -84,18 +84,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Added nextflow helper script `download-references.nf`
 * Added `Jenkinsfile` for in-house testing
 
-### Changed - [1.0.1]
+### Changed
 
 * Updated installation of `FusionCatcher` (available now on bioconda)
 
-### Fixed - [1.0.1]
+### Fixed
 
 * Fixed empty symlinks (`input.X`) in fusion-report [#68](https://github.com/nf-core/rnafusion/issues/68)
 * Fixed FASTA issues [#60](https://github.com/nf-core/rnafusion/issues/60)
 * Fixed centralized nf-core/config [#64](https://github.com/nf-core/rnafusion/issues/64)
 * Fixed `scrape_software_versions.py` to parse tools versions correctly [#65](https://github.com/nf-core/rnafusion/issues/65)
 
-### Removed - [1.0.1]
+### Removed
 
 * Removed `Singularity`
 
