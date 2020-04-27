@@ -2,71 +2,67 @@
 
 ## Table of contents
 
-* [Table of contents](#table-of-contents)
-* [Introduction](#introduction)
-* [Running the pipeline](#running-the-pipeline)
-  * [Using Docker](#running-the-pipeline-using-docker)
-  * [Using Singularity](#running-the-pipeline-using-singularity)
-  * [Running specific tools](#running-specific-tools)
-  * [Updating the pipeline](#updating-the-pipeline)
-  * [Reproducibility](#reproducibility)
-* [Main arguments](#main-arguments)
-  * [`-profile`](#-profile-single-dash)
-  * [`--reads`](#--reads)
-  * [`--single_end`](#--single_end)
-* [Tool flags](#tool-flags)
-  * [`--arriba`](#--arriba)
-    * [`--arriba_opt`](#--arriba_opt)
-  * [`--ericscript`](#--ericscript)
-    * [`--ericscript_opt`](#--ericscript_opt)
-  * [`--fusioncatcher`](#--fusioncatcher)
-    * [`--fusioncatcher_opt`](#--fusioncatcher_opt)
-  * [`--fusion_report_opt`](#--fusion_report_opt)
-  * [`--pizzly`](#--pizzly)
-    * [`--pizzly_k`](#--pizzly_k)
-  * [`--squid`](#--squid)
-  * [`--star_fusion`](#--star_fusion)
-    * [`--star_fusion_opt`](#--star_fusion_opt)
-* [Visualization flags](#visualization-flags)
-  * [`--arriba_vis`](#--arriba_vis)
-  * [`--fusion_inspector`](#--fusion_inspector)
-* [Reference genomes](#reference-genomes)
-  * [`--arriba_ref`](#--arriba_ref)
-  * [`--databases`](#--databases)
-  * [`--ericscript_ref`](#--ericscript_ref)
-  * [`--fasta`](#--fasta)
-  * [`--fusioncatcher_ref`](#--fusioncatcher_ref)
-  * [`--genome` (using iGenomes)](#--genome-using-igenomes)
-  * [`--gtf`](#--gtf)
-  * [`--igenomes_ignore`](#--igenomes_ignore)
-  * [`--star_index`](#--star_index)
-  * [`--star_fusion_ref`](#--star_fusion_ref)
-  * [`--transcript`](#--transcript)
-* [Job resources](#job-resources)
-  * [Automatic resubmission](#automatic-resubmission)
-  * [Custom resource requests](#custom-resource-requests)
-* [AWS Batch specific parameters](#aws-batch-specific-parameters)
-  * [`--awsqueue`](#--awsqueue)
-  * [`--awsregion`](#--awsregion)
-  * [`--awscli`](#--awscli)
-* [Other command line parameters](#other-command-line-parameters)
-  * [`--debug`](#--debug)
-  * [`--read_length`](#--read_length)
-  * [`--outdir`](#--outdir)
-  * [`--email`](#--email)
-  * [`--email_on_fail`](#--email_on_fail)
-  * [`--max_multiqc_email_size`](#--max_multiqc_email_size)
-  * [`-name`](#-name)
-  * [`-resume`](#-resume)
-  * [`-c`](#-c)
-  * [`--custom_config_version`](#--custom_config_version)
-  * [`--custom_config_base`](#--custom_config_base)
-  * [`--max_memory`](#--max_memory)
-  * [`--max_time`](#--max_time)
-  * [`--max_cpus`](#--max_cpus)
-  * [`--plaintext_email`](#--plaintext_email)
-  * [`--monochrome_logs`](#--monochrome_logs)
-  * [`--multiqc_config`](#--multiqc_config)
+- [nf-core/rnafusion: Usage](#nf-corernafusion-usage)
+  - [Table of contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Running the pipeline](#running-the-pipeline)
+    - [Running the pipeline using Docker](#running-the-pipeline-using-docker)
+    - [Running the pipeline using Singularity](#running-the-pipeline-using-singularity)
+    - [Running specific tools](#running-specific-tools)
+    - [Updating the pipeline](#updating-the-pipeline)
+    - [Reproducibility](#reproducibility)
+  - [Main arguments](#main-arguments)
+    - [`-profile`](#-profile)
+    - [`--reads`](#--reads)
+    - [`--single_end`](#--single_end)
+  - [Tool flags](#tool-flags)
+    - [`--arriba`](#--arriba)
+    - [`--ericscript`](#--ericscript)
+    - [`--fusioncatcher`](#--fusioncatcher)
+    - [`--fusion_report_opt`](#--fusion_report_opt)
+    - [`--pizzly`](#--pizzly)
+    - [`--squid`](#--squid)
+    - [`--star_fusion`](#--star_fusion)
+  - [Visualization flags](#visualization-flags)
+    - [`--arriba_vis`](#--arriba_vis)
+    - [`--fusion_inspector`](#--fusion_inspector)
+  - [Reference genomes](#reference-genomes)
+    - [`--arriba_ref`](#--arriba_ref)
+    - [`--genome` (using iGenomes)](#--genome-using-igenomes)
+    - [`--databases`](#--databases)
+    - [`--ericscript_ref`](#--ericscript_ref)
+    - [`--fasta`](#--fasta)
+    - [`--igenomes_ignore`](#--igenomes_ignore)
+    - [`--fusioncatcher_ref`](#--fusioncatcher_ref)
+    - [`--gtf`](#--gtf)
+    - [`--star_index`](#--star_index)
+    - [`--star_fusion_ref`](#--star_fusion_ref)
+    - [`--transcript`](#--transcript)
+  - [Job resources](#job-resources)
+    - [Automatic resubmission](#automatic-resubmission)
+    - [Custom resource requests](#custom-resource-requests)
+  - [AWS Batch specific parameters](#aws-batch-specific-parameters)
+    - [`--awsqueue`](#--awsqueue)
+    - [`--awsregion`](#--awsregion)
+    - [`--awscli`](#--awscli)
+  - [Other command line parameters](#other-command-line-parameters)
+    - [`--debug`](#--debug)
+    - [`--read_length`](#--read_length)
+    - [`--outdir`](#--outdir)
+    - [`--email`](#--email)
+    - [`--email_on_fail`](#--email_on_fail)
+    - [`--max_multiqc_email_size`](#--max_multiqc_email_size)
+    - [`-name`](#-name)
+    - [`-resume`](#-resume)
+    - [`-c`](#-c)
+    - [`--custom_config_version`](#--custom_config_version)
+    - [`--custom_config_base`](#--custom_config_base)
+    - [`--max_memory`](#--max_memory)
+    - [`--max_time`](#--max_time)
+    - [`--max_cpus`](#--max_cpus)
+    - [`--plaintext_email`](#--plaintext_email)
+    - [`--monochrome_logs`](#--monochrome_logs)
+    - [`--multiqc_config`](#--multiqc_config)
 
 ## Introduction
 
@@ -182,19 +178,19 @@ They are loaded in sequence, so later profiles can overwrite earlier profiles.
 
 If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended.
 
-* `docker`
-  * A generic configuration profile to be used with [Docker](http://docker.com/)
-  * Pulls software from DockerHub: [`nfcore/rnafusion`](http://hub.docker.com/r/nfcore/rnafusion/)
-* `singularity`
-  * A generic configuration profile to be used with [Singularity](http://singularity.lbl.gov/)
-  * Pulls software from DockerHub: [`nfcore/rnafusion`](http://hub.docker.com/r/nfcore/rnafusion/)
-* `conda`
-  * Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker or Singularity.
-  * A generic configuration profile to be used with [Conda](https://conda.io/docs/)
-  * Pulls most software from [Bioconda](https://bioconda.github.io/)
-* `test`
-  * A profile with a complete configuration for automated testing
-  * Includes links to test data so needs no other parameters
+- `docker`
+  - A generic configuration profile to be used with [Docker](http://docker.com/)
+  - Pulls software from DockerHub: [`nfcore/rnafusion`](http://hub.docker.com/r/nfcore/rnafusion/)
+- `singularity`
+  - A generic configuration profile to be used with [Singularity](http://singularity.lbl.gov/)
+  - Pulls software from DockerHub: [`nfcore/rnafusion`](http://hub.docker.com/r/nfcore/rnafusion/)
+- `conda`
+  - Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker or Singularity.
+  - A generic configuration profile to be used with [Conda](https://conda.io/docs/)
+  - Pulls most software from [Bioconda](https://bioconda.github.io/)
+- `test`
+  - A profile with a complete configuration for automated testing
+  - Includes links to test data so needs no other parameters
 
 ### `--reads`
 
@@ -226,22 +222,22 @@ By default, the pipeline expects paired-end data. If you have single-end data, y
 
 If enabled, executes `Arriba` tool.
 
-* `--arriba_opt`
-  * Specify additional parameters. For more info, please refer to the [documentation](http://arriba.readthedocs.io/en/latest/quickstart/) of the tool.
+- `--arriba_opt`
+  - Specify additional parameters. For more info, please refer to the [documentation](http://arriba.readthedocs.io/en/latest/quickstart/) of the tool.
 
 ### `--ericscript`
 
 If enabled, executes `Ericscript` tool.
 
-* `--ericscript_opt`
-  * Specify additional parameters. For more info, please refer to the [documentation](https://sites.google.com/site/bioericscript/home) of the tool.
+- `--ericscript_opt`
+  - Specify additional parameters. For more info, please refer to the [documentation](https://sites.google.com/site/bioericscript/home) of the tool.
 
 ### `--fusioncatcher`
 
 If enabled, executes `Fusioncatcher` tool.
 
-* `--fusioncatcher_opt`
-  * Specify additional parameters. For more info, please refer to the [documentation](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) of the tool.
+- `--fusioncatcher_opt`
+  - Specify additional parameters. For more info, please refer to the [documentation](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) of the tool.
 
 ### `--fusion_report_opt`
 
@@ -251,8 +247,8 @@ Specify additional parameters. For more info, please refer to the [documentation
 
 If enabled, executes `Pizzly` tool.
 
-* `--pizzly_k`
-  * Number of k-mers. Deafult 31.
+- `--pizzly_k`
+  - Number of k-mers. Deafult 31.
 
 ### `--squid`
 
@@ -262,8 +258,8 @@ If enabled, executes `Squid` tool.
 
 If enabled, executes `STAR-Fusion` tool.
 
-* `--star_fusion_opt`
-  * Parameter for specifying additional parameters. For more info, please refer to the [documentation](https://github.com/STAR-Fusion/STAR-Fusion/wiki) of the tool.
+- `--star_fusion_opt`
+  - Parameter for specifying additional parameters. For more info, please refer to the [documentation](https://github.com/STAR-Fusion/STAR-Fusion/wiki) of the tool.
 
 ## Visualization flags
 
@@ -378,12 +374,6 @@ Running the pipeline on AWS Batch requires a couple of specific parameters to be
 The JobQueue that you intend to use on AWS Batch.
 
 ### `--awsregion`
-
-The AWS region in which to run your job. Default is set to `eu-west-1` but can be adjusted to your needs.
-
-### `--awscli`
-
-The [AWS CLI](https://www.nextflow.io/docs/latest/awscloud.html#aws-cli-installation) path in your custom AMI. Default: `/home/ec2-user/miniconda/bin/aws`.
 
 The AWS region in which to run your job. Default is set to `eu-west-1` but can be adjusted to your needs.
 

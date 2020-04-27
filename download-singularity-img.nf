@@ -95,11 +95,11 @@ process download_base_image {
     params.download_all
 
     output:
-    file "nf-core-rnafusion-v${workflow.manifest.version}.img"
+    file "nf-core-rnafusion-${workflow.manifest.version}.img"
 
     script:
     """
-    singularity pull --name "nf-core-rnafusion-v${workflow.manifest.version}.img" docker://nfcore/rnafusion:${workflow.manifest.version}
+    singularity pull --name nf-core-rnafusion-${workflow.manifest.version}.img docker://nfcore/rnafusion:${workflow.manifest.version}
     """
 }
 
@@ -110,11 +110,11 @@ process download_arriba {
     params.arriba || params.download_all
 
     output:
-    file "nf-core-rnafusion-arriba_v${params.versions.arriba}.img"
+    file "nf-core-rnafusion-arriba_${params.versions.arriba}.img"
 
     script:
     """
-    singularity pull --name "nf-core-rnafusion-arriba_v${params.versions.arriba}.img" docker://nfcore/rnafusion:arriba_v${params.versions.arriba}
+    singularity pull --name nf-core-rnafusion-arriba_${params.versions.arriba}.img docker://nfcore/rnafusion:arriba_${params.versions.arriba}
     """
 }
 
@@ -125,11 +125,11 @@ process download_ericscript {
     params.ericscript || params.download_all
 
     output:
-    file "nf-core-rnafusion-ericscript_v${params.versions.ericscript}.img"
+    file "nf-core-rnafusion-ericscript_${params.versions.ericscript}.img"
 
     script:
     """
-    singularity pull --name "nf-core-rnafusion-ericscript_v${params.versions.ericscript}.img" docker://nfcore/rnafusion:ericscript_v${params.versions.ericscript}
+    singularity pull --name nf-core-rnafusion-ericscript_${params.versions.ericscript}.img docker://nfcore/rnafusion:ericscript_${params.versions.ericscript}
     """
 }
 
@@ -140,11 +140,11 @@ process download_fusioncatcher {
     params.fusioncatcher || params.download_all
 
     output:
-    file "nf-core-rnafusion-fusioncatcher_v${params.versions.fusioncatcher}.img"
+    file "nf-core-rnafusion-fusioncatcher_${params.versions.fusioncatcher}.img"
 
     script:
     """
-    singularity pull --name "nf-core-rnafusion-fusioncatcher_v${params.versions.fusioncatcher}.img" docker://nfcore/rnafusion:fusioncatcher_v${params.versions.fusioncatcher}
+    singularity pull --name nf-core-rnafusion-fusioncatcher_${params.versions.fusioncatcher}.img docker://nfcore/rnafusion:fusioncatcher_${params.versions.fusioncatcher}
     """
 }
 
@@ -155,11 +155,11 @@ process download_fusion_inspector {
     params.fusion_inspector || params.download_all
 
     output:
-    file "nf-core-rnafusion-fusion-inspector_v${params.versions.fusion_inspector}.img"
+    file "nf-core-rnafusion-fusion-inspector_${params.versions.fusion_inspector}.img"
 
     script:
     """
-    singularity pull --name "nf-core-rnafusion-fusion-inspector_v${params.versions.fusion_inspector}.img" docker://nfcore/rnafusion:fusion-inspector_v${params.versions.fusion_inspector}
+    singularity pull --name nf-core-rnafusion-fusion-inspector_${params.versions.fusion_inspector}.img docker://nfcore/rnafusion:fusion-inspector_${params.versions.fusion_inspector}
     """
 }
 
@@ -170,11 +170,11 @@ process download_pizzly {
     params.pizzly || params.download_all
 
     output:
-    file "nf-core-rnafusion-pizzly_v${params.versions.pizzly}.img"
+    file "nf-core-rnafusion-pizzly_${params.versions.pizzly}.img"
 
     script:
     """
-    singularity pull --name "nf-core-rnafusion-pizzly_v${params.versions.pizzly}.img" docker://nfcore/rnafusion:pizzly_v${params.versions.pizzly}
+    singularity pull --name nf-core-rnafusion-pizzly_${params.versions.pizzly}.img docker://nfcore/rnafusion:pizzly_${params.versions.pizzly}
     """
 }
 
@@ -185,11 +185,11 @@ process download_squid {
     params.squid || params.download_all
 
     output:
-    file "nf-core-rnafusion-squid_v${params.versions.squid}.img"
+    file "nf-core-rnafusion-squid_${params.versions.squid}.img"
 
     script:
     """
-    singularity pull --name "nf-core-rnafusion-squid_v${params.versions.squid}.img" docker://nfcore/rnafusion:squid_v${params.versions.squid}
+    singularity pull --name nf-core-rnafusion-squid_${params.versions.squid}.img docker://nfcore/rnafusion:squid_${params.versions.squid}
     """
 }
 
@@ -200,11 +200,11 @@ process download_star_fusion {
     params.star_fusion || params.download_all
 
     output:
-    file "nf-core-rnafusion-star-fusion_v${params.versions.star_fusion}.img"
+    file "nf-core-rnafusion-star-fusion_${params.versions.star_fusion}.img"
 
     script:
     """
-    singularity pull --name "nf-core-rnafusion-star-fusion_v${params.versions.star_fusion}.img" docker://nfcore/rnafusion:star-fusion_v${params.versions.star_fusion}
+    singularity pull --name nf-core-rnafusion-star-fusion_${params.versions.star_fusion}.img docker://nfcore/rnafusion:star-fusion_${params.versions.star_fusion}
     """
 }
 

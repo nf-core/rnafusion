@@ -1,8 +1,9 @@
-name: pizzly_v0.37.3
+name: nf-core-rnafusion-pizzly_0.37.3
 channels:
-  - bioconda
   - conda-forge
+  - bioconda
+  - defaults
 dependencies:
-  - bioconda::pizzly=0.37.3
   - bioconda::kallisto=0.44.0
+  - bioconda::pizzly=0.37.3
   - conda-forge::pigz=2.3.4

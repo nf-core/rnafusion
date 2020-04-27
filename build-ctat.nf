@@ -24,7 +24,7 @@ def helpMessage() {
 
     The typical command for downloading references is as follows:
 
-    nextflow run nf-core/rnafusion/utils/build-ctat.nf -profile [PROFILE] [OPTIONS] --outdir /path/to/output
+    nextflow run nf-core/rnafusion/build-ctat.nf -profile [PROFILE] [OPTIONS] --outdir /path/to/output
 
     Mandatory arguments:
       --fasta [file]                Path to fasta reference
@@ -112,7 +112,7 @@ process star_fusion {
  * Completion
  */
 workflow.onComplete {
-    log.info "[nf-core/rnafusion/download-references.nf] Pipeline Complete"
+    log.info "[nf-core/rnafusion/build-ctat.nf] Pipeline Complete"
 }
 
 def nfcoreHeader() {

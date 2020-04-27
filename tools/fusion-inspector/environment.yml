@@ -1,6 +1,0 @@
-name: fusion-inspector_v1.3.1-star2.7.0f
-channels:
-  - bioconda
-dependencies:
-  - bioconda::star=2.7.0f
-  - fusion-inspector=1.3.1
