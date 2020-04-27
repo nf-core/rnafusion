@@ -13,18 +13,18 @@ create_container() {
 
 if [ $# -eq 0 ]; then
     echo "No tool name specified!"
-    echo "Run build.sh -h for help"
+    echo "Run scripts/build.sh -h for help"
     exit 1
 fi
 
 if [ $1 == "-h" ]; then
     echo "Utility for building docker containers from tools/"
-    echo "Usage: build.sh [options]"
+    echo "Usage: scripts/build.sh [options]"
     echo 
     echo "Options:"
     echo "  all             build all tools including main image"
     echo "  <tool name>     builds specific tool"
-    echo "                  Example: sh build.sh ericscript"
+    echo "                  Example: sh scripts/build.sh ericscript"
     exit 0
 fi
 
