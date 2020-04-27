@@ -29,14 +29,14 @@ elif [ -d "$1" ]; then
 
     cd $1 && echo "Pulling images ..."
 
-    singularity pull --name "rnafusion_arriba_v${ARRIBA}.img" docker://nfcore/rnafusion:arriba_v${ARRIBA}
-    singularity pull --name "rnafusion_ericscript_v${ERICSCRIPT}.img" docker://nfcore/rnafusion:ericscript_v${ERICSCRIPT}
-    singularity pull --name "rnafusion_fusioncatcher_v${FUSIONCATCHER}.img" docker://nfcore/rnafusion:fusioncatcher_v${FUSIONCATCHER}
-    singularity pull --name "rnafusion_fusion-inspector_v${FUSION_INSPECTOR}.img" docker://nfcore/rnafusion:fusion-inspector_v${FUSION_INSPECTOR}
-    singularity pull --name "rnafusion_pizzly_v${PIZZLY}.img" docker://nfcore/rnafusion:pizzly_v${PIZZLY}
-    singularity pull --name "rnafusion_v${RNAFUSION}.img" docker://nfcore/rnafusion:${RNAFUSION}
-    singularity pull --name "rnafusion_squid_v${SQUID}.img" docker://nfcore/rnafusion:squid_v${SQUID}
-    singularity pull --name "rnafusion_star-fusion_v${STAR_FUSION}.img" docker://nfcore/rnafusion:star-fusion_v${STAR_FUSION}
+    singularity pull --name "nf-core-rnafusion-arriba_v${ARRIBA}.img" docker://nfcore/rnafusion:arriba_v${ARRIBA}
+    singularity pull --name "nf-core-rnafusion-ericscript_v${ERICSCRIPT}.img" docker://nfcore/rnafusion:ericscript_v${ERICSCRIPT}
+    singularity pull --name "nf-core-rnafusion-fusioncatcher_v${FUSIONCATCHER}.img" docker://nfcore/rnafusion:fusioncatcher_v${FUSIONCATCHER}
+    singularity pull --name "nf-core-rnafusion-fusion-inspector_v${FUSION_INSPECTOR}.img" docker://nfcore/rnafusion:fusion-inspector_v${FUSION_INSPECTOR}
+    singularity pull --name "nf-core-rnafusion-pizzly_v${PIZZLY}.img" docker://nfcore/rnafusion:pizzly_v${PIZZLY}
+    singularity pull --name "nf-core-rnafusion-v${RNAFUSION}.img" docker://nfcore/rnafusion:${RNAFUSION}
+    singularity pull --name "nf-core-rnafusion-squid_v${SQUID}.img" docker://nfcore/rnafusion:squid_v${SQUID}
+    singularity pull --name "nf-core-rnafusion-star-fusion_v${STAR_FUSION}.img" docker://nfcore/rnafusion:star-fusion_v${STAR_FUSION}
 
 else
     echo "Path doesn't exists"
