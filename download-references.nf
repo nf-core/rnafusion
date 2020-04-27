@@ -39,8 +39,8 @@ def helpMessage() {
       --fusioncatcher [bool]        Download Fusioncatcher references
       --ericscript [bool]           Download Ericscript references 
       --fusion_report [bool]        Download databases for fusion-report
-        --cosmic_usr [str]          [Required] COSMIC username
-        --cosmic_passwd [str]       [Required] COSMIC password
+      --cosmic_usr [str]            [Required] COSMIC username
+      --cosmic_passwd [str]         [Required] COSMIC password
     """.stripIndent()
 }
 
