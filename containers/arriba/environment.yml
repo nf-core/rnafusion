@@ -2,6 +2,7 @@ name: arriba_v1.1.0
 channels:
   - conda-forge
   - bioconda
+  - defaults
 dependencies:
   - arriba=1.1.0
   - bioconda::star=2.7.0f
