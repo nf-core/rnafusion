@@ -1,13 +1,13 @@
-name: star-fusion_v1.6.0
+name: nf-core-rnafusion-star-fusion_1.6.0
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
-  - bioconda::star=2.7.0f
+  - bioconda::dfam=2.0
+  - bioconda::hmmer=3.2.1
   - bioconda::star-fusion=1.6.0
+  - bioconda::star=2.7.0f
   - bioconda::trinity=2.6.6
   - conda-forge::perl-carp-assert
-  - bioconda::hmmer=3.2.1
   - conda-forge::unzip=6.0
-  - bioconda::dfam=2.0

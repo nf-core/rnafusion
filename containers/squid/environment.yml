@@ -1,11 +1,11 @@
-name: squid_v1.5-star2.7.0f
+name: nf-core-rnafusion-squid_1.5-star2.7.0f
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
-  - python=3.7.4
-  - squid=1.5
-  - bioconda::star=2.7.0f
   - bioconda::samtools=1.9
+  - bioconda::squid=1.5
+  - bioconda::star=2.7.0f
   - conda-forge::numpy=1.18.1
+  - conda-forge::python=3.7.4

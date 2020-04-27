@@ -1,4 +1,4 @@
-name: arriba_v1.1.0
+name: nf-core-rnafusion-arriba_1.1.0
 channels:
   - conda-forge
   - bioconda
