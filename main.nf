@@ -103,13 +103,13 @@ reference = [
 
 if (!Channel.fromPath(params.genomes_base, checkIfExists: true)) {exit 1, "Directory ${params.genomes_base} doesn't exist."}
 
-params.fasta = params.genome ? params.genomes[params.genome].fasta : null
-params.gtf = params.genome ? params.genomes[params.genome].gtf : null
-params.transcript = params.genome ? params.genomes[params.genome].transcript : null
-params.arriba = params.genome ? params.genomes[params.genome].arriba_ref : null
-params.ericscript_ref = params.genome ? params.genomes[params.genome].ericscript_ref : null
-params.fusioncatcher_ref = params.genome ? params.genomes[params.genome].fusioncatcher_ref : null
-params.star_fusion_ref = params.genome ? params.genomes[params.genome].star_fusion_ref : null
+params.fasta = params.genome ? params.genomes[params.genome].fasta ?: null : null
+params.gtf = params.genome ? params.genomes[params.genome].gtf ?: null : null
+params.transcript = params.genome ? params.genomes[params.genome].transcript ?: null : null
+params.arriba = params.genome ? params.genomes[params.genome].arriba ?: null : null
+params.ericscript_ref = params.genome ? params.genomes[params.genome].ericscript_ref ?: null : null
+params.fusioncatcher_ref = params.genome ? params.genomes[params.genome].fusioncatcher_ref ?: null : null
+params.star_fusion_ref = params.genome ? params.genomes[params.genome].star_fusion_ref ?: null : null
 
 ch_fasta = Channel.value(file(params.fasta)).ifEmpty{exit 1, "Fasta file not found: ${params.fasta}"}
 ch_gtf = Channel.value(file(params.gtf)).ifEmpty{exit 1, "GTF annotation file not found: ${params.gtf}"}
