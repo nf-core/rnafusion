@@ -102,7 +102,7 @@ reference = [
 ]
 
 // Check if genome exists in the config file
-if (params.genome && !params.genomes.containsKey(params.genome) {
+if (params.genome && !params.genomes.containsKey(params.genome)) {
     exit 1, "The provided genome '${params.genome}' is not available in the genomes file. Currently the available genomes are ${params.genomes.keySet().join(", ")}"
 }
 
