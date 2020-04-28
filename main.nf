@@ -108,7 +108,7 @@ if (params.genome && !params.genomes.containsKey(params.genome)) {
 
 if (!Channel.fromPath(params.genomes_base, checkIfExists: true)) {exit 1, "Directory ${params.genomes_base} doesn't exist."}
 
-params.arriba = params.genome ? params.genomes[params.genome].arriba ?: null : null
+params.arriba_ref = params.genome ? params.genomes[params.genome].arriba_ref ?: null : null
 params.databases = params.genome ? params.genomes[params.genome].databases ?: null : null
 params.ericscript_ref = params.genome ? params.genomes[params.genome].ericscript_ref ?: null : null
 params.fasta = params.genome ? params.genomes[params.genome].fasta ?: null : null
