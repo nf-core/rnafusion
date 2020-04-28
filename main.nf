@@ -752,13 +752,13 @@ process get_software_versions {
     echo ${workflow.nextflow.version} > v_nextflow.txt
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
-    cat ${baseDir}/tools/arriba/environment.yml > v_arriba.txt
-    cat ${baseDir}/tools/fusioncatcher/environment.yml > v_fusioncatcher.txt
-    cat ${baseDir}/tools/fusion-inspector/environment.yml > v_fusion_inspector.txt
-    cat ${baseDir}/tools/star-fusion/environment.yml > v_star_fusion.txt
-    cat ${baseDir}/tools/ericscript/environment.yml > v_ericscript.txt
-    cat ${baseDir}/tools/pizzly/environment.yml > v_pizzly.txt
-    cat ${baseDir}/tools/squid/environment.yml > v_squid.txt
+    cat ${baseDir}/containers/arriba/environment.yml > v_arriba.txt
+    cat ${baseDir}/containers/fusioncatcher/environment.yml > v_fusioncatcher.txt
+    cat ${baseDir}/containers/fusion-inspector/environment.yml > v_fusion_inspector.txt
+    cat ${baseDir}/containers/star-fusion/environment.yml > v_star_fusion.txt
+    cat ${baseDir}/containers/ericscript/environment.yml > v_ericscript.txt
+    cat ${baseDir}/containers/pizzly/environment.yml > v_pizzly.txt
+    cat ${baseDir}/containers/squid/environment.yml > v_squid.txt
     cat ${baseDir}/environment.yml > v_fusion_report.txt
     scrape_software_versions.py &> software_versions_mqc.yaml
     """
