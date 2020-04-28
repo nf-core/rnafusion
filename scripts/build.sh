@@ -4,8 +4,9 @@ PREFIX="nfcore/rnafusion"
 
 create_container() {
     TOOL_PATH=$1
-    VERSION="$(cat $TOOL_PATH/environment.yml | grep "name:" | cut -d":" -f2 | cut -d " " -f2)"
-    CONTAINER_NAME="$PREFIX:$VERSION"
+    VERSION="$(cat $TOOL_PATH/environment.yml | grep "name:" | cut -d":" -f2 | cut -d "_" -f2)"
+    TOOL_NAME=`basename $TOOL_PATH`
+    CONTAINER_NAME="${PREFIX}:${TOOL_NAME}_${VERSION}"
     echo "Building [$CONTAINER_NAME]"
     docker build $TOOL_PATH -t $CONTAINER_NAME
     docker push $CONTAINER_NAME
@@ -37,6 +38,7 @@ if [ $1 == "all" ]; then
     CONTAINER_NAME=$PREFIX:$VERSION
     echo "Building [$CONTAINER_NAME]"
     docker build . -t $CONTAINER_NAME
+    docker push $CONTAINER_NAME
 else
     TOOL=$1
     TOOL_PATH="$(pwd)/containers/$TOOL"

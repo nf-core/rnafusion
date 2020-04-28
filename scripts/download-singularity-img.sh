@@ -18,6 +18,7 @@ if [ $1 == "-h" ]; then
     echo
     exit 0
 elif [ -d "$1" ]; then
+    PREFIX="nf-core-rnafusion"
     ARRIBA=$(get_tool_version "arriba")
     ERICSCRIPT=$(get_tool_version "ericscript")
     FUSIONCATCHER=$(get_tool_version "fusioncatcher")
@@ -29,14 +30,14 @@ elif [ -d "$1" ]; then
 
     cd $1 && echo "Pulling images ..."
 
-    singularity pull --name "nf-core-rnafusion-arriba_v${ARRIBA}.img" docker://nfcore/rnafusion:arriba_v${ARRIBA}
-    singularity pull --name "nf-core-rnafusion-ericscript_v${ERICSCRIPT}.img" docker://nfcore/rnafusion:ericscript_v${ERICSCRIPT}
-    singularity pull --name "nf-core-rnafusion-fusioncatcher_v${FUSIONCATCHER}.img" docker://nfcore/rnafusion:fusioncatcher_v${FUSIONCATCHER}
-    singularity pull --name "nf-core-rnafusion-fusion-inspector_v${FUSION_INSPECTOR}.img" docker://nfcore/rnafusion:fusion-inspector_v${FUSION_INSPECTOR}
-    singularity pull --name "nf-core-rnafusion-pizzly_v${PIZZLY}.img" docker://nfcore/rnafusion:pizzly_v${PIZZLY}
-    singularity pull --name "nf-core-rnafusion-v${RNAFUSION}.img" docker://nfcore/rnafusion:${RNAFUSION}
-    singularity pull --name "nf-core-rnafusion-squid_v${SQUID}.img" docker://nfcore/rnafusion:squid_v${SQUID}
-    singularity pull --name "nf-core-rnafusion-star-fusion_v${STAR_FUSION}.img" docker://nfcore/rnafusion:star-fusion_v${STAR_FUSION}
+    singularity pull --name "${PREFIX}-arriba_${ARRIBA}.img" docker://nfcore/rnafusion:arriba_${ARRIBA}
+    singularity pull --name "${PREFIX}-ericscript_${ERICSCRIPT}.img" docker://nfcore/rnafusion:ericscript_${ERICSCRIPT}
+    singularity pull --name "${PREFIX}-fusioncatcher_${FUSIONCATCHER}.img" docker://nfcore/rnafusion:fusioncatcher_${FUSIONCATCHER}
+    singularity pull --name "${PREFIX}-fusion-inspector_${FUSION_INSPECTOR}.img" docker://nfcore/rnafusion:fusion-inspector_${FUSION_INSPECTOR}
+    singularity pull --name "${PREFIX}-pizzly_${PIZZLY}.img" docker://nfcore/rnafusion:pizzly_${PIZZLY}
+    singularity pull --name "${PREFIX}-${RNAFUSION}.img" docker://nfcore/rnafusion:${RNAFUSION}
+    singularity pull --name "${PREFIX}-squid_${SQUID}.img" docker://nfcore/rnafusion:squid_${SQUID}
+    singularity pull --name "${PREFIX}-star-fusion_${STAR_FUSION}.img" docker://nfcore/rnafusion:star-fusion_${STAR_FUSION}
 
 else
     echo "Path doesn't exists"
