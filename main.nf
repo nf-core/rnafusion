@@ -101,6 +101,11 @@ reference = [
     star_fusion: false
 ]
 
+// Check if genome exists in the config file
+if (params.genome && !params.genomes.containsKey(params.genome) {
+    exit 1, "The provided genome '${params.genome}' is not available in the genomes file. Currently the available genomes are ${params.genomes.keySet().join(", ")}"
+}
+
 if (!Channel.fromPath(params.genomes_base, checkIfExists: true)) {exit 1, "Directory ${params.genomes_base} doesn't exist."}
 
 params.fasta = params.genome ? params.genomes[params.genome].fasta ?: null : null
