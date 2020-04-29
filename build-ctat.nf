@@ -29,8 +29,6 @@ def helpMessage() {
     Mandatory arguments:
       --fasta [file]                Path to fasta reference
       --gtf [file]                  Path to GTF annotation
-      --reference_release [int]     Release number of Ensembl reference for FASTA and GTF
-                                    example: 97 -> ftp://ftp.ensembl.org/pub/release-97
       --outdir [path]               Output directory for downloading
       -profile [str]                Configuration profile [https://github.com/nf-core/configs]
     """.stripIndent()
@@ -42,8 +40,6 @@ def helpMessage() {
 
 // Show help emssage
 if (params.help) exit 0, helpMessage()
-
-if (!params.reference_release) exit 1, "You did not specify the release number of reference!"
 if (!params.outdir) exit 1, "Output directory not specified!"
 
 ch_fasta = Channel.value(file(params.fasta)).ifEmpty{exit 1, "Fasta file not found: ${params.fasta}"}
