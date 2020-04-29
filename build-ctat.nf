@@ -52,7 +52,7 @@ if (!params.outdir) exit 1, "Output directory not specified!"
 // Header log info
 log.info nfcoreHeader()
 def summary = [:]
-summary['Pipeline Name']  = 'nf-core/rnafusion/download-references.nf'
+summary['Pipeline Name']  = 'nf-core/rnafusion/build-ctat.nf'
 summary['Pipeline Version'] = workflow.manifest.version
 summary['References']       = params.running_tools.size() == 0 ? 'None' : params.running_tools.join(", ")
 if(workflow.containerEngine) summary['Container'] = "$workflow.containerEngine - $workflow.container"
