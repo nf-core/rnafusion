@@ -22,7 +22,6 @@ elif [ -d "$1" ]; then
     ARRIBA=$(get_tool_version "arriba")
     ERICSCRIPT=$(get_tool_version "ericscript")
     FUSIONCATCHER=$(get_tool_version "fusioncatcher")
-    FUSION_INSPECTOR=$(get_tool_version "fusion_inspector")
     PIZZLY=$(get_tool_version "pizzly")
     RNAFUSION="$(cat nextflow.config | grep -m1 "container" | cut -d":" -f2 | cut -d "'" -f1)"
     SQUID=$(get_tool_version "squid")
