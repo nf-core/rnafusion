@@ -101,15 +101,21 @@ reference = [
     star_fusion: false
 ]
 
+// Check if genome exists in the config file
+if (params.genome && !params.genomes.containsKey(params.genome)) {
+    exit 1, "The provided genome '${params.genome}' is not available in the genomes file. Currently the available genomes are ${params.genomes.keySet().join(", ")}"
+}
+
 if (!Channel.fromPath(params.genomes_base, checkIfExists: true)) {exit 1, "Directory ${params.genomes_base} doesn't exist."}
 
-params.fasta = params.genome ? params.genomes[params.genome].fasta : null
-params.gtf = params.genome ? params.genomes[params.genome].gtf : null
-params.transcript = params.genome ? params.genomes[params.genome].transcript : null
-params.arriba = params.genome ? params.genomes[params.genome].arriba_ref : null
-params.ericscript_ref = params.genome ? params.genomes[params.genome].ericscript_ref : null
-params.fusioncatcher_ref = params.genome ? params.genomes[params.genome].fusioncatcher_ref : null
-params.star_fusion_ref = params.genome ? params.genomes[params.genome].star_fusion_ref : null
+params.arriba_ref = params.genome ? params.genomes[params.genome].arriba_ref ?: null : null
+params.databases = params.genome ? params.genomes[params.genome].databases ?: null : null
+params.ericscript_ref = params.genome ? params.genomes[params.genome].ericscript_ref ?: null : null
+params.fasta = params.genome ? params.genomes[params.genome].fasta ?: null : null
+params.fusioncatcher_ref = params.genome ? params.genomes[params.genome].fusioncatcher_ref ?: null : null
+params.gtf = params.genome ? params.genomes[params.genome].gtf ?: null : null
+params.star_fusion_ref = params.genome ? params.genomes[params.genome].star_fusion_ref ?: null : null
+params.transcript = params.genome ? params.genomes[params.genome].transcript ?: null : null
 
 ch_fasta = Channel.value(file(params.fasta)).ifEmpty{exit 1, "Fasta file not found: ${params.fasta}"}
 ch_gtf = Channel.value(file(params.gtf)).ifEmpty{exit 1, "GTF annotation file not found: ${params.gtf}"}
@@ -746,13 +752,13 @@ process get_software_versions {
     echo ${workflow.nextflow.version} > v_nextflow.txt
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
-    cat ${baseDir}/tools/arriba/environment.yml > v_arriba.txt
-    cat ${baseDir}/tools/fusioncatcher/environment.yml > v_fusioncatcher.txt
-    cat ${baseDir}/tools/fusion-inspector/environment.yml > v_fusion_inspector.txt
-    cat ${baseDir}/tools/star-fusion/environment.yml > v_star_fusion.txt
-    cat ${baseDir}/tools/ericscript/environment.yml > v_ericscript.txt
-    cat ${baseDir}/tools/pizzly/environment.yml > v_pizzly.txt
-    cat ${baseDir}/tools/squid/environment.yml > v_squid.txt
+    cat ${baseDir}/containers/arriba/environment.yml > v_arriba.txt
+    cat ${baseDir}/containers/fusioncatcher/environment.yml > v_fusioncatcher.txt
+    cat ${baseDir}/containers/fusion-inspector/environment.yml > v_fusion_inspector.txt
+    cat ${baseDir}/containers/star-fusion/environment.yml > v_star_fusion.txt
+    cat ${baseDir}/containers/ericscript/environment.yml > v_ericscript.txt
+    cat ${baseDir}/containers/pizzly/environment.yml > v_pizzly.txt
+    cat ${baseDir}/containers/squid/environment.yml > v_squid.txt
     cat ${baseDir}/environment.yml > v_fusion_report.txt
     scrape_software_versions.py &> software_versions_mqc.yaml
     """
