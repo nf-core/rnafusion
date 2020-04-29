@@ -38,15 +38,16 @@ def helpMessage() {
  * SET UP CONFIGURATION VARIABLES
  */
 
-// Show help emssage
+// Show help message
 if (params.help) exit 0, helpMessage()
-if (!params.outdir) exit 1, "Output directory not specified!"
 
 params.fasta = params.genome ? params.genomes[params.genome].fasta ?: null : null
 params.gtf = params.genome ? params.genomes[params.genome].gtf ?: null : null
 
 ch_fasta = Channel.value(file(params.fasta)).ifEmpty{exit 1, "Fasta file not found: ${params.fasta}"}
 ch_gtf = Channel.value(file(params.gtf)).ifEmpty{exit 1, "GTF annotation file not found: ${params.gtf}"}
+
+if (!params.outdir) exit 1, "Output directory not specified!"
 
 // Header log info
 log.info nfcoreHeader()
