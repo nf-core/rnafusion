@@ -1,8 +1,0 @@
-name: nf-core-rnafusion-fusion-inspector_1.3.1-star2.7.0f
-channels:
-  - conda-forge
-  - bioconda
-  - defaults
-dependencies:
-  - bioconda::star=2.7.0f
-  - bioconda::fusion-inspector=1.3.1

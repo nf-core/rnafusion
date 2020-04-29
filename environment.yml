@@ -14,7 +14,7 @@ dependencies:
   - bioconda::fastqc=0.11.8
   - bioconda::multiqc=1.7
   # Custom packages
-  - bioconda::star=2.7.0f # update STAR-Fusion and Fusion-Inspector, Arriba
+  - bioconda::star=2.7.2b # update STAR-Fusion and Arriba
   - conda-forge::r-data.table=1.12.8
   - conda-forge::r-gplots=3.0.1.2
   - bioconda::bioconductor-edger=3.28.0

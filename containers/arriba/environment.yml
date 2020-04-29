@@ -1,4 +1,4 @@
-name: nf-core-rnafusion-arriba_1.1.0
+name: nf-core-rnafusion-arriba_1.1.0-star2.7.2b
 channels:
   - conda-forge
   - bioconda
@@ -8,7 +8,7 @@ dependencies:
   - bioconda::bioconductor-genomicalignments
   - bioconda::bioconductor-genomicranges
   - bioconda::samtools=1.9
-  - bioconda::star=2.7.0f
+  - bioconda::star=2.7.2b
   - conda-forge::openssl=1.0
   - conda-forge::r-circlize
   - conda-forge::readline=6.2
