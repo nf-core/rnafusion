@@ -722,7 +722,7 @@ process fusion_inspector {
         --left_fq ${reads[0]} \\
         --right_fq ${reads[1]} \\
         --CPU ${task.cpus} \\
-        --out_dir . \\
+        -O . \\
         --out_prefix finspector \\
         ${extra_params} 
     """
