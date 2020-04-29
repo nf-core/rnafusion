@@ -33,7 +33,6 @@ elif [ -d "$1" ]; then
     singularity pull --name "${PREFIX}-arriba_${ARRIBA}.img" docker://nfcore/rnafusion:arriba_${ARRIBA}
     singularity pull --name "${PREFIX}-ericscript_${ERICSCRIPT}.img" docker://nfcore/rnafusion:ericscript_${ERICSCRIPT}
     singularity pull --name "${PREFIX}-fusioncatcher_${FUSIONCATCHER}.img" docker://nfcore/rnafusion:fusioncatcher_${FUSIONCATCHER}
-    singularity pull --name "${PREFIX}-fusion-inspector_${FUSION_INSPECTOR}.img" docker://nfcore/rnafusion:fusion-inspector_${FUSION_INSPECTOR}
     singularity pull --name "${PREFIX}-pizzly_${PIZZLY}.img" docker://nfcore/rnafusion:pizzly_${PIZZLY}
     singularity pull --name "${PREFIX}-${RNAFUSION}.img" docker://nfcore/rnafusion:${RNAFUSION}
     singularity pull --name "${PREFIX}-squid_${SQUID}.img" docker://nfcore/rnafusion:squid_${SQUID}
