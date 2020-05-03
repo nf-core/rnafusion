@@ -72,6 +72,7 @@ checkHostname()
 
 process star_fusion {
     label 'process_high'
+    label 'process_long'
     publishDir "${params.outdir}", mode: 'copy'
 
     input:
