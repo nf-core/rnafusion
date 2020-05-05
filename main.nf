@@ -754,7 +754,7 @@ process get_software_versions {
     multiqc --version > v_multiqc.txt
     cat ${baseDir}/containers/arriba/environment.yml > v_arriba.txt
     cat ${baseDir}/containers/fusioncatcher/environment.yml > v_fusioncatcher.txt
-    cat ${baseDir}/containers/fusion-inspector/environment.yml > v_fusion_inspector.txt
+    cat ${baseDir}/containers/star-fusion/environment.yml > v_fusion_inspector.txt
     cat ${baseDir}/containers/star-fusion/environment.yml > v_star_fusion.txt
     cat ${baseDir}/containers/ericscript/environment.yml > v_ericscript.txt
     cat ${baseDir}/containers/pizzly/environment.yml > v_pizzly.txt
