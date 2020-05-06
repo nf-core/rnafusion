@@ -116,8 +116,8 @@ process download_arriba {
 
     script:
     """
-    wget -N https://github.com/suhrig/arriba/releases/download/v1.1.0/arriba_v1.1.0.tar.gz -O arriba_v1.1.0.tar.gz
-    tar -xvzf arriba_v1.1.0.tar.gz && mv arriba_v1.1.0/database/* . && gunzip *.gz && rm -rf arriba_*
+    wget -N https://github.com/suhrig/arriba/releases/download/v1.2.0/arriba_v1.2.0.tar.gz -O arriba_v1.2.0.tar.gz
+    tar -xvzf arriba_v1.2.0.tar.gz && mv arriba_v1.2.0/database/* . && gunzip *.gz && rm -rf arriba_*
     """
 }
 
