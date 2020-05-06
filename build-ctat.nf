@@ -29,8 +29,6 @@ def helpMessage() {
     Mandatory arguments:
       --fasta [file]                Path to fasta reference
       --gtf [file]                  Path to GTF annotation
-      --reference_release [int]     Release number of Ensembl reference for FASTA and GTF
-                                    example: 97 -> ftp://ftp.ensembl.org/pub/release-97
       --outdir [path]               Output directory for downloading
       -profile [str]                Configuration profile [https://github.com/nf-core/configs]
     """.stripIndent()
@@ -40,21 +38,22 @@ def helpMessage() {
  * SET UP CONFIGURATION VARIABLES
  */
 
-// Show help emssage
+// Show help message
 if (params.help) exit 0, helpMessage()
 
-if (!params.reference_release) exit 1, "You did not specify the release number of reference!"
-if (!params.outdir) exit 1, "Output directory not specified!"
+params.fasta = params.genome ? params.genomes[params.genome].fasta ?: null : null
+params.gtf = params.genome ? params.genomes[params.genome].gtf ?: null : null
 
 ch_fasta = Channel.value(file(params.fasta)).ifEmpty{exit 1, "Fasta file not found: ${params.fasta}"}
 ch_gtf = Channel.value(file(params.gtf)).ifEmpty{exit 1, "GTF annotation file not found: ${params.gtf}"}
 
+if (!params.outdir) exit 1, "Output directory not specified!"
+
 // Header log info
 log.info nfcoreHeader()
 def summary = [:]
-summary['Pipeline Name']  = 'nf-core/rnafusion/download-references.nf'
+summary['Pipeline Name']  = 'nf-core/rnafusion/build-ctat.nf'
 summary['Pipeline Version'] = workflow.manifest.version
-summary['References']       = params.running_tools.size() == 0 ? 'None' : params.running_tools.join(", ")
 if(workflow.containerEngine) summary['Container'] = "$workflow.containerEngine - $workflow.container"
 summary['Max Resources']    = "$params.max_memory memory, $params.max_cpus cpus, $params.max_time time per job"
 summary['Output dir']   = params.outdir
@@ -73,6 +72,7 @@ checkHostname()
 
 process star_fusion {
     label 'process_high'
+    label 'process_long'
     publishDir "${params.outdir}", mode: 'copy'
 
     input:
@@ -100,7 +100,7 @@ process star_fusion {
     prep_genome_lib.pl \\
         --genome_fa ${fasta} \\
         --gtf ${gtf} \\
-        --annot_filter_rule /opt/conda/envs/star-fusion_v1.6.0/ctat-genome-lib-builder-2830cd708c5bb9353878ca98069427e83acdd625/AnnotFilterRuleLib/AnnotFilterRule.pm \\
+        --annot_filter_rule /opt/conda/envs/nf-core-rnafusion-star-fusion_1.8.1/ctat-genome-lib-builder-2830cd708c5bb9353878ca98069427e83acdd625/AnnotFilterRuleLib/AnnotFilterRule.pm \\
         --fusion_annot_lib CTAT_HumanFusionLib.dat.gz \\
         --pfam_db Pfam-A.hmm \\
         --dfam_db homo_sapiens_dfam.hmm \\

@@ -8,12 +8,12 @@ COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
 
 # Add conda installation dir to PATH (instead of doing 'conda activate')
-ENV PATH /opt/conda/envs/nf-core-rnafusion-squid_1.5-star2.7.0f/bin:$PATH
+ENV PATH /opt/conda/envs/nf-core-rnafusion-squid_1.5-star2.7.2b/bin:$PATH
 
-RUN cd /opt/conda/envs/nf-core-rnafusion-squid_1.5-star2.7.0f/bin \
+RUN cd /opt/conda/envs/nf-core-rnafusion-squid_1.5-star2.7.2b/bin \
     && wget https://raw.githubusercontent.com/Kingsford-Group/squid/f45c9025d41cffd982ecbbdd52844e5a4f074de9/utils/AnnotateSQUIDOutput.py \
-    && chmod +x /opt/conda/envs/nf-core-rnafusion-squid_1.5-star2.7.0f/bin/AnnotateSQUIDOutput.py \
-    && ln -s /opt/conda/envs/nf-core-rnafusion-squid_1.5-star2.7.0f/bin/python3 /bin/python
+    && chmod +x /opt/conda/envs/nf-core-rnafusion-squid_1.5-star2.7.2b/bin/AnnotateSQUIDOutput.py \
+    && ln -s /opt/conda/envs/nf-core-rnafusion-squid_1.5-star2.7.2b/bin/python3 /bin/python
 
 # Dump the details of the installed packages to a file for posterity
-RUN conda env export --name nf-core-rnafusion-squid_1.5-star2.7.0f > nf-core-rnafusion-squid_1.5-star2.7.0f.yml
+RUN conda env export --name nf-core-rnafusion-squid_1.5-star2.7.2b > nf-core-rnafusion-squid_1.5-star2.7.2b.yml
