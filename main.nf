@@ -709,7 +709,7 @@ process fusion_inspector {
         file(reference) from reference.fusion_inspector
 
     output:
-        file("*.{fa,gtf,bed,bam,bai,txt}") into fusion_inspector_output
+        file("*.{fa,gtf,bed,bam,bai,txt,html}") into fusion_inspector_output
 
     when: params.fusion_inspector && (!params.single_end || params.debug)
 
@@ -722,8 +722,9 @@ process fusion_inspector {
         --left_fq ${reads[0]} \\
         --right_fq ${reads[1]} \\
         --CPU ${task.cpus} \\
-        --out_dir . \\
+        -O . \\
         --out_prefix finspector \\
+        --vis \\
         ${extra_params} 
     """
 }

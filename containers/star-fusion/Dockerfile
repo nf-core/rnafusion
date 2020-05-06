@@ -10,17 +10,11 @@ RUN conda env create -f /environment.yml && conda clean -a
 # Add conda installation dir to PATH (instead of doing 'conda activate')
 ENV PATH /opt/conda/envs/nf-core-rnafusion-star-fusion_1.8.1/bin:$PATH
 
+# FusionInspector
+ENV PATH /opt/conda/envs/nf-core-rnafusion-star-fusion_1.8.1/lib/STAR-Fusion/FusionInspector:$PATH
+
 # ctat-genome-lib-builder
-RUN cd /opt/conda/envs/nf-core-rnafusion-star-fusion_1.8.1/ && \
-    wget https://github.com/NCIP/ctat-genome-lib-builder/archive/2830cd708c5bb9353878ca98069427e83acdd625.zip && \
-    unzip 2830cd708c5bb9353878ca98069427e83acdd625.zip && \
-    cd ctat-genome-lib-builder-2830cd708c5bb9353878ca98069427e83acdd625 && \
-    rm /opt/conda/envs/nf-core-rnafusion-star-fusion_1.8.1/bin/prep_genome_lib.pl
-
-ENV PATH /opt/conda/envs/nf-core-rnafusion-star-fusion_1.8.1/ctat-genome-lib-builder-2830cd708c5bb9353878ca98069427e83acdd625/:$PATH
-
-RUN ln -s /opt/conda/envs/nf-core-rnafusion-star-fusion_1.8.1/lib/libssl.so /opt/conda/envs/nf-core-rnafusion-star-fusion_1.8.1/lib/libssl.so.1.0.0 && \
-    ln -s /opt/conda/envs/nf-core-rnafusion-star-fusion_1.8.1/lib/libcrypto.so /opt/conda/envs/nf-core-rnafusion-star-fusion_1.8.1/lib/libcrypto.so.1.0.0
+ENV PATH /opt/conda/envs/nf-core-rnafusion-star-fusion_1.8.1/lib/STAR-Fusion/ctat-genome-lib-builder:$PATH
 
 # Dump the details of the installed packages to a file for posterity
 RUN conda env export --name nf-core-rnafusion-star-fusion_1.8.1 > nf-core-rnafusion-star-fusion_1.8.1.yml
