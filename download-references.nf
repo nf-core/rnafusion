@@ -27,20 +27,21 @@ def helpMessage() {
     nextflow run nf-core/rnafusion/download-references.nf -profile [PROFILE] [OPTIONS] --outdir /path/to/output
 
     Mandatory arguments:
-      --reference_release [int]     Release number of Ensembl reference for FASTA and GTF
-                                    example: 97 -> ftp://ftp.ensembl.org/pub/release-97
       --outdir [path]               Output directory for downloading
       -profile [str]                Configuration profile [https://github.com/nf-core/configs]
       
     Options:
       --download_all [bool]         Download all references
+      --reference_release [int]     Release number of Ensembl reference for FASTA and GTF
+                                    Default: 97 -> ftp://ftp.ensembl.org/pub/release-97
+      --base [bool]                 Download FASTA, GTF, cDNA
       --arriba [bool]               Download Arriba references
       --star_fusion [bool]          Build STAR-Fusion references from FASTA ANF GTF
       --fusioncatcher [bool]        Download Fusioncatcher references
       --ericscript [bool]           Download Ericscript references 
       --fusion_report [bool]        Download databases for fusion-report
-      --cosmic_usr [str]            [Required] COSMIC username
-      --cosmic_passwd [str]         [Required] COSMIC password
+      --cosmic_usr [str]            [Required with fusion_report] COSMIC username
+      --cosmic_passwd [str]         [Required with fusion_report] COSMIC password
     """.stripIndent()
 }
 
@@ -50,16 +51,15 @@ def helpMessage() {
 
 // Show help emssage
 if (params.help) exit 0, helpMessage()
-
-if (!params.reference_release) exit 1, "You did not specify the release number of reference!"
 if (!params.outdir) exit 1, "Output directory not specified!"
 
 running_tools = []
+if (params.base || params.download_all) running_tools.add("Reference v${params.reference_release}")
 if (params.arriba || params.download_all) running_tools.add("Arriba")
 if (params.star_fusion || params.download_all) running_tools.add("STAR-Fusion")
 if (params.fusioncatcher || params.download_all) running_tools.add("Fusioncatcher")
 if (params.ericscript || params.download_all) running_tools.add("Ericscript")
-if (params.download_all) {
+if (params.fusion_report || params.download_all) {
     running_tools.add('fusion-report')
     if (!params.cosmic_usr || !params.cosmic_passwd) exit 1, "Database credentials are required parameter!"
 }
@@ -89,6 +89,9 @@ checkHostname()
 process download_base {
     publishDir "${params.outdir}/", mode: 'copy'
     
+    when:
+    params.base || params.download_all
+
     output:
     file "Homo_sapiens.GRCh38_r${params.reference_release}.all.fa" into fasta
     file "Homo_sapiens.GRCh38_r${params.reference_release}.gtf" into gtf
@@ -122,7 +125,6 @@ process download_arriba {
 }
 
 process download_star_fusion {
-    label 'process_high'
     publishDir "${params.outdir}/star-fusion", mode: 'copy'
     
     when:
@@ -180,6 +182,9 @@ process download_ericscript {
 
 process download_databases {
     publishDir "${params.outdir}/databases", mode: 'copy'
+
+    when:
+    params.fusion_report || params.download_all
 
     output:
     file '*'
