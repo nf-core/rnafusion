@@ -495,8 +495,8 @@ process ericscript {
         file(reference) from reference.ericscript
 
     output:
-        set val(sample), file("./tmp/${sample}_ericscript.tsv") optional true into ericscript_fusions
-        file("./tmp/fusions.results.total.tsv") optional true into ericscript_output
+        set val(sample), file("${sample}_ericscript.tsv") optional true into ericscript_fusions
+        set val(sample), file("${sample}_ericscript_total.tsv") optional true into ericscript_output
 
     when: params.ericscript && (!params.single_end || params.debug)
 
@@ -510,7 +510,11 @@ process ericscript {
         ${reads}
 
     if [-f ./tmp/fusions.results.filtered.tsv]; then
-        mv ./tmp/fusions.results.filtered.tsv ./tmp/${sample}_ericscript.tsv
+        mv ./tmp/fusions.results.filtered.tsv ${sample}_ericscript.tsv
+    fi
+
+    if [-f ./tmp/fusions.results.total.tsv]; then
+        mv ./tmp/fusions.results.total.tsv ${sample}_ericscript_total.tsv
     fi
     """
 }
@@ -588,7 +592,12 @@ process squid {
         --runThreadN ${task.cpus} \\
         --readFilesIn ${reads} \\
         --twopassMode Basic \\
-        --chimOutType SeparateSAMold --chimSegmentMin 20 --chimJunctionOverhangMin 12 --alignSJDBoverhangMin 10 --outReadsUnmapped Fastx --outSAMstrandField intronMotif \\
+        --chimOutType SeparateSAMold \\
+        --chimSegmentMin 20 \\
+        --chimJunctionOverhangMin 12 \\
+        --alignSJDBoverhangMin 10 \\
+        --outReadsUnmapped Fastx \\
+        --outSAMstrandField intronMotif \\
         --outSAMtype BAM SortedByCoordinate \\
         ${avail_mem} \\
         --readFilesCommand zcat
