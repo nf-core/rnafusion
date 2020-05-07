@@ -376,7 +376,7 @@ process arriba {
 }
 
 arriba_fusions_summary = arriba_fusions_summary.dump(tag:'arriba_fusions_summary')
-arriba_visualization = arriba_bam.combine(arriba_tsv)
+arriba_visualization = arriba_bam.join(arriba_tsv)
 
 /*
  * STAR-Fusion
