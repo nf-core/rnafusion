@@ -688,7 +688,7 @@ process arriba_visualization {
         --output=${sample}.pdf \\
         --annotation=${gtf} \\
         --cytobands=${reference}/cytobands_hg38_GRCh38_2018-02-23.tsv \\
-        --proteinDomains=${reference}/protein_domains_hg38_GRCh38_2018-03-06.gff3
+        --proteinDomains=${reference}/protein_domains_hg38_GRCh38_2019-07-05.gff3
     """
 }
 
