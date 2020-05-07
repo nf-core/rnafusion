@@ -276,27 +276,27 @@ process build_star_index {
     tag "$fasta"
     label 'process_medium'
 
-    publishDir "${params.outdir}/star-index", mode: 'copy'
+    publishDir params.outdir, mode: 'copy'
 
     input:
         file(fasta) from ch_fasta
         file(gtf) from ch_gtf
 
     output:
-        file("star") into star_index
+        file("star-index") into star_index
 
     when: !(params.star_index)
 
     script:
     def avail_mem = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
     """
-    mkdir star
+    mkdir star-index
     STAR \\
         --runMode genomeGenerate \\
         --runThreadN ${task.cpus} \\
         --sjdbGTFfile ${gtf} \\
         --sjdbOverhang ${params.read_length - 1} \\
-        --genomeDir star/ \\
+        --genomeDir star-index/ \\
         --genomeFastaFiles ${fasta} \\
         $avail_mem
     """
@@ -329,8 +329,8 @@ process arriba {
         file(gtf) from ch_gtf
 
     output:
-        set val(sample), file("${sample}_arriba.tsv") optional true into arriba_fusions_summary
-        set val(sample), file("${sample}_arriba.bam"), file("${sample}_arriba.tsv") optional true into arriba_visualization
+        set val(sample), file("${sample}_arriba.tsv") optional true into arriba_fusions_summary, arriba_tsv
+        set val(sample), file("${sample}_arriba.bam") optional true into arriba_bam
         file("*.{tsv,txt}") into arriba_output
 
     when: params.arriba && (!params.single_end || params.debug)
@@ -376,6 +376,7 @@ process arriba {
 }
 
 arriba_fusions_summary = arriba_fusions_summary.dump(tag:'arriba_fusions_summary')
+arriba_visualization = arriba_bam.combine(arriba_tsv)
 
 /*
  * STAR-Fusion
