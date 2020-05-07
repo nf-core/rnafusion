@@ -41,7 +41,7 @@ def helpMessage() {
       --fusioncatcher_opt [srt]       Specify extra parameters for FusionCatcher
       --fusion_report_opt [str]       Specify extra parameters for fusion-report
       --pizzly [bool]                 Run Pizzly
-        --pizzly_k [int]              Number of k-mers. Deafult 31
+      --pizzly_k [int]                Number of k-mers. Deafult 31
       --squid [bool]                  Run Squid
       --star_fusion [bool]            Run STAR-Fusion
       --star_fusion_opt [str]         Specify extra parameters for STAR-Fusion
