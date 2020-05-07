@@ -273,7 +273,7 @@ Channel.from(summary.collect{ [it.key, it.value] })
  */
 
 process build_star_index {
-    tag "$fasta"
+    tag "${fasta}-${gtf}"
     label 'process_medium'
 
     publishDir params.outdir, mode: 'copy'
@@ -298,7 +298,7 @@ process build_star_index {
         --sjdbOverhang ${params.read_length - 1} \\
         --genomeDir star-index/ \\
         --genomeFastaFiles ${fasta} \\
-        $avail_mem
+        ${avail_mem}
     """
 }
 
@@ -316,7 +316,7 @@ ch_star_index = ch_star_index.dump(tag:'ch_star_index')
  * Arriba
  */
 process arriba {
-    tag "$sample"
+    tag "${sample}"
     label 'process_medium'
 
     publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy'
@@ -382,7 +382,7 @@ arriba_visualization = arriba_bam.combine(arriba_tsv)
  * STAR-Fusion
  */
 process star_fusion {
-    tag "$sample"
+    tag "${sample}"
     label 'process_high'
 
     publishDir "${params.outdir}/tools/Star-Fusion/${sample}", mode: 'copy'
@@ -449,7 +449,7 @@ star_fusion_fusions = star_fusion_fusions.dump(tag:'star_fusion_fusions')
  * Fusioncatcher
  */
 process fusioncatcher {
-    tag "$sample"
+    tag "${sample}"
     label 'process_high'
     
     publishDir "${params.outdir}/tools/Fusioncatcher/${sample}", mode: 'copy'
@@ -485,7 +485,7 @@ fusioncatcher_fusions = fusioncatcher_fusions.dump(tag:'fusioncatcher_fusions')
  * Ericscript
  */
 process ericscript {
-    tag "$sample"
+    tag "${sample}"
     label 'process_high'
 
     publishDir "${params.outdir}/tools/EricScript/${sample}", mode: 'copy'
@@ -521,7 +521,7 @@ ericscript_fusions = ericscript_fusions.dump(tag:'ericscript_fusions')
  * Pizzly
  */
 process pizzly {
-    tag "$sample"
+    tag "${sample}"
     label 'process_medium'
 
     publishDir "${params.outdir}/tools/Pizzly/${sample}", mode: 'copy'
@@ -563,7 +563,7 @@ pizzly_fusions = pizzly_fusions.dump(tag:'pizzly_fusions')
  * Squid
  */
 process squid {
-    tag "$sample"
+    tag "${sample}"
     label 'process_high'
 
     publishDir "${params.outdir}/tools/Squid/${sample}", mode: 'copy'
@@ -589,7 +589,8 @@ process squid {
         --readFilesIn ${reads} \\
         --twopassMode Basic \\
         --chimOutType SeparateSAMold --chimSegmentMin 20 --chimJunctionOverhangMin 12 --alignSJDBoverhangMin 10 --outReadsUnmapped Fastx --outSAMstrandField intronMotif \\
-        --outSAMtype BAM SortedByCoordinate ${avail_mem} \\
+        --outSAMtype BAM SortedByCoordinate \\
+        ${avail_mem} \\
         --readFilesCommand zcat
     mv Aligned.sortedByCoord.out.bam ${sample}Aligned.sortedByCoord.out.bam
     samtools view -bS Chimeric.out.sam > ${sample}Chimeric.out.bam
@@ -621,7 +622,7 @@ files_and_reports_summary = files_and_reports_summary.dump(tag:'files_and_report
 */
 
 process summary {
-    tag "$sample"
+    tag "${sample}"
 
     publishDir "${params.outdir}/Reports/${sample}", mode: 'copy'
  
@@ -660,7 +661,7 @@ process summary {
  * Arriba Visualization
  */
 process arriba_visualization {
-    tag "$sample"
+    tag "${sample}"
     label 'process_medium'
 
     publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy'
@@ -700,7 +701,7 @@ fusion_inspector_input = fusion_inspector_input.dump(tag:'fusion_inspector_input
  * Fusion Inspector
  */
 process fusion_inspector {
-    tag "$sample"
+    tag "${sample}"
     label 'process_high'
 
     publishDir "${params.outdir}/tools/FusionInspector/${sample}", mode: 'copy'
