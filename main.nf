@@ -509,13 +509,8 @@ process ericscript {
         -o ./tmp \\
         ${reads}
 
-    if [-f tmp/fusions.results.filtered.tsv]; then
-        mv tmp/fusions.results.filtered.tsv ${sample}_ericscript.tsv
-    fi
-
-    if [-f tmp/fusions.results.total.tsv]; then
-        mv tmp/fusions.results.total.tsv ${sample}_ericscript_total.tsv
-    fi
+    mv tmp/fusions.results.filtered.tsv ${sample}_ericscript.tsv
+    mv tmp/fusions.results.total.tsv ${sample}_ericscript_total.tsv
     """
 }
 
