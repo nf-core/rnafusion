@@ -513,7 +513,7 @@ process ericscript {
         mv tmp/fusions.results.filtered.tsv ${sample}_ericscript.tsv
     fi
 
-    if [[ -f "tmp/fusions.results.filtered.tsv" ]]; then
+    if [[ -f "tmp/fusions.results.total.tsv" ]]; then
         mv tmp/fusions.results.total.tsv ${sample}_ericscript_total.tsv
     fi
     """
