@@ -8,7 +8,7 @@ dependencies:
   - bioconda::bioconductor-genomicalignments
   - bioconda::bioconductor-genomicranges
   - bioconda::samtools=1.9
-  - bioconda::star=2.7.2b
+  - bioconda::star=2.7.1a
   - conda-forge::openssl=1.0
   - conda-forge::r-circlize
   - conda-forge::readline=6.2
