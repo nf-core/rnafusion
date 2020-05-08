@@ -273,32 +273,32 @@ Channel.from(summary.collect{ [it.key, it.value] })
  */
 
 process build_star_index {
-    tag "$fasta"
+    tag "${fasta}-${gtf}"
     label 'process_medium'
 
-    publishDir "${params.outdir}/star-index", mode: 'copy'
+    publishDir params.outdir, mode: 'copy'
 
     input:
         file(fasta) from ch_fasta
         file(gtf) from ch_gtf
 
     output:
-        file("star") into star_index
+        file("star-index") into star_index
 
     when: !(params.star_index)
 
     script:
     def avail_mem = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
     """
-    mkdir star
+    mkdir star-index
     STAR \\
         --runMode genomeGenerate \\
         --runThreadN ${task.cpus} \\
         --sjdbGTFfile ${gtf} \\
         --sjdbOverhang ${params.read_length - 1} \\
-        --genomeDir star/ \\
+        --genomeDir star-index/ \\
         --genomeFastaFiles ${fasta} \\
-        $avail_mem
+        ${avail_mem}
     """
 }
 
@@ -316,7 +316,7 @@ ch_star_index = ch_star_index.dump(tag:'ch_star_index')
  * Arriba
  */
 process arriba {
-    tag "$sample"
+    tag "${sample}"
     label 'process_medium'
 
     publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy'
@@ -329,8 +329,8 @@ process arriba {
         file(gtf) from ch_gtf
 
     output:
-        set val(sample), file("${sample}_arriba.tsv") optional true into arriba_fusions_summary
-        set val(sample), file("${sample}_arriba.bam"), file("${sample}_arriba.tsv") optional true into arriba_visualization
+        set val(sample), file("${sample}_arriba.tsv") optional true into arriba_fusions_summary, arriba_tsv
+        set val(sample), file("${sample}_arriba.bam") optional true into arriba_bam
         file("*.{tsv,txt}") into arriba_output
 
     when: params.arriba && (!params.single_end || params.debug)
@@ -376,12 +376,13 @@ process arriba {
 }
 
 arriba_fusions_summary = arriba_fusions_summary.dump(tag:'arriba_fusions_summary')
+arriba_visualization = arriba_bam.join(arriba_tsv)
 
 /*
  * STAR-Fusion
  */
 process star_fusion {
-    tag "$sample"
+    tag "${sample}"
     label 'process_high'
 
     publishDir "${params.outdir}/tools/Star-Fusion/${sample}", mode: 'copy'
@@ -448,7 +449,7 @@ star_fusion_fusions = star_fusion_fusions.dump(tag:'star_fusion_fusions')
  * Fusioncatcher
  */
 process fusioncatcher {
-    tag "$sample"
+    tag "${sample}"
     label 'process_high'
     
     publishDir "${params.outdir}/tools/Fusioncatcher/${sample}", mode: 'copy'
@@ -484,7 +485,7 @@ fusioncatcher_fusions = fusioncatcher_fusions.dump(tag:'fusioncatcher_fusions')
  * Ericscript
  */
 process ericscript {
-    tag "$sample"
+    tag "${sample}"
     label 'process_high'
 
     publishDir "${params.outdir}/tools/EricScript/${sample}", mode: 'copy'
@@ -494,8 +495,8 @@ process ericscript {
         file(reference) from reference.ericscript
 
     output:
-        set val(sample), file("./tmp/${sample}_ericscript.tsv") optional true into ericscript_fusions
-        file("./tmp/fusions.results.total.tsv") optional true into ericscript_output
+        set val(sample), file("${sample}_ericscript.tsv") optional true into ericscript_fusions
+        set val(sample), file("${sample}_ericscript_total.tsv") optional true into ericscript_output
 
     when: params.ericscript && (!params.single_end || params.debug)
 
@@ -508,8 +509,12 @@ process ericscript {
         -o ./tmp \\
         ${reads}
 
-    if [-f ./tmp/fusions.results.filtered.tsv]; then
-        mv ./tmp/fusions.results.filtered.tsv ./tmp/${sample}_ericscript.tsv
+    if [[ -f "tmp/fusions.results.filtered.tsv" ]]; then
+        mv tmp/fusions.results.filtered.tsv ${sample}_ericscript.tsv
+    fi
+
+    if [[ -f "tmp/fusions.results.total.tsv" ]]; then
+        mv tmp/fusions.results.total.tsv ${sample}_ericscript_total.tsv
     fi
     """
 }
@@ -520,7 +525,7 @@ ericscript_fusions = ericscript_fusions.dump(tag:'ericscript_fusions')
  * Pizzly
  */
 process pizzly {
-    tag "$sample"
+    tag "${sample}"
     label 'process_medium'
 
     publishDir "${params.outdir}/tools/Pizzly/${sample}", mode: 'copy'
@@ -562,7 +567,7 @@ pizzly_fusions = pizzly_fusions.dump(tag:'pizzly_fusions')
  * Squid
  */
 process squid {
-    tag "$sample"
+    tag "${sample}"
     label 'process_high'
 
     publishDir "${params.outdir}/tools/Squid/${sample}", mode: 'copy'
@@ -587,8 +592,14 @@ process squid {
         --runThreadN ${task.cpus} \\
         --readFilesIn ${reads} \\
         --twopassMode Basic \\
-        --chimOutType SeparateSAMold --chimSegmentMin 20 --chimJunctionOverhangMin 12 --alignSJDBoverhangMin 10 --outReadsUnmapped Fastx --outSAMstrandField intronMotif \\
-        --outSAMtype BAM SortedByCoordinate ${avail_mem} \\
+        --chimOutType SeparateSAMold \\
+        --chimSegmentMin 20 \\
+        --chimJunctionOverhangMin 12 \\
+        --alignSJDBoverhangMin 10 \\
+        --outReadsUnmapped Fastx \\
+        --outSAMstrandField intronMotif \\
+        --outSAMtype BAM SortedByCoordinate \\
+        ${avail_mem} \\
         --readFilesCommand zcat
     mv Aligned.sortedByCoord.out.bam ${sample}Aligned.sortedByCoord.out.bam
     samtools view -bS Chimeric.out.sam > ${sample}Chimeric.out.bam
@@ -620,7 +631,7 @@ files_and_reports_summary = files_and_reports_summary.dump(tag:'files_and_report
 */
 
 process summary {
-    tag "$sample"
+    tag "${sample}"
 
     publishDir "${params.outdir}/Reports/${sample}", mode: 'copy'
  
@@ -659,7 +670,7 @@ process summary {
  * Arriba Visualization
  */
 process arriba_visualization {
-    tag "$sample"
+    tag "${sample}"
     label 'process_medium'
 
     publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy'
@@ -686,7 +697,7 @@ process arriba_visualization {
         --output=${sample}.pdf \\
         --annotation=${gtf} \\
         --cytobands=${reference}/cytobands_hg38_GRCh38_2018-02-23.tsv \\
-        --proteinDomains=${reference}/protein_domains_hg38_GRCh38_2018-03-06.gff3
+        --proteinDomains=${reference}/protein_domains_hg38_GRCh38_2019-07-05.gff3
     """
 }
 
@@ -699,7 +710,7 @@ fusion_inspector_input = fusion_inspector_input.dump(tag:'fusion_inspector_input
  * Fusion Inspector
  */
 process fusion_inspector {
-    tag "$sample"
+    tag "${sample}"
     label 'process_high'
 
     publishDir "${params.outdir}/tools/FusionInspector/${sample}", mode: 'copy'
