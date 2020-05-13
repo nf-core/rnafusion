@@ -135,9 +135,9 @@ process download_star_fusion {
 
     script:
     """
-    aws s3 --no-sign-request --region eu-west-1 sync s3://ngi-igenomes/igenomes/Homo_sapiens/NCBI/GRCh38/Annotation/CTAT/ .
-    tar -xf GRCh38_gencode_v32_CTAT_lib_Dec062019.tar.xz --strip-components 5
-    rm GRCh38_gencode_v32_CTAT_lib_Dec062019.tar.xz
+    aws s3 --no-sign-request --region ${params.awsregion} sync s3://ngi-igenomes/Homo_sapiens/Ensembl/GRCh38/Genome/CTAT/ctat_star_fusion_1_8_1.tar.gz .
+    tar -xf ctat_star_fusion_1_8_1.tar.gz
+    rm ctat_star_fusion_1_8_1.tar.gz
     """
 }
 
