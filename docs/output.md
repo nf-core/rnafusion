@@ -7,16 +7,21 @@ This document describes the output produced by the pipeline.
 The pipeline is built using [Nextflow](https://www.nextflow.io/)
 and processes data using the following steps:
 
-* [Arriba](#arriba)
-* [EricScript](#ericscript)
-* [FastQC](#fastqc) - read quality control
-* [FusionCatcher](#fusioncatcher)
-* [FusionInspector](#fusion-inspector)
-* [fusion-report](#fusion-report)
-* [MultiQC](#multiqc) - aggregate report, describing results of the whole pipeline
-* [Pizzly](#pizzly)
-* [Squid](#squid)
-* [Star-Fusion](#star-fusion)
+- [nf-core/rnafusion: Output](#nf-corernafusion-output)
+  - [Pipeline overview](#pipeline-overview)
+  - [Arriba](#arriba)
+  - [EricScript](#ericscript)
+  - [FastQC](#fastqc)
+  - [Fusioncatcher](#fusioncatcher)
+  - [Fusion Inspector](#fusion-inspector)
+  - [fusion-report](#fusion-report)
+    - [Tool detection](#tool-detection)
+    - [Found in database](#found-in-database)
+    - [Tool detection distribution](#tool-detection-distribution)
+  - [MultiQC](#multiqc)
+  - [Pizzly](#pizzly)
+  - [Squid](#squid)
+  - [Star-Fusion](#star-fusion)
 
 ## Arriba
 

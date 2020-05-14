@@ -12,57 +12,57 @@
     - [Updating the pipeline](#updating-the-pipeline)
     - [Reproducibility](#reproducibility)
   - [Main arguments](#main-arguments)
-    - [`-profile`](#-profile)
-    - [`--reads`](#--reads)
-    - [`--single_end`](#--single_end)
+    - [`-profile`](#profile)
+    - [`--reads`](#reads)
+    - [`--single_end`](#singleend)
   - [Tool flags](#tool-flags)
-    - [`--arriba`](#--arriba)
-    - [`--ericscript`](#--ericscript)
-    - [`--fusioncatcher`](#--fusioncatcher)
-    - [`--fusion_report_opt`](#--fusion_report_opt)
-    - [`--pizzly`](#--pizzly)
-    - [`--squid`](#--squid)
-    - [`--star_fusion`](#--star_fusion)
+    - [`--arriba`](#arriba)
+    - [`--ericscript`](#ericscript)
+    - [`--fusioncatcher`](#fusioncatcher)
+    - [`--fusion_report`](#fusionreport)
+    - [`--pizzly`](#pizzly)
+    - [`--squid`](#squid)
+    - [`--star_fusion`](#starfusion)
   - [Visualization flags](#visualization-flags)
-    - [`--arriba_vis`](#--arriba_vis)
-    - [`--fusion_inspector`](#--fusion_inspector)
+    - [`--arriba_vis`](#arribavis)
+    - [`--fusion_inspector`](#fusioninspector)
   - [Reference genomes](#reference-genomes)
-    - [`--arriba_ref`](#--arriba_ref)
-    - [`--genome` (using iGenomes)](#--genome-using-igenomes)
-    - [`--databases`](#--databases)
-    - [`--ericscript_ref`](#--ericscript_ref)
-    - [`--fasta`](#--fasta)
-    - [`--igenomes_ignore`](#--igenomes_ignore)
-    - [`--fusioncatcher_ref`](#--fusioncatcher_ref)
-    - [`--gtf`](#--gtf)
-    - [`--star_index`](#--star_index)
-    - [`--star_fusion_ref`](#--star_fusion_ref)
-    - [`--transcript`](#--transcript)
+    - [`--arriba_ref`](#arribaref)
+    - [`--databases`](#databases)
+    - [`--ericscript_ref`](#ericscriptref)
+    - [`--fasta`](#fasta)
+    - [`--fusioncatcher_ref`](#fusioncatcherref)
+    - [`--genome`](#genome)
+    - [`--gtf`](#gtf)
+    - [`--reference_release`](#referencerelease)
+    - [`--star_index`](#starindex)
+    - [`--star_fusion_ref`](#starfusionref)
+    - [`--transcript`](#transcript)
   - [Job resources](#job-resources)
     - [Automatic resubmission](#automatic-resubmission)
     - [Custom resource requests](#custom-resource-requests)
   - [AWS Batch specific parameters](#aws-batch-specific-parameters)
-    - [`--awsqueue`](#--awsqueue)
-    - [`--awsregion`](#--awsregion)
-    - [`--awscli`](#--awscli)
+    - [`--awsqueue`](#awsqueue)
+    - [`--awsregion`](#awsregion)
+    - [`--awscli`](#awscli)
   - [Other command line parameters](#other-command-line-parameters)
-    - [`--debug`](#--debug)
-    - [`--read_length`](#--read_length)
-    - [`--outdir`](#--outdir)
-    - [`--email`](#--email)
-    - [`--email_on_fail`](#--email_on_fail)
-    - [`--max_multiqc_email_size`](#--max_multiqc_email_size)
-    - [`-name`](#-name)
-    - [`-resume`](#-resume)
-    - [`-c`](#-c)
-    - [`--custom_config_version`](#--custom_config_version)
-    - [`--custom_config_base`](#--custom_config_base)
-    - [`--max_memory`](#--max_memory)
-    - [`--max_time`](#--max_time)
-    - [`--max_cpus`](#--max_cpus)
-    - [`--plaintext_email`](#--plaintext_email)
-    - [`--monochrome_logs`](#--monochrome_logs)
-    - [`--multiqc_config`](#--multiqc_config)
+    - [`--debug`](#debug)
+    - [`--read_length`](#readlength)
+    - [`--outdir`](#outdir)
+    - [`--email`](#email)
+    - [`--email_on_fail`](#emailonfail)
+    - [`--max_multiqc_email_size`](#maxmultiqcemailsize)
+    - [`-name`](#name)
+    - [`-resume`](#resume)
+    - [`-c`](#c)
+    - [`--custom_config_version`](#customconfigversion)
+    - [`--custom_config_base`](#customconfigbase)
+    - [`--max_memory`](#maxmemory)
+    - [`--max_time`](#maxtime)
+    - [`--max_cpus`](#maxcpus)
+    - [`--plaintext_email`](#plaintextemail)
+    - [`--monochrome_logs`](#monochromelogs)
+    - [`--multiqc_config`](#multiqcconfig)
 
 ## Introduction
 
@@ -80,11 +80,9 @@ The typical command for running the pipeline is as follows.
 
 ### Running the pipeline using Docker
 
-This will launch the pipeline using `docker` with configuration profile [example-docker.config](https://github.com/nf-core/rnafusion/blob/master/example/custom-docker.config). See below for more information about profiles.
-
 ```bash
 nextflow run nf-core/rnafusion \
-  -profile docker -c 'example/custom-docker.config' \
+  -profile docker \
   --reads '*_R{1,2}.fastq.gz' \
   --arriba \
   --star_fusion \
@@ -98,8 +96,6 @@ nextflow run nf-core/rnafusion \
 
 ### Running the pipeline using Singularity
 
-First start by downloading singularity images.
-
 ```bash
 nextflow run nf-core/rnafusion/download-singularity-img.nf --download_all --outdir /path
 ```
@@ -110,11 +106,11 @@ If the nextflow download script crashes (network issue), please use the bash scr
 cd utils && sh download-singularity-img.sh /path/to/images
 ```
 
-The command bellow will launch the pipeline using `singularity` with configuration profile [example-singularity.config](https://github.com/nf-core/rnafusion/blob/master/example/custom-singularity.config). See below for more information about profiles.
+The command bellow will launch the pipeline using `singularity`.
 
 ```bash
 nextflow run nf-core/rnafusion \
-  -profile singularity -c 'example/custom-singularity.config' \
+  -profile singularity \
   --reads '*_R{1,2}.fastq.gz' \
   --arriba \
   --star_fusion \
@@ -184,10 +180,6 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
 - `singularity`
   - A generic configuration profile to be used with [Singularity](http://singularity.lbl.gov/)
   - Pulls software from DockerHub: [`nfcore/rnafusion`](http://hub.docker.com/r/nfcore/rnafusion/)
-- `conda`
-  - Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker or Singularity.
-  - A generic configuration profile to be used with [Conda](https://conda.io/docs/)
-  - Pulls most software from [Bioconda](https://bioconda.github.io/)
 - `test`
   - A profile with a complete configuration for automated testing
   - Includes links to test data so needs no other parameters
@@ -239,9 +231,12 @@ If enabled, executes `Fusioncatcher` tool.
 - `--fusioncatcher_opt`
   - Specify additional parameters. For more info, please refer to the [documentation](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) of the tool.
 
-### `--fusion_report_opt`
+### `--fusion_report`
 
-Specify additional parameters. For more info, please refer to the [documentation](https://matq007.github.io/fusion-report/#/) of the tool.
+If enabled, download databases for `fusion-report`.
+
+- `fusion_report_opt`
+  - Specify additional parameters. For more info, please refer to the [documentation](https://matq007.github.io/fusion-report/#/) of the tool.
 
 ### `--pizzly`
 
@@ -275,10 +270,6 @@ If enabled, executes `Fusion-Inspector` tool.
 
 ### `--arriba_ref`
 
-### `--genome` (using iGenomes)
-
-There are 31 different species supported in the iGenomes references. To run the pipeline, you must specify which to use with the `--genome` flag.
-
 ```bash
 --arriba_ref '[path to Arriba reference]'
 ```
@@ -307,10 +298,6 @@ If you prefer, you can specify the full path to your reference genome when you r
 --fasta '[path to Fasta reference]'
 ```
 
-### `--igenomes_ignore`
-
-Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`.
-
 ### `--fusioncatcher_ref`
 
 Required reference in order to run `Fusioncatcher`.
@@ -319,12 +306,30 @@ Required reference in order to run `Fusioncatcher`.
 --fusioncatcher_ref '[path to Fusioncatcher reference]'
 ```
 
+### `--genome`
+
+This pipeline uses only `Homo Sapiens` version `GRCh38`. Also make sure to specify 
+`--genomes_base`.
+
+```bash
+--genome 'GRCh38' --genome_base '/path/to/references'
+```
+
 ### `--gtf`
 
 Required annotation file.
 
 ```bash
 --gtf '[path to GTF annotation]'
+```
+
+### `--reference_release`
+
+Ensembl version.
+
+```bash
+# ftp://ftp.ensembl.org/pub/release-97/fasta/homo_sapiens/
+--reference_release '97'
 ```
 
 ### `--star_index`

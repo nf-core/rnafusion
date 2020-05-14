@@ -14,16 +14,18 @@
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker containers making installation trivial and results highly reproducible.
 
-| Tool            | Single-end reads | CPU (recommended) | RAM (recommended) |
-| --------------- |:----------------:|:-----------------:|:-----------------:|
-| [Arriba](https://github.com/suhrig/arriba) | **No**           | >=16 cores        | ~30GB             |
-| [EricScript](https://sites.google.com/site/bioericscript/getting-started) | **No**           | >=16 cores        | ~30GB             |
-| [FusionCatcher](https://github.com/ndaniel/fusioncatcher) | Yes              | >=16 cores        | ~64GB             |
-| [fusion-report](https://github.com/matq007/fusion-report) | -              | -        | -             |
-| [Pizzly](https://github.com/pmelsted/pizzly) | **No**           | >=16 cores        | ~30GB             |
-| [Squid](https://github.com/Kingsford-Group/squid) | **No**           | >=16 cores        | ~30GB             |
-| [Star-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) | Yes              | >=16 cores        | ~30GB             |
-| [FusionInspector](https://github.com/FusionInspector/FusionInspector) | **No**           | >=16 cores        | ~30GB             |
+> The pipeline **requires** >=16 CPU cores and >=30GB RAM
+
+| Tool                                                                      |  Single-end reads  |  Version |
+| ------------------------------------------------------------------------- | :----------------: | :------: |
+| [Arriba](https://github.com/suhrig/arriba)                                |         :x:        |  `1.2.0` |
+| [EricScript](https://sites.google.com/site/bioericscript/getting-started) |         :x:        |  `0.5.5` |
+| [FusionCatcher](https://github.com/ndaniel/fusioncatcher)                 | :white_check_mark: |  `1.20`  |
+| [Fusion-Inspector](https://github.com/FusionInspector/FusionInspector)    |         :x:        |  `2.2.1` |
+| [fusion-report](https://github.com/matq007/fusion-report)                 |          -         |  `2.2.0` |
+| [Pizzly](https://github.com/pmelsted/pizzly)                              |         :x:        | `0.37.3` |
+| [Squid](https://github.com/Kingsford-Group/squid)                         |         :x:        |   `1.5`  |
+| [Star-Fusion](https://github.com/STAR-Fusion/STAR-Fusion)                 | :white_check_mark: |  `1.8.1` |
 
 For available parameters or help run:
 
@@ -70,7 +72,16 @@ Use predefined configuration for desired Institution cluster provided at [nfcore
 
 ## Credits
 
-This pipeline was originally written by Martin Proks ([@matq007](https://github.com/matq007)) in collaboration with Karolinska Institutet, SciLifeLab and University of Southern Denmark as a master thesis. This is a follow-up development started by Rickard Hammarén ([@Hammarn](https://github.com/Hammarn)). Special thanks goes to all supervisors: Teresita Díaz de Ståhl, PhD., Assoc. Prof.; Monica Nistér, MD, PhD; Maxime U Garcia PhD ([@MaxUlysse](https://github.com/MaxUlysse)); Szilveszter Juhos ([@szilvajuhos](https://github.com/szilvajuhos)); Phil Ewels PhD ([@ewels](https://github.com/ewels)) and Lars Grøntved, PhD., Assoc. Prof.
+This pipeline was originally written by Martin Proks ([@matq007](https://github.com/matq007)) in collaboration with Karolinska Institutet, SciLifeLab and University of Southern Denmark as a master thesis. This is a follow-up development started by Rickard Hammarén ([@Hammarn](https://github.com/Hammarn)). 
+
+Special thanks goes to all supervisors:
+
+* [Assoc. Prof. Teresita Díaz de Ståhl, PhD](https://ki.se/en/onkpat/teresita-diaz-de-stahls-group)
+* [MD. Monica Nistér, PhD](https://ki.se/en/onkpat/research-team-monica-nister)
+* [Maxime U Garcia, PhD](https://github.com/MaxUlysse)
+* [Szilveszter Juhos](https://github.com/szilvajuhos)
+* [Phil Ewels, PhD](https://github.com/ewels)
+* [Assoc. Prof. Lars Grøntved, PhD](https://portal.findresearcher.sdu.dk/en/persons/larsgr)
 
 ## Tool References
 
