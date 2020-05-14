@@ -32,7 +32,7 @@ def helpMessage() {
     Mandatory arguments:
       --outdir [path]               Output directory for downloading
       -profile [str]                Configuration profile to use. Can use multiple (comma separated)
-                                    Available: standard, conda, docker, singularity, awsbatch, test
+                                    Available: standard, docker, singularity, awsbatch, test
       
     Options:
       --download_all [bool]         Download all images
