@@ -30,7 +30,7 @@ def helpMessage() {
     Mandatory arguments:
       --reads [file]                Path to input data (must be surrounded with quotes)
       -profile [str]                Configuration profile to use. Can use multiple (comma separated)
-                                    Available: conda, docker, singularity, test, awsbatch, <institute> and more            
+                                    Available: docker, singularity, test, awsbatch, <institute> and more            
       --reference_path [str]        Path to reference folder (includes fasta, gtf, fusion tool ref ...)
 
     Tool flags:
