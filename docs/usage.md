@@ -308,8 +308,7 @@ Required reference in order to run `Fusioncatcher`.
 
 ### `--genome`
 
-This pipeline uses only `Homo Sapiens` version `GRCh38`. Also make sure to specify 
-`--genomes_base`.
+This pipeline uses only `Homo Sapiens` version `GRCh38`. Also make sure to specify `--genomes_base`.
 
 ```bash
 --genome 'GRCh38' --genome_base '/path/to/references'
