@@ -1,27 +1,27 @@
+<!-- omit in toc -->
 # nf-core/rnafusion: Output
 
 This document describes the output produced by the pipeline.
 
+<!-- omit in toc -->
 ## Pipeline overview
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/)
 and processes data using the following steps:
 
-- [nf-core/rnafusion: Output](#nf-corernafusion-output)
-  - [Pipeline overview](#pipeline-overview)
-  - [Arriba](#arriba)
-  - [EricScript](#ericscript)
-  - [FastQC](#fastqc)
-  - [Fusioncatcher](#fusioncatcher)
-  - [Fusion Inspector](#fusion-inspector)
-  - [fusion-report](#fusion-report)
-    - [Tool detection](#tool-detection)
-    - [Found in database](#found-in-database)
-    - [Tool detection distribution](#tool-detection-distribution)
-  - [MultiQC](#multiqc)
-  - [Pizzly](#pizzly)
-  - [Squid](#squid)
-  - [Star-Fusion](#star-fusion)
+- [Arriba](#arriba)
+- [EricScript](#ericscript)
+- [FastQC](#fastqc)
+- [Fusioncatcher](#fusioncatcher)
+- [Fusion Inspector](#fusion-inspector)
+- [fusion-report](#fusion-report)
+  - [Tool detection](#tool-detection)
+  - [Found in database](#found-in-database)
+  - [Tool detection distribution](#tool-detection-distribution)
+- [MultiQC](#multiqc)
+- [Pizzly](#pizzly)
+- [Squid](#squid)
+- [Star-Fusion](#star-fusion)
 
 ## Arriba
 
