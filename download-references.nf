@@ -135,7 +135,7 @@ process download_star_fusion {
 
     script:
     """
-    aws s3 --no-sign-request --region ${params.awsregion} sync s3://ngi-igenomes/Homo_sapiens/Ensembl/GRCh38/Genome/CTAT/ctat_star_fusion_1_8_1.tar.gz .
+    aws s3 --no-sign-request --region ${params.awsregion} cp s3://ngi-igenomes/Homo_sapiens/Ensembl/GRCh38/Genome/CTAT/ctat_star_fusion_1_8_1.tar.gz .
     tar -xf ctat_star_fusion_1_8_1.tar.gz
     rm ctat_star_fusion_1_8_1.tar.gz
     """
