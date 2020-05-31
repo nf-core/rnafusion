@@ -1,7 +1,7 @@
 #!/bin/bash
 
 get_tool_version() {
-    echo $(cat nextflow.config | grep -m1 "$1" | cut -d"=" -f2 | tr -d \' | tr -d ' ')
+    echo $(cat conf/base.config | grep -m1 "$1" | cut -d"=" -f2 | tr -d \' | tr -d ' ')
 }
 
 if [ $# -eq 0 ]; then
@@ -28,7 +28,6 @@ elif [ -d "$1" ]; then
     STAR_FUSION=$(get_tool_version "star_fusion")
 
     cd $1 && echo "Pulling images ..."
-
     singularity pull --name "${PREFIX}-arriba_${ARRIBA}.img" docker://nfcore/rnafusion:arriba_${ARRIBA}
     singularity pull --name "${PREFIX}-ericscript_${ERICSCRIPT}.img" docker://nfcore/rnafusion:ericscript_${ERICSCRIPT}
     singularity pull --name "${PREFIX}-fusioncatcher_${FUSIONCATCHER}.img" docker://nfcore/rnafusion:fusioncatcher_${FUSIONCATCHER}

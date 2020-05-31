@@ -63,7 +63,6 @@ if (params.fusioncatcher || params.download_all) running_tools.add("Fusioncatche
 if (params.ericscript || params.download_all) running_tools.add("Ericscript")
 if (params.pizzly || params.download_all) running_tools.add("Pizzly")
 if (params.squid || params.download_all) running_tools.add("Squid")
-if (params.fusion_inspector || params.download_all) running_tools.add("Fusion-Inspector")
 
 // Header log info
 log.info nfcoreHeader()
@@ -145,21 +144,6 @@ process download_fusioncatcher {
     script:
     """
     singularity pull --name nf-core-rnafusion-fusioncatcher_${params.versions.fusioncatcher}.img docker://nfcore/rnafusion:fusioncatcher_${params.versions.fusioncatcher}
-    """
-}
-
-process download_fusion_inspector {
-    publishDir "${params.outdir}", mode: 'copy'
-    
-    when:
-    params.fusion_inspector || params.download_all
-
-    output:
-    file "nf-core-rnafusion-fusion-inspector_${params.versions.fusion_inspector}.img"
-
-    script:
-    """
-    singularity pull --name nf-core-rnafusion-fusion-inspector_${params.versions.fusion_inspector}.img docker://nfcore/rnafusion:fusion-inspector_${params.versions.fusion_inspector}
     """
 }
 
