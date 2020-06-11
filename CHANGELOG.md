@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Upgrade `Arriba v1.1.0` to `Arriba v1.2.0`
 * Upgrade `fusion-report v2.0.2` to `fusion-report v2.1.0`
 
+### Fixed
+
+* Removed `profile` from helper scripts [#139](https://github.com/nf-core/rnafusion/issues/139)
+
 ## [1.1.0] nfcore/rnafusion - 2020/02/10
 
 * Fusion gene detection tools:

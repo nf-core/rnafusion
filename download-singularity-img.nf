@@ -31,8 +31,6 @@ def helpMessage() {
 
     Mandatory arguments:
       --outdir [path]               Output directory for downloading
-      -profile [str]                Configuration profile to use. Can use multiple (comma separated)
-                                    Available: standard, docker, singularity
       
     Options:
       --download_all [bool]         Download all images

@@ -28,7 +28,6 @@ def helpMessage() {
 
     Mandatory arguments:
       --outdir [path]               Output directory for downloading
-      -profile [str]                Configuration profile [https://github.com/nf-core/configs]
       
     Options:
       --download_all [bool]         Download all references
