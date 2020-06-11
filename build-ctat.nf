@@ -84,7 +84,7 @@ process star_fusion {
 
     script:
     """
-    wget -N ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
+    wget -N ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_releases/Pfam-A.hmm.gz
     gunzip Pfam-A.hmm.gz && hmmpress Pfam-A.hmm
 
     wget https://github.com/FusionAnnotator/CTAT_HumanFusionLib/releases/download/v0.2.0/fusion_lib.Mar2019.dat.gz -O CTAT_HumanFusionLib.dat.gz
