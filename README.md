@@ -22,7 +22,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 | [EricScript](https://sites.google.com/site/bioericscript/getting-started) |         :x:        |  `0.5.5` |
 | [FusionCatcher](https://github.com/ndaniel/fusioncatcher)                 | :white_check_mark: |  `1.20`  |
 | [Fusion-Inspector](https://github.com/FusionInspector/FusionInspector)    |         :x:        |  `2.2.1` |
-| [fusion-report](https://github.com/matq007/fusion-report)                 |          -         |  `2.1.0` |
+| [fusion-report](https://github.com/matq007/fusion-report)                 |          -         |  `2.1.1` |
 | [Pizzly](https://github.com/pmelsted/pizzly)                              |         :x:        | `0.37.3` |
 | [Squid](https://github.com/Kingsford-Group/squid)                         |         :x:        |   `1.5`  |
 | [Star-Fusion](https://github.com/STAR-Fusion/STAR-Fusion)                 | :white_check_mark: |  `1.8.1` |
@@ -42,7 +42,7 @@ ii. Install either [`Docker`](https://docs.docker.com/engine/installation/) or [
 iii. Download the pipeline and test it on a minimal dataset with a single command
 
 ```bash
-nextflow run nf-core/rnafusion -profile test,<docker/singularity/conda/institute>
+nextflow run nf-core/rnafusion -profile test,<docker/singularity/institute>
 ```
 
 > Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
@@ -50,7 +50,7 @@ nextflow run nf-core/rnafusion -profile test,<docker/singularity/conda/institute
 iv. Start running your own analysis!
 
 ```bash
-nextflow run nf-core/rnafusion -profile <profile> -c './example/custom-docker.config' --reads '*_R{1,2}.fastq.gz' --arriba --star_fusion --fusioncatcher --ericscript --pizzly --squid --arriba_vis --fusion_inspector
+nextflow run nf-core/rnafusion -profile <profile> --reads '*_R{1,2}.fastq.gz' --arriba --star_fusion --fusioncatcher --ericscript --pizzly --squid --arriba_vis --fusion_inspector
 ```
 
 See [usage docs](docs/usage.md) for all of the available options when running the pipeline.
