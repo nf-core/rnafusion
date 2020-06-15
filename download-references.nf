@@ -94,7 +94,7 @@ process download_base {
     output:
     file "Homo_sapiens.GRCh38_r${params.reference_release}.all.fa" into fasta
     file "Homo_sapiens.GRCh38_r${params.reference_release}.gtf" into gtf
-    file "Homo_sapiens.GRCh38_${params.reference_release}.cdna.all.fa.gz" into transcript
+    file "Homo_sapiens.GRCh38_r${params.reference_release}.cdna.all.fa.gz" into transcript
 
     script:
     """
@@ -103,7 +103,7 @@ process download_base {
     gunzip -c Homo_sapiens.GRCh38.dna.chromosome.* > Homo_sapiens.GRCh38_r${params.reference_release}.all.fa
     wget ftp://ftp.ensembl.org/pub/release-${params.reference_release}/gtf/homo_sapiens/Homo_sapiens.GRCh38.${params.reference_release}.chr.gtf.gz -O Homo_sapiens.GRCh38_r${params.reference_release}.gtf.gz
     gunzip Homo_sapiens.GRCh38_r${params.reference_release}.gtf.gz
-    wget ftp://ftp.ensembl.org/pub/release-${params.reference_release}/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz -O Homo_sapiens.GRCh38_${params.reference_release}.cdna.all.fa.gz
+    wget ftp://ftp.ensembl.org/pub/release-${params.reference_release}/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz -O Homo_sapiens.GRCh38_r${params.reference_release}.cdna.all.fa.gz
     """
 }
 
