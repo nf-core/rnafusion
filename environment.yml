@@ -18,7 +18,7 @@ dependencies:
   - conda-forge::r-data.table=1.12.8
   - conda-forge::r-gplots=3.0.1.2
   - bioconda::bioconductor-edger=3.28.0
-  - bioconda::fusion-report=2.1.0
+  - bioconda::fusion-report=2.1.1
   # Star-Fusion
   - conda-forge::awscli=1.18.39
   - conda-forge::tar=1.32
