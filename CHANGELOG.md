@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+* Missing `strip-components` in `download-references.nf/star-fusion` [#148](https://github.com/nf-core/rnafusion/issues/148)
 * Missing version prefix for cdna [#143](https://github.com/nf-core/rnafusion/issues/143)
 * `samtools` missing header in empty file for FusionInspector [ref](https://github.com/STAR-Fusion/STAR-Fusion/issues/191)
 * Removed `profile` from helper scripts [#139](https://github.com/nf-core/rnafusion/issues/139)
