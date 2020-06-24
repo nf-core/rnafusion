@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+* Upgrade `fusion-report v2.1.1` to `fusion-report v2.1.2`
 * Upgrade `fusion-report v2.1.0` to `fusion-report v2.1.1`
 * Upgrade `Arriba v1.1.0` to `Arriba v1.2.0`
 * Upgrade `fusion-report v2.0.2` to `fusion-report v2.1.0`
