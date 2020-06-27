@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Removed `profile` from helper scripts [#139](https://github.com/nf-core/rnafusion/issues/139)
 * Wrong url path for `Pfam-A.hmm.gz` [#140](https://github.com/nf-core/rnafusion/issues/140)
 
+### Removed
+
+* Removed `scripts/download-singularity-img.sh` and `download-singularity-img.nf` as they are not necessary any more
+
 ## [1.1.0] nfcore/rnafusion - 2020/02/10
 
 * Fusion gene detection tools:
