@@ -22,7 +22,7 @@ jobs:
       - name: Pull docker image
         run: |
           docker pull nfcore/rnafusion:dev
-          docker tag nfcore/rnafusion:dev nfcore/rnafusion:dev
+          docker tag nfcore/rnafusion:dev nfcore/rnafusion:1.2.0
       - name: Run pipeline
         run: |
           nextflow run ${GITHUB_WORKSPACE} --help
