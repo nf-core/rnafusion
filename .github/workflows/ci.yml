@@ -29,6 +29,3 @@ jobs:
       - name: Run pipeline for downloading references
         run: |
           nextflow run ${GITHUB_WORKSPACE}/download-references.nf --help
-      - name: Run pipeline for downloading singularity images
-        run: |
-          nextflow run ${GITHUB_WORKSPACE}/download-singularity-img.nf --help
