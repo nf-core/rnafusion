@@ -39,19 +39,26 @@ i. Install [`nextflow`](https://nf-co.re/usage/installation)
 
 ii. Install either [`Docker`](https://docs.docker.com/engine/installation/) or [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) for full pipeline reproducibility (please only use [`Conda`](https://conda.io/miniconda.html) as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))
 
-iii. Download the pipeline and test it on a minimal dataset with a single command
+iii. Download references for all tools
 
 ```bash
-nextflow run nf-core/rnafusion -profile test,<docker/singularity/institute>
+nextflow run nf-core/rnafusion
+  --download_all \
+  --outdir <PATH> \
+  --cosmic_usr <COSMIC_USER> --cosmic_passwd <COSMIC_PASSWD>
 ```
-
-> Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
 
 iv. Start running your own analysis!
 
 ```bash
-nextflow run nf-core/rnafusion -profile <profile> --reads '*_R{1,2}.fastq.gz' --arriba --star_fusion --fusioncatcher --ericscript --pizzly --squid --arriba_vis --fusion_inspector
+nextflow run nf-core/rnafusion -profile <docker/singularity/institute> \
+  --reads '*_R{1,2}.fastq.gz' \
+  --genomes_base 'reference_path_from_above'
+  --arriba --star_fusion --fusioncatcher --ericscript --pizzly --squid \
+  --arriba_vis --fusion_inspector
 ```
+
+> Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
 
 See [usage docs](docs/usage.md) for all of the available options when running the pipeline.
 

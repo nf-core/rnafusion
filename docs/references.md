@@ -13,7 +13,6 @@ nextflow run nf-core/rnafusion/download-references.nf --help
 ```bash
 # Replace <COSMIC_USER> and <COSMIC_PASSWD> with yout credentials from COSMIC
 nextflow run nf-core/rnafusion/download-references.nf \
-  -profile <PROFILE> \
   --download_all \
   --outdir <PATH> \
   --cosmic_usr <COSMIC_USER> --cosmic_passwd <COSMIC_PASSWD>
@@ -24,7 +23,6 @@ nextflow run nf-core/rnafusion/download-references.nf \
 ```bash
 # Example of downloading specific tools
 nextflow run nf-core/rnafusion/download-references.nf \
--profile <PROFILE> \
 --arriba \
 --outdir <PATH>
 ```
