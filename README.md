@@ -42,11 +42,13 @@ ii. Install either [`Docker`](https://docs.docker.com/engine/installation/) or [
 iii. Download references for all tools
 
 ```bash
-nextflow run nf-core/rnafusion
+nextflow run nf-core/rnafusion/download-references.nf -profile <docker/singularity/institute> \
   --download_all \
   --outdir <PATH> \
   --cosmic_usr <COSMIC_USER> --cosmic_passwd <COSMIC_PASSWD>
 ```
+
+> Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
 
 iv. Start running your own analysis!
 
@@ -57,8 +59,6 @@ nextflow run nf-core/rnafusion -profile <docker/singularity/institute> \
   --arriba --star_fusion --fusioncatcher --ericscript --pizzly --squid \
   --arriba_vis --fusion_inspector
 ```
-
-> Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
 
 See [usage docs](docs/usage.md) for all of the available options when running the pipeline.
 
