@@ -1,76 +1,68 @@
+<!-- omit in toc -->
 # nf-core/rnafusion: Usage
 
+<!-- omit in toc -->
 ## Table of contents
 
-* [Table of contents](#table-of-contents)
-* [Introduction](#introduction)
-* [Running the pipeline](#running-the-pipeline)
-  * [Using Docker](#running-the-pipeline-using-docker)
-  * [Using Singularity](#running-the-pipeline-using-singularity)
-  * [Running specific tools](#running-specific-tools)
-* [Updating the pipeline](#updating-the-pipeline)
-* [Reproducibility](#reproducibility)
-* [Main arguments](#main-arguments)
-  * [`-profile`](#-profile-single-dash)
-    * [`awsbatch`](#awsbatch)
-    * [`conda`](#conda)
-    * [`docker`](#docker)
-    * [`singularity`](#singularity)
-    * [`test`](#test)
-  * [`--reads`](#--reads)
-  * [`--single_end`](#--single_end)
-* [Tool flags](#tool-flags)
-  * [`--arriba`](#--arriba)
-    * [`--arriba_opt`](#--arriba_opt)
-  * [`--ericscript`](#--ericscript)
-    * [`--ericscript_opt`](#--ericscript_opt)
-  * [`--fusioncatcher`](#--fusioncatcher)
-    * [`--fusioncatcher_opt`](#--fusioncatcher_opt)
-  * [`--fusion_report_opt`](#--fusion_report_opt)
-  * [`--pizzly`](#--pizzly)
-    * [`--pizzly_k`](#--pizzly_k)
-  * [`--squid`](#--squid)
-  * [`--star_fusion`](#--star_fusion)
-    * [`--star_fusion_opt`](#--star_fusion_opt)
-* [Visualization flags](#visualization-flags)
-  * [`--arriba_vis`](#--arriba_vis)
-  * [`--fusion_inspector`](#--fusion_inspector)
-* [Reference genomes](#reference-genomes)
-  * [`--arriba_ref`](#--arriba_ref)
-  * [`--databases`](#--databases)
-  * [`--ericscript_ref`](#--ericscript_ref)
-  * [`--fasta`](#--fasta)
-  * [`--fusioncatcher_ref`](#--fusioncatcher_ref)
-  * [`--gtf`](#--gtf)
-  * [`--star_index`](#--star_index)
-  * [`--star_fusion_ref`](#--star_fusion_ref)
-  * [`--transcript`](#--transcript)
-* [Job resources](#job-resources)
-  * [Automatic resubmission](#automatic-resubmission)
-  * [Custom resource requests](#custom-resource-requests)
-* [AWS Batch specific parameters](#aws-batch-specific-parameters)
-  * [`--awsqueue`](#--awsqueue)
-  * [`--awsregion`](#--awsregion)
-  * [`--awscli`](#--awscli)
-* [Other command line parameters](#other-command-line-parameters)
-  * [`--debug`](#--debug)
-  * [`--read_length`](#--read_length)
-  * [`--outdir`](#--outdir)
-  * [`--email`](#--email)
-  * [`--email_on_fail`](#--email_on_fail)
-  * [`--max_multiqc_email_size`](#--max_multiqc_email_size)
-  * [`-name`](#-name)
-  * [`-resume`](#-resume)
-  * [`-c`](#-c)
-  * [`--custom_config_version`](#--custom_config_version)
-  * [`--custom_config_base`](#--custom_config_base)
-  * [`--max_memory`](#--max_memory)
-  * [`--max_time`](#--max_time)
-  * [`--max_cpus`](#--max_cpus)
-  * [`--plaintext_email`](#--plaintext_email)
-  * [`--monochrome_logs`](#--monochrome_logs)
-  * [`--multiqc_config`](#--multiqc_config)
-<!-- TOC END -->
+- [Introduction](#introduction)
+- [Running the pipeline](#running-the-pipeline)
+  - [Running the pipeline using Docker](#running-the-pipeline-using-docker)
+  - [Running the pipeline using Singularity](#running-the-pipeline-using-singularity)
+  - [Running specific tools](#running-specific-tools)
+  - [Updating the pipeline](#updating-the-pipeline)
+  - [Reproducibility](#reproducibility)
+- [Main arguments](#main-arguments)
+  - [`-profile`](#-profile)
+  - [`--reads`](#--reads)
+  - [`--single_end`](#--single_end)
+- [Tool flags](#tool-flags)
+  - [`--arriba`](#--arriba)
+  - [`--ericscript`](#--ericscript)
+  - [`--fusioncatcher`](#--fusioncatcher)
+  - [`--fusion_report`](#--fusion_report)
+  - [`--pizzly`](#--pizzly)
+  - [`--squid`](#--squid)
+  - [`--star_fusion`](#--star_fusion)
+- [Visualization flags](#visualization-flags)
+  - [`--arriba_vis`](#--arriba_vis)
+  - [`--fusion_inspector`](#--fusion_inspector)
+- [Reference genomes](#reference-genomes)
+  - [`--arriba_ref`](#--arriba_ref)
+  - [`--databases`](#--databases)
+  - [`--ericscript_ref`](#--ericscript_ref)
+  - [`--fasta`](#--fasta)
+  - [`--fusioncatcher_ref`](#--fusioncatcher_ref)
+  - [`--genome`](#--genome)
+  - [`--gtf`](#--gtf)
+  - [`--reference_release`](#--reference_release)
+  - [`--star_index`](#--star_index)
+  - [`--star_fusion_ref`](#--star_fusion_ref)
+  - [`--transcript`](#--transcript)
+- [Job resources](#job-resources)
+  - [Automatic resubmission](#automatic-resubmission)
+  - [Custom resource requests](#custom-resource-requests)
+- [AWS Batch specific parameters](#aws-batch-specific-parameters)
+  - [`--awsqueue`](#--awsqueue)
+  - [`--awsregion`](#--awsregion)
+  - [`--awscli`](#--awscli)
+- [Other command line parameters](#other-command-line-parameters)
+  - [`--debug`](#--debug)
+  - [`--read_length`](#--read_length)
+  - [`--outdir`](#--outdir)
+  - [`--email`](#--email)
+  - [`--email_on_fail`](#--email_on_fail)
+  - [`--max_multiqc_email_size`](#--max_multiqc_email_size)
+  - [`-name`](#-name)
+  - [`-resume`](#-resume)
+  - [`-c`](#-c)
+  - [`--custom_config_version`](#--custom_config_version)
+  - [`--custom_config_base`](#--custom_config_base)
+  - [`--max_memory`](#--max_memory)
+  - [`--max_time`](#--max_time)
+  - [`--max_cpus`](#--max_cpus)
+  - [`--plaintext_email`](#--plaintext_email)
+  - [`--monochrome_logs`](#--monochrome_logs)
+  - [`--multiqc_config`](#--multiqc_config)
 
 ## Introduction
 
@@ -88,11 +80,9 @@ The typical command for running the pipeline is as follows.
 
 ### Running the pipeline using Docker
 
-This will launch the pipeline using `docker` with configuration profile [example-docker.config](https://github.com/nf-core/rnafusion/blob/master/example/custom-docker.config). See below for more information about profiles.
-
 ```bash
 nextflow run nf-core/rnafusion \
-  -profile docker -c 'example/custom-docker.config' \
+  -profile docker \
   --reads '*_R{1,2}.fastq.gz' \
   --arriba \
   --star_fusion \
@@ -106,8 +96,6 @@ nextflow run nf-core/rnafusion \
 
 ### Running the pipeline using Singularity
 
-First start by downloading singularity images.
-
 ```bash
 nextflow run nf-core/rnafusion/download-singularity-img.nf --download_all --outdir /path
 ```
@@ -118,11 +106,11 @@ If the nextflow download script crashes (network issue), please use the bash scr
 cd utils && sh download-singularity-img.sh /path/to/images
 ```
 
-The command bellow will launch the pipeline using `singularity` with configuration profile [example-singularity.config](https://github.com/nf-core/rnafusion/blob/master/example/custom-singularity.config). See below for more information about profiles.
+The command bellow will launch the pipeline using `singularity`.
 
 ```bash
 nextflow run nf-core/rnafusion \
-  -profile singularity -c 'example/custom-singularity.config' \
+  -profile singularity \
   --reads '*_R{1,2}.fastq.gz' \
   --arriba \
   --star_fusion \
@@ -177,6 +165,8 @@ Use this parameter to choose a configuration profile. Profiles can give configur
 
 Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Conda) - see below.
 
+> We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
+
 The pipeline also dynamically loads configurations from [https://github.com/nf-core/configs](https://github.com/nf-core/configs) when it runs, making multiple config profiles for various institutional clusters available at run time. For more information and to see if your system is available in these configs please see the [nf-core/configs documentation](https://github.com/nf-core/configs#documentation).
 
 Note that multiple profiles can be loaded, for example: `-profile test,docker` - the order of arguments is important!
@@ -184,18 +174,15 @@ They are loaded in sequence, so later profiles can overwrite earlier profiles.
 
 If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended.
 
-* `conda`
-  * A generic configuration profile to be used with [conda](https://conda.io/docs/)
-  * Pulls most software from [Bioconda](https://bioconda.github.io/)
-* `docker`
-  * A generic configuration profile to be used with [Docker](http://docker.com/)
-  * Pulls software from DockerHub: [`nfcore/rnafusion`](http://hub.docker.com/r/nfcore/rnafusion/)
-* `singularity`
-  * A generic configuration profile to be used with [Singularity](http://singularity.lbl.gov/)
-  * Pulls software from DockerHub: [`nfcore/rnafusion`](http://hub.docker.com/r/nfcore/rnafusion/)
-* `test`
-  * A profile with a complete configuration for automated testing
-  * Includes links to test data so needs no other parameters
+- `docker`
+  - A generic configuration profile to be used with [Docker](http://docker.com/)
+  - Pulls software from DockerHub: [`nfcore/rnafusion`](http://hub.docker.com/r/nfcore/rnafusion/)
+- `singularity`
+  - A generic configuration profile to be used with [Singularity](http://singularity.lbl.gov/)
+  - Pulls software from DockerHub: [`nfcore/rnafusion`](http://hub.docker.com/r/nfcore/rnafusion/)
+- `test`
+  - A profile with a complete configuration for automated testing
+  - Includes links to test data so needs no other parameters
 
 ### `--reads`
 
@@ -221,47 +208,42 @@ By default, the pipeline expects paired-end data. If you have single-end data, y
 --single_end --reads '*.fastq'
 ```
 
-### `--singleEnd`
-
-By default, the pipeline expects paired-end data. If you have single-end data, you need to specify `--singleEnd` on the command line when you launch the pipeline. A normal glob pattern, enclosed in quotation marks, can then be used for `--reads`. For example:
-
-```bash
---singleEnd --reads '*.fastq.gz'
-```
-
 ## Tool flags
 
 ### `--arriba`
 
 If enabled, executes `Arriba` tool.
 
-* `--arriba_opt`
-  * Specify additional parameters. For more info, please refer to the [documentation](http://arriba.readthedocs.io/en/latest/quickstart/) of the tool.
+- `--arriba_opt`
+  - Specify additional parameters. For more info, please refer to the [documentation](http://arriba.readthedocs.io/en/latest/quickstart/) of the tool.
 
 ### `--ericscript`
 
 If enabled, executes `Ericscript` tool.
 
-* `--ericscript_opt`
-  * Specify additional parameters. For more info, please refer to the [documentation](https://sites.google.com/site/bioericscript/home) of the tool.
+- `--ericscript_opt`
+  - Specify additional parameters. For more info, please refer to the [documentation](https://sites.google.com/site/bioericscript/home) of the tool.
 
 ### `--fusioncatcher`
 
 If enabled, executes `Fusioncatcher` tool.
 
-* `--fusioncatcher_opt`
-  * Specify additional parameters. For more info, please refer to the [documentation](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) of the tool.
+- `--fusioncatcher_opt`
+  - Specify additional parameters. For more info, please refer to the [documentation](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) of the tool.
 
-### `--fusion_report_opt`
+### `--fusion_report`
 
-Specify additional parameters. For more info, please refer to the [documentation](https://matq007.github.io/fusion-report/#/) of the tool.
+If enabled, download databases for `fusion-report`.
+
+- `fusion_report_opt`
+  - Specify additional parameters. For more info, please refer to the [documentation](https://matq007.github.io/fusion-report/#/) of the tool.
 
 ### `--pizzly`
 
 If enabled, executes `Pizzly` tool.
 
-* `--pizzly_k`
-  * Number of k-mers. Deafult 31.
+- `--pizzly_k`
+  - Number of k-mers. Deafult 31.
 
 ### `--squid`
 
@@ -271,8 +253,8 @@ If enabled, executes `Squid` tool.
 
 If enabled, executes `STAR-Fusion` tool.
 
-* `--star_fusion_opt`
-  * Parameter for specifying additional parameters. For more info, please refer to the [documentation](https://github.com/STAR-Fusion/STAR-Fusion/wiki) of the tool.
+- `--star_fusion_opt`
+  - Parameter for specifying additional parameters. For more info, please refer to the [documentation](https://github.com/STAR-Fusion/STAR-Fusion/wiki) of the tool.
 
 ## Visualization flags
 
@@ -287,8 +269,6 @@ If enabled, executes `Fusion-Inspector` tool.
 ## Reference genomes
 
 ### `--arriba_ref`
-
-Required reference in order to run `Arriba`.
 
 ```bash
 --arriba_ref '[path to Arriba reference]'
@@ -312,7 +292,7 @@ Required reference in order to run `EricScript`.
 
 ### `--fasta`
 
-Required reference genome.
+If you prefer, you can specify the full path to your reference genome when you run the pipeline:
 
 ```bash
 --fasta '[path to Fasta reference]'
@@ -326,12 +306,29 @@ Required reference in order to run `Fusioncatcher`.
 --fusioncatcher_ref '[path to Fusioncatcher reference]'
 ```
 
+### `--genome`
+
+This pipeline uses only `Homo Sapiens` version `GRCh38`. Also make sure to specify `--genomes_base`.
+
+```bash
+--genome 'GRCh38' --genome_base '/path/to/references'
+```
+
 ### `--gtf`
 
 Required annotation file.
 
 ```bash
 --gtf '[path to GTF annotation]'
+```
+
+### `--reference_release`
+
+Ensembl version.
+
+```bash
+# ftp://ftp.ensembl.org/pub/release-97/fasta/homo_sapiens/
+--reference_release '97'
 ```
 
 ### `--star_index`

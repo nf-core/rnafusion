@@ -1,5 +1,0 @@
-name: ericscript_v0.5.5
-channels:
-  - bioconda
-dependencies:
-  - ericscript=0.5.5

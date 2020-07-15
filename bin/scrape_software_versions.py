@@ -48,11 +48,6 @@ for k in list(results):
     if not results[k]:
         del(results[k])
 
-# Remove software set to false in results
-for k in results:
-    if not results[k]:
-        del(results[k])
-
 # Dump to YAML
 print ('''
 id: 'software_versions'

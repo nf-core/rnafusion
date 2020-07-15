@@ -27,20 +27,20 @@ def helpMessage() {
     nextflow run nf-core/rnafusion/download-references.nf -profile [PROFILE] [OPTIONS] --outdir /path/to/output
 
     Mandatory arguments:
-      --reference_release [int]     Release number of Ensembl reference for FASTA and GTF
-                                    example: 97 -> ftp://ftp.ensembl.org/pub/release-97
       --outdir [path]               Output directory for downloading
-      -profile [str]                Configuration profile [https://github.com/nf-core/configs]
       
     Options:
       --download_all [bool]         Download all references
+      --reference_release [int]     Release number of Ensembl reference for FASTA and GTF
+                                    Default: 97 -> ftp://ftp.ensembl.org/pub/release-97
+      --base [bool]                 Download FASTA, GTF, cDNA
       --arriba [bool]               Download Arriba references
       --star_fusion [bool]          Build STAR-Fusion references from FASTA ANF GTF
       --fusioncatcher [bool]        Download Fusioncatcher references
       --ericscript [bool]           Download Ericscript references 
       --fusion_report [bool]        Download databases for fusion-report
-        --cosmic_usr [str]          [Required] COSMIC username
-        --cosmic_passwd [str]       [Required] COSMIC password
+      --cosmic_usr [str]            [Required with fusion_report] COSMIC username
+      --cosmic_passwd [str]         [Required with fusion_report] COSMIC password
     """.stripIndent()
 }
 
@@ -50,17 +50,16 @@ def helpMessage() {
 
 // Show help emssage
 if (params.help) exit 0, helpMessage()
-
-if (!params.reference_release) exit 1, "You did not specify the release number of reference!"
 if (!params.outdir) exit 1, "Output directory not specified!"
 
-params.running_tools = []
-if (params.arriba || params.download_all) params.running_tools.add("Arriba")
-if (params.star_fusion || params.download_all) params.running_tools.add("STAR-Fusion")
-if (params.fusioncatcher || params.download_all) params.running_tools.add("Fusioncatcher")
-if (params.ericscript || params.download_all) params.running_tools.add("Ericscript")
-if (params.download_all) {
-    params.running_tools.add('fusion-report')
+running_tools = []
+if (params.base || params.download_all) running_tools.add("Reference v${params.reference_release}")
+if (params.arriba || params.download_all) running_tools.add("Arriba")
+if (params.star_fusion || params.download_all) running_tools.add("STAR-Fusion")
+if (params.fusioncatcher || params.download_all) running_tools.add("Fusioncatcher")
+if (params.ericscript || params.download_all) running_tools.add("Ericscript")
+if (params.fusion_report || params.download_all) {
+    running_tools.add('fusion-report')
     if (!params.cosmic_usr || !params.cosmic_passwd) exit 1, "Database credentials are required parameter!"
 }
 
@@ -69,7 +68,7 @@ log.info nfcoreHeader()
 def summary = [:]
 summary['Pipeline Name']  = 'nf-core/rnafusion/download-references.nf'
 summary['Pipeline Version'] = workflow.manifest.version
-summary['References']       = params.running_tools.size() == 0 ? 'None' : params.running_tools.join(", ")
+summary['References']       = running_tools.size() == 0 ? 'None' : running_tools.join(", ")
 if(workflow.containerEngine) summary['Container'] = "$workflow.containerEngine - $workflow.container"
 summary['Max Resources']    = "$params.max_memory memory, $params.max_cpus cpus, $params.max_time time per job"
 summary['Output dir']   = params.outdir
@@ -87,12 +86,15 @@ checkHostname()
 */
 
 process download_base {
-    publishDir "${params.outdir}/", mode: 'move'
+    publishDir "${params.outdir}/", mode: 'copy'
     
+    when:
+    params.base || params.download_all
+
     output:
     file "Homo_sapiens.GRCh38_r${params.reference_release}.all.fa" into fasta
     file "Homo_sapiens.GRCh38_r${params.reference_release}.gtf" into gtf
-    file "Homo_sapiens.GRCh38_${params.reference_release}.cdna.all.fa.gz" into transcript
+    file "Homo_sapiens.GRCh38_r${params.reference_release}.cdna.all.fa.gz" into transcript
 
     script:
     """
@@ -101,12 +103,12 @@ process download_base {
     gunzip -c Homo_sapiens.GRCh38.dna.chromosome.* > Homo_sapiens.GRCh38_r${params.reference_release}.all.fa
     wget ftp://ftp.ensembl.org/pub/release-${params.reference_release}/gtf/homo_sapiens/Homo_sapiens.GRCh38.${params.reference_release}.chr.gtf.gz -O Homo_sapiens.GRCh38_r${params.reference_release}.gtf.gz
     gunzip Homo_sapiens.GRCh38_r${params.reference_release}.gtf.gz
-    wget ftp://ftp.ensembl.org/pub/release-${params.reference_release}/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz -O Homo_sapiens.GRCh38_${params.reference_release}.cdna.all.fa.gz
+    wget ftp://ftp.ensembl.org/pub/release-${params.reference_release}/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz -O Homo_sapiens.GRCh38_r${params.reference_release}.cdna.all.fa.gz
     """
 }
 
 process download_arriba {
-    publishDir "${params.outdir}/arriba", mode: 'move'
+    publishDir "${params.outdir}/arriba", mode: 'copy'
     
     when:
     params.arriba || params.download_all
@@ -116,53 +118,30 @@ process download_arriba {
 
     script:
     """
-    wget -N https://github.com/suhrig/arriba/releases/download/v1.1.0/arriba_v1.1.0.tar.gz -O arriba_v1.1.0.tar.gz
-    tar -xvzf arriba_v1.1.0.tar.gz && mv arriba_v1.1.0/database/* . && gunzip *.gz && rm -rf arriba_*
+    wget -N https://github.com/suhrig/arriba/releases/download/v1.2.0/arriba_v1.2.0.tar.gz -O arriba_v1.2.0.tar.gz
+    tar -xvzf arriba_v1.2.0.tar.gz && mv arriba_v1.2.0/database/* . && gunzip *.gz && rm -rf arriba_*
     """
 }
 
 process download_star_fusion {
-    label 'process_high'
-    publishDir "${params.outdir}/star-fusion", mode: 'move'
+    publishDir "${params.outdir}/star-fusion", mode: 'copy'
     
     when:
     params.star_fusion || params.download_all
-
-    input:
-    file fasta
-    file gtf
 
     output:
     file '*'
 
     script:
-    """    
-    wget -N ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
-    gunzip Pfam-A.hmm.gz && hmmpress Pfam-A.hmm
-
-    wget https://github.com/FusionAnnotator/CTAT_HumanFusionLib/releases/download/v0.2.0/fusion_lib.Mar2019.dat.gz -O CTAT_HumanFusionLib.dat.gz
-    
-    # Dfam
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3f
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3i
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3m
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3p
-
-    prep_genome_lib.pl \\
-        --genome_fa ${fasta} \\
-        --gtf ${gtf} \\
-        --fusion_annot_lib CTAT_HumanFusionLib.dat.gz \\
-        --annot_filter_rule AnnotFilterRule.pm \\
-        --pfam_db Pfam-A.hmm \\
-        --dfam_db homo_sapiens_dfam.hmm \\
-        --human_gencode_filter \\
-        --CPU ${task.cpus}
+    """
+    aws s3 --no-sign-request --region ${params.awsregion} cp s3://ngi-igenomes/Homo_sapiens/Ensembl/GRCh38/Genome/CTAT/ctat_star_fusion_1_8_1.tar.gz .
+    tar -xf ctat_star_fusion_1_8_1.tar.gz --strip-components=5
+    rm ctat_star_fusion_1_8_1.tar.gz
     """
 }
 
 process download_fusioncatcher {
-    publishDir "${params.outdir}/fusioncatcher", mode: 'move'
+    publishDir "${params.outdir}/fusioncatcher", mode: 'copy'
     
     when:
     params.fusioncatcher || params.download_all
@@ -182,7 +161,7 @@ process download_fusioncatcher {
 }
 
 process download_ericscript {
-    publishDir "${params.outdir}/ericscript", mode: 'move'
+    publishDir "${params.outdir}/ericscript", mode: 'copy'
     
     when:
     params.ericscript || params.download_all
@@ -201,7 +180,10 @@ process download_ericscript {
 }
 
 process download_databases {
-    publishDir "${params.outdir}/databases", mode: 'move'
+    publishDir "${params.outdir}/databases", mode: 'copy'
+
+    when:
+    params.fusion_report || params.download_all
 
     output:
     file '*'

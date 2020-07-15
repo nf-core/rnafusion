@@ -2,7 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
+## dev nfcore/rnafusion
+
+### Added
+
+* Added social preview image [#107](https://github.com/nf-core/rnafusion/issues/107)
+
+### Changed
+
+* Upgrade `fusion-report v2.1.2` to `fusion-report v2.1.3`
+* Upgrade `fusion-report v2.1.1` to `fusion-report v2.1.2`
+* Upgrade `fusion-report v2.1.0` to `fusion-report v2.1.1`
+* Upgrade `Arriba v1.1.0` to `Arriba v1.2.0`
+* Upgrade `fusion-report v2.0.2` to `fusion-report v2.1.0`
+
+### Fixed
+
+* Missing `strip-components` in `download-references.nf/star-fusion` [#148](https://github.com/nf-core/rnafusion/issues/148)
+* Missing version prefix for cdna [#143](https://github.com/nf-core/rnafusion/issues/143)
+* `samtools` missing header in empty file for FusionInspector [ref](https://github.com/STAR-Fusion/STAR-Fusion/issues/191)
+* Removed `profile` from helper scripts [#139](https://github.com/nf-core/rnafusion/issues/139)
+* Wrong url path for `Pfam-A.hmm.gz` [#140](https://github.com/nf-core/rnafusion/issues/140)
+
+### Removed
+
+* Removed `scripts/download-singularity-img.sh` and `download-singularity-img.nf` as they are not necessary any more
 
 ## [1.1.0] nfcore/rnafusion - 2020/02/10
 

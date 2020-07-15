@@ -21,13 +21,11 @@ jobs:
           sudo mv nextflow /usr/local/bin/
       - name: Pull docker image
         run: |
-          docker pull nfcore/rnafusion:dev && docker tag nfcore/rnafusion:dev nfcore/rnafusion:1.1.0
+          docker pull nfcore/rnafusion:dev
+          docker tag nfcore/rnafusion:dev nfcore/rnafusion:1.2.0
       - name: Run pipeline
         run: |
           nextflow run ${GITHUB_WORKSPACE} --help
       - name: Run pipeline for downloading references
         run: |
           nextflow run ${GITHUB_WORKSPACE}/download-references.nf --help
-      - name: Run pipeline for downloading singularity images
-        run: |
-          nextflow run ${GITHUB_WORKSPACE}/download-singularity-img.nf --help

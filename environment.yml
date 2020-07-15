@@ -1,19 +1,24 @@
 # You can use this file to create a conda environment for this pipeline:
 #   conda env create -f environment.yml
-name: nf-core-rnafusion-1.1.0
+name: nf-core-rnafusion-1.2.0
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
   - conda-forge::python=3.7.3
+  - conda-forge::markdown=3.1.1
+  - conda-forge::pymdown-extensions=6.0
+  - conda-forge::pygments=2.5.2
+  # Necessary tools
   - bioconda::fastqc=0.11.8
   - bioconda::multiqc=1.7
-  - conda-forge::r-markdown=1.1
-  - conda-forge::r-base=3.6.1
   # Custom packages
-  - bioconda::star=2.7.0f # update STAR-Fusion and Fusion-Inspector, Arriba
+  - bioconda::star=2.7.1a # has to be for star index
   - conda-forge::r-data.table=1.12.8
   - conda-forge::r-gplots=3.0.1.2
   - bioconda::bioconductor-edger=3.28.0
-  - bioconda::fusion-report=2.0.1
+  - bioconda::fusion-report=2.1.3
+  # Star-Fusion
+  - conda-forge::awscli=1.18.39
+  - conda-forge::tar=1.32

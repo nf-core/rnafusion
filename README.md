@@ -1,9 +1,7 @@
-
 # ![nf-core/rnafusion](docs/images/nf-core-rnafusion_logo.png)
 
 **RNA sequencing analysis pipeline with curated list of tools for detecting and visualizing fusion genes.**
 
-[![Build Status](https://travis-ci.com/nf-core/rnafusion.svg?branch=master)](https://travis-ci.com/nf-core/rnafusion)
 [![GitHub Actions CI Status](https://github.com/nf-core/rnafusion/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/rnafusion/actions)
 [![GitHub Actions Linting Status](https://github.com/nf-core/rnafusion/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/rnafusion/actions)
 [![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A519.10.0-brightgreen.svg)](https://www.nextflow.io/)
@@ -16,16 +14,18 @@
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker containers making installation trivial and results highly reproducible.
 
-| Tool            | Single-end reads | CPU (recommended) | RAM (recommended) |
-| --------------- |:----------------:|:-----------------:|:-----------------:|
-| [Arriba](https://github.com/suhrig/arriba) | **No**           | >=16 cores        | ~30GB             |
-| [EricScript](https://sites.google.com/site/bioericscript/getting-started) | **No**           | >=16 cores        | ~30GB             |
-| [FusionCatcher](https://github.com/ndaniel/fusioncatcher) | Yes              | >=16 cores        | ~64GB             |
-| [fusion-report](https://github.com/matq007/fusion-report) | -              | -        | -             |
-| [Pizzly](https://github.com/pmelsted/pizzly) | **No**           | >=16 cores        | ~30GB             |
-| [Squid](https://github.com/Kingsford-Group/squid) | **No**           | >=16 cores        | ~30GB             |
-| [Star-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) | Yes              | >=16 cores        | ~30GB             |
-| [FusionInspector](https://github.com/FusionInspector/FusionInspector) | **No**           | >=16 cores        | ~30GB             |
+> The pipeline **requires** >=16 CPU cores and >=30GB RAM
+
+| Tool                                                                      |  Single-end reads  |  Version |
+| ------------------------------------------------------------------------- | :----------------: | :------: |
+| [Arriba](https://github.com/suhrig/arriba)                                |         :x:        |  `1.2.0` |
+| [EricScript](https://sites.google.com/site/bioericscript/getting-started) |         :x:        |  `0.5.5` |
+| [FusionCatcher](https://github.com/ndaniel/fusioncatcher)                 | :white_check_mark: |  `1.20`  |
+| [Fusion-Inspector](https://github.com/FusionInspector/FusionInspector)    |         :x:        |  `2.2.1` |
+| [fusion-report](https://github.com/matq007/fusion-report)                 |          -         |  `2.1.3` |
+| [Pizzly](https://github.com/pmelsted/pizzly)                              |         :x:        | `0.37.3` |
+| [Squid](https://github.com/Kingsford-Group/squid)                         |         :x:        |   `1.5`  |
+| [Star-Fusion](https://github.com/STAR-Fusion/STAR-Fusion)                 | :white_check_mark: |  `1.8.1` |
 
 For available parameters or help run:
 
@@ -37,20 +37,27 @@ nextflow run nf-core/rnafusion --help
 
 i. Install [`nextflow`](https://nf-co.re/usage/installation)
 
-ii. Install one of [`docker`](https://docs.docker.com/engine/installation/), [`singularity`](https://www.sylabs.io/guides/3.0/user-guide/) or [`conda`](https://conda.io/miniconda.html)
+ii. Install either [`Docker`](https://docs.docker.com/engine/installation/) or [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) for full pipeline reproducibility (please only use [`Conda`](https://conda.io/miniconda.html) as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))
 
-iii. Download the pipeline and test it on a minimal dataset with a single command
+iii. Download references for all tools
 
 ```bash
-nextflow run nf-core/rnafusion --help
+nextflow run nf-core/rnafusion/download-references.nf -profile <docker/singularity/institute> \
+  --download_all \
+  --outdir <PATH> \
+  --cosmic_usr <COSMIC_USER> --cosmic_passwd <COSMIC_PASSWD>
 ```
 
-> Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile institute` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
+> Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
 
 iv. Start running your own analysis!
 
 ```bash
-nextflow run nf-core/rnafusion -profile <profile> -c './example/custom-docker.config' --reads '*_R{1,2}.fastq.gz' --arriba --star_fusion --fusioncatcher --ericscript --pizzly --squid --arriba_vis --fusion_inspector
+nextflow run nf-core/rnafusion -profile <docker/singularity/institute> \
+  --reads '*_R{1,2}.fastq.gz' \
+  --genomes_base 'reference_path_from_above'
+  --arriba --star_fusion --fusioncatcher --ericscript --pizzly --squid \
+  --arriba_vis --fusion_inspector
 ```
 
 See [usage docs](docs/usage.md) for all of the available options when running the pipeline.
@@ -72,7 +79,16 @@ Use predefined configuration for desired Institution cluster provided at [nfcore
 
 ## Credits
 
-This pipeline was originally written by Martin Proks ([@matq007](https://github.com/matq007)) in collaboration with Karolinska Institutet, SciLifeLab and University of Southern Denmark as a master thesis. This is a follow-up development started by Rickard Hammarén ([@Hammarn](https://github.com/Hammarn)). Special thanks goes to all supervisors: Teresita Díaz de Ståhl, PhD., Assoc. Prof.; Monica Nistér, MD, PhD; Maxime U Garcia PhD ([@MaxUlysse](https://github.com/MaxUlysse)); Szilveszter Juhos ([@szilvajuhos](https://github.com/szilvajuhos)); Phil Ewels PhD ([@ewels](https://github.com/ewels)) and Lars Grøntved, PhD., Assoc. Prof.
+This pipeline was originally written by Martin Proks ([@matq007](https://github.com/matq007)) in collaboration with Karolinska Institutet, SciLifeLab and University of Southern Denmark as a master thesis. This is a follow-up development started by Rickard Hammarén ([@Hammarn](https://github.com/Hammarn)).
+
+Special thanks goes to all supervisors:
+
+* [Assoc. Prof. Teresita Díaz de Ståhl, PhD](https://ki.se/en/onkpat/teresita-diaz-de-stahls-group)
+* [MD. Monica Nistér, PhD](https://ki.se/en/onkpat/research-team-monica-nister)
+* [Maxime U Garcia, PhD](https://github.com/MaxUlysse)
+* [Szilveszter Juhos](https://github.com/szilvajuhos)
+* [Phil Ewels, PhD](https://github.com/ewels)
+* [Assoc. Prof. Lars Grøntved, PhD](https://portal.findresearcher.sdu.dk/en/persons/larsgr)
 
 ## Tool References
 
@@ -100,9 +116,14 @@ For further information or help, don't hesitate to get in touch on [Slack](https
 
 If you use  nf-core/rnafusion for your analysis, please cite it using the following doi: [10.5281/zenodo.151721952](https://zenodo.org/badge/latestdoi/151721952)
 
-You can cite the `nf-core` pre-print as follows:  
+You can cite the `nf-core` publication as follows:
 
-> Ewels PA, Peltzer A, Fillinger S, Alneberg JA, Patel H, Wilm A, Garcia MU, Di Tommaso P, Nahnsen S. **nf-core: Community curated bioinformatics pipelines**. *bioRxiv*. 2019. p. 610741. [doi: 10.1101/610741](https://www.biorxiv.org/content/10.1101/610741v1).
+> **The nf-core framework for community-curated bioinformatics pipelines.**
+>
+> Philip Ewels, Alexander Peltzer, Sven Fillinger, Harshil Patel, Johannes Alneberg, Andreas Wilm, Maxime Ulysse Garcia, Paolo Di Tommaso & Sven Nahnsen.
+>
+> _Nat Biotechnol._ 2020 Feb 13. doi: [10.1038/s41587-020-0439-x](https://dx.doi.org/10.1038/s41587-020-0439-x).  
+> ReadCube: [Full Access Link](https://rdcu.be/b1GjZ)
 
 [![Barntumörbanken](docs/images/BTB_logo.png)](https://ki.se/forskning/barntumorbanken-0) | [![SciLifeLab](docs/images/SciLifeLab_logo.png)](https://scilifelab.se)
 :-:|:-:

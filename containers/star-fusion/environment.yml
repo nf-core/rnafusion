@@ -1,0 +1,12 @@
+name: nf-core-rnafusion-star-fusion_1.8.1
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bioconda::dfam=2.0
+  - bioconda::hmmer=3.2.1
+  - bioconda::star-fusion=1.8.1
+  - bioconda::trinity=2.6.6
+  - bioconda::samtools=1.9
+  - conda-forge::perl-carp-assert
