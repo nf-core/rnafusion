@@ -5,11 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [1.2.0] nfcore/rnafusion - 2020/07/15
+## dev nfcore/rnafusion - 2020/07/15
 
 ### Added
 
 * Added social preview image [#107](https://github.com/nf-core/rnafusion/issues/107)
+* Added support for GRCh37 genome assembly [#77](https://github.com/nf-core/rnafusion/issues/77)
 
 ### Changed
 

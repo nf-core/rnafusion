@@ -27,6 +27,17 @@ nextflow run nf-core/rnafusion/download-references.nf \
 --outdir <PATH>
 ```
 
+## Download GRCh37 references
+
+```bash
+# GRCh38 genome assembly is used by default. To use the previous assembly specify it using the --genome flag
+nextflow run nf-core/rnafusion/download-references.nf \
+  --genome GRCh37 \
+  --download_all \
+  --outdir <PATH> \
+  --cosmic_usr <COSMIC_USER> --cosmic_passwd <COSMIC_PASSWD>
+```
+
 ## Tool reference requirements
 
 | Tool             |        FASTA       |         GTF        |     STAR-index     |        Other       |
