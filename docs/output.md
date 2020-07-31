@@ -155,7 +155,9 @@ For more info and help check [wiki page](https://github.com/FusionInspector/Fusi
   - filtered list of found fusions (uses tool cutoff as filter, by default: 2, can be adjusted by adding `-t <num>` when running the tool)
 - `fusions_list.txt`
   - unfiltered list of found fusions
-  
+- `<READS_BASE_NAME>_fusion-report.tar.gz`
+  - tarball of the above files to allow easier import to local machine(s) for visualisation through browser
+
 ### Tool detection
 
 Graphs displaying ratio of fusion genes caught by different tools. The last part *all tools* is an intersection of all tools.

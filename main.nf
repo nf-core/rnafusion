@@ -691,7 +691,7 @@ process arriba_visualization {
     def suff_mem = ("${(task.memory.toBytes() - 6000000000) / task.cpus}" > 2000000000) ? 'true' : 'false'
     def avail_mem = (task.memory && suff_mem) ? "-m" + "${(task.memory.toBytes() - 6000000000) / task.cpus}" : ''
     cytobands = "${reference}/cytobands*${params.genome}*.tsv"
-    proteinDomains = "${reference}/protein_domains*${params.genome}*gff3"
+    proteinDomains = "${reference}/protein_domains*${params.genome}*.gff3"
     """
     samtools sort -@ ${task.cpus} ${avail_mem} -O bam ${bam} > Aligned.sortedByCoord.out.bam
     samtools index Aligned.sortedByCoord.out.bam

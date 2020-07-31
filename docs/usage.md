@@ -226,7 +226,8 @@ If enabled, executes `Ericscript` tool.
 
 ### `--fusioncatcher`
 
-If enabled, executes `Fusioncatcher` tool. N.B. that Fusioncatcher is not available when using the `GRCh37` genome assembly.
+If enabled, executes `Fusioncatcher` tool.
+> N.B. that Fusioncatcher is not available when using the `GRCh37` genome assembly.
 
 - `--fusioncatcher_opt`
   - Specify additional parameters. For more info, please refer to the [documentation](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) of the tool.
@@ -308,7 +309,8 @@ Required reference in order to run `Fusioncatcher`.
 
 ### `--genome`
 
-This pipeline uses `Homo Sapiens` version `GRCh38` by default. Assembly `GRCh37` is optionally available. N.B. that using `GRCh37` precludes use of the `Fusioncatcher` tool. Also make sure to specify `--genomes_base`.
+This pipeline uses `Homo Sapiens` version `GRCh38` by default. Assembly `GRCh37` is optionally available.
+> N.B. that using `GRCh37` precludes use of the `Fusioncatcher` tool. Also make sure to specify `--genomes_base`.
 
 ```bash
 --genome 'GRCh38' --genome_base '/path/to/references'

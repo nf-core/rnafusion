@@ -98,18 +98,14 @@ process download_base {
     file "Homo_sapiens.${params.genome}_r${params.reference_release}.cdna.all.fa.gz" into transcript
 
     script:
+    def base_url = params.genome == "GRCh37" ? "ftp://ftp.ensembl.org/pub/grch37" : "ftp://ftp.ensembl.org/pub/"
     """
-    if [[ ${params.genome} == "GRCh37" ]];then
-      BASEURL="ftp://ftp.ensembl.org/pub/grch37"
-    else
-      BASEURL="ftp://ftp.ensembl.org/pub"
-    fi
-    wget \$BASEURL/release-${params.reference_release}/fasta/homo_sapiens/dna/Homo_sapiens.${params.genome}.dna.chromosome.{1..22}.fa.gz
-    wget \$BASEURL/release-${params.reference_release}/fasta/homo_sapiens/dna/Homo_sapiens.${params.genome}.dna.chromosome.{MT,X,Y}.fa.gz
+    wget ${base_url}/release-${params.reference_release}/fasta/homo_sapiens/dna/Homo_sapiens.${params.genome}.dna.chromosome.{1..22}.fa.gz
+    wget ${base_url}/release-${params.reference_release}/fasta/homo_sapiens/dna/Homo_sapiens.${params.genome}.dna.chromosome.{MT,X,Y}.fa.gz
     gunzip -c Homo_sapiens.${params.genome}.dna.chromosome.* > Homo_sapiens.${params.genome}_r${params.reference_release}.all.fa
-    wget \$BASEURL/release-${params.reference_release}/gtf/homo_sapiens/Homo_sapiens.${params.genome}.*.chr.gtf.gz -O Homo_sapiens.${params.genome}_r${params.reference_release}.gtf.gz
+    wget ${base_url}/release-${params.reference_release}/gtf/homo_sapiens/Homo_sapiens.${params.genome}.${params.reference_release}.chr.gtf.gz -O Homo_sapiens.${params.genome}_r${params.reference_release}.gtf.gz
     gunzip Homo_sapiens.${params.genome}_r${params.reference_release}.gtf.gz
-    wget \$BASEURL/release-${params.reference_release}/fasta/homo_sapiens/cdna/Homo_sapiens.${params.genome}.cdna.all.fa.gz -O Homo_sapiens.${params.genome}_r${params.reference_release}.cdna.all.fa.gz
+    wget ${base_url}/release-${params.reference_release}/fasta/homo_sapiens/cdna/Homo_sapiens.${params.genome}.cdna.all.fa.gz -O Homo_sapiens.${params.genome}_r${params.reference_release}.cdna.all.fa.gz
     """
 }
 
@@ -186,23 +182,19 @@ process download_ericscript {
     file '*'
 
     script:
+    def base_url = params.genome == "GRCh37" ? "https://drive.google.com/uc?export=download&confirm=qgOc&id=0B9s__vuJPvIibDRIb0RFdHFlQmM" : "https://drive.google.com/uc?export=download&confirm=qgOc&id=0B9s__vuJPvIiUGt1SnFMZFg4TlE"
     """
-    wget -N https://raw.githubusercontent.com/circulosmeos/gdown.pl/dfd6dc910a38a42d550397bb5c2335be2c4bcf54/gdown.pl
-    chmod +x gdown.pl
     if [[ ${params.genome} == "GRCh37" ]]; then
-      ./gdown.pl "https://drive.google.com/uc?export=download&confirm=qgOc&id=0B9s__vuJPvIibDRIb0RFdHFlQmM" ericscript_db_homosapiens_ensembl73.tar.bz2
-      tar jxf ericscript_db_homosapiens_ensembl73.tar.bz2
+      gdown ${base_url} ericscript_db_homosapiens_ensembl73.tar.bz2
     else
-      ./gdown.pl "https://drive.google.com/uc?export=download&confirm=qgOc&id=0B9s__vuJPvIiUGt1SnFMZFg4TlE" ericscript_db_homosapiens_ensembl84.tar.bz2
-      tar jxf ericscript_db_homosapiens_ensembl84.tar.bz2
+      gdown ${base_url} ericscript_db_homosapiens_ensembl84.tar.bz2
     fi
-    rm gdown.pl ericscript_db_homosapiens_ensembl*.tar.bz2
+    tar jxf ericscript_db_homosapiens_ensembl*.tar.bz2 && rm ericscript_db_homosapiens_ensembl*.tar.bz2
     """
 }
 
 process download_databases {
     publishDir "${params.outdir}/databases", mode: 'copy'
-    executor 'local'
 
     when:
     params.fusion_report || params.download_all
