@@ -30,13 +30,13 @@ def helpMessage() {
     Mandatory arguments:
       --reads [file]                Path to input data (must be surrounded with quotes)
       -profile [str]                Configuration profile to use. Can use multiple (comma separated)
-                                    Available: docker, singularity, test, awsbatch, <institute> and more            
+                                    Available: docker, singularity, test, awsbatch, <institute> and more
       --reference_path [str]        Path to reference folder (includes fasta, gtf, fusion tool ref ...)
 
     Tool flags:
       --arriba [bool]                 Run Arriba
       --arriba_opt [str]              Specify extra parameters for Arriba
-      --ericscript [bool]             Run Ericscript  
+      --ericscript [bool]             Run Ericscript
       --fusioncatcher [bool]          Run FusionCatcher
       --fusioncatcher_opt [srt]       Specify extra parameters for FusionCatcher
       --fusion_report_opt [str]       Specify extra parameters for fusion-report
@@ -45,7 +45,7 @@ def helpMessage() {
       --squid [bool]                  Run Squid
       --star_fusion [bool]            Run STAR-Fusion
       --star_fusion_opt [str]         Specify extra parameters for STAR-Fusion
-    
+
     Visualization flags:
       --arriba_vis [bool]             Generate a PDF visualization per detected fusion
       --fusion_inspector [bool]       Run Fusion-Inspector
@@ -63,6 +63,7 @@ def helpMessage() {
       --transcript [file]             Path to transcript
 
     Options:
+      --genome [str]                  Genome version: GRCh37 or GRCh38 (default)
       --read_length [int]             Length of the reads. Default: 100
       --single_end [bool]             Specifies that the input is single-end reads
 
@@ -337,6 +338,7 @@ process arriba {
 
     script:
     def extra_params = params.arriba_opt ? params.arriba_opt : ''
+    blacklist = "${reference}/blacklist*${params.genome}*.tsv"
     """
     STAR \\
         --genomeDir ${star_index} \\
@@ -359,14 +361,14 @@ process arriba {
         --chimSegmentReadGapMax 3 \\
         --readFilesCommand zcat \\
         --sjdbOverhang ${params.read_length - 1} |
-    
+
     tee Aligned.out.bam |
 
     arriba \\
         -x /dev/stdin \\
         -a ${fasta} \\
         -g ${gtf} \\
-        -b ${reference}/blacklist_hg38_GRCh38_2018-11-04.tsv \\
+        -b ${blacklist} \\
         -o ${sample}_arriba.tsv -O ${sample}_discarded_arriba.tsv \\
         -T -P ${extra_params}
 
@@ -450,7 +452,7 @@ star_fusion_fusions = star_fusion_fusions.dump(tag:'star_fusion_fusions')
 process fusioncatcher {
     tag "${sample}"
     label 'process_high'
-    
+
     publishDir "${params.outdir}/tools/Fusioncatcher/${sample}", mode: 'copy'
 
     input:
@@ -461,7 +463,7 @@ process fusioncatcher {
         set val(sample), file("${sample}_fusioncatcher.txt") optional true into fusioncatcher_fusions
         file("*.{txt,zip,log}") into fusioncatcher_output
 
-    when: params.fusioncatcher || (params.fusioncatcher && params.debug)
+    when: params.genome != "GRCh37" && params.fusioncatcher || (params.fusioncatcher && params.debug)
 
     script:
     option = params.single_end ? reads[0] : "${reads[0]},${reads[1]}"
@@ -533,7 +535,7 @@ process pizzly {
         set val(sample), file(reads) from read_files_pizzly
         file(gtf) from ch_gtf
         file(transcript) from ch_transcript
-    
+
     output:
         set val(sample), file("${sample}_pizzly.txt") optional true into pizzly_fusions
         file("*.{json,txt}") into pizzly_output
@@ -575,7 +577,7 @@ process squid {
         set val(sample), file(reads) from read_files_squid
         file(star_index) from ch_star_index
         file(gtf) from ch_gtf
-    
+
     output:
         set val(sample), file("${sample}_fusions_annotated.txt") optional true into squid_fusions
         file("*.txt") into squid_output
@@ -633,7 +635,7 @@ process summary {
     tag "${sample}"
 
     publishDir "${params.outdir}/Reports/${sample}", mode: 'copy'
- 
+
     input:
         set val(sample), file(reads), file(arriba), file(ericscript), file(fusioncatcher), file(pizzly), file(squid), file(starfusion) from files_and_reports_summary
 
@@ -641,9 +643,9 @@ process summary {
         set val(sample), file("${sample}_fusion_list.tsv") into fusion_inspector_input_list
         file("${sample}_fusion_genes_mqc.json") into summary_fusions_mq
         file("*") into report
-    
+
     when: !params.debug && (running_tools.size() > 0)
-    
+
 
     script:
     def extra_params = params.fusion_report_opt ? params.fusion_report_opt : ''
@@ -658,6 +660,7 @@ process summary {
         ${tools} ${extra_params}
     mv fusion_list.tsv ${sample}_fusion_list.tsv
     mv fusion_genes_mqc.json ${sample}_fusion_genes_mqc.json
+    tar -czf ${sample}_fusion-report.tar.gz --exclude=${sample}* ./*
     """
 }
 
@@ -687,6 +690,8 @@ process arriba_visualization {
     script:
     def suff_mem = ("${(task.memory.toBytes() - 6000000000) / task.cpus}" > 2000000000) ? 'true' : 'false'
     def avail_mem = (task.memory && suff_mem) ? "-m" + "${(task.memory.toBytes() - 6000000000) / task.cpus}" : ''
+    cytobands = "${reference}/cytobands*${params.genome}*.tsv"
+    proteinDomains = "${reference}/protein_domains*${params.genome}*.gff3"
     """
     samtools sort -@ ${task.cpus} ${avail_mem} -O bam ${bam} > Aligned.sortedByCoord.out.bam
     samtools index Aligned.sortedByCoord.out.bam
@@ -695,8 +700,8 @@ process arriba_visualization {
         --alignments=Aligned.sortedByCoord.out.bam \\
         --output=${sample}.pdf \\
         --annotation=${gtf} \\
-        --cytobands=${reference}/cytobands_hg38_GRCh38_2018-02-23.tsv \\
-        --proteinDomains=${reference}/protein_domains_hg38_GRCh38_2019-07-05.gff3
+        --cytobands=\$(echo ${cytobands}) \\
+        --proteinDomains=\$(echo ${proteinDomains})
     """
 }
 
@@ -734,7 +739,7 @@ process fusion_inspector {
         --CPU ${task.cpus} \\
         -O . \\
         --out_prefix finspector \\
-        --vis ${extra_params} 
+        --vis ${extra_params}
     """
 }
 
