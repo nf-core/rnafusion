@@ -47,9 +47,9 @@ jobs:
           wget -qO- get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
 
-      - name: Run pipeline with test data
-        # TODO nf-core: You can customise CI pipeline run tests as required
-        # For example: adding multiple test runs with different parameters
-        # Remember that you can parallelise this by using strategy.matrix
+      - name: Run pipeline help
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker
+          nextflow run ${GITHUB_WORKSPACE} --help
+      - name: Run pipeline for downloading references help
+        run: |
+          nextflow run ${GITHUB_WORKSPACE}/download-references.nf --help
