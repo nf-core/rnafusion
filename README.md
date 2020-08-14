@@ -33,7 +33,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 1. Install [`nextflow`](https://nf-co.re/usage/installation)
 
-2. Install either [`Docker`](https://docs.docker.com/engine/installation/) or [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) for full pipeline reproducibility; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_
+2. Install either [`Docker`](https://docs.docker.com/engine/installation/) or [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) for full pipeline reproducibility; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))
 
 3. Download references for all tools
 
