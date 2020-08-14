@@ -2,6 +2,9 @@
 work/
 results/
 .DS_Store
-test/*
+test/
+tests/
+testing/
+testing*
 *.pyc
 .vscode/

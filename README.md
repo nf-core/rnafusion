@@ -1,14 +1,16 @@
 # ![nf-core/rnafusion](docs/images/nf-core-rnafusion_logo.png)
 
-**RNA sequencing analysis pipeline with curated list of tools for detecting and visualizing fusion genes.**
+> RNA sequencing analysis pipeline with curated list of tools for detecting and visualizing fusion genes
+
+[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A519.10.0-brightgreen.svg)](https://www.nextflow.io/)
+[![nf-core](https://img.shields.io/badge/nf--core-pipeline-brightgreen.svg)](https://nf-co.re/)
+[![DOI](https://zenodo.org/badge/151721952.svg)](https://zenodo.org/badge/latestdoi/151721952)
 
 [![GitHub Actions CI Status](https://github.com/nf-core/rnafusion/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/rnafusion/actions)
 [![GitHub Actions Linting Status](https://github.com/nf-core/rnafusion/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/rnafusion/actions)
-[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A519.10.0-brightgreen.svg)](https://www.nextflow.io/)
-[![DOI](https://zenodo.org/badge/151721952.svg)](https://zenodo.org/badge/latestdoi/151721952)
 
-[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](http://bioconda.github.io/)
 [![Docker](https://img.shields.io/docker/automated/nfcore/rnafusion.svg)](https://hub.docker.com/r/nfcore/rnafusion)
+[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23rnafusion-4A154B?logo=slack)](https://nfcore.slack.com/channels/rnafusion)
 
 ## Introduction
 
@@ -27,68 +29,60 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 | [Squid](https://github.com/Kingsford-Group/squid)                         |         :x:        |   `1.5`  |
 | [Star-Fusion](https://github.com/STAR-Fusion/STAR-Fusion)                 | :white_check_mark: |  `1.8.1` |
 
-For available parameters or help run:
-
-```bash
-nextflow run nf-core/rnafusion --help
-```
-
 ## Quick Start
 
-i. Install [`nextflow`](https://nf-co.re/usage/installation)
+1. Install [`nextflow`](https://nf-co.re/usage/installation)
 
-ii. Install either [`Docker`](https://docs.docker.com/engine/installation/) or [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) for full pipeline reproducibility (please only use [`Conda`](https://conda.io/miniconda.html) as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))
+2. Install either [`Docker`](https://docs.docker.com/engine/installation/) or [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) for full pipeline reproducibility; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))
 
-iii. Download references for all tools
+3. Download references for all tools
 
-```bash
-nextflow run nf-core/rnafusion/download-references.nf -profile <docker/singularity/institute> \
-  --download_all \
-  --outdir <PATH> \
-  --cosmic_usr <COSMIC_USER> --cosmic_passwd <COSMIC_PASSWD>
-```
+    ```bash
+    nextflow run nf-core/rnafusion/download-references.nf -profile <docker/singularity/institute> \
+      --download_all \
+      --genome GRCh38 \
+      --outdir <PATH> \
+      --cosmic_usr <COSMIC_USER> --cosmic_passwd <COSMIC_PASSWD>
+    ```
 
-> Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
+    > Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute.
+    > If so, you can simply use `-profile <institute>` in your command.
+    > This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
 
-iv. Start running your own analysis!
+4. Start running your own analysis!
 
-```bash
-nextflow run nf-core/rnafusion -profile <docker/singularity/institute> \
-  --reads '*_R{1,2}.fastq.gz' \
-  --genomes_base 'reference_path_from_above'
-  --arriba --star_fusion --fusioncatcher --ericscript --pizzly --squid \
-  --arriba_vis --fusion_inspector
-```
+  ```bash
+  nextflow run nf-core/rnafusion -profile <docker/singularity/institute> \
+    --input "*_R{1,2}.fastq.gz" \
+    --genomes_base <reference_path>
+    --arriba --star_fusion --fusioncatcher --ericscript --pizzly --squid \
+    --arriba_vis --fusion_inspector
+  ```
 
 See [usage docs](docs/usage.md) for all of the available options when running the pipeline.
 
 ## Documentation
 
-The nf-core/rnafusion pipeline comes with documentation about the pipeline, found in the `docs/` directory:
-
-1. [Installation](https://nf-co.re/usage/installation)
-2. Pipeline configuration
-    * [Download references](docs/references.md)
-    * [Local installation](https://nf-co.re/usage/local_installation)
-    * [Adding your own system config](https://nf-co.re/usage/adding_own_config)
-3. [Running the pipeline](docs/usage.md)
-4. [Output and how to interpret the results](docs/output.md)
-5. [Troubleshooting](https://nf-co.re/usage/troubleshooting)
-
-Use predefined configuration for desired Institution cluster provided at [nfcore/config](https://github.com/nf-core/configs) repository.
+The nf-core/rnafusion pipeline comes with documentation about the pipeline which you can read at [https://nf-core/rnafusion/docs](https://nf-core/rnafusion/docs) or find in the [`docs/` directory](docs).
 
 ## Credits
 
-This pipeline was originally written by Martin Proks ([@matq007](https://github.com/matq007)) in collaboration with Karolinska Institutet, SciLifeLab and University of Southern Denmark as a master thesis. This is a follow-up development started by Rickard Hammarén ([@Hammarn](https://github.com/Hammarn)).
+Following a development initiated by [Rickard Hammarén](https://github.com/Hammarn), this pipeline was originally developed by [Martin Proks](https://github.com/matq007) developed at the [National Genomics Infastructure](https://ngisweden.scilifelab.se) from [SciLifeLab](https://scilifelab.se), with the support of [The Swedish Childhood Tumor Biobank (Barntumörbanken)](https://ki.se/forskning/barntumorbanken) and [University of Southern Denmark](https://www.sdu.dk/en) as a master thesis.
 
-Special thanks goes to all supervisors:
+Main authors:
 
-* [Assoc. Prof. Teresita Díaz de Ståhl, PhD](https://ki.se/en/onkpat/teresita-diaz-de-stahls-group)
-* [MD. Monica Nistér, PhD](https://ki.se/en/onkpat/research-team-monica-nister)
-* [Maxime U Garcia, PhD](https://github.com/MaxUlysse)
+* [Martin Proks](https://github.com/matq007)
+* [Maxime Garcia](https://github.com/MaxUlysse)
+
+Special thanks and helpful contributors:
+
+* [Bruce Moran](https://github.com/brucemoran)
+* [Lars Grøntved](https://portal.findresearcher.sdu.dk/en/persons/larsgr)
+* [Monica Nistér](https://ki.se/en/onkpat/research-team-monica-nister)
+* [Phil Ewels](https://github.com/ewels)
+* [Rickard Hammarén](https://github.com/Hammarn)
 * [Szilveszter Juhos](https://github.com/szilvajuhos)
-* [Phil Ewels, PhD](https://github.com/ewels)
-* [Assoc. Prof. Lars Grøntved, PhD](https://portal.findresearcher.sdu.dk/en/persons/larsgr)
+* [Teresita Díaz de Ståhl](https://ki.se/en/onkpat/teresita-diaz-de-stahls-group)
 
 ## Tool References
 
@@ -110,7 +104,7 @@ Páll Melsted, Shannon Hateley, Isaac Charles Joseph, Harold Pimentel, Nicolas L
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
-For further information or help, don't hesitate to get in touch on [Slack](https://nfcore.slack.com/channels/rnafusion) (you can join with [this invite](https://nf-co.re/join/slack)).
+For further information or help, don't hesitate to get in touch on the [Slack `#rnafusion` channel](https://nfcore.slack.com/channels/rnafusion) (you can join with [this invite](https://nf-co.re/join/slack)).
 
 ## Citation
 
@@ -122,7 +116,7 @@ You can cite the `nf-core` publication as follows:
 >
 > Philip Ewels, Alexander Peltzer, Sven Fillinger, Harshil Patel, Johannes Alneberg, Andreas Wilm, Maxime Ulysse Garcia, Paolo Di Tommaso & Sven Nahnsen.
 >
-> _Nat Biotechnol._ 2020 Feb 13. doi: [10.1038/s41587-020-0439-x](https://dx.doi.org/10.1038/s41587-020-0439-x).  
+> _Nat Biotechnol._ 2020 Feb 13. doi: [10.1038/s41587-020-0439-x](https://dx.doi.org/10.1038/s41587-020-0439-x).
 > ReadCube: [Full Access Link](https://rdcu.be/b1GjZ)
 
 [![Barntumörbanken](docs/images/BTB_logo.png)](https://ki.se/forskning/barntumorbanken-0) | [![SciLifeLab](docs/images/SciLifeLab_logo.png)](https://scilifelab.se)

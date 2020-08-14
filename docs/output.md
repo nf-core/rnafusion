@@ -1,10 +1,12 @@
-<!-- omit in toc -->
-# nf-core/rnafusion: Output
+# nf-core/rnafusion: Output <!-- omit in toc -->
 
 This document describes the output produced by the pipeline.
+Most of the plots are taken from the MultiQC report, which summarises results at the end of the pipeline.
 
-<!-- omit in toc -->
-## Pipeline overview
+The directories listed below will be created in the results directory after the pipeline has finished.
+All paths are relative to the top-level results directory.
+
+## Pipeline overview <!-- omit in toc -->
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/)
 and processes data using the following steps:
@@ -19,6 +21,7 @@ and processes data using the following steps:
   - [Found in database](#found-in-database)
   - [Tool detection distribution](#tool-detection-distribution)
 - [MultiQC](#multiqc)
+- [Pipeline information](#pipeline-information)
 - [Pizzly](#pizzly)
 - [Squid](#squid)
 - [Star-Fusion](#star-fusion)
@@ -41,50 +44,51 @@ and processes data using the following steps:
 - `fusions.results.filtered.tsv`
   - contains all the predicted gene fusions
 
-|  Column | Description |
-| ------- | ----------- |
-| GeneName1 | official gene name of 5' gene. |
-| GeneName2 | official gene name of 3' gene. |
-| chr1 | chromosome of 5' gene. |
-| Breakpoint1 | predicted breakpoint on 5' gene. |
-| strand1 | strand (-/+) of 5' gene. |
-| chr2 | chromosome of 3' gene. |
-| Breakpoint2 | predicted breakpoint on 3' gene. |
-| strand2 | strand (-/+) of 3' gene. |
-| EnsemblGene1 | Ensembl gene ID of 5' gene. |
-| EnsemblGene2 | Ensembl gene ID of 3' gene. |
-| crossingreads | the number of paired end discordant reads. |
-| spanningreads | the number of paired end reads spanning the junction. |
-| mean.insertsize | mean of insert sizes of crossing + spanning reads. |
-| homology | if filled, all the homologies between the fusion junction and Ensembl genes. |
-| fusiontype | intra-chromosomal, inter-chromosomal, read-through or CIS. |
-| InfoGene1 | gene information about 5' gene. |
-| InfoGene2 | gene information about 3' gene. |
-| JunctionSequence | predicted junction fusion sequence. |
-| GeneExpr1 | Read count based estimation of the expression level of 5' gene. |
-| GeneExpr2 | Read count based estimation of the expression level of 3' gene. |
-| GeneExpr_fused | Read count based estimation of the expression level of the predicted chimeric transcript. |
-| ES | Edge score. |
-| GJS | Genuine Junction score. |
-| US | Uniformity score. |
-| EricScore | EricScore score (adaboost classifier). |
+|      Column      |                                        Description                                        |
+| ---------------- | ----------------------------------------------------------------------------------------- |
+| GeneName1        | official gene name of 5' gene.                                                            |
+| GeneName2        | official gene name of 3' gene.                                                            |
+| chr1             | chromosome of 5' gene.                                                                    |
+| Breakpoint1      | predicted breakpoint on 5' gene.                                                          |
+| strand1          | strand (-/+) of 5' gene.                                                                  |
+| chr2             | chromosome of 3' gene.                                                                    |
+| Breakpoint2      | predicted breakpoint on 3' gene.                                                          |
+| strand2          | strand (-/+) of 3' gene.                                                                  |
+| EnsemblGene1     | Ensembl gene ID of 5' gene.                                                               |
+| EnsemblGene2     | Ensembl gene ID of 3' gene.                                                               |
+| crossingreads    | number of paired end discordant reads.                                                    |
+| spanningreads    | number of paired end reads spanning the junction.                                         |
+| mean.insertsize  | mean of insert sizes of crossing + spanning reads.                                        |
+| homology         | if filled, all the homologies between the fusion junction and Ensembl genes.              |
+| fusiontype       | intra-chromosomal, inter-chromosomal, read-through or CIS.                                |
+| InfoGene1        | gene information about 5' gene.                                                           |
+| InfoGene2        | gene information about 3' gene.                                                           |
+| JunctionSequence | predicted junction fusion sequence.                                                       |
+| GeneExpr1        | Read count based estimation of the expression level of 5' gene.                           |
+| GeneExpr2        | Read count based estimation of the expression level of 3' gene.                           |
+| GeneExpr_fused   | Read count based estimation of the expression level of the predicted chimeric transcript. |
+| ES               | Edge score.                                                                               |
+| GJS              | Genuine Junction score.                                                                   |
+| US               | Uniformity score.                                                                         |
+| EricScore        | EricScore score (adaboost classifier).                                                    |
 
 For more info check the [documentation](https://sites.google.com/site/bioericscript/getting-started).
 
 ## FastQC
 
-[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your reads. It provides information about the quality score distribution across your reads, the per base sequence content (%T/A/G/C). You get information about adapter contamination and other overrepresented sequences.
+[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your sequenced reads. It provides information about the quality score distribution across your reads, per base sequence content (%A/T/G/C), adapter contamination and overrepresented sequences.
 
-For further reading and documentation see the [FastQC help](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
+For further reading and documentation see the [FastQC help pages](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
 
-> **NB:** The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality. To see how your reads look after trimming, look at the FastQC reports in the `trim_galore` directory.
+**Output files:**
 
-**Output directory: `results/fastqc`**
+> **NB:** The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads.
+> They may contain adapter sequence and potentially regions with low quality.
 
-- `sample_fastqc.html`
-  - FastQC report, containing quality metrics for your untrimmed raw fastq files
-- `zips/sample_fastqc.zip`
-  - zip file containing the FastQC report, tab-delimited data file and plot images
+- `fastqc/`
+  - `*_fastqc.html`: FastQC report containing quality metrics for your untrimmed raw fastq files.
+- `fastqc/zips/`
+  - `*_fastqc.zip`: Zip archive containing the FastQC report, tab-delimited data file and plot images.
 
 ## Fusioncatcher
 
@@ -93,8 +97,8 @@ For further reading and documentation see the [FastQC help](http://www.bioinform
 - `final-list_candidate-fusion-genes.txt`
   - contains all the predicted gene fusions
 
-|  Column | Description |
-| ------- | ----------- |
+| Column | Description |
+| ------ | ----------- |
 | **Gene\_1\_symbol(5end\_fusion\_partner)** | Gene symbol of the 5' end fusion partner |
 | **Gene\_2\_symbol\_2(3end\_fusion\_partner)** | Gene symbol of the 3' end fusion partner |
 | **Gene\_1\_id(5end\_fusion\_partner)** | Ensembl gene id of the 5' end fusion partner |
@@ -106,7 +110,11 @@ For further reading and documentation see the [FastQC help](http://www.bioinform
 | **Spanning\_pairs** | Count of pairs of reads supporting the fusion (**including** also the multimapping reads) |
 | **Spanning\_unique\_reads** | Count of unique reads (i.e. unique mapping positions) mapping on the fusion junction. Shortly, here are counted all the reads which map on fusion junction minus the PCR duplicated reads. |
 | **Longest\_anchor\_found** | Longest anchor (hangover) found among the unique reads mapping on the fusion junction |
-| **Fusion\_finding\_method** | Aligning method used for mapping the reads and finding the fusion genes. Here are two methods used which are: (i) **BOWTIE** = only Bowtie aligner is used for mapping the reads on the genome and exon-exon fusion junctions, (ii) **BOWTIE+BLAT** = Bowtie aligner is used for mapping reads on the genome and BLAT is used for mapping reads for finding the fusion junction,  (iii) **BOWTIE+STAR** = Bowtie aligner is used for mapping reads on the genome and STAR is used for mapping reads for finding the fusion junction, (iv) **BOWTIE+BOWTIE2** = Bowtie aligner is used for mapping reads on the genome and Bowtie2 is used for mapping reads for finding the fusion junction. |
+| **Fusion\_finding\_method** | Aligning method used for mapping the reads and finding the fusion genes. Here are the methods used: |
+| | (i) **BOWTIE** = only Bowtie aligner is used for mapping the reads on the genome and exon-exon fusion junctions |
+| | (ii) **BOWTIE+BLAT** = Bowtie aligner is used for mapping reads on the genome and BLAT is used for mapping reads for finding the fusion junction |
+| | (iii) **BOWTIE+STAR** = Bowtie aligner is used for mapping reads on the genome and STAR is used for mapping reads for finding the fusion junction |
+| | (iv) **BOWTIE+BOWTIE2** = Bowtie aligner is used for mapping reads on the genome and Bowtie2 is used for mapping reads for finding the fusion junction |
 | **Fusion\_sequence** | The inferred fusion junction (the asterisk sign marks the junction point) |
 | **Fusion\_description** | Type of the fusion gene (see the Table 2) |
 | **Counts\_of\_common\_mapping\_reads** | Count of reads mapping simultaneously on both genes which form the fusion gene. This is an indication how similar are the DNA/RNA sequences of the genes forming the fusion gene (i.e. what is their homology because highly homologous genes tend to appear show as candidate fusion genes). In case of completely different sequences of the genes involved in forming a fusion gene then here it is expected to have the value zero. |
@@ -178,18 +186,30 @@ For each fusion a sum of detected tools is calculated. This counts are then visu
 
 ## MultiQC
 
-[MultiQC](http://multiqc.info) is a visualisation tool that generates a single HTML report summarising all samples in your project. Most of the pipeline QC results are visualised in the report and further statistics are available in within the report data directory.
+[MultiQC](http://multiqc.info) is a visualization tool that generates a single HTML report summarizing all samples in your project. Most of the pipeline QC results are visualised in the report and further statistics are available in the report data directory.
 
-The pipeline has special steps which allow the software versions used to be reported in the MultiQC output for future traceability.
+The pipeline has special steps which also allow the software versions to be reported in the MultiQC output for future traceability.
 
-**Output directory: `results/multiqc`**
+For more information about how to use MultiQC reports, see [https://multiqc.info](https://multiqc.info).
 
-- `Project_multiqc_report.html`
-  - MultiQC report - a standalone HTML file that can be viewed in your web browser
-- `Project_multiqc_data/`
-  - Directory containing parsed statistics from the different tools used in the pipeline
+**Output files:**
 
-For more information about how to use MultiQC reports, see [http://multiqc.info](http://multiqc.info)
+- `multiqc/`  
+  - `multiqc_report.html`: a standalone HTML file that can be viewed in your web browser.
+  - `multiqc_data/`: directory containing parsed statistics from the different tools used in the pipeline.
+  - `multiqc_plots/`: directory containing static images from the report in various formats.
+
+## Pipeline information
+
+[Nextflow](https://www.nextflow.io/docs/latest/tracing.html) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline.
+This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.
+
+**Output files:**
+
+- `pipeline_info/`
+  - Reports generated by Nextflow: `execution_report.html`, `execution_timeline.html`, `execution_trace.txt` and `pipeline_dag.dot`/`pipeline_dag.svg`.
+  - Reports generated by the pipeline: `pipeline_report.html`, `pipeline_report.txt` and `software_versions.csv`.
+  - Documentation for interpretation of results in HTML format: `results_description.html`.
 
 ## Pizzly
 
