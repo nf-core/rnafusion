@@ -372,6 +372,7 @@ process arriba {
         -x /dev/stdin \\
         -a ${fasta} \\
         -g ${gtf} \\
+        -G "gene_name=gene_name|gene_id gene_id=gene_id transcript_id=transcript_id feature_exon=exon feature_CDS=CDS" \\
         -b ${blacklist} \\
         -o ${sample}_arriba.tsv -O ${sample}_discarded_arriba.tsv \\
         -T -P ${extra_params}
