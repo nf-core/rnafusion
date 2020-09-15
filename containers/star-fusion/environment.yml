@@ -9,4 +9,4 @@ dependencies:
   - bioconda::star-fusion=1.8.1
   - bioconda::jellyfish
   - bioconda::salmon=0.9.1
-  - bioconda::trinity=2.8.5
+  - bioconda::trinity=2.11.0
