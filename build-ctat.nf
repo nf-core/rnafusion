@@ -102,7 +102,7 @@ process star_fusion {
     prep_genome_lib.pl \\
         --genome_fa ${fasta} \\
         --gtf ${gtf} \\
-        --annot_filter_rule /opt/conda/envs/nf-core-rnafusion-star-fusion_1.8.1/lib/STAR-Fusion/ctat-genome-lib-builder/AnnotFilterRuleLib/AnnotFilterRule.pm \\
+        --annot_filter_rule /opt/conda/envs/nf-core-rnafusion-star-fusion_1.9.1/lib/STAR-Fusion/ctat-genome-lib-builder/AnnotFilterRuleLib/AnnotFilterRule.pm \\
         --fusion_annot_lib CTAT_HumanFusionLib.dat.gz \\
         --pfam_db Pfam-A.hmm \\
         --dfam_db homo_sapiens_dfam.hmm \\

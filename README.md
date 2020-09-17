@@ -23,11 +23,11 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 | [Arriba](https://github.com/suhrig/arriba)                                |         :x:        |  `1.2.0` |
 | [EricScript](https://sites.google.com/site/bioericscript/getting-started) |         :x:        |  `0.5.5` |
 | [FusionCatcher](https://github.com/ndaniel/fusioncatcher)                 | :white_check_mark: |  `1.20`  |
-| [Fusion-Inspector](https://github.com/FusionInspector/FusionInspector)    |         :x:        |  `2.2.1` |
+| [Fusion-Inspector](https://github.com/FusionInspector/FusionInspector)    |         :x:        |  `2.3.1` |
 | [fusion-report](https://github.com/matq007/fusion-report)                 |          -         |  `2.1.3` |
 | [Pizzly](https://github.com/pmelsted/pizzly)                              |         :x:        | `0.37.3` |
 | [Squid](https://github.com/Kingsford-Group/squid)                         |         :x:        |   `1.5`  |
-| [Star-Fusion](https://github.com/STAR-Fusion/STAR-Fusion)                 | :white_check_mark: |  `1.8.1` |
+| [Star-Fusion](https://github.com/STAR-Fusion/STAR-Fusion)                 | :white_check_mark: |  `1.9.1` |
 
 ## Quick Start
 
