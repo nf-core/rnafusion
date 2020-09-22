@@ -12,10 +12,10 @@ regexes = {
     "Arriba": ["v_arriba.txt", r"arriba=(\S+)"],
     "EricScript": ["v_ericscript.txt", r"ericscript=(\S+)"],
     "FusionCatcher": ["v_fusioncatcher.txt", r"fusioncatcher=(\S+)"],
-    "Fusion-Inspector": ["v_fusion_inspector.txt", r"fusion-inspector=(\S+)"],
+    "Fusion-Inspector": ["v_fusion_inspector.txt", r"fusion_inspector = (\S+)"],
     "fusion-report": ["v_fusion_report.txt", r"fusion-report=(\S+)"],
     "Pizzly": ["v_pizzly.txt", r"pizzly=(\S+)"],
-    "STAR-Fusion": ["v_star_fusion.txt", r"star-fusion=(\S+)"],
+    "STAR-Fusion": ["v_star_fusion.txt", r"star_fusion = (\S+)"],
     "Squid": ["v_squid.txt", r"squid=(\S+)"]
 }
 results = OrderedDict()

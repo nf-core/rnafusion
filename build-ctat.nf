@@ -99,10 +99,10 @@ process star_fusion {
     wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3p
 
     export TMPDIR=/tmp
-    prep_genome_lib.pl \\
+    /usr/local/src/STAR-Fusion/ctat-genome-lib-builder/prep_genome_lib.pl \\
         --genome_fa ${fasta} \\
         --gtf ${gtf} \\
-        --annot_filter_rule /opt/conda/envs/nf-core-rnafusion-star-fusion_1.8.1/lib/STAR-Fusion/ctat-genome-lib-builder/AnnotFilterRuleLib/AnnotFilterRule.pm \\
+        --annot_filter_rule /usr/local/src/STAR-Fusion/ctat-genome-lib-builder/AnnotFilterRuleLib/AnnotFilterRule.pm \\
         --fusion_annot_lib CTAT_HumanFusionLib.dat.gz \\
         --pfam_db Pfam-A.hmm \\
         --dfam_db homo_sapiens_dfam.hmm \\
