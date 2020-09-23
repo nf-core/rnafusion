@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## dev nfcore/rnafusion - 2020/07/15
 
+* Using official STAR-Fusion container [#160](https://github.com/nf-core/rnafusion/issues/160)
+
 ### Added
 
 * Added social preview image [#107](https://github.com/nf-core/rnafusion/issues/107)
