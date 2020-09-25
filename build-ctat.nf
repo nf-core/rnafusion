@@ -89,14 +89,14 @@ process star_fusion {
     wget -N ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
     gunzip Pfam-A.hmm.gz && hmmpress Pfam-A.hmm
 
-    wget ${ctat_url} -O CTAT_HumanFusionLib.dat.gz
+    wget -N ${ctat_url} -O CTAT_HumanFusionLib.dat.gz
 
     # Dfam
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3f
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3i
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3m
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3p
+    wget -N --no-check-certificate https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm
+    wget -N --no-check-certificate https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3f
+    wget -N --no-check-certificate https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3i
+    wget -N --no-check-certificate https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3m
+    wget -N --no-check-certificate https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3p
 
     export TMPDIR=/tmp
     /usr/local/src/STAR-Fusion/ctat-genome-lib-builder/prep_genome_lib.pl \\
