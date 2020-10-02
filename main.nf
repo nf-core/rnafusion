@@ -279,7 +279,7 @@ Channel.from(summary.collect{ [it.key, it.value] })
 
 process build_star_index {
     tag "${fasta}-${gtf}"
-    label 'process_medium'
+    label 'process_high'
 
     publishDir params.outdir, mode: 'copy'
 
