@@ -728,7 +728,7 @@ process fusion_inspector {
         file(reference) from reference.fusion_inspector
 
     output:
-        file("*.{fa,gtf,bed,bam,bai,txt,html}") into fusion_inspector_output
+        file("*.{fa,gtf,bed,bam,bai,txt,html,tsv,gff3,fasta}") into fusion_inspector_output
 
     when: params.fusion_inspector && (!params.single_end || params.debug)
 
