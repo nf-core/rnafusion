@@ -281,7 +281,7 @@ process build_star_index {
     tag "${fasta}-${gtf}"
     label 'process_high'
 
-    publishDir params.outdir, mode: 'copy'
+    publishDir params.outdir, mode: params.publish_dir_mode
 
     input:
         file(fasta) from ch_fasta
@@ -324,7 +324,7 @@ process arriba {
     tag "${sample}"
     label 'process_medium'
 
-    publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy'
+    publishDir "${params.outdir}/tools/Arriba/${sample}", mode: params.publish_dir_mode
 
     input:
         set val(sample), file(reads) from read_files_arriba
@@ -390,7 +390,7 @@ process star_fusion {
     tag "${sample}"
     label 'process_high'
 
-    publishDir "${params.outdir}/tools/Star-Fusion/${sample}", mode: 'copy'
+    publishDir "${params.outdir}/tools/Star-Fusion/${sample}", mode: params.publish_dir_mode
 
     input:
         set val(sample), file(reads) from read_files_star_fusion
@@ -457,7 +457,7 @@ process fusioncatcher {
     tag "${sample}"
     label 'process_high'
 
-    publishDir "${params.outdir}/tools/Fusioncatcher/${sample}", mode: 'copy'
+    publishDir "${params.outdir}/tools/Fusioncatcher/${sample}", mode: params.publish_dir_mode
 
     input:
         set val(sample), file(reads) from read_files_fusioncatcher
@@ -493,7 +493,7 @@ process ericscript {
     tag "${sample}"
     label 'process_high'
 
-    publishDir "${params.outdir}/tools/EricScript/${sample}", mode: 'copy'
+    publishDir "${params.outdir}/tools/EricScript/${sample}", mode: params.publish_dir_mode
 
     input:
         set val(sample), file(reads) from read_files_ericscript
@@ -533,7 +533,7 @@ process pizzly {
     tag "${sample}"
     label 'process_medium'
 
-    publishDir "${params.outdir}/tools/Pizzly/${sample}", mode: 'copy'
+    publishDir "${params.outdir}/tools/Pizzly/${sample}", mode: params.publish_dir_mode
 
     input:
         set val(sample), file(reads) from read_files_pizzly
@@ -575,7 +575,7 @@ process squid {
     tag "${sample}"
     label 'process_high'
 
-    publishDir "${params.outdir}/tools/Squid/${sample}", mode: 'copy'
+    publishDir "${params.outdir}/tools/Squid/${sample}", mode: params.publish_dir_mode
 
     input:
         set val(sample), file(reads) from read_files_squid
@@ -638,7 +638,7 @@ files_and_reports_summary = files_and_reports_summary.dump(tag:'files_and_report
 process summary {
     tag "${sample}"
 
-    publishDir "${params.outdir}/Reports/${sample}", mode: 'copy'
+    publishDir "${params.outdir}/Reports/${sample}", mode: params.publish_dir_mode
 
     input:
         set val(sample), file(reads), file(arriba), file(ericscript), file(fusioncatcher), file(pizzly), file(squid), file(starfusion) from files_and_reports_summary
@@ -679,7 +679,7 @@ process arriba_visualization {
     tag "${sample}"
     label 'process_medium'
 
-    publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy'
+    publishDir "${params.outdir}/tools/Arriba/${sample}", mode: params.publish_dir_mode
 
     input:
         file(reference) from reference.arriba_vis
@@ -721,7 +721,7 @@ process fusion_inspector {
     tag "${sample}"
     label 'process_high'
 
-    publishDir "${params.outdir}/tools/FusionInspector/${sample}", mode: 'copy'
+    publishDir "${params.outdir}/tools/FusionInspector/${sample}", mode: params.publish_dir_mode
 
     input:
         set val(sample), file(fi_input_list), file(reads) from fusion_inspector_input
