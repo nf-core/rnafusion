@@ -1,11 +1,9 @@
-# nfcore/rnafusion: Changelog
-
-All notable changes to this project will be documented in this file.
+# nf-core/rnafusion: Changelog
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## dev nfcore/rnafusion - 2020/07/15
+## v1.3.0dev nfcore/rnafusion - 2020/07/15
 
 * Using official STAR-Fusion container [#160](https://github.com/nf-core/rnafusion/issues/160)
 
@@ -33,6 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 * Removed `scripts/download-singularity-img.sh` and `download-singularity-img.nf` as they are not necessary any more
+
+---
 
 ## [1.1.0] nfcore/rnafusion - 2020/02/10
 
@@ -129,30 +129,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Version 1.0 marks the first production release of this pipeline under the nf-core flag.
 The pipeline includes additional help scripts to download references for fusion tools and Singularity images.
 
-* Fusion gene detection tools:
-  * `STAR-Fusion v1.5.0`
-  * `Fusioncatcher v1.00`
-  * `Ericscript v0.5.5`
-  * `Pizzly v0.37.3`
-  * `Squid v1.5`
-* Visualization tools:
-  * `FusionInspector v1.3.1`
-* Other tools:
-  * `Summary report`
-  * `FastQ v0.11.8`
-  * `MultiQC v1.7`
-  * `FusionGDB updated 2019/01/23`
+Initial release of nf-core/rnafusion, created with the [nf-core](https://nf-co.re/) template.
 
----
+### `Added`
 
-## [0.1] SciLifeLab/NGI-RNAfusion (ARCHIVED) - 2018/10/05
+### `Fixed`
 
-Initial release of NGI-RNAfusion, created with the [nf-core](http://nf-co.re/) template.
-Source code can be found at [SciLifeLab/NGI-RNAfusion](https://github.com/SciLifeLab/NGI-RNAfusion).
-The solution works with Docker and Singularity.
+### `Dependencies`
 
-* Tools:
-  * STAR-Fusion
-  * Fusioncatcher
-  * FusionInspector
-  * Custom tool for fusion comparison - generates intersection of detected fusion genes from all tools
+### `Deprecated`

@@ -1,5 +1,5 @@
 {
-    "$schema": "https://json-schema.org/draft-07/schema",
+    "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://raw.githubusercontent.com/nf-core/rnafusion/master/nextflow_schema.json",
     "title": "nf-core/rnafusion pipeline parameters",
     "description": "Nextflow rnafusion analysis pipeline, part of the nf-core community.",
@@ -59,39 +59,19 @@
                     "description": "Path to FASTA genome file.",
                     "help_text": "If you have no genome reference available, the pipeline can build one using a FASTA file. This requires additional time and resources, so it's better to use a pre-build index if possible."
                 },
-                "gtf": {
-                    "type": "string"
+                "igenomes_base": {
+                    "type": "string",
+                    "description": "Directory / URL base for iGenomes references.",
+                    "default": "s3://ngi-igenomes/igenomes/",
+                    "fa_icon": "fas fa-cloud-download-alt",
+                    "hidden": true
                 },
-                "genomes_base": {
-                    "type": "string"
-                },
-                "reference_release": {
-                    "type": "integer",
-                    "default": 97
-                },
-                "star_index": {
-                    "type": "string"
-                },
-                "transcript": {
-                    "type": "string"
-                },
-                "base": {
-                    "type": "string"
-                },
-                "arriba_ref": {
-                    "type": "string"
-                },
-                "databases": {
-                    "type": "string"
-                },
-                "ericscript_ref": {
-                    "type": "string"
-                },
-                "fusioncatcher_ref": {
-                    "type": "string"
-                },
-                "star_fusion_ref": {
-                    "type": "string"
+                "igenomes_ignore": {
+                    "type": "boolean",
+                    "description": "Do not load the iGenomes reference config.",
+                    "fa_icon": "fas fa-ban",
+                    "hidden": true,
+                    "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
                 }
             }
         },
@@ -121,7 +101,7 @@
                         "link",
                         "copy",
                         "copyNoFollow",
-                        "mov"
+                        "move"
                     ]
                 },
                 "name": {
@@ -173,90 +153,6 @@
                     "default": "${params.outdir}/pipeline_info",
                     "fa_icon": "fas fa-cogs",
                     "hidden": true
-                }
-            }
-        },
-        "new_group_1": {
-            "title": "New Group 1",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "arriba": {
-                    "type": "string"
-                },
-                "read_length": {
-                    "type": "integer",
-                    "default": 100
-                },
-                "star_fusion": {
-                    "type": "string"
-                },
-                "fusioncatcher": {
-                    "type": "string"
-                },
-                "fusion_inspector": {
-                    "type": "string"
-                },
-                "ericscript": {
-                    "type": "string"
-                },
-                "pizzly": {
-                    "type": "string"
-                },
-                "squid": {
-                    "type": "string"
-                },
-                "arriba_opt": {
-                    "type": "string"
-                },
-                "arriba_vis": {
-                    "type": "string"
-                },
-                "star_fusion_opt": {
-                    "type": "string"
-                },
-                "fusioncatcher_opt": {
-                    "type": "string"
-                },
-                "pizzly_k": {
-                    "type": "integer",
-                    "default": 31
-                },
-                "fusion_inspector_opt": {
-                    "type": "string"
-                },
-                "fusion_report_opt": {
-                    "type": "string"
-                },
-                "fusion_report": {
-                    "type": "string"
-                },
-                "input_paths": {
-                    "type": "string",
-                    "default": "null",
-                    "hidden": true
-                },
-                "debug": {
-                    "type": "string",
-                    "hidden": true
-                }
-            }
-        },
-        "new_group_2": {
-            "title": "New Group 2",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "download_all": {
-                    "type": "string"
-                },
-                "cosmic_usr": {
-                    "type": "string"
-                },
-                "cosmic_passwd": {
-                    "type": "string"
                 }
             }
         },
@@ -339,17 +235,6 @@
                     "description": "Institutional config URL link.",
                     "hidden": true,
                     "fa_icon": "fas fa-users-cog"
-                },
-                "clusterOptions": {
-                    "type": "string",
-                    "hidden": true
-                },
-                "awsqueue": {
-                    "type": "string"
-                },
-                "awsregion": {
-                    "type": "string",
-                    "default": "eu-west-1"
                 }
             }
         }
@@ -363,12 +248,6 @@
         },
         {
             "$ref": "#/definitions/generic_options"
-        },
-        {
-            "$ref": "#/definitions/new_group_1"
-        },
-        {
-            "$ref": "#/definitions/new_group_2"
         },
         {
             "$ref": "#/definitions/max_job_request_options"

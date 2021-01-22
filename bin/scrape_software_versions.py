@@ -2,8 +2,8 @@
 from __future__ import print_function
 from collections import OrderedDict
 import re
-import os
 
+# TODO nf-core: Add additional regexes for new tools in process get_software_versions
 regexes = {
     "nf-core/rnafusion": ["v_pipeline.txt", r"(\S+)"],
     "Nextflow": ["v_nextflow.txt", r"(\S+)"],
@@ -23,14 +23,6 @@ results["nf-core/rnafusion"] = '<span style="color:#999999;">N/A</span>'
 results["Nextflow"] = '<span style="color:#999999;">N/A</span>'
 results["FastQC"] = '<span style="color:#999999;">N/A</span>'
 results["MultiQC"] = '<span style="color:#999999;">N/A</span>'
-results["Arriba"] = '<span style="color:#999999;\">N/A</span>'
-results["EricScript"] = '<span style="color:#999999;\">N/A</span>'
-results["FusionCatcher"] = '<span style="color:#999999;\">N/A</span>'
-results["Fusion-Inspector"] = '<span style="color:#999999;\">N/A</span>'
-results["fusion-report"] = '<span style="color:#999999;\">N/A</span>'
-results["Pizzly"] = '<span style="color:#999999;\">N/A</span>'
-results["STAR-Fusion"] = '<span style="color:#999999;\">N/A</span>'
-results["Squid"] = '<span style="color:#999999;\">N/A</span>'
 
 # Search each file using its regex
 for k, v in regexes.items():
