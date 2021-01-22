@@ -37,19 +37,19 @@ and processes data using the following steps:
 
 **Output directory: `results/tools/Arriba`**
 
-- `fusions.tsv`
-  - contains fusions which pass all of Arriba's filters. It should be highly enriched for true predictions. The predictions are listed from highest to lowest confidence.
-- `fusions.discarded.tsv`
-  - contains all events that Arriba classified as an artifact or that are also observed in healthy tissue. This file may be useful, if one suspects that an event should be present, but was erroneously discarded by Arriba.
-- `<sample>.pdf`
-  - contains fusion visualization when opted for `--arriba_vis`
+* `fusions.tsv`
+  * contains fusions which pass all of Arriba's filters. It should be highly enriched for true predictions. The predictions are listed from highest to lowest confidence.
+* `fusions.discarded.tsv`
+  * contains all events that Arriba classified as an artifact or that are also observed in healthy tissue. This file may be useful, if one suspects that an event should be present, but was erroneously discarded by Arriba.
+* `<sample>.pdf`
+  * contains fusion visualization when opted for `--arriba_vis`
 
 ## EricScript
 
 **Output directory: `results/tools/Ericscript/tmp`**
 
-- `fusions.results.filtered.tsv`
-  - contains all the predicted gene fusions
+* `fusions.results.filtered.tsv`
+  * contains all the predicted gene fusions
 
 |      Column      |                                        Description                                        |
 | ---------------- | ----------------------------------------------------------------------------------------- |
@@ -101,8 +101,8 @@ For further reading and documentation see the [FastQC help pages](http://www.bio
 
 **Output directory: `results/tools/Fusioncatcher`**
 
-- `final-list_candidate-fusion-genes.txt`
-  - contains all the predicted gene fusions
+* `final-list_candidate-fusion-genes.txt`
+  * contains all the predicted gene fusions
 
 | Column | Description |
 | ------ | ----------- |
@@ -135,23 +135,23 @@ For more info check the [documentation](https://github.com/ndaniel/fusioncatcher
 
 **Output directory: `results/tools/FusionInspector`**
 
-- `finspector.fa`
-  - the candidate fusion-gene contigs (if you copy things elsewhere, make sure to also copy the index file: `finspector.fa.fai`)
-- `finspector.bed`
-  - the reference gene structure annotations for fusion partners
-- `finspector.junction_reads.bam`
-  - alignments of the breakpoint-junction supporting reads.
-- `finspector.spanning_reads.bam`
-  - alignments of the breakpoint-spanning paired-end reads.
+* `finspector.fa`
+  * the candidate fusion-gene contigs (if you copy things elsewhere, make sure to also copy the index file: `finspector.fa.fai`)
+* `finspector.bed`
+  * the reference gene structure annotations for fusion partners
+* `finspector.junction_reads.bam`
+  * alignments of the breakpoint-junction supporting reads.
+* `finspector.spanning_reads.bam`
+  * alignments of the breakpoint-spanning paired-end reads.
 
 To visualize fusion genes in [IGV tool](https://software.broadinstitute.org/software/igv/igvtools) first create a genome `Menu->Genomes->Create .genome File`, choose name and description, then choose the following files:
 
-- `finspector.fa`
-  - make sure the index file finspector.fa.fai is in the same folder
-- `finspector.gtf`
-  - use this for 'Genes'
-- `cytoBand.txt`
-  - use this for 'optional Cytoband'
+* `finspector.fa`
+  * make sure the index file finspector.fa.fai is in the same folder
+* `finspector.gtf`
+  * use this for 'Genes'
+* `cytoBand.txt`
+  * use this for 'optional Cytoband'
 
 Add the bam files by choosing `File->Load from File` and make sure to select your generated mini genome in the upper-left corner.
 For more info and help check [wiki page](https://github.com/FusionInspector/FusionInspector/wiki).
@@ -160,18 +160,18 @@ For more info and help check [wiki page](https://github.com/FusionInspector/Fusi
 
 **Output directory: `results/Report-<READS_BASE_NAME>`**
 
-- `fusions.json`
-  - contains all main information about found fusions (fusion name, score, explanation of the score calculation, cherry picked output from fusion tools)
-- `index.html`
-  - main dashboard containing the list of all detected fusions
-- `*.html`
-  - each fusion gets a custom page with fetched data from the local database
-- `fusions_list_filtered.txt`
-  - filtered list of found fusions (uses tool cutoff as filter, by default: 2, can be adjusted by adding `-t <num>` when running the tool)
-- `fusions_list.txt`
-  - unfiltered list of found fusions
-- `<READS_BASE_NAME>_fusion-report.tar.gz`
-  - tarball of the above files to allow easier import to local machine(s) for visualisation through browser
+* `fusions.json`
+  * contains all main information about found fusions (fusion name, score, explanation of the score calculation, cherry picked output from fusion tools)
+* `index.html`
+  * main dashboard containing the list of all detected fusions
+* `*.html`
+  * each fusion gets a custom page with fetched data from the local database
+* `fusions_list_filtered.txt`
+  * filtered list of found fusions (uses tool cutoff as filter, by default: 2, can be adjusted by adding `-t <num>` when running the tool)
+* `fusions_list.txt`
+  * unfiltered list of found fusions
+* `<READS_BASE_NAME>_fusion-report.tar.gz`
+  * tarball of the above files to allow easier import to local machine(s) for visualisation through browser
 
 ### Tool detection
 
@@ -207,6 +207,7 @@ For more information about how to use MultiQC reports, see [https://multiqc.info
   * `multiqc_plots/`: directory containing static images from the report in various formats.
 
 ## Pipeline information
+
 [Nextflow](https://www.nextflow.io/docs/latest/tracing.html) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.
 
 **Output files:**
@@ -220,8 +221,8 @@ For more information about how to use MultiQC reports, see [https://multiqc.info
 
 **Output directory: `results/tools/Pizzly`**
 
-- `pizzly_fusions.json`
-  - contains all the predicted gene fusions
+* `pizzly_fusions.json`
+  * contains all the predicted gene fusions
 
 |  Column | Description |
 | ------- | ----------- |
@@ -238,8 +239,8 @@ For more info check the [documentation](https://github.com/pmelsted/pizzly#outpu
 
 **Output directory: `results/tools/Squid`**
 
-- `fusions_annotated.txt`
-  - contains all the predicted gene fusions
+* `fusions_annotated.txt`
+  * contains all the predicted gene fusions
 
 |  Column | Description |
 | ------- | ----------- |
@@ -262,8 +263,8 @@ For more info check the [documentation](https://github.com/Kingsford-Group/squid
 
 **Output directory: `results/tools/StarFusion`**
 
-- `star-fusion.fusion_predictions.tsv`
-  - contains all the predicted gene fusions
+* `star-fusion.fusion_predictions.tsv`
+  * contains all the predicted gene fusions
 
 |  Column | Description |
 | ------- | ----------- |
