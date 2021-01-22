@@ -62,14 +62,6 @@ if (params.genomes && params.genome && !params.genomes.containsKey(params.genome
     exit 1, "The provided genome '${params.genome}' is not available in the iGenomes file. Currently the available genomes are ${params.genomes.keySet().join(", ")}"
 }
 
-// TODO nf-core: Add any reference files that are needed
-// Configurable reference genomes
-//
-// NOTE - THIS IS NOT USED IN THIS PIPELINE, EXAMPLE ONLY
-// If you want to use the channel below in a process, define the following:
-//   input:
-//   file fasta from ch_fasta
-//
 params.fasta = params.genome ? params.genomes[ params.genome ].fasta ?: false : false
 if (params.fasta) { ch_fasta = file(params.fasta, checkIfExists: true) }
 
@@ -175,6 +167,490 @@ Channel.from(summary.collect{ [it.key, it.value] })
     .set { ch_workflow_summary }
 
 /*
+================================================================================
+                                  PREPROCESSING
+================================================================================
+*/
+
+/*
+ * Build STAR index
+ */
+
+process build_star_index {
+    tag "${fasta}-${gtf}"
+    label 'process_high'
+
+    publishDir params.outdir, mode: params.publish_dir_mode
+
+    input:
+        file(fasta) from ch_fasta
+        file(gtf) from ch_gtf
+
+    output:
+        file("star-index") into star_index
+
+    when: !(params.star_index)
+
+    script:
+    def avail_mem = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
+    """
+    mkdir star-index
+    STAR \\
+        --runMode genomeGenerate \\
+        --runThreadN ${task.cpus} \\
+        --sjdbGTFfile ${gtf} \\
+        --sjdbOverhang ${params.read_length - 1} \\
+        --genomeDir star-index/ \\
+        --genomeFastaFiles ${fasta} \\
+        ${avail_mem}
+    """
+}
+
+ch_star_index = params.star_index ? Channel.value(file(params.star_index)).ifEmpty{exit 1, "STAR index not found: ${params.star_index}" } : star_index
+
+ch_star_index = ch_star_index.dump(tag:'ch_star_index')
+
+/*
+================================================================================
+                                 FUSION PIPELINE
+================================================================================
+*/
+
+/*
+ * Arriba
+ */
+process arriba {
+    tag "${sample}"
+    label 'process_medium'
+
+    publishDir "${params.outdir}/tools/Arriba/${sample}", mode: params.publish_dir_mode
+
+    input:
+        set val(sample), file(reads) from read_files_arriba
+        file(reference) from reference.arriba
+        file(star_index) from ch_star_index
+        file(fasta) from ch_fasta
+        file(gtf) from ch_gtf
+
+    output:
+        set val(sample), file("${sample}_arriba.tsv") optional true into arriba_fusions_summary, arriba_tsv
+        set val(sample), file("${sample}_arriba.bam") optional true into arriba_bam
+        file("*.{tsv,txt}") into arriba_output
+
+    when: params.arriba && (!params.single_end || params.debug)
+
+    script:
+    def extra_params = params.arriba_opt ? params.arriba_opt : ''
+    blacklist = "${reference}/blacklist*${params.genome}*.tsv"
+    """
+    STAR \\
+        --genomeDir ${star_index} \\
+        --runThreadN ${task.cpus} \\
+        --readFilesIn ${reads} \\
+        --outStd BAM_Unsorted \\
+        --outSAMtype BAM Unsorted \\
+        --outSAMunmapped Within \\
+        --outBAMcompression 0 \\
+        --outFilterMultimapNmax 1 \\
+        --outFilterMismatchNmax 3 \\
+        --chimSegmentMin 10 \\
+        --chimOutType WithinBAM SoftClip \\
+        --chimJunctionOverhangMin 10 \\
+        --chimScoreMin 1 \\
+        --chimScoreDropMax 30 \\
+        --chimScoreJunctionNonGTAG 0 \\
+        --chimScoreSeparation 1 \\
+        --alignSJstitchMismatchNmax 5 -1 5 5 \\
+        --chimSegmentReadGapMax 3 \\
+        --readFilesCommand zcat \\
+        --sjdbOverhang ${params.read_length - 1} |
+
+    tee Aligned.out.bam |
+
+    arriba \\
+        -x /dev/stdin \\
+        -a ${fasta} \\
+        -g ${gtf} \\
+        -b ${blacklist} \\
+        -o ${sample}_arriba.tsv -O ${sample}_discarded_arriba.tsv \\
+        -T -P ${extra_params}
+
+    mv Aligned.out.bam ${sample}_arriba.bam
+    """
+}
+
+arriba_fusions_summary = arriba_fusions_summary.dump(tag:'arriba_fusions_summary')
+arriba_visualization = arriba_bam.join(arriba_tsv)
+
+/*
+ * STAR-Fusion
+ */
+process star_fusion {
+    tag "${sample}"
+    label 'process_high'
+
+    publishDir "${params.outdir}/tools/Star-Fusion/${sample}", mode: params.publish_dir_mode
+
+    input:
+        set val(sample), file(reads) from read_files_star_fusion
+        file(reference) from reference.star_fusion
+        file(star_index) from ch_star_index
+
+    output:
+        set val(sample), file("${sample}_star-fusion.tsv") optional true into star_fusion_fusions
+        file("*.{tsv,txt}") into star_fusion_output
+
+    when: params.star_fusion || (params.star_fusion && params.debug)
+
+    script:
+    def avail_mem = task.memory ? "--limitBAMsortRAM ${task.memory.toBytes() - 100000000}" : ''
+    option = params.single_end ? "--left_fq ${reads[0]}" : "--left_fq ${reads[0]} --right_fq ${reads[1]}"
+    def extra_params = params.star_fusion_opt ? params.star_fusion_opt : ''
+    """
+    STAR \\
+        --genomeDir ${star_index} \\
+        --readFilesIn ${reads} \\
+        --twopassMode Basic \\
+        --outReadsUnmapped None \\
+        --chimSegmentMin 12 \\
+        --chimJunctionOverhangMin 12 \\
+        --alignSJDBoverhangMin 10 \\
+        --alignMatesGapMax 100000 \\
+        --alignIntronMax 100000 \\
+        --chimSegmentReadGapMax 3 \\
+        --alignSJstitchMismatchNmax 5 -1 5 5 \\
+        --runThreadN ${task.cpus} \\
+        --outSAMstrandField intronMotif ${avail_mem} \\
+        --outSAMunmapped Within \\
+        --outSAMtype BAM Unsorted \\
+        --outSAMattrRGline ID:GRPundef \\
+        --chimMultimapScoreRange 10 \\
+        --chimMultimapNmax 10 \\
+        --chimNonchimScoreDropMin 10 \\
+        --peOverlapNbasesMin 12 \\
+        --peOverlapMMp 0.1 \\
+        --readFilesCommand zcat \\
+        --sjdbOverhang ${params.read_length - 1} \\
+        --chimOutJunctionFormat 1
+
+    STAR-Fusion \\
+        --genome_lib_dir ${reference} \\
+        -J Chimeric.out.junction \\
+        ${option} \\
+        --CPU ${task.cpus} \\
+        --examine_coding_effect \\
+        --output_dir . ${extra_params}
+
+    mv star-fusion.fusion_predictions.tsv ${sample}_star-fusion.tsv
+    mv star-fusion.fusion_predictions.abridged.tsv ${sample}_abridged.tsv
+    mv star-fusion.fusion_predictions.abridged.coding_effect.tsv ${sample}_abridged.coding_effect.tsv
+    """
+}
+
+star_fusion_fusions = star_fusion_fusions.dump(tag:'star_fusion_fusions')
+
+/*
+ * Fusioncatcher
+ */
+process fusioncatcher {
+    tag "${sample}"
+    label 'process_high'
+
+    publishDir "${params.outdir}/tools/Fusioncatcher/${sample}", mode: params.publish_dir_mode
+
+    input:
+        set val(sample), file(reads) from read_files_fusioncatcher
+        file(data_dir) from reference.fusioncatcher
+
+    output:
+        set val(sample), file("${sample}_fusioncatcher.txt") optional true into fusioncatcher_fusions
+        file("*.{txt,zip,log}") into fusioncatcher_output
+
+    when: params.genome != "GRCh37" && params.fusioncatcher || (params.fusioncatcher && params.debug)
+
+    script:
+    option = params.single_end ? reads[0] : "${reads[0]},${reads[1]}"
+    def extra_params = params.fusioncatcher_opt ? params.fusioncatcher_opt : ''
+    """
+    fusioncatcher.py \\
+        -d ${data_dir} \\
+        -i ${option} \\
+        --threads ${task.cpus} \\
+        -o . \\
+        --skip-blat ${extra_params}
+
+    mv final-list_candidate-fusion-genes.txt ${sample}_fusioncatcher.txt
+    """
+}
+
+fusioncatcher_fusions = fusioncatcher_fusions.dump(tag:'fusioncatcher_fusions')
+
+/*
+ * Ericscript
+ */
+process ericscript {
+    tag "${sample}"
+    label 'process_high'
+
+    publishDir "${params.outdir}/tools/EricScript/${sample}", mode: params.publish_dir_mode
+
+    input:
+        set val(sample), file(reads) from read_files_ericscript
+        file(reference) from reference.ericscript
+
+    output:
+        set val(sample), file("${sample}_ericscript.tsv") optional true into ericscript_fusions
+        set val(sample), file("${sample}_ericscript_total.tsv") optional true into ericscript_output
+
+    when: params.ericscript && (!params.single_end || params.debug)
+
+    script:
+    """
+    ericscript.pl \\
+        -db ${reference} \\
+        -name fusions \\
+        -p ${task.cpus} \\
+        -o ./tmp \\
+        ${reads}
+
+    if [[ -f "tmp/fusions.results.filtered.tsv" ]]; then
+        mv tmp/fusions.results.filtered.tsv ${sample}_ericscript.tsv
+    fi
+
+    if [[ -f "tmp/fusions.results.total.tsv" ]]; then
+        mv tmp/fusions.results.total.tsv ${sample}_ericscript_total.tsv
+    fi
+    """
+}
+
+ericscript_fusions = ericscript_fusions.dump(tag:'ericscript_fusions')
+
+/*
+ * Pizzly
+ */
+process pizzly {
+    tag "${sample}"
+    label 'process_medium'
+
+    publishDir "${params.outdir}/tools/Pizzly/${sample}", mode: params.publish_dir_mode
+
+    input:
+        set val(sample), file(reads) from read_files_pizzly
+        file(gtf) from ch_gtf
+        file(transcript) from ch_transcript
+
+    output:
+        set val(sample), file("${sample}_pizzly.txt") optional true into pizzly_fusions
+        file("*.{json,txt}") into pizzly_output
+
+    when: params.pizzly && (!params.single_end || params.debug)
+
+    script:
+    """
+    kallisto index -i index.idx -k ${params.pizzly_k} ${transcript}
+    kallisto quant -t ${task.cpus} -i index.idx --fusion -o output ${reads[0]} ${reads[1]}
+    pizzly -k ${params.pizzly_k} \\
+        --gtf ${gtf} \\
+        --cache index.cache.txt \\
+        --align-score 2 \\
+        --insert-size 400 \\
+        --fasta ${transcript} \\
+        --output pizzly_fusions output/fusion.txt
+    pizzly_flatten_json.py pizzly_fusions.json pizzly_fusions.txt
+
+    mv index.cache.txt ${sample}_pizzly_cache.txt
+    mv pizzly_fusions.json ${sample}_pizzly.txt
+    mv pizzly_fusions.txt ${sample}_pizzly.txt
+    mv pizzly_fusions.unfiltered.json ${sample}_unfiltered_pizzly.json
+    """
+}
+
+pizzly_fusions = pizzly_fusions.dump(tag:'pizzly_fusions')
+
+/*
+ * Squid
+ */
+process squid {
+    tag "${sample}"
+    label 'process_high'
+
+    publishDir "${params.outdir}/tools/Squid/${sample}", mode: params.publish_dir_mode
+
+    input:
+        set val(sample), file(reads) from read_files_squid
+        file(star_index) from ch_star_index
+        file(gtf) from ch_gtf
+
+    output:
+        set val(sample), file("${sample}_fusions_annotated.txt") optional true into squid_fusions
+        file("*.txt") into squid_output
+
+    when: params.squid && (!params.single_end || params.debug)
+
+    script:
+    def avail_mem = task.memory ? "--limitBAMsortRAM ${task.memory.toBytes() - 100000000}" : ''
+    """
+    STAR \\
+        --genomeDir ${star_index} \\
+        --sjdbGTFfile ${gtf} \\
+        --runThreadN ${task.cpus} \\
+        --readFilesIn ${reads} \\
+        --twopassMode Basic \\
+        --chimOutType SeparateSAMold \\
+        --chimSegmentMin 20 \\
+        --chimJunctionOverhangMin 12 \\
+        --alignSJDBoverhangMin 10 \\
+        --outReadsUnmapped Fastx \\
+        --outSAMstrandField intronMotif \\
+        --outSAMtype BAM SortedByCoordinate \\
+        ${avail_mem} \\
+        --readFilesCommand zcat
+    mv Aligned.sortedByCoord.out.bam ${sample}Aligned.sortedByCoord.out.bam
+    samtools view -bS Chimeric.out.sam > ${sample}Chimeric.out.bam
+    squid -b ${sample}Aligned.sortedByCoord.out.bam -c ${sample}Chimeric.out.bam -o fusions
+    AnnotateSQUIDOutput.py ${gtf} fusions_sv.txt fusions_annotated.txt
+
+    mv fusions_annotated.txt ${sample}_fusions_annotated.txt
+    """
+}
+
+squid_fusions = squid_fusions.dump(tag:'squid_fusions')
+
+read_files_summary = read_files_summary.dump(tag:'read_files_summary')
+
+files_and_reports_summary = read_files_summary
+    .join(arriba_fusions_summary, remainder: true)
+    .join(ericscript_fusions, remainder: true)
+    .join(fusioncatcher_fusions, remainder: true)
+    .join(pizzly_fusions, remainder: true)
+    .join(squid_fusions, remainder: true)
+    .join(star_fusion_fusions, remainder: true)
+
+files_and_reports_summary = files_and_reports_summary.dump(tag:'files_and_reports_summary')
+
+/*
+================================================================================
+                               SUMMARIZING RESULTS
+================================================================================
+*/
+
+process summary {
+    tag "${sample}"
+
+    publishDir "${params.outdir}/Reports/${sample}", mode: params.publish_dir_mode
+
+    input:
+        set val(sample), file(reads), file(arriba), file(ericscript), file(fusioncatcher), file(pizzly), file(squid), file(starfusion) from files_and_reports_summary
+
+    output:
+        set val(sample), file("${sample}_fusion_list.tsv") into fusion_inspector_input_list
+        file("${sample}_fusion_genes_mqc.json") into summary_fusions_mq
+        file("*") into report
+
+    when: !params.debug && (running_tools.size() > 0)
+
+
+    script:
+    def extra_params = params.fusion_report_opt ? params.fusion_report_opt : ''
+    def tools = !arriba.empty() ? "--arriba ${arriba} " : ''
+    tools += !ericscript.empty() ? "--ericscript ${ericscript} " : ''
+    tools += !fusioncatcher.empty() ? "--fusioncatcher ${fusioncatcher} " : ''
+    tools += !pizzly.empty() ? "--pizzly ${pizzly} " : ''
+    tools += !squid.empty() ? "--squid ${squid} " : ''
+    tools += !starfusion.empty() ? "--starfusion ${starfusion} " : ''
+    """
+    fusion_report run ${sample} . ${params.databases} \\
+        ${tools} ${extra_params}
+    mv fusion_list.tsv ${sample}_fusion_list.tsv
+    mv fusion_genes_mqc.json ${sample}_fusion_genes_mqc.json
+    tar -czf ${sample}_fusion-report.tar.gz --exclude=${sample}* ./*
+    """
+}
+
+/*************************************************************
+ * Visualization
+ ************************************************************/
+
+/*
+ * Arriba Visualization
+ */
+process arriba_visualization {
+    tag "${sample}"
+    label 'process_medium'
+
+    publishDir "${params.outdir}/tools/Arriba/${sample}", mode: params.publish_dir_mode
+
+    input:
+        file(reference) from reference.arriba_vis
+        set sample, file(bam), file(fusions) from arriba_visualization
+        file(gtf) from ch_gtf
+
+    output:
+        file("${sample}.pdf") optional true into arriba_visualization_output
+
+    when: params.arriba_vis && (!params.single_end || params.debug)
+
+    script:
+    def suff_mem = ("${(task.memory.toBytes() - 6000000000) / task.cpus}" > 2000000000) ? 'true' : 'false'
+    def avail_mem = (task.memory && suff_mem) ? "-m" + "${(task.memory.toBytes() - 6000000000) / task.cpus}" : ''
+    cytobands = "${reference}/cytobands*${params.genome}*.tsv"
+    proteinDomains = "${reference}/protein_domains*${params.genome}*.gff3"
+    """
+    samtools sort -@ ${task.cpus} ${avail_mem} -O bam ${bam} > Aligned.sortedByCoord.out.bam
+    samtools index Aligned.sortedByCoord.out.bam
+    draw_fusions.R \\
+        --fusions=${fusions} \\
+        --alignments=Aligned.sortedByCoord.out.bam \\
+        --output=${sample}.pdf \\
+        --annotation=${gtf} \\
+        --cytobands=\$(echo ${cytobands}) \\
+        --proteinDomains=\$(echo ${proteinDomains})
+    """
+}
+
+
+fusion_inspector_input = fusion_inspector_input_list.join(read_files_fusion_inspector)
+
+fusion_inspector_input = fusion_inspector_input.dump(tag:'fusion_inspector_input')
+
+/*
+ * Fusion Inspector
+ */
+process fusion_inspector {
+    tag "${sample}"
+    label 'process_high'
+
+    publishDir "${params.outdir}/tools/FusionInspector/${sample}", mode: params.publish_dir_mode
+
+    input:
+        set val(sample), file(fi_input_list), file(reads) from fusion_inspector_input
+        file(reference) from reference.fusion_inspector
+
+    output:
+        file("*.{fa,gtf,bed,bam,bai,txt,html,tsv,gff3,fasta}") into fusion_inspector_output
+
+    when: params.fusion_inspector && (!params.single_end || params.debug)
+
+    script:
+    def extra_params = params.fusion_inspector_opt ? params.fusion_inspector_opt : ''
+    """
+    FusionInspector \\
+        --fusions ${fi_input_list} \\
+        --genome_lib ${reference} \\
+        --left_fq ${reads[0]} \\
+        --right_fq ${reads[1]} \\
+        --CPU ${task.cpus} \\
+        -O . \\
+        --out_prefix finspector \\
+        --vis ${extra_params}
+    """
+}
+
+/*************************************************************
+ * Quality check & software verions
+ ************************************************************/
+
+/*
  * Parse software version numbers
  */
 process get_software_versions {
@@ -195,6 +671,14 @@ process get_software_versions {
     echo $workflow.nextflow.version > v_nextflow.txt
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
+    cat ${baseDir}/containers/arriba/environment.yml > v_arriba.txt
+    cat ${baseDir}/containers/fusioncatcher/environment.yml > v_fusioncatcher.txt
+    cat ${baseDir}/conf/base.config | grep -m1 fusion_inspector > v_fusion_inspector.txt
+    cat ${baseDir}/conf/base.config | grep -m1 star_fusion > v_star_fusion.txt
+    cat ${baseDir}/containers/ericscript/environment.yml > v_ericscript.txt
+    cat ${baseDir}/containers/pizzly/environment.yml > v_pizzly.txt
+    cat ${baseDir}/containers/squid/environment.yml > v_squid.txt
+    cat ${baseDir}/environment.yml > v_fusion_report.txt
     scrape_software_versions.py &> software_versions_mqc.yaml
     """
 }

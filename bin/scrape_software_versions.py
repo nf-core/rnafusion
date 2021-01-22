@@ -9,6 +9,14 @@ regexes = {
     "Nextflow": ["v_nextflow.txt", r"(\S+)"],
     "FastQC": ["v_fastqc.txt", r"FastQC v(\S+)"],
     "MultiQC": ["v_multiqc.txt", r"multiqc, version (\S+)"],
+    "Arriba": ["v_arriba.txt", r"arriba=(\S+)"],
+    "EricScript": ["v_ericscript.txt", r"ericscript=(\S+)"],
+    "FusionCatcher": ["v_fusioncatcher.txt", r"fusioncatcher=(\S+)"],
+    "Fusion-Inspector": ["v_fusion_inspector.txt", r"fusion_inspector = (\S+)"],
+    "fusion-report": ["v_fusion_report.txt", r"fusion-report=(\S+)"],
+    "Pizzly": ["v_pizzly.txt", r"pizzly=(\S+)"],
+    "STAR-Fusion": ["v_star_fusion.txt", r"star_fusion = (\S+)"],
+    "Squid": ["v_squid.txt", r"squid=(\S+)"]
 }
 results = OrderedDict()
 results["nf-core/rnafusion"] = '<span style="color:#999999;">N/A</span>'
