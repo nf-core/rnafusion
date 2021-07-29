@@ -16,17 +16,13 @@
 
 ## Introduction
 
-<!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
 **nf-core/rnafusion** is a bioinformatics best-practice analysis pipeline for RNA sequencing analysis pipeline with curated list of tools for detecting and visualizing fusion genes..
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
-<!-- TODO nf-core: Add full-sized test dataset and amend the paragraph below if applicable -->
 On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/rnafusion/results).
 
 ## Pipeline summary
-
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
 
 1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
@@ -49,10 +45,8 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 4. Start running your own analysis!
 
-    <!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
-
     ```console
-    nextflow run nf-core/rnafusion -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --genome GRCh37
+    nextflow run nf-core/rnafusion -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --genome GRCh38
     ```
 
 ## Documentation
@@ -65,8 +59,6 @@ nf-core/rnafusion was originally written by @praveenraj2018.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
-
 ## Contributions and Support
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
@@ -75,10 +67,6 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 
 ## Citations
 
-<!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use  nf-core/rnafusion for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
-
-<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
 You can cite the `nf-core` publication as follows:
