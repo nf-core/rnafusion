@@ -4,6 +4,7 @@ include { saveFiles } from './functions'
 params.options = [:]
 
 process SAMPLESHEET_CHECK {
+    label 'process_low'
     tag "$samplesheet"
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
