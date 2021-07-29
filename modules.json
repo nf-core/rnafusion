@@ -3,11 +3,29 @@
     "homePage": "https://github.com/nf-core/rnafusion",
     "repos": {
         "nf-core/modules": {
+            "arriba": {
+                "git_sha": "3cabc95d0ed8a5a4e07b8f9b1d1f7ff9a70f61e1"
+            },
             "fastqc": {
+                "git_sha": "e937c7950af70930d1f34bb961403d9d2aa81c7d"
+            },
+            "gunzip": {
                 "git_sha": "e937c7950af70930d1f34bb961403d9d2aa81c7d"
             },
             "multiqc": {
                 "git_sha": "c5235a983d454787fa0c3247b02086969217163b"
+            },
+            "samtools/faidx": {
+                "git_sha": "c5235a983d454787fa0c3247b02086969217163b"
+            },
+            "star/align": {
+                "git_sha": "df909015b6651dadb52626cf471f15a6d33985a2"
+            },
+            "star/genomegenerate": {
+                "git_sha": "f43778b0e641a9643ae73fe1f2fe2d5bb81edffc"
+            },
+            "untar": {
+                "git_sha": "e937c7950af70930d1f34bb961403d9d2aa81c7d"
             }
         }
     }
