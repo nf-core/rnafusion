@@ -46,13 +46,9 @@ def publish_index_options  = params.save_reference ? [publish_dir: 'genome/index
 def star_genomegenerate_options = modules['star_genomegenerate']
 if (!params.save_reference)     { star_genomegenerate_options['publish_files'] = false }
 
-def star_align_options = modules['star_align']
-def arriba_options     = modules['arriba_fusion']
-
 // MODULE: Local to the pipeline
 //
 include { GET_SOFTWARE_VERSIONS } from '../modules/local/get_software_versions' addParams( options: [publish_files : ['tsv':'']] )
-
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
@@ -70,10 +66,9 @@ multiqc_options.args += params.multiqc_title ? Utils.joinModuleArgs(["--title \"
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { FASTQC  } from '../modules/nf-core/modules/fastqc/main'           addParams( options: modules['fastqc'] )
-include { MULTIQC } from '../modules/nf-core/modules/multiqc/main'          addParams( options: multiqc_options   )
-include { STAR_ALIGN } from '../modules/nf-core/modules/star/align/main'    addParams( options: star_align_options)
-include { ARRIBA } from '../modules/nf-core/modules/arriba/main'            addParams( options: arriba_options )
+include { FASTQC  }             from '../modules/nf-core/modules/fastqc/main'           addParams( options: modules['fastqc'] )
+include { MULTIQC }             from '../modules/nf-core/modules/multiqc/main'          addParams( options: multiqc_options   )
+include { FUSION_STAR_ARRIBA }  from '../subworkflows/nf-core/fusion_star_arriba'       addParams( star_align_options: modules['star_align'], arriba_options: modules['arriba_fusion'])
 /*
 ========================================================================================
     RUN MAIN WORKFLOW
@@ -140,26 +135,17 @@ workflow RNAFUSION {
     multiqc_report       = MULTIQC.out.report.toList()
     ch_software_versions = ch_software_versions.mix(MULTIQC.out.version.ifEmpty(null))
 
-    // Run STAR alignment
-
-    ch_genome_bam        = Channel.empty()
-    ch_chimeric_junction = Channel.empty()
-    STAR_ALIGN (
+    // Run STAR alignment and Arriba
+    ch_genome_bam     = Channel.empty()
+    ch_arriba_fusions = Channel.empty()
+    FUSION_STAR_ARRIBA (
         ch_reads,
         PREPARE_GENOME.out.star_index,
-        PREPARE_GENOME.out.gtf
-    )
-    ch_genome_bam        = STAR_ALIGN.out.bam
-
-    //Fusion calling with Arriba
-
-    ch_arriba_fusions = Channel.empty()
-    ARRIBA (
-        ch_genome_bam,
         PREPARE_GENOME.out.fasta,
         PREPARE_GENOME.out.gtf
     )
-    ch_arriba_fusions = ARRIBA.out.fusions
+    ch_genome_bam     = FUSION_STAR_ARRIBA.out.bam
+    ch_arriba_fusions = FUSION_STAR_ARRIBA.out.fusions
 
 }
 
