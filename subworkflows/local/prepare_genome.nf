@@ -51,11 +51,26 @@ workflow PREPARE_GENOME {
         }
     }
 
+    //Check genome data required for STAR-Fusion
+    ch_starfusion_resource = Channel.empty()
+    if (params.starfusion){
+        if (params.starfusion_genome) {
+            ch_sf_genome = params.starfusion_genome
+            if(file("${ch_sf_genome}/AnnotFilterRule.pm").exists()){
+                ch_starfusion_resource = file(ch_sf_genome)
+            }
+        }
+        else{
+            ch_starfusion_resource = STARFUSION_DOWNLOADGENOME (params.genome).out.reference
+        }
+    }
+
     emit:
-    fasta            = ch_fasta            // path: genome.fasta
-    fai              = ch_fasta_fai        // path: genome.fasta.fai
-    gtf              = ch_gtf              // path: genome.gtf
-    star_index       = ch_star_index       // path: star/index/
+    fasta               = ch_fasta            // path: genome.fasta
+    fai                 = ch_fasta_fai        // path: genome.fasta.fai
+    gtf                 = ch_gtf              // path: genome.gtf
+    star_index          = ch_star_index       // path: star/index/
+    starfusion_resource = ch_starfusion_resource
 
 }
 

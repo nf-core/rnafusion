@@ -288,6 +288,20 @@
                     "hidden": true,
                     "fa_icon": "fas fa-toolbox",
                     "help_text": "This will reported in the BAM header as PL."
+                },
+                "aligner": {
+                    "type": "string",
+                    "description": "List of read aligners to be used",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "Specify the aligned to be used for RNAseq alignment"
+                },
+                "star_ignore_sjdbgtf": {
+                    "type": "boolean",
+                    "description": "Whether to ignore the GTF in STAR alignment",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "Setting false will use GTF file for STAR alignment"
                 }
             }
         }

@@ -22,7 +22,7 @@ if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input sample
 
 // Check alignment parameters
 def prepareToolIndices  = []
-if (!params.skip_alignment) { prepareToolIndices << params.aligner }
+prepareToolIndices << params.aligner
 
 /*
 ========================================================================================
@@ -69,6 +69,8 @@ multiqc_options.args += params.multiqc_title ? Utils.joinModuleArgs(["--title \"
 include { FASTQC  }             from '../modules/nf-core/modules/fastqc/main'           addParams( options: modules['fastqc'] )
 include { MULTIQC }             from '../modules/nf-core/modules/multiqc/main'          addParams( options: multiqc_options   )
 include { FUSION_STAR_ARRIBA }  from '../subworkflows/nf-core/fusion_star_arriba'       addParams( star_align_options: modules['star_align'], arriba_options: modules['arriba_fusion'])
+include { STARFUSION }          from '../modules/local/starfusion/main'         addParams( options: modules['starfusion'] )
+
 /*
 ========================================================================================
     RUN MAIN WORKFLOW
@@ -136,17 +138,27 @@ workflow RNAFUSION {
     ch_software_versions = ch_software_versions.mix(MULTIQC.out.version.ifEmpty(null))
 
     // Run STAR alignment and Arriba
-    ch_genome_bam     = Channel.empty()
-    ch_arriba_fusions = Channel.empty()
-    FUSION_STAR_ARRIBA (
-        ch_reads,
-        PREPARE_GENOME.out.star_index,
-        PREPARE_GENOME.out.fasta,
-        PREPARE_GENOME.out.gtf
-    )
-    ch_genome_bam     = FUSION_STAR_ARRIBA.out.bam
-    ch_arriba_fusions = FUSION_STAR_ARRIBA.out.fusions
+    if (params.arriba){
+        ch_genome_bam     = Channel.empty()
+        ch_arriba_fusions = Channel.empty()
+        FUSION_STAR_ARRIBA (
+            ch_reads,
+            PREPARE_GENOME.out.star_index,
+            PREPARE_GENOME.out.fasta,
+            PREPARE_GENOME.out.gtf
+        )
+        ch_genome_bam     = FUSION_STAR_ARRIBA.out.bam
+        ch_arriba_fusions = FUSION_STAR_ARRIBA.out.fusions
+    }
 
+    //Run STAR fusion
+    if (params.starfusion){
+        ch_star_fusions = Channel.empty()
+        STARFUSION (
+            ch_reads,
+            PREPARE_GENOME.out.starfusion_resource
+        )
+    }
 }
 
 /*

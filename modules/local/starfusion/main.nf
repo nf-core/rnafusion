@@ -6,7 +6,7 @@ options        = initOptions(params.options)
 
 process STARFUSION {
     tag "$meta.id"
-    label 'process_medium'
+    label 'process_high'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
@@ -19,25 +19,24 @@ process STARFUSION {
     }
 
     input:
-    tuple val(meta), path(junction)
+    tuple val(meta), path(reads)
     path genome_resource_lib
 
     output:
-    tuple val(meta), path("*.fusion_predictions.tsv")   , optional:true, emit: fusions
+    tuple val(meta), path("*.fusion_predictions.tsv")   , emit: fusions
     path "*.version.txt"                                , emit: version
 
     script:
     def software            = getSoftwareName(task.process)
     def prefix              = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
-    def genome_resource     = (genome_resource_lib.exists() && file("${genome_resource_lib}/AnnotFilterRule.pm").exists()) ? true : false
+    def fastq               = meta.single_end ? "--left_fq ${reads[0]}" : "--left_fq ${reads[0]} --right_fq ${reads[1]}"
+    def genome_resource     = true //genome_resource_lib.exists() && file("${genome_resource_lib}/AnnotFilterRule.pm").exists()
 
     if (genome_resource) {
 
         """
         STAR-Fusion --genome_lib_dir $genome_resource_lib \\
-            -J $junction \\
-            --CPU $task.cpus
-            --examine_coding_effect \\
+            $fastq \\
             --output_dir . \\
             $options.args
 
