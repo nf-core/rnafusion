@@ -2,13 +2,15 @@
 // Uncompress and prepare reference genome files
 //
 
-params.genome_options       = [:]
-params.star_index_options   = [:]
+params.genome_options               = [:]
+params.star_index_options           = [:]
+params.starfusion_genome_options    = [:]
 
-include { GUNZIP as GUNZIP_FASTA        } from '../../modules/nf-core/modules/gunzip/main'                  addParams( options: params.genome_options )
-include { UNTAR as UNTAR_STAR_INDEX     } from '../../modules/nf-core/modules/untar/main'                   addParams( options: params.star_index_options   )
-include { SAMTOOLS_FAIDX                } from '../../modules/nf-core/modules/samtools/faidx/main'          addParams( options: params.genome_options )
-include { STAR_GENOMEGENERATE           } from '../../modules/nf-core/modules/star/genomegenerate/main'     addParams( options: params.star_index_options )
+include { GUNZIP as GUNZIP_FASTA                } from '../../modules/nf-core/modules/gunzip/main'                  addParams( options: params.genome_options )
+include { UNTAR as UNTAR_STAR_INDEX             } from '../../modules/nf-core/modules/untar/main'                   addParams( options: params.star_index_options )
+include { UNTAR as UNTAR_STARFUSION_GENOME      } from '../../modules/nf-core/modules/untar/main'                   addParams( options: params.starfusion_genome_options )
+include { SAMTOOLS_FAIDX                        } from '../../modules/nf-core/modules/samtools/faidx/main'          addParams( options: params.genome_options )
+include { STAR_GENOMEGENERATE                   } from '../../modules/nf-core/modules/star/genomegenerate/main'     addParams( options: params.star_index_options )
 
 workflow PREPARE_GENOME {
 
@@ -56,7 +58,10 @@ workflow PREPARE_GENOME {
     if (params.starfusion){
         if (params.starfusion_genome) {
             ch_sf_genome = params.starfusion_genome
-            if(file("${ch_sf_genome}/AnnotFilterRule.pm").exists()){
+            if (ch_sf_genome.endsWith('.tar.gz')){
+                ch_starfusion_resource = UNTAR_STARFUSION_GENOME (ch_sf_genome).untar
+            }
+            else if(file("${ch_sf_genome}/AnnotFilterRule.pm").exists()){
                 ch_starfusion_resource = file(ch_sf_genome)
             }
         }

@@ -44,6 +44,7 @@ def modules = params.modules.clone()
 def publish_genome_options = params.save_reference ? [publish_dir: 'genome']       : [publish_files: false]
 def publish_index_options  = params.save_reference ? [publish_dir: 'genome/index'] : [publish_files: false]
 def star_genomegenerate_options = modules['star_genomegenerate']
+def starfusion_genome_options = modules['starfusion_genomegenerate']
 if (!params.save_reference)     { star_genomegenerate_options['publish_files'] = false }
 
 // MODULE: Local to the pipeline
@@ -53,7 +54,7 @@ include { GET_SOFTWARE_VERSIONS } from '../modules/local/get_software_versions' 
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'                addParams( options: [:] )
-include { PREPARE_GENOME } from '../subworkflows/local/prepare_genome'          addParams( genome_options: publish_genome_options, index_options: publish_index_options, star_index_options: star_genomegenerate_options)
+include { PREPARE_GENOME } from '../subworkflows/local/prepare_genome'          addParams( genome_options: publish_genome_options, index_options: publish_index_options, star_index_options: star_genomegenerate_options, starfusion_genome_options: starfusion_genome_options)
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -69,7 +70,7 @@ multiqc_options.args += params.multiqc_title ? Utils.joinModuleArgs(["--title \"
 include { FASTQC  }             from '../modules/nf-core/modules/fastqc/main'           addParams( options: modules['fastqc'] )
 include { MULTIQC }             from '../modules/nf-core/modules/multiqc/main'          addParams( options: multiqc_options   )
 include { FUSION_STAR_ARRIBA }  from '../subworkflows/nf-core/fusion_star_arriba'       addParams( star_align_options: modules['star_align'], arriba_options: modules['arriba_fusion'])
-include { STARFUSION }          from '../modules/local/starfusion/main'         addParams( options: modules['starfusion'] )
+include { STARFUSION }          from '../modules/local/starfusion/main'                 addParams( options: modules['starfusion'] )
 
 /*
 ========================================================================================

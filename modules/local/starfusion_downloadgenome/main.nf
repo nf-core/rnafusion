@@ -15,10 +15,10 @@ process STARFUSION_DOWNLOADGENOME {
     val genome_build
 
     output:
-    path "star-fusion-genome"       , emit: reference
+    path "star-fusion-genome"   , emit: reference
 
     script:
-    def software        = getSoftwareName(task.process)
+    def software = getSoftwareName(task.process)
 
     if ( genome_build == "GRCh37" ){
 
@@ -49,4 +49,5 @@ process STARFUSION_DOWNLOADGENOME {
     """
 
     }
+
 }
