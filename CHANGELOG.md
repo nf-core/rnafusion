@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Initial release of nf-core/rnafusion, created with the [nf-core](https://nf-co.re/) template.
 
 ### `Added`
--   [#192](https://github.com/nf-core/rnafusion/pull/192) - Added STAR-fusion (genome download and fusion calling as local modules) into pipeline
+- [#192](https://github.com/nf-core/rnafusion/pull/192) - Added STAR-fusion (genome download and fusion calling as local modules) into pipeline
 
 ### `Fixed`
 
