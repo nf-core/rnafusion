@@ -24,21 +24,15 @@ workflow PREPARE_GENOME {
     main:
 
     // Uncompress genome fasta file if required
-    if (params.fasta.endsWith('.gz'))   ch_fasta = GUNZIP_FASTA ( params.fasta ).gunzipe
-    else                                ch_fasta = file(params.fasta)
+    ch_fasta = params.fasta.endsWith('.gz') ? GUNZIP_FASTA ( params.fasta ).gunzipe : file(params.fasta)
 
     // Index the genome fasta
     ch_fasta_fai = Channel.empty()
-    if (params.fasta_fai)               ch_fasta_fai = file(params.fasta_fai)
-    else                                ch_fasta_fai = SAMTOOLS_FAIDX(ch_fasta).fai
+    ch_fasta_fai = params.fasta_fai ? file(params.fasta_fai) : SAMTOOLS_FAIDX(ch_fasta).fai
 
     // Get the GTF file
     if (params.gtf) {
-        if (params.gtf.endsWith('.gz')) {
-            ch_gtf = GUNZIP_GTF ( params.gtf ).gunzip
-        } else {
-            ch_gtf = file(params.gtf)
-        }
+        ch_gtf = params.gtf.endsWith('.gz') ? GUNZIP_GTF ( params.gtf ).gunzip : file(params.gtf)
     }
 
     // Uncompress STAR index or generate from scratch if required
@@ -46,11 +40,7 @@ workflow PREPARE_GENOME {
     ch_star_version = Channel.empty()
     if ('star' in prepare_tool_indices) {
         if (params.star_index) {
-            if (params.star_index.endsWith('.tar.gz')) {
-                ch_star_index = UNTAR_STAR_INDEX ( params.star_index ).untar
-            } else {
-                ch_star_index = file(params.star_index)
-            }
+            ch_star_index = params.star_index.endsWith('.tar.gz') ? UNTAR_STAR_INDEX ( params.star_index ).untar : file(params.star_index)
         } else {
             ch_star_index   = STAR_GENOMEGENERATE ( ch_fasta, ch_gtf ).index
             ch_star_version = STAR_GENOMEGENERATE.out.version
@@ -66,7 +56,7 @@ workflow PREPARE_GENOME {
                 root_path = UNTAR_STARFUSION_GENOME (ch_sf_genome).untar
                 ch_starfusion_resource = file("${root_path}/ctat_genome_lib_build_dir")
             }
-            else if(file("${ch_sf_genome}/AnnotFilterRule.pm").exists()){
+            else {
                 ch_starfusion_resource = file(ch_sf_genome)
             }
         }

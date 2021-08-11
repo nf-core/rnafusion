@@ -70,7 +70,7 @@ multiqc_options.args += params.multiqc_title ? Utils.joinModuleArgs(["--title \"
 //
 include { FASTQC                }   from '../modules/nf-core/modules/fastqc/main'           addParams( options: modules['fastqc'] )
 include { MULTIQC               }   from '../modules/nf-core/modules/multiqc/main'          addParams( options: multiqc_options   )
-include { FUSION_STAR_ARRIBA    }   from '../subworkflows/nf-core/fusion_star_arriba'       addParams( star_align_options: modules['star_align'], arriba_options: modules['arriba_fusion'])
+include { FUSION_STAR_ARRIBA    }   from '../subworkflows/nf-core/arriba'       addParams( star_align_options: modules['star_align'], arriba_options: modules['arriba_fusion'])
 include { STARFUSION            }   from '../modules/local/starfusion/detection/main'       addParams( options: modules['starfusion'] )
 include { FUSIONCATCHER         }   from '../modules/local/fusioncatcher/detection/main'    addParams( options: modules['fusioncatcher'] )
 

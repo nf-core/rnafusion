@@ -22,8 +22,8 @@ process FUSIONCATCHER_DOWNLOADGENOME {
     val organism
 
     output:
-    path "fusioncatcher-genome"     , emit: reference
-    path "*.version.txt"            , emit: version
+    path "fusioncatcher"    , emit: reference
+    path "*.version.txt"    , emit: version
 
     script:
     def software = getSoftwareName(task.process)

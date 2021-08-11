@@ -15,7 +15,7 @@ process STARFUSION_DOWNLOADGENOME {
     val genome_build
 
     output:
-    path "star-fusion-genome"   , emit: reference
+    path "star-fusion"  , emit: reference
 
     script:
     def software = getSoftwareName(task.process)
