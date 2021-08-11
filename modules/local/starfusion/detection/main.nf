@@ -27,27 +27,17 @@ process STARFUSION {
     path "*.version.txt"                                , emit: version
 
     script:
-    def software            = getSoftwareName(task.process)
-    def prefix              = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
-    def fastq               = meta.single_end ? "--left_fq ${reads[0]}" : "--left_fq ${reads[0]} --right_fq ${reads[1]}"
-    def genome_resource     = true //genome_resource_lib.exists() && file("${genome_resource_lib}/AnnotFilterRule.pm").exists()
+    def software    = getSoftwareName(task.process)
+    def prefix      = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
+    def fastq       = meta.single_end ? "--left_fq ${reads[0]}" : "--left_fq ${reads[0]} --right_fq ${reads[1]}"
 
-    if (genome_resource) {
+    """
+    STAR-Fusion \\
+        --genome_lib_dir $genome_resource_lib \\
+        $fastq \\
+        --output_dir . \\
+        $options.args
 
-        """
-        STAR-Fusion --genome_lib_dir $genome_resource_lib \\
-            $fastq \\
-            --output_dir . \\
-            $options.args
-
-        echo \$(STAR-Fusion --version 2>&1) | grep -i 'version' | sed 's/STAR-Fusion version: //' > ${software}.version.txt
-        """
-    }
-    else{
-
-        """
-        echo \$(STAR-Fusion --version 2>&1) | grep -i 'version' | sed 's/STAR-Fusion version: //' > ${software}.version.txt
-        """
-
-    }
+    echo \$(STAR-Fusion --version 2>&1) | grep -i 'version' | sed 's/STAR-Fusion version: //' > ${software}.version.txt
+    """
 }

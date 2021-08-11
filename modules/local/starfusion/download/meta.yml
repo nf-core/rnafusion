@@ -19,9 +19,9 @@ input:
 
 output:
   - reference:
-      type: file
+      type: directory
       description: Genome resource path
-      pattern: "*"
+      pattern: "star-fusion-genome"
 
 authors:
   - "@praveenraj2018"

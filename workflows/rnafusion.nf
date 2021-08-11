@@ -44,7 +44,8 @@ def modules = params.modules.clone()
 def publish_genome_options = params.save_reference ? [publish_dir: 'genome']       : [publish_files: false]
 def publish_index_options  = params.save_reference ? [publish_dir: 'genome/index'] : [publish_files: false]
 def star_genomegenerate_options = modules['star_genomegenerate']
-def starfusion_genome_options = modules['starfusion_genomegenerate']
+def starfusion_genome_options = modules['starfusion_download']
+def fusioncatcher_genome_options = modules['fusioncatcher_download']
 if (!params.save_reference)     { star_genomegenerate_options['publish_files'] = false }
 
 // MODULE: Local to the pipeline
@@ -54,7 +55,7 @@ include { GET_SOFTWARE_VERSIONS } from '../modules/local/get_software_versions' 
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'                addParams( options: [:] )
-include { PREPARE_GENOME } from '../subworkflows/local/prepare_genome'          addParams( genome_options: publish_genome_options, index_options: publish_index_options, star_index_options: star_genomegenerate_options, starfusion_genome_options: starfusion_genome_options)
+include { PREPARE_GENOME } from '../subworkflows/local/prepare_genome'          addParams( genome_options: publish_genome_options, index_options: publish_index_options, star_index_options: star_genomegenerate_options, starfusion_untar_options: starfusion_genome_options, starfusion_download_options: starfusion_genome_options, fusioncatcher_download_options: fusioncatcher_genome_options)
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -67,10 +68,11 @@ multiqc_options.args += params.multiqc_title ? Utils.joinModuleArgs(["--title \"
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { FASTQC  }             from '../modules/nf-core/modules/fastqc/main'           addParams( options: modules['fastqc'] )
-include { MULTIQC }             from '../modules/nf-core/modules/multiqc/main'          addParams( options: multiqc_options   )
-include { FUSION_STAR_ARRIBA }  from '../subworkflows/nf-core/fusion_star_arriba'       addParams( star_align_options: modules['star_align'], arriba_options: modules['arriba_fusion'])
-include { STARFUSION }          from '../modules/local/starfusion/main'                 addParams( options: modules['starfusion'] )
+include { FASTQC                }   from '../modules/nf-core/modules/fastqc/main'           addParams( options: modules['fastqc'] )
+include { MULTIQC               }   from '../modules/nf-core/modules/multiqc/main'          addParams( options: multiqc_options   )
+include { FUSION_STAR_ARRIBA    }   from '../subworkflows/nf-core/fusion_star_arriba'       addParams( star_align_options: modules['star_align'], arriba_options: modules['arriba_fusion'])
+include { STARFUSION            }   from '../modules/local/starfusion/detection/main'       addParams( options: modules['starfusion'] )
+include { FUSIONCATCHER         }   from '../modules/local/fusioncatcher/detection/main'    addParams( options: modules['fusioncatcher'] )
 
 /*
 ========================================================================================
@@ -159,6 +161,17 @@ workflow RNAFUSION {
             ch_reads,
             PREPARE_GENOME.out.starfusion_resource
         )
+        ch_starfusion_fusions = STARFUSION.out.fusions
+    }
+
+    //Run FusionCatcher
+    if (params.fusioncatcher){
+        ch_fusioncather_fusions = Channel.empty()
+        FUSIONCATCHER (
+            ch_reads,
+            PREPARE_GENOME.out.fusioncatcher_resource
+        )
+        ch_fusioncatcher_fusions = FUSIONCATCHER.out.fusions
     }
 }
 

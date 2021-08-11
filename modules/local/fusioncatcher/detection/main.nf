@@ -13,9 +13,9 @@ process FUSIONCATCHER {
 
     conda (params.enable_conda ? "bioconda::fusioncatcher=1.33" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/fusioncatcher:1.33--hdfd78af_0"
+        container "https://depot.galaxyproject.org/singularity/fusioncatcher:1.33--hdfd78af_1"
     } else {
-        container "quay.io/biocontainers/fusioncatcher:1.33--hdfd78af_0"
+        container "quay.io/biocontainers/fusioncatcher:1.33--hdfd78af_1"
     }
 
     input:
@@ -32,31 +32,20 @@ process FUSIONCATCHER {
     def software = getSoftwareName(task.process)
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
     def fastq    = meta.single_end ? "${reads[0]}" : "${reads[0]},${reads[1]}"
-    def valid    = resource.exists() && file("${resource}/organism.txt").exists()
 
-    if (valid) {
+    """
+    fusioncatcher.py \\
+        -d $resource \\
+        -i $fastq \\
+        -p $task.cpus \\
+        -o . \\
+        $options.args
 
-        """
-        fusioncatcher \\
-            -d $resource \\
-            -i $fastq \\
-            -p $task.cpus \\
-            -o . \\
-            $options.args
+    mv final-list_candidate-fusion-genes.txt ${prefix}.fusioncatcher-fusion-genes.txt
+    mv summary_candidate_fusions.txt ${prefix}.fusioncatcher_summary.txt
+    mv fusioncatcher.log ${prefix}.fusioncatcher.log
 
-        mv final-list_candidate-fusion-genes.txt ${prefix}.fusioncatcher-fusion-genes.txt
-        mv summary_candidate_fusions.txt ${prefix}.fusioncatcher_summary.txt
-        mv fusioncatcher.log ${prefix}.fusioncatcher.log
+    fusioncatcher --version | sed 's/fusioncatcher.py //' > ${software}.version.txt
 
-        fusioncatcher --version | sed 's/fusioncatcher.py //' > ${software}.version.txt
-        """
-
-    }
-    else{
-
-        """
-        echo "Error: Invalid genome database" > ${prefix}.fusioncatcher.log
-        fusioncatcher --version | sed 's/fusioncatcher.py //' > ${software}.version.txt
-        """
-    }
+    """
 }
