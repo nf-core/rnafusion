@@ -267,6 +267,104 @@
                     "hidden": true,
                     "fa_icon": "fas fa-toolbox",
                     "help_text": "This may be useful for example if you are unable to directly pull Singularity containers to run the pipeline due to http/https proxy issues."
+                },
+                "save_reference": {
+                    "type": "boolean",
+                    "description": "Whether to save the reference or not.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "Save the reference for future executions."
+                },
+                "seq_center": {
+                    "type": "boolean",
+                    "description": "Sequencing center",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "This will reported in the BAM header as CN"
+                },
+                "seq_platform": {
+                    "type": "boolean",
+                    "description": "Sequencing platform",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "This will reported in the BAM header as PL."
+                },
+                "aligner": {
+                    "type": "string",
+                    "description": "List of read aligners to be used",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "Specify the aligned to be used for RNAseq alignment"
+                },
+                "star_ignore_sjdbgtf": {
+                    "type": "boolean",
+                    "description": "Whether to ignore the GTF in STAR alignment",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "Setting false will use GTF file for STAR alignment"
+                },
+                "star_index": {
+                    "type": "string",
+                    "description": "Path of STAR index directory",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "Provide the index directory for the STAR alignment"
+                },
+                "starfusion_genome": {
+                    "type": "string",
+                    "description": "Path of the genome resource directory of STAR-Fusion",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "Provide the genome resource data for the STAR-Fusion"
+                },
+                "fusioncatcher_genome": {
+                    "type": "string",
+                    "description": "Path of the genome resource directory of FusionCatcher",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "Provide the path of the resource data path for FusionCatcher"
+                },
+                "arriba": {
+                    "type": "boolean",
+                    "description": "List of read aligners to be used",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "Specify whether to run arriba or not"
+                },
+                "starfusion": {
+                    "type": "boolean",
+                    "description": "List of read aligners to be used",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "Specify whether to run starfusion or not"
+                },
+                "fusioncatcher": {
+                    "type": "boolean",
+                    "description": "List of read aligners to be used",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "Specify whether to run fusioncatcher or not"
+                },
+                "ericscript": {
+                    "type": "boolean",
+                    "description": "List of read aligners to be used",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "Specify whether to run ericscript or not"
+                },
+                "squid": {
+                    "type": "boolean",
+                    "description": "List of read aligners to be used",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "Specify whether to run squid or not"
+                },
+                "pizzly": {
+                    "type": "boolean",
+                    "description": "List of read aligners to be used",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "Specify whether to run pizzly or not"
                 }
             }
         }
