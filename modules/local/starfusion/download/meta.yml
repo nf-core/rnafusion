@@ -14,7 +14,7 @@ tools:
 input:
   - genome_version:
       type: value
-      description: Genome version - either GRCh37 or GRCh38
+      description: Genome version - either GRCh38 or GRCh38
       pattern: "GRCh3*"
 
 output:

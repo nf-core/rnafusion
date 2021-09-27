@@ -19,9 +19,10 @@ process ARRIBA {
     }
 
     input:
-    tuple val(meta), path(bam)
+    tuple val(meta), path(reads)
     path fasta
     path gtf
+    path index
 
     output:
     tuple val(meta), path("*.fusions.tsv")          , emit: fusions
@@ -31,16 +32,22 @@ process ARRIBA {
     script:
     def software  = getSoftwareName(task.process)
     def prefix    = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
-    def blacklist = (options.args.contains('-b')) ? '' : '-f blacklist'
     """
+    STAR \\
+	    --genomeDir $index \\
+	    --readFilesIn $reads \\
+	    --runThreadN $task.cpus \\
+        $options.args |
+
+    tee Aligned.out.bam |
+
     arriba \\
-        -x $bam \\
+        -x /dev/stdin \\
         -a $fasta \\
         -g $gtf \\
-        -o ${prefix}.fusions.tsv \\
-        -O ${prefix}.fusions.discarded.tsv \\
-        $blacklist \\
-        $options.args
+        -o ${prefix}.arriba.fusions.tsv \\
+        -O ${prefix}.arriba.fusions.discarded.tsv \\
+        $options.args2
 
     echo \$(arriba -h | grep 'Version:' 2>&1) |  sed 's/Version:\s//' > ${software}.version.txt
     """

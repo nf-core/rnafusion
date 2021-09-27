@@ -20,24 +20,35 @@ process STARFUSION {
 
     input:
     tuple val(meta), path(reads)
-    path genome_resource_lib
+    path reference
 
     output:
-    tuple val(meta), path("*.fusion_predictions.tsv")   , emit: fusions
-    path "*.version.txt"                                , emit: version
+    tuple val(meta), path("*.fusion_predictions.tsv"), emit: fusions
+    tuple val(meta), path("*.abridged.tsv")          , emit: abridged
+    tuple val(meta), path("*.coding_effect.tsv")     , optional: true, emit: coding_effect
+    path "*.version.txt"                             , emit: version
 
     script:
     def software    = getSoftwareName(task.process)
-    def prefix      = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
-    def fastq       = meta.single_end ? "--left_fq ${reads[0]}" : "--left_fq ${reads[0]} --right_fq ${reads[1]}"
-
+    def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
     """
-    STAR-Fusion \\
-        --genome_lib_dir $genome_resource_lib \\
-        $fastq \\
-        --output_dir . \\
+    STAR \\
+	    --genomeDir $index \\
+	    --readFilesIn $reads \\
+	    --runThreadN $task.cpus \\
         $options.args
 
+    STAR-Fusion \\
+        --genome_lib_dir $reference \\
+        $reads \\
+        --CPU $task.cpus \\
+        --output_dir . \\
+        $options.args2
+
+    mv star-fusion.fusion_predictions.tsv ${prefix}.starfusion.fusion_predictions.tsv
+    mv star-fusion.fusion_predictions.abridged.tsv ${prefix}.starfusion.abridged.tsv
+    mv star-fusion.fusion_predictions.abridged.coding_effect.tsv ${prefix}.starfusion.abridged.coding_effect.tsv
+    
     echo \$(STAR-Fusion --version 2>&1) | grep -i 'version' | sed 's/STAR-Fusion version: //' > ${software}.version.txt
     """
 }

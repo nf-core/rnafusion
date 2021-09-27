@@ -13,14 +13,6 @@ nextflow.enable.dsl = 2
 
 /*
 ========================================================================================
-    GENOME PARAMETER VALUES
-========================================================================================
-*/
-
-params.fasta = WorkflowMain.getGenomeAttribute(params, 'fasta')
-
-/*
-========================================================================================
     VALIDATE & PRINT PARAMETER SUMMARY
 ========================================================================================
 */
@@ -33,13 +25,24 @@ WorkflowMain.initialise(workflow, params, log)
 ========================================================================================
 */
 
-include { RNAFUSION } from './workflows/rnafusion'
 
 //
 // WORKFLOW: Run main nf-core/rnafusion analysis pipeline
 //
 workflow NFCORE_RNAFUSION {
-    RNAFUSION ()
+
+    if (params.build_references) {
+
+        include { BUILD_REFERENCES } from './workflows/build_references'
+        BUILD_REFERENCES ()
+    
+    } else {
+
+        include { RNAFUSION } from './workflows/rnafusion'
+        // RNAFUSION ()
+
+    }
+
 }
 
 /*
