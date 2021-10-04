@@ -25,7 +25,9 @@ workflow BUILD_REFERENCES {
 
     ENSEMBL_DOWNLOAD( params.ensembl_version )
 
-    STAR_GENOMEGENERATE( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.gtf )
+    if (params.starindex || params.all) {
+        STAR_GENOMEGENERATE( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.gtf )
+    }
 
     if (params.arriba || params.all) {
         ARRIBA_DOWNLOAD()
