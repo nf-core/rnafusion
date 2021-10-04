@@ -30,7 +30,7 @@ process STARFUSION_DOWNLOAD {
     """
     export TMPDIR=/tmp
 
-    wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_releases/Pfam-A.hmm.gz
+    wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam34.0/Pfam-A.hmm.gz
     wget https://github.com/FusionAnnotator/CTAT_HumanFusionLib/releases/download/v0.3.0/fusion_lib.Mar2021.dat.gz -O CTAT_HumanFusionLib_Mar2021.dat.gz
     wget https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/AnnotFilterRule.pm -O AnnotFilterRule.pm
     wget https://www.dfam.org/releases/Dfam_3.4/infrastructure/dfamscan/homo_sapiens_dfam.hmm
