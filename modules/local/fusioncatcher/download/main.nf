@@ -19,27 +19,28 @@ process FUSIONCATCHER_DOWNLOAD {
     }
 
     output:
-    path "human_v102"       , emit: reference
-    path "*.version.txt"    , emit: version
+    path "human_*"      , emit: reference
+    path "*.version.txt", emit: version
 
     script:
     def software = getSoftwareName(task.process)
-    def url = "http://sourceforge.net/projects/fusioncatcher/files/data/human_v102.tar.gz.aa"
+    def human_version = "v102"
+    def url = "http://sourceforge.net/projects/fusioncatcher/files/data/human_${human_version}.tar.gz.aa"
     """
-    if curl --output /dev/null --silent --head --fail $url; then
-        wget $url \\
-        wget http://sourceforge.net/projects/fusioncatcher/files/data/human_v102.tar.gz.ab
-        wget http://sourceforge.net/projects/fusioncatcher/files/data/human_v102.tar.gz.ac
-        wget http://sourceforge.net/projects/fusioncatcher/files/data/human_v102.tar.gz.ad
-        cat human_v102.tar.gz.* | tar xz
-        rm human_v98.tar*
+    if wget --spider "$url" 2>/dev/null; then
+        wget $options.args $url
+        wget $options.args http://sourceforge.net/projects/fusioncatcher/files/data/human_${human_version}.tar.gz.ab
+        wget $options.args http://sourceforge.net/projects/fusioncatcher/files/data/human_${human_version}.tar.gz.ac
+        wget $options.args http://sourceforge.net/projects/fusioncatcher/files/data/human_${human_version}.tar.gz.ad
+        cat human_${human_version}.tar.gz.* | tar xz
+        rm human_${human_version}.tar*
     else
         fusioncatcher-build \\
             -g homo_sapiens \\
-            -o human_v102 \\
-            $options.args
+            -o human_${human_version} \\
+            $options.args2
     fi
-    
+
     fusioncatcher --version | sed 's/fusioncatcher.py //' > ${software}.version.txt
     """
 }
