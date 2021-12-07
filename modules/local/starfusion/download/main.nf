@@ -11,11 +11,11 @@ process STARFUSION_DOWNLOAD {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:[:], publish_by_meta:[]) }
 
-    conda (params.enable_conda ? "bioconda::star-fusion=1.10.0" : null)
+    conda (params.enable_conda ? "bioconda::dfam=3.3 bioconda::hmmer=3.3.2 bioconda::star-fusion=1.10.0 bioconda::trinity=date.2011_11_2 bioconda::samtools=1.9 bioconda::star=2.7.8a" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/star-fusion:1.10.0--hdfd78af_1"
+        container "https://depot.galaxyproject.org/singularity/mulled-v2-57582e8bdbf51679bdcff9de91ae016a44e322de:b978a3a1e8715581329a267a2c9904574384180a-0"
     } else {
-        container "quay.io/biocontainers/star-fusion:1.10.0--hdfd78af_1"
+        container "quay.io/biocontainers/mulled-v2-57582e8bdbf51679bdcff9de91ae016a44e322de:b978a3a1e8715581329a267a2c9904574384180a-0"
     }
 
     input:
