@@ -11,11 +11,11 @@ process ERICSCRIPT_DOWNLOAD {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:[:], publish_by_meta:[]) }
 
-    conda (params.enable_conda ? "conda-forge::awscli" : null)
+    conda (params.enable_conda ? "bioconda::gnu-wget=1.18" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/python:3.7"
+        container "https://depot.galaxyproject.org/singularity/gnu-wget:1.18--h5bf99c6_5"
     } else {
-        container "quay.io/bitnami/python:3.7"
+        container "quay.io/biocontainers/gnu-wget:1.18--h5bf99c6_5"
     }
 
     output:
@@ -25,11 +25,10 @@ process ERICSCRIPT_DOWNLOAD {
     script:
     def software = getSoftwareName(task.process)
     """
-    pip install awscli
-    aws s3 --no-sign-request --region eu-west-1 cp s3://ngi-igenomes/igenomes/Homo_sapiens/Ensembl/GRCh38/Sequence/ericscript_db_homosapiens_ensembl84.tar.bz2 .
+    wget http://ngi-igenomes.s3.amazonaws.com/igenomes/Homo_sapiens/Ensembl/GRCh38/Sequence/ericscript_db_homosapiens_ensembl84.tar.bz2
     tar jxf ericscript_db_homosapiens_ensembl84.tar.bz2 --strip-components=2
     rm ericscript_db_homosapiens_ensembl84.tar.bz2
 
-    echo \$(aws --version 2>&1) cut -d "/" -f 2 | cut -d " " -f 1 > ${software}.version.txt
+    echo \$(wget -V 2>&1) | grep "GNU Wget" | cut -d" " -f3 > ${software}.version.txt
     """
 }
