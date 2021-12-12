@@ -26,7 +26,7 @@ process ERICSCRIPT_DOWNLOAD {
     def software = getSoftwareName(task.process)
     """
     pip install awscli
-    aws s3 --no-sign-request --region eu-west-1 sync s3://ngi-igenomes/igenomes/Homo_sapiens/Ensembl/GRCh38/Sequence/ericscript_db_homosapiens_ensembl84.tar.bz2 .
+    aws s3 --no-sign-request --region eu-west-1 cp s3://ngi-igenomes/igenomes/Homo_sapiens/Ensembl/GRCh38/Sequence/ericscript_db_homosapiens_ensembl84.tar.bz2 .
     tar jxf ericscript_db_homosapiens_ensembl84.tar.bz2 --strip-components=2
     rm ericscript_db_homosapiens_ensembl84.tar.bz2
 
