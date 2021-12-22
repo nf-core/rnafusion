@@ -13,9 +13,9 @@ process STARFUSION_DOWNLOAD {
 
     conda (params.enable_conda ? "bioconda::dfam=3.3 bioconda::hmmer=3.3.2 bioconda::star-fusion=1.10.0 bioconda::trinity=date.2011_11_2 bioconda::samtools=1.9 bioconda::star=2.7.8a" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/mulled-v2-57582e8bdbf51679bdcff9de91ae016a44e322de:b978a3a1e8715581329a267a2c9904574384180a-0"
+        container "docker.io/trinityctat/starfusion:1.10.1"
     } else {
-        container "quay.io/biocontainers/mulled-v2-57582e8bdbf51679bdcff9de91ae016a44e322de:b978a3a1e8715581329a267a2c9904574384180a-0"
+        container "docker.io/trinityctat/starfusion:1.10.1"
     }
 
     input:
@@ -38,10 +38,10 @@ process STARFUSION_DOWNLOAD {
     wget https://www.dfam.org/releases/Dfam_3.4/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3i
     wget https://www.dfam.org/releases/Dfam_3.4/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3m
     wget https://www.dfam.org/releases/Dfam_3.4/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3p
-    
+
     gunzip Pfam-A.hmm.gz && hmmpress Pfam-A.hmm
 
-    prep_genome_lib.pl \\
+    /usr/local/src/STAR-Fusion/ctat-genome-lib-builder/prep_genome_lib.pl \\
         --genome_fa $fasta \\
         --gtf $gtf \\
         --annot_filter_rule AnnotFilterRule.pm \\
