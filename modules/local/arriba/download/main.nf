@@ -1,15 +1,9 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options        = initOptions(params.options)
-
 process ARRIBA_DOWNLOAD {
     tag "arriba"
     label 'process_low'
-    publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:[:], publish_by_meta:[]) }
+    publishDir "${params.genomes_base}",
+        mode: params.publishDir_mode,
+        saveAs: { filename -> filename.equals('versions.yml') ? null : filename }
 
     conda (params.enable_conda ? "bioconda::gnu-wget=1.18" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
@@ -19,16 +13,15 @@ process ARRIBA_DOWNLOAD {
     }
 
     output:
-    path "*.version.txt"           , emit: version
+    path "*versions.yml"            , emit: versionss
     path "arriba_v2.1.0/database/*", emit: reference
 
     script:
-    def software = getSoftwareName(task.process)
     """
     wget https://github.com/suhrig/arriba/releases/download/v2.1.0/arriba_v2.1.0.tar.gz -O arriba_v2.1.0.tar.gz
     tar -xzvf arriba_v2.1.0.tar.gz
     rm arriba_v2.1.0.tar.gz
 
-    echo \$(wget -V 2>&1) | grep "GNU Wget" | cut -d" " -f3 > ${software}.version.txt
+    echo \$(wget -V 2>&1) | grep "GNU Wget" | cut -d" " -f3 > versions.yml
     """
 }

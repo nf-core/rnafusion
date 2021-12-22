@@ -1,15 +1,9 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options        = initOptions(params.options)
-
 process STAR_GENOMEGENERATE {
     tag "$fasta"
     label 'process_high'
-    publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
+    publishDir "${params.genomes_base}",
+        mode: params.publishDir_mode,
+        saveAs: { filename -> filename.equals('versions.yml') ? null : filename }
 
     conda (params.enable_conda ? "bioconda::star=2.7.8a" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
@@ -24,10 +18,9 @@ process STAR_GENOMEGENERATE {
 
     output:
     path "star/*"         , emit: index
-    path "*.version.txt"  , emit: version
+    path "versions.yml"   , emit: versionss
 
     script:
-    def software = getSoftwareName(task.process)
     def memory   = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
     def args     = options.args.tokenize()
     """
@@ -42,6 +35,6 @@ process STAR_GENOMEGENERATE {
         $memory \\
         $options.args
 
-    STAR --version | sed -e "s/STAR_//g" > ${software}.version.txt
+    STAR --version | sed -e "s/STAR_//g" > versions.yml
     """
 }

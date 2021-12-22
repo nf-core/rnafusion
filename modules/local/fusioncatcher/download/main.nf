@@ -1,15 +1,9 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options        = initOptions(params.options)
-
 process FUSIONCATCHER_DOWNLOAD {
     tag 'fusioncatcher'
     label 'process_medium'
-    publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:[:], publish_by_meta:[]) }
+    publishDir "${params.genomes_base}",
+        mode: params.publishDir_mode,
+        saveAs: { filename -> filename.equals('versions.yml') ? null : filename }
 
     conda (params.enable_conda ? "bioconda::fusioncatcher=1.33" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
@@ -20,10 +14,9 @@ process FUSIONCATCHER_DOWNLOAD {
 
     output:
     path "human_${human_version}/*"    , emit: reference
-    path "*.version.txt"               , emit: version
+    path "versions.yml"                , emit: versions
 
     script:
-    def software = getSoftwareName(task.process)
     def human_version = "v102"
     def url = "http://sourceforge.net/projects/fusioncatcher/files/data/human_${human_version}.tar.gz.aa"
     """
@@ -41,6 +34,6 @@ process FUSIONCATCHER_DOWNLOAD {
             $options.args2
     fi
 
-    fusioncatcher --version | sed 's/fusioncatcher.py //' > ${software}.version.txt
+    fusioncatcher --version | sed 's/fusioncatcher.py //' > versions.yml
     """
 }

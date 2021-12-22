@@ -4,16 +4,13 @@
 ========================================================================================
 */
 
-// Don't overwrite global params.modules, create a copy instead and use that within the main script.
-def modules = params.modules.clone()
-
-include { ENSEMBL_DOWNLOAD }                from '../modules/local/ensembl/main'                    addParams( options: modules['ensembl_download'] )
-include { ARRIBA_DOWNLOAD }                 from '../modules/local/arriba/download/main'            addParams( options: modules['arriba_download'] )
-include { STAR_GENOMEGENERATE }             from '../modules/local/star/genomegenerate/main'        addParams( options: modules['star_index'] )
-include { ERICSCRIPT_DOWNLOAD }             from '../modules/local/ericscript/download/main'        addParams( options: modules['ericscript_download'] )
-include { FUSIONCATCHER_DOWNLOAD }          from '../modules/local/fusioncatcher/download/main'     addParams( options: modules['fusioncatcher_download'] )
-include { KALLISTO_INDEX as PIZZLY_INDEX }  from '../modules/nf-core/modules/kallisto/index/main'   addParams( options: modules['pizzly_download'] )
-include { STARFUSION_DOWNLOAD }             from '../modules/local/starfusion/download/main'        addParams( options: modules['starfusion_download'] )
+include { ENSEMBL_DOWNLOAD }                from '../modules/local/ensembl/main'
+include { ARRIBA_DOWNLOAD }                 from '../modules/local/arriba/download/main'
+include { STAR_GENOMEGENERATE }             from '../modules/local/star/genomegenerate/main'
+include { ERICSCRIPT_DOWNLOAD }             from '../modules/local/ericscript/download/main'
+include { FUSIONCATCHER_DOWNLOAD }          from '../modules/local/fusioncatcher/download/main'
+include { KALLISTO_INDEX as PIZZLY_INDEX }  from '../modules/nf-core/modules/kallisto/index/main'
+include { STARFUSION_DOWNLOAD }             from '../modules/local/starfusion/download/main'
 
 /*
 ========================================================================================

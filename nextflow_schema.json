@@ -163,7 +163,7 @@
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 },
-                "publish_dir_mode": {
+                "publishDir_mode": {
                     "type": "string",
                     "default": "copy",
                     "description": "Method used to save pipeline results to output directory.",

@@ -1,15 +1,9 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options        = initOptions(params.options)
-
 process PIZZLY_DOWNLOAD {
     tag "pizzly"
     label 'process_medium'
-    publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:[:], publish_by_meta:[]) }
+    publishDir "${params.genomes_base}",
+        mode: params.publishDir_mode,
+        saveAs: { filename -> filename.equals('versions.yml') ? null : filename }
 
     conda (params.enable_conda ? "bioconda::kallisto=0.46.2" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
@@ -22,17 +16,16 @@ process PIZZLY_DOWNLOAD {
     path transcript
 
     output:
-    path "*.version.txt", emit: version
+    path "versions.yml" , emit: versions
     path "index.idx"    , emit: reference
 
     script:
-    def software = getSoftwareName(task.process)
     """
     kallisto index \\
         -i index.idx \\
         $options.args \\
         $transcript
 
-    echo \$(kallisto 2>&1) | sed 's/^kallisto //; s/Usage.*\$//' > ${software}.version.txt
+    echo \$(kallisto 2>&1) | sed 's/^kallisto //; s/Usage.*\$//' > versions.yml
     """
 }
