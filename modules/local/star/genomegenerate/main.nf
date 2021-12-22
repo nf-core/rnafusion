@@ -23,8 +23,8 @@ process STAR_GENOMEGENERATE {
     path gtf
 
     output:
-    path "star"         , emit: index
-    path "*.version.txt", emit: version
+    path "star/*"         , emit: index
+    path "*.version.txt"  , emit: version
 
     script:
     def software = getSoftwareName(task.process)
