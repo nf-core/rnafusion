@@ -19,8 +19,8 @@ process FUSIONCATCHER_DOWNLOAD {
     }
 
     output:
-    path "human_*"      , emit: reference
-    path "*.version.txt", emit: version
+    path "human_${human_version}/*"    , emit: reference
+    path "*.version.txt"               , emit: version
 
     script:
     def software = getSoftwareName(task.process)
