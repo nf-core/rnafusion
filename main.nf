@@ -42,7 +42,7 @@ workflow NFCORE_RNAFUSION {
     if (params.build_references) {
         BUILD_REFERENCES ()
     } else {
-        RNAFUSION ()
+        // RNAFUSION ()
     }
 
 }
