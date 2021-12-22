@@ -23,6 +23,7 @@ process FUSIONCATCHER {
     path "versions.yml"                                                        , emit: versions
 
     script:
+    def args = task.ext.args ?: ''
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
     """
     fusioncatcher.py \\
@@ -30,7 +31,7 @@ process FUSIONCATCHER {
         -i $reads \\
         -p $task.cpus \\
         -o . \\
-        $options.args
+        $args
 
     mv final-list_candidate-fusion-genes.txt ${prefix}.fusioncatcher.fusion-genes.txt
     mv summary_candidate_fusions.txt ${prefix}.fusioncatcher.summary.txt

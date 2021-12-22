@@ -22,6 +22,7 @@ process ERICSCRIPT {
     tuple val(meta), path "./tmp/${prefix}.ericscript.results.total.tsv"   , emit: fusions_total
 
     script:
+    def args = task.ext.args ?: ''
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
     """
     ericscript.pl \\
@@ -30,7 +31,7 @@ process ERICSCRIPT {
         -p $task.cpus \\
         -o ./tmp \\
         $reads \\
-        $options.args
+        $args
 
     echo \$(wget -V 2>&1) | grep "GNU Wget" | cut -d" " -f3 > versions.yml
     """

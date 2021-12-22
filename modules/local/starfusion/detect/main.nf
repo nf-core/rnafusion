@@ -24,19 +24,21 @@ process STARFUSION {
 
     script:
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
+    def args = task.ext.args ?: ''
+    def args2 = task.ext.args2 ?: ''
     """
     STAR \\
 	    --genomeDir $index \\
 	    --readFilesIn $reads \\
 	    --runThreadN $task.cpus \\
-        $options.args
+        $args
 
     STAR-Fusion \\
         --genome_lib_dir $reference \\
         $reads \\
         --CPU $task.cpus \\
         --output_dir . \\
-        $options.args2
+        $args2
 
     mv star-fusion.fusion_predictions.tsv ${prefix}.starfusion.fusion_predictions.tsv
     mv star-fusion.fusion_predictions.abridged.tsv ${prefix}.starfusion.abridged.tsv

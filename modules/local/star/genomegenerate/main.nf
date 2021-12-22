@@ -22,7 +22,7 @@ process STAR_GENOMEGENERATE {
 
     script:
     def memory   = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
-    def args     = options.args.tokenize()
+    def args = task.ext.args ?: ''
     """
     mkdir star
     STAR \\
@@ -33,7 +33,7 @@ process STAR_GENOMEGENERATE {
         --sjdbOverhang ${params.read_length - 1} \\
         --runThreadN $task.cpus \\
         $memory \\
-        $options.args
+        $args
 
     STAR --version | sed -e "s/STAR_//g" > versions.yml
     """

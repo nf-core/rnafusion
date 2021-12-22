@@ -25,12 +25,14 @@ process ARRIBA {
 
     script:
     def prefix    = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
+    def args = task.ext.args ?: ''
+    def args2 = task.ext.args2 ?: ''
     """
     STAR \\
 	    --genomeDir $index \\
 	    --readFilesIn $reads \\
 	    --runThreadN $task.cpus \\
-        $options.args |
+        $args |
 
     tee Aligned.out.bam |
 
@@ -40,7 +42,7 @@ process ARRIBA {
         -g $gtf \\
         -o ${prefix}.arriba.fusions.tsv \\
         -O ${prefix}.arriba.fusions.discarded.tsv \\
-        $options.args2
+        $args2
 
     echo \$(arriba -h | grep 'Version:' 2>&1) |  sed 's/Version:\s//' > versions.yml
     """

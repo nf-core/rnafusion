@@ -26,11 +26,12 @@ process PIZZLY {
     tuple val(meta), path "${prefix}.pizzly.unfiltered.json", emit: fusions_unfiltered
 
     script:
+    def args = task.ext.args ?: ''
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
     """
     kallisto quant -t $task.cpus -i $index --fusion -o output $reads
     pizzly \\
-        $options.args \\
+        $args \\
         --gtf $gtf \\
         --fasta $transcript \\
         --output ${prefix}.pizzly output/fusion.txt

@@ -20,10 +20,11 @@ process PIZZLY_DOWNLOAD {
     path "index.idx"    , emit: reference
 
     script:
+    def args = task.ext.args ?: ''
     """
     kallisto index \\
         -i index.idx \\
-        $options.args \\
+        $args \\
         $transcript
 
     echo \$(kallisto 2>&1) | sed 's/^kallisto //; s/Usage.*\$//' > versions.yml
