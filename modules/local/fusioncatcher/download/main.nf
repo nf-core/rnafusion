@@ -13,8 +13,8 @@ process FUSIONCATCHER_DOWNLOAD {
     }
 
     output:
-    path "human_${human_version}/*"    , emit: reference
-    path "versions.yml"                , emit: versions
+    path "*"                , emit: reference
+    path "versions.yml"     , emit: versions
 
     script:
 
