@@ -29,6 +29,7 @@ def helpMessage() {
     Mandatory arguments:
       --fasta [file]                Path to fasta reference
       --gtf [file]                  Path to GTF annotation
+      --genome [str]                Either "GRCh37" or "GRCh38" (default)
       --outdir [path]               Output directory for downloading
       -profile [str]                Configuration profile [https://github.com/nf-core/configs]
     """.stripIndent()
@@ -73,34 +74,35 @@ checkHostname()
 process star_fusion {
     label 'process_high'
     label 'process_long'
-    publishDir "${params.outdir}", mode: 'copy'
+    publishDir "${params.outdir}/star-fusion", mode: 'move'
 
     input:
     file(fasta) from ch_fasta
     file(gtf) from ch_gtf
 
     output:
-    file '*'
+    file 'ctat_genome_lib_build_dir/'
 
     script:
+    def ctat_url = params.genome == "GRCh37" ? "https://github.com/FusionAnnotator/CTAT_HumanFusionLib/releases/download/CTAT_HumanFusionLib.v0.1.0/CTAT_HumanFusionLib.v0.1.0.dat.gz" : "https://github.com/FusionAnnotator/CTAT_HumanFusionLib/releases/download/v0.2.0/fusion_lib.Mar2019.dat.gz"
     """
-    wget -N ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_releases/Pfam-A.hmm.gz
+    wget -N ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
     gunzip Pfam-A.hmm.gz && hmmpress Pfam-A.hmm
 
-    wget https://github.com/FusionAnnotator/CTAT_HumanFusionLib/releases/download/v0.2.0/fusion_lib.Mar2019.dat.gz -O CTAT_HumanFusionLib.dat.gz
-    
+    wget -N ${ctat_url} -O CTAT_HumanFusionLib.dat.gz
+
     # Dfam
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3f
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3i
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3m
-    wget https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3p
+    wget -N --no-check-certificate https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm
+    wget -N --no-check-certificate https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3f
+    wget -N --no-check-certificate https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3i
+    wget -N --no-check-certificate https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3m
+    wget -N --no-check-certificate https://www.dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3p
 
     export TMPDIR=/tmp
-    prep_genome_lib.pl \\
+    /usr/local/src/STAR-Fusion/ctat-genome-lib-builder/prep_genome_lib.pl \\
         --genome_fa ${fasta} \\
         --gtf ${gtf} \\
-        --annot_filter_rule /opt/conda/envs/nf-core-rnafusion-star-fusion_1.8.1/ctat-genome-lib-builder-2830cd708c5bb9353878ca98069427e83acdd625/AnnotFilterRuleLib/AnnotFilterRule.pm \\
+        --annot_filter_rule /usr/local/src/STAR-Fusion/ctat-genome-lib-builder/AnnotFilterRuleLib/AnnotFilterRule.pm \\
         --fusion_annot_lib CTAT_HumanFusionLib.dat.gz \\
         --pfam_db Pfam-A.hmm \\
         --dfam_db homo_sapiens_dfam.hmm \\

@@ -28,16 +28,17 @@ def helpMessage() {
 
     Mandatory arguments:
       --outdir [path]               Output directory for downloading
-      
+
     Options:
       --download_all [bool]         Download all references
+      --genome [str]                Genome version: GRCh37 or GRCh38 (default)
       --reference_release [int]     Release number of Ensembl reference for FASTA and GTF
                                     Default: 97 -> ftp://ftp.ensembl.org/pub/release-97
       --base [bool]                 Download FASTA, GTF, cDNA
       --arriba [bool]               Download Arriba references
       --star_fusion [bool]          Build STAR-Fusion references from FASTA ANF GTF
       --fusioncatcher [bool]        Download Fusioncatcher references
-      --ericscript [bool]           Download Ericscript references 
+      --ericscript [bool]           Download Ericscript references
       --fusion_report [bool]        Download databases for fusion-report
       --cosmic_usr [str]            [Required with fusion_report] COSMIC username
       --cosmic_passwd [str]         [Required with fusion_report] COSMIC password
@@ -87,29 +88,30 @@ checkHostname()
 
 process download_base {
     publishDir "${params.outdir}/", mode: 'copy'
-    
+
     when:
     params.base || params.download_all
 
     output:
-    file "Homo_sapiens.GRCh38_r${params.reference_release}.all.fa" into fasta
-    file "Homo_sapiens.GRCh38_r${params.reference_release}.gtf" into gtf
-    file "Homo_sapiens.GRCh38_r${params.reference_release}.cdna.all.fa.gz" into transcript
+    file "Homo_sapiens.${params.genome}_r${params.reference_release}.all.fa" into fasta
+    file "Homo_sapiens.${params.genome}_r${params.reference_release}.gtf" into gtf
+    file "Homo_sapiens.${params.genome}_r${params.reference_release}.cdna.all.fa.gz" into transcript
 
     script:
+    def base_url = params.genome == "GRCh37" ? "ftp://ftp.ensembl.org/pub/grch37" : "ftp://ftp.ensembl.org/pub/"
     """
-    wget ftp://ftp.ensembl.org/pub/release-${params.reference_release}/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{1..22}.fa.gz
-    wget ftp://ftp.ensembl.org/pub/release-${params.reference_release}/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{MT,X,Y}.fa.gz
-    gunzip -c Homo_sapiens.GRCh38.dna.chromosome.* > Homo_sapiens.GRCh38_r${params.reference_release}.all.fa
-    wget ftp://ftp.ensembl.org/pub/release-${params.reference_release}/gtf/homo_sapiens/Homo_sapiens.GRCh38.${params.reference_release}.chr.gtf.gz -O Homo_sapiens.GRCh38_r${params.reference_release}.gtf.gz
-    gunzip Homo_sapiens.GRCh38_r${params.reference_release}.gtf.gz
-    wget ftp://ftp.ensembl.org/pub/release-${params.reference_release}/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz -O Homo_sapiens.GRCh38_r${params.reference_release}.cdna.all.fa.gz
+    wget ${base_url}/release-${params.reference_release}/fasta/homo_sapiens/dna/Homo_sapiens.${params.genome}.dna.chromosome.{1..22}.fa.gz
+    wget ${base_url}/release-${params.reference_release}/fasta/homo_sapiens/dna/Homo_sapiens.${params.genome}.dna.chromosome.{MT,X,Y}.fa.gz
+    gunzip -c Homo_sapiens.${params.genome}.dna.chromosome.* > Homo_sapiens.${params.genome}_r${params.reference_release}.all.fa
+    wget ${base_url}/release-${params.reference_release}/gtf/homo_sapiens/Homo_sapiens.${params.genome}.${params.reference_release}.chr.gtf.gz -O Homo_sapiens.${params.genome}_r${params.reference_release}.gtf.gz
+    gunzip Homo_sapiens.${params.genome}_r${params.reference_release}.gtf.gz
+    wget ${base_url}/release-${params.reference_release}/fasta/homo_sapiens/cdna/Homo_sapiens.${params.genome}.cdna.all.fa.gz -O Homo_sapiens.${params.genome}_r${params.reference_release}.cdna.all.fa.gz
     """
 }
 
 process download_arriba {
     publishDir "${params.outdir}/arriba", mode: 'copy'
-    
+
     when:
     params.arriba || params.download_all
 
@@ -125,7 +127,7 @@ process download_arriba {
 
 process download_star_fusion {
     publishDir "${params.outdir}/star-fusion", mode: 'copy'
-    
+
     when:
     params.star_fusion || params.download_all
 
@@ -134,15 +136,21 @@ process download_star_fusion {
 
     script:
     """
-    aws s3 --no-sign-request --region ${params.awsregion} cp s3://ngi-igenomes/Homo_sapiens/Ensembl/GRCh38/Genome/CTAT/ctat_star_fusion_1_8_1.tar.gz .
-    tar -xf ctat_star_fusion_1_8_1.tar.gz --strip-components=5
-    rm ctat_star_fusion_1_8_1.tar.gz
+    if [[ ${params.genome} == "GRCh37" ]]; then
+      wget -O GRCh37_gencode_v19_CTAT_lib_Apr032020.plug-n-play.tar.gz https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/__genome_libs_StarFv1.9/GRCh37_gencode_v19_CTAT_lib_Apr032020.plug-n-play.tar.gz
+      tar -xf GRCh37_gencode_v19_CTAT_lib_Apr032020.plug-n-play.tar.gz --strip-components=5
+      rm GRCh37_gencode_v19_CTAT_lib_Apr032020.plug-n-play.tar.gz
+    else
+      aws s3 --no-sign-request --region ${params.awsregion} cp s3://ngi-igenomes/Homo_sapiens/Ensembl/GRCh38/Genome/CTAT/ctat_star_fusion_1_8_1.tar.gz .
+      tar -xf ctat_star_fusion_1_8_1.tar.gz --strip-components=5
+      rm ctat_star_fusion_1_8_1.tar.gz
+    fi
     """
 }
 
 process download_fusioncatcher {
     publishDir "${params.outdir}/fusioncatcher", mode: 'copy'
-    
+
     when:
     params.fusioncatcher || params.download_all
 
@@ -151,18 +159,22 @@ process download_fusioncatcher {
 
     script:
     """
-    wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v98.tar.gz.aa
-    wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v98.tar.gz.ab
-    wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v98.tar.gz.ac
-    wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v98.tar.gz.ad
-    cat human_v98.tar.gz.* | tar xz
-    rm human_v98.tar*
+    if [[ ${params.genome} == "GRCh37" ]]; then
+      echo "FusionCatcher unavailable for GRCh37" > README.txt
+    else
+      wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v98.tar.gz.aa
+      wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v98.tar.gz.ab
+      wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v98.tar.gz.ac
+      wget -N http://sourceforge.net/projects/fusioncatcher/files/data/human_v98.tar.gz.ad
+      cat human_v98.tar.gz.* | tar xz
+      rm human_v98.tar*
+    fi
     """
 }
 
 process download_ericscript {
     publishDir "${params.outdir}/ericscript", mode: 'copy'
-    
+
     when:
     params.ericscript || params.download_all
 
@@ -170,12 +182,14 @@ process download_ericscript {
     file '*'
 
     script:
+    def base_url = params.genome == "GRCh37" ? "https://drive.google.com/uc?export=download&confirm=qgOc&id=0B9s__vuJPvIibDRIb0RFdHFlQmM" : "https://drive.google.com/uc?export=download&confirm=qgOc&id=0B9s__vuJPvIiUGt1SnFMZFg4TlE"
     """
-    wget -N https://raw.githubusercontent.com/circulosmeos/gdown.pl/dfd6dc910a38a42d550397bb5c2335be2c4bcf54/gdown.pl
-    chmod +x gdown.pl
-    ./gdown.pl "https://drive.google.com/uc?export=download&confirm=qgOc&id=0B9s__vuJPvIiUGt1SnFMZFg4TlE" ericscript_db_homosapiens_ensembl84.tar.bz2
-    tar jxf ericscript_db_homosapiens_ensembl84.tar.bz2
-    rm gdown.pl ericscript_db_homosapiens_ensembl84.tar.bz2
+    if [[ ${params.genome} == "GRCh37" ]]; then
+      gdown ${base_url} ericscript_db_homosapiens_ensembl73.tar.bz2
+    else
+      gdown ${base_url} ericscript_db_homosapiens_ensembl84.tar.bz2
+    fi
+    tar jxf ericscript_db_homosapiens_ensembl*.tar.bz2 && rm ericscript_db_homosapiens_ensembl*.tar.bz2
     """
 }
 

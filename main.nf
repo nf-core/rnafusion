@@ -1,23 +1,16 @@
 #!/usr/bin/env nextflow
 /*
-================================================================================
-                                nf-core/rnafusion
-================================================================================
-nf-core/rnafusion:
- RNA-seq analysis pipeline for detection gene-fusions
---------------------------------------------------------------------------------
- @Homepage
- https://nf-co.re/rnafusion
---------------------------------------------------------------------------------
- @Documentation
- https://nf-co.re/rnafusion/docs
---------------------------------------------------------------------------------
- @Repository
+========================================================================================
+                         nf-core/rnafusion
+========================================================================================
+ nf-core/rnafusion Analysis Pipeline.
+ #### Homepage / Documentation
  https://github.com/nf-core/rnafusion
---------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
 */
 
 def helpMessage() {
+    // TODO nf-core: Add to this help message with new command line parameters
     log.info nfcoreHeader()
     log.info"""
 
@@ -25,53 +18,26 @@ def helpMessage() {
 
     The typical command for running the pipeline is as follows:
 
-    nextflow run nf-core/rnafusion --reads '*_R{1,2}.fastq.gz' -profile docker
+    nextflow run nf-core/rnafusion --input '*_R{1,2}.fastq.gz' -profile docker
 
     Mandatory arguments:
-      --reads [file]                Path to input data (must be surrounded with quotes)
-      -profile [str]                Configuration profile to use. Can use multiple (comma separated)
-                                    Available: docker, singularity, test, awsbatch, <institute> and more            
-      --reference_path [str]        Path to reference folder (includes fasta, gtf, fusion tool ref ...)
-
-    Tool flags:
-      --arriba [bool]                 Run Arriba
-      --arriba_opt [str]              Specify extra parameters for Arriba
-      --ericscript [bool]             Run Ericscript  
-      --fusioncatcher [bool]          Run FusionCatcher
-      --fusioncatcher_opt [srt]       Specify extra parameters for FusionCatcher
-      --fusion_report_opt [str]       Specify extra parameters for fusion-report
-      --pizzly [bool]                 Run Pizzly
-      --pizzly_k [int]                Number of k-mers. Deafult 31
-      --squid [bool]                  Run Squid
-      --star_fusion [bool]            Run STAR-Fusion
-      --star_fusion_opt [str]         Specify extra parameters for STAR-Fusion
-    
-    Visualization flags:
-      --arriba_vis [bool]             Generate a PDF visualization per detected fusion
-      --fusion_inspector [bool]       Run Fusion-Inspector
-      --fusion_inspector_opt [str]    Specify extra parameters for Fusion-Inspector
-
-    References                        If not specified in the configuration file or you wish to overwrite any of the references.
-      --arriba_ref [file]             Path to Arriba reference
-      --databases [path]              Database path for fusion-report
-      --ericscript_ref [file]         Path to Ericscript reference
-      --fasta [file]                  Path to fasta reference
-      --fusioncatcher_ref [file]      Path to Fusioncatcher reference
-      --gtf [file]                    Path to GTF annotation
-      --star_index [file]             Path to STAR-Index reference
-      --star_fusion_ref [file]        Path to STAR-Fusion reference
-      --transcript [file]             Path to transcript
+      --input [file]                  Path to input data (must be surrounded with quotes)
+      -profile [str]                  Configuration profile to use. Can use multiple (comma separated)
+                                      Available: conda, docker, singularity, test, awsbatch, <institute> and more
 
     Options:
-      --read_length [int]             Length of the reads. Default: 100
+      --genome [str]                  Name of iGenomes reference
       --single_end [bool]             Specifies that the input is single-end reads
 
-    Other Options:
-      --debug [bool]                  Flag to run only specific fusion tool/s and not the whole pipeline. Only works on tool flags.
+    References                        If not specified in the configuration file or you wish to overwrite any of the references
+      --fasta [file]                  Path to fasta reference
+
+    Other options:
       --outdir [file]                 The output directory where the results will be saved
+      --publish_dir_mode [str]        Mode for publishing results in the output directory. Available: symlink, rellink, link, copy, copyNoFollow, move (Default: copy)
       --email [email]                 Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits
       --email_on_fail [email]         Same as --email, except only send mail if the workflow is not successful
-      --max_multiqc_email_size [str]  Theshold size for MultiQC report to be attached in notification email. If file generated by pipeline exceeds the threshold, it will not be attached (Default: 25MB)
+      --max_multiqc_email_size [str]  Threshold size for MultiQC report to be attached in notification email. If file generated by pipeline exceeds the threshold, it will not be attached (Default: 25MB)
       -name [str]                     Name for the pipeline run. If not specified, Nextflow will automatically generate a random mnemonic
 
     AWSBatch options:
@@ -81,91 +47,32 @@ def helpMessage() {
     """.stripIndent()
 }
 
-/*
-================================================================================
-                         SET UP CONFIGURATION VARIABLES
-================================================================================
-*/
-
 // Show help message
-if (params.help) exit 0, helpMessage()
+if (params.help) {
+    helpMessage()
+    exit 0
+}
 
-running_tools = []
-visualization_tools = []
-reference = [
-    arriba: false,
-    arriba_vis: false,
-    ericscript: false,
-    fusion_inspector: false,
-    fusioncatcher: false,
-    star_fusion: false
-]
+/*
+ * SET UP CONFIGURATION VARIABLES
+ */
 
 // Check if genome exists in the config file
-if (params.genome && !params.genomes.containsKey(params.genome)) {
-    exit 1, "The provided genome '${params.genome}' is not available in the genomes file. Currently the available genomes are ${params.genomes.keySet().join(", ")}"
+if (params.genomes && params.genome && !params.genomes.containsKey(params.genome)) {
+    exit 1, "The provided genome '${params.genome}' is not available in the iGenomes file. Currently the available genomes are ${params.genomes.keySet().join(", ")}"
 }
 
-if (!Channel.fromPath(params.genomes_base, checkIfExists: true)) {exit 1, "Directory ${params.genomes_base} doesn't exist."}
-
-params.arriba_ref = params.genome ? params.genomes[params.genome].arriba_ref ?: null : null
-params.databases = params.genome ? params.genomes[params.genome].databases ?: null : null
-params.ericscript_ref = params.genome ? params.genomes[params.genome].ericscript_ref ?: null : null
-params.fasta = params.genome ? params.genomes[params.genome].fasta ?: null : null
-params.fusioncatcher_ref = params.genome ? params.genomes[params.genome].fusioncatcher_ref ?: null : null
-params.gtf = params.genome ? params.genomes[params.genome].gtf ?: null : null
-params.star_fusion_ref = params.genome ? params.genomes[params.genome].star_fusion_ref ?: null : null
-params.transcript = params.genome ? params.genomes[params.genome].transcript ?: null : null
-
-ch_fasta = Channel.value(file(params.fasta)).ifEmpty{exit 1, "Fasta file not found: ${params.fasta}"}
-ch_gtf = Channel.value(file(params.gtf)).ifEmpty{exit 1, "GTF annotation file not found: ${params.gtf}"}
-ch_transcript = Channel.value(file(params.transcript)).ifEmpty{exit 1, "Transcript file not found: ${params.transcript}"}
-
-if (!params.star_index && (!params.fasta && !params.gtf)) exit 1, "Either specify STAR-INDEX or Fasta and GTF!"
-
-if (!params.databases) exit 1, "Database path for fusion-report has to be specified!"
-
-if (params.arriba) {
-    running_tools.add("Arriba")
-    reference.arriba = Channel.value(file(params.arriba_ref)).ifEmpty{exit 1, "Arriba reference directory not found!"}
-}
-
-if (params.arriba_vis) {
-    visualization_tools.add("Arriba")
-    reference.arriba_vis = Channel.value(file(params.arriba_ref)).ifEmpty{exit 1, "Arriba visualization reference directory not found!"}
-}
-
-if (params.ericscript) {
-    running_tools.add("EricScript")
-    reference.ericscript = Channel.value(file(params.ericscript_ref)).ifEmpty{exit 1, "EricsSript reference not found!"}
-}
-
-if (params.fusioncatcher) {
-    running_tools.add("Fusioncatcher")
-    reference.fusioncatcher = Channel.value(file(params.fusioncatcher_ref)).ifEmpty{exit 1, "Fusioncatcher data directory not found!"}
-}
-
-if (params.fusion_inspector) {
-    visualization_tools.add("Fusion-Inspector")
-    reference.fusion_inspector = Channel.value(file(params.star_fusion_ref)).ifEmpty{exit 1, "Fusion-Inspector reference not found" }
-}
-
-if (params.pizzly) running_tools.add("Pizzly")
-
-if (params.star_fusion) {
-    running_tools.add("STAR-Fusion")
-    reference.star_fusion = Channel.value(file(params.star_fusion_ref)).ifEmpty{exit 1, "Star-Fusion reference directory not found!"}
-}
-
-if (params.squid) running_tools.add("Squid")
+params.fasta = params.genome ? params.genomes[ params.genome ].fasta ?: false : false
+if (params.fasta) { ch_fasta = file(params.fasta, checkIfExists: true) }
 
 // Has the run name been specified by the user?
-//  this has the bonus effect of catching both -name and --name
+// this has the bonus effect of catching both -name and --name
 custom_runName = params.name
 if (!(workflow.runName ==~ /[a-z]+_[a-z]+/)) {
     custom_runName = workflow.runName
 }
 
+// Check AWS batch settings
 if (workflow.profile.contains('awsbatch')) {
     // AWSBatch sanity checking
     if (!params.awsqueue || !params.awsregion) exit 1, "Specify correct --awsqueue and --awsregion parameters on AWSBatch!"
@@ -177,64 +84,61 @@ if (workflow.profile.contains('awsbatch')) {
 }
 
 // Stage config files
-ch_multiqc_config = file("$baseDir/assets/multiqc_config.yaml", checkIfExists: true)
+ch_multiqc_config = file("$projectDir/assets/multiqc_config.yaml", checkIfExists: true)
 ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config, checkIfExists: true) : Channel.empty()
-ch_output_docs = file("$baseDir/docs/output.md", checkIfExists: true)
+ch_output_docs = file("$projectDir/docs/output.md", checkIfExists: true)
+ch_output_docs_images = file("$projectDir/docs/images/", checkIfExists: true)
 
 /*
  * Create a channel for input read files
  */
-if(params.readPaths) {
-    if(params.single_end) {
-        Channel.from(params.readPaths)
-            .map { row -> [ row[0], [file(row[1][0])]] }
-            .ifEmpty{exit 1, "params.readPaths was empty - no input files supplied" }
-            .into{read_files_arriba; read_files_ericscript; ch_read_files_fastqc; read_files_fusion_inspector; read_files_fusioncatcher; read_files_multiqc; read_files_pizzly; read_files_squid; read_files_star_fusion; read_files_summary}
+if (params.input_paths) {
+    if (params.single_end) {
+        Channel
+            .from(params.input_paths)
+            .map { row -> [ row[0], [ file(row[1][0], checkIfExists: true) ] ] }
+            .ifEmpty { exit 1, "params.input_paths was empty - no input files supplied" }
+            .into { ch_read_files_fastqc; ch_read_files_trimming }
     } else {
-        Channel.from(params.readPaths)
-            .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
-            .ifEmpty{exit 1, "params.readPaths was empty - no input files supplied" }
-            .into{read_files_arriba; read_files_ericscript; ch_read_files_fastqc; read_files_fusion_inspector; read_files_fusioncatcher; read_files_multiqc; read_files_pizzly; read_files_squid; read_files_star_fusion; read_files_summary}
+        Channel
+            .from(params.input_paths)
+            .map { row -> [ row[0], [ file(row[1][0], checkIfExists: true), file(row[1][1], checkIfExists: true) ] ] }
+            .ifEmpty { exit 1, "params.input_paths was empty - no input files supplied" }
+            .into { ch_read_files_fastqc; ch_read_files_trimming }
     }
 } else {
-    Channel.fromFilePairs( params.reads, size: params.single_end ? 1 : 2 )
-        .ifEmpty{exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --single_end on the command line." }
-        .into{read_files_arriba; read_files_ericscript; ch_read_files_fastqc; read_files_fusion_inspector; read_files_fusioncatcher; read_files_multiqc; read_files_pizzly; read_files_squid; read_files_star_fusion; read_files_summary}
+    Channel
+        .fromFilePairs(params.input, size: params.single_end ? 1 : 2)
+        .ifEmpty { exit 1, "Cannot find any reads matching: ${params.input}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --single_end on the command line." }
+        .into { ch_read_files_fastqc; ch_read_files_trimming }
 }
-
-/*
-================================================================================
-                                PRINTING SUMMARY
-================================================================================
-*/
 
 // Header log info
 log.info nfcoreHeader()
 def summary = [:]
-if(workflow.revision) summary['Pipeline Release'] = workflow.revision
-summary['Run Name']     = custom_runName ?: workflow.runName
-summary['Reads']        = params.reads
-summary['Fasta Ref']    = params.fasta
-summary['GTF Ref']      = params.gtf
-summary['STAR Index']   = params.star_index ? params.star_index : 'Not specified, building'
-summary['Fusion tools']        = running_tools.size() == 0 ? 'None' : running_tools.join(", ")
-summary['Visualization tools'] = visualization_tools.size() == 0 ? 'None': visualization_tools.join(", ")
+if (workflow.revision) summary['Pipeline Release'] = workflow.revision
+summary['Run Name']         = custom_runName ?: workflow.runName
+// TODO nf-core: Report custom parameters here
+summary['Input']            = params.input
+summary['Fasta Ref']        = params.fasta
 summary['Data Type']        = params.single_end ? 'Single-End' : 'Paired-End'
 summary['Max Resources']    = "$params.max_memory memory, $params.max_cpus cpus, $params.max_time time per job"
-if(workflow.containerEngine) summary['Container'] = "$workflow.containerEngine - $workflow.container"
-summary['Output dir']   = params.outdir
-summary['Launch dir']   = workflow.launchDir
-summary['Working dir']  = workflow.workDir
-summary['Script dir']   = workflow.projectDir
-summary['User']         = workflow.userName
-if(workflow.profile == 'awsbatch') {
-   summary['AWS Region']    = params.awsregion
-   summary['AWS Queue']     = params.awsqueue
+if (workflow.containerEngine) summary['Container'] = "$workflow.containerEngine - $workflow.container"
+summary['Output dir']       = params.outdir
+summary['Launch dir']       = workflow.launchDir
+summary['Working dir']      = workflow.workDir
+summary['Script dir']       = workflow.projectDir
+summary['User']             = workflow.userName
+if (workflow.profile.contains('awsbatch')) {
+    summary['AWS Region']   = params.awsregion
+    summary['AWS Queue']    = params.awsqueue
+    summary['AWS CLI']      = params.awscli
 }
 summary['Config Profile'] = workflow.profile
-if (params.config_profile_description) summary['Config Description'] = params.config_profile_description
-if (params.config_profile_contact)     summary['Config Contact']     = params.config_profile_contact
-if (params.config_profile_url)         summary['Config URL']         = params.config_profile_url
+if (params.config_profile_description) summary['Config Profile Description'] = params.config_profile_description
+if (params.config_profile_contact)     summary['Config Profile Contact']     = params.config_profile_contact
+if (params.config_profile_url)         summary['Config Profile URL']         = params.config_profile_url
+summary['Config Files'] = workflow.configFiles.join(', ')
 if (params.email || params.email_on_fail) {
     summary['E-mail Address']    = params.email
     summary['E-mail on failure'] = params.email_on_fail
@@ -274,9 +178,9 @@ Channel.from(summary.collect{ [it.key, it.value] })
 
 process build_star_index {
     tag "${fasta}-${gtf}"
-    label 'process_medium'
+    label 'process_high'
 
-    publishDir params.outdir, mode: 'copy'
+    publishDir params.outdir, mode: params.publish_dir_mode
 
     input:
         file(fasta) from ch_fasta
@@ -319,7 +223,7 @@ process arriba {
     tag "${sample}"
     label 'process_medium'
 
-    publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy'
+    publishDir "${params.outdir}/tools/Arriba/${sample}", mode: params.publish_dir_mode
 
     input:
         set val(sample), file(reads) from read_files_arriba
@@ -337,6 +241,7 @@ process arriba {
 
     script:
     def extra_params = params.arriba_opt ? params.arriba_opt : ''
+    blacklist = "${reference}/blacklist*${params.genome}*.tsv"
     """
     STAR \\
         --genomeDir ${star_index} \\
@@ -359,14 +264,14 @@ process arriba {
         --chimSegmentReadGapMax 3 \\
         --readFilesCommand zcat \\
         --sjdbOverhang ${params.read_length - 1} |
-    
+
     tee Aligned.out.bam |
 
     arriba \\
         -x /dev/stdin \\
         -a ${fasta} \\
         -g ${gtf} \\
-        -b ${reference}/blacklist_hg38_GRCh38_2018-11-04.tsv \\
+        -b ${blacklist} \\
         -o ${sample}_arriba.tsv -O ${sample}_discarded_arriba.tsv \\
         -T -P ${extra_params}
 
@@ -384,7 +289,7 @@ process star_fusion {
     tag "${sample}"
     label 'process_high'
 
-    publishDir "${params.outdir}/tools/Star-Fusion/${sample}", mode: 'copy'
+    publishDir "${params.outdir}/tools/Star-Fusion/${sample}", mode: params.publish_dir_mode
 
     input:
         set val(sample), file(reads) from read_files_star_fusion
@@ -450,8 +355,8 @@ star_fusion_fusions = star_fusion_fusions.dump(tag:'star_fusion_fusions')
 process fusioncatcher {
     tag "${sample}"
     label 'process_high'
-    
-    publishDir "${params.outdir}/tools/Fusioncatcher/${sample}", mode: 'copy'
+
+    publishDir "${params.outdir}/tools/Fusioncatcher/${sample}", mode: params.publish_dir_mode
 
     input:
         set val(sample), file(reads) from read_files_fusioncatcher
@@ -461,7 +366,7 @@ process fusioncatcher {
         set val(sample), file("${sample}_fusioncatcher.txt") optional true into fusioncatcher_fusions
         file("*.{txt,zip,log}") into fusioncatcher_output
 
-    when: params.fusioncatcher || (params.fusioncatcher && params.debug)
+    when: params.genome != "GRCh37" && params.fusioncatcher || (params.fusioncatcher && params.debug)
 
     script:
     option = params.single_end ? reads[0] : "${reads[0]},${reads[1]}"
@@ -487,7 +392,7 @@ process ericscript {
     tag "${sample}"
     label 'process_high'
 
-    publishDir "${params.outdir}/tools/EricScript/${sample}", mode: 'copy'
+    publishDir "${params.outdir}/tools/EricScript/${sample}", mode: params.publish_dir_mode
 
     input:
         set val(sample), file(reads) from read_files_ericscript
@@ -527,13 +432,13 @@ process pizzly {
     tag "${sample}"
     label 'process_medium'
 
-    publishDir "${params.outdir}/tools/Pizzly/${sample}", mode: 'copy'
+    publishDir "${params.outdir}/tools/Pizzly/${sample}", mode: params.publish_dir_mode
 
     input:
         set val(sample), file(reads) from read_files_pizzly
         file(gtf) from ch_gtf
         file(transcript) from ch_transcript
-    
+
     output:
         set val(sample), file("${sample}_pizzly.txt") optional true into pizzly_fusions
         file("*.{json,txt}") into pizzly_output
@@ -569,13 +474,13 @@ process squid {
     tag "${sample}"
     label 'process_high'
 
-    publishDir "${params.outdir}/tools/Squid/${sample}", mode: 'copy'
+    publishDir "${params.outdir}/tools/Squid/${sample}", mode: params.publish_dir_mode
 
     input:
         set val(sample), file(reads) from read_files_squid
         file(star_index) from ch_star_index
         file(gtf) from ch_gtf
-    
+
     output:
         set val(sample), file("${sample}_fusions_annotated.txt") optional true into squid_fusions
         file("*.txt") into squid_output
@@ -632,8 +537,8 @@ files_and_reports_summary = files_and_reports_summary.dump(tag:'files_and_report
 process summary {
     tag "${sample}"
 
-    publishDir "${params.outdir}/Reports/${sample}", mode: 'copy'
- 
+    publishDir "${params.outdir}/Reports/${sample}", mode: params.publish_dir_mode
+
     input:
         set val(sample), file(reads), file(arriba), file(ericscript), file(fusioncatcher), file(pizzly), file(squid), file(starfusion) from files_and_reports_summary
 
@@ -641,9 +546,9 @@ process summary {
         set val(sample), file("${sample}_fusion_list.tsv") into fusion_inspector_input_list
         file("${sample}_fusion_genes_mqc.json") into summary_fusions_mq
         file("*") into report
-    
+
     when: !params.debug && (running_tools.size() > 0)
-    
+
 
     script:
     def extra_params = params.fusion_report_opt ? params.fusion_report_opt : ''
@@ -658,6 +563,7 @@ process summary {
         ${tools} ${extra_params}
     mv fusion_list.tsv ${sample}_fusion_list.tsv
     mv fusion_genes_mqc.json ${sample}_fusion_genes_mqc.json
+    tar -czf ${sample}_fusion-report.tar.gz --exclude=${sample}* ./*
     """
 }
 
@@ -672,7 +578,7 @@ process arriba_visualization {
     tag "${sample}"
     label 'process_medium'
 
-    publishDir "${params.outdir}/tools/Arriba/${sample}", mode: 'copy'
+    publishDir "${params.outdir}/tools/Arriba/${sample}", mode: params.publish_dir_mode
 
     input:
         file(reference) from reference.arriba_vis
@@ -687,6 +593,8 @@ process arriba_visualization {
     script:
     def suff_mem = ("${(task.memory.toBytes() - 6000000000) / task.cpus}" > 2000000000) ? 'true' : 'false'
     def avail_mem = (task.memory && suff_mem) ? "-m" + "${(task.memory.toBytes() - 6000000000) / task.cpus}" : ''
+    cytobands = "${reference}/cytobands*${params.genome}*.tsv"
+    proteinDomains = "${reference}/protein_domains*${params.genome}*.gff3"
     """
     samtools sort -@ ${task.cpus} ${avail_mem} -O bam ${bam} > Aligned.sortedByCoord.out.bam
     samtools index Aligned.sortedByCoord.out.bam
@@ -695,8 +603,8 @@ process arriba_visualization {
         --alignments=Aligned.sortedByCoord.out.bam \\
         --output=${sample}.pdf \\
         --annotation=${gtf} \\
-        --cytobands=${reference}/cytobands_hg38_GRCh38_2018-02-23.tsv \\
-        --proteinDomains=${reference}/protein_domains_hg38_GRCh38_2019-07-05.gff3
+        --cytobands=\$(echo ${cytobands}) \\
+        --proteinDomains=\$(echo ${proteinDomains})
     """
 }
 
@@ -712,14 +620,14 @@ process fusion_inspector {
     tag "${sample}"
     label 'process_high'
 
-    publishDir "${params.outdir}/tools/FusionInspector/${sample}", mode: 'copy'
+    publishDir "${params.outdir}/tools/FusionInspector/${sample}", mode: params.publish_dir_mode
 
     input:
         set val(sample), file(fi_input_list), file(reads) from fusion_inspector_input
         file(reference) from reference.fusion_inspector
 
     output:
-        file("*.{fa,gtf,bed,bam,bai,txt,html,log}") into fusion_inspector_output
+        file("*.{fa,gtf,bed,bam,bai,txt,html,tsv,gff3,fasta,log}") into fusion_inspector_output
 
     when: params.fusion_inspector && (!params.single_end || params.debug)
 
@@ -734,7 +642,7 @@ process fusion_inspector {
         --CPU ${task.cpus} \\
         -O . \\
         --out_prefix finspector \\
-        --vis ${extra_params} 
+        --vis ${extra_params}
     """
 }
 
@@ -746,7 +654,7 @@ process fusion_inspector {
  * Parse software version numbers
  */
 process get_software_versions {
-    publishDir "${params.outdir}/pipeline_info", mode: 'copy',
+    publishDir "${params.outdir}/pipeline_info", mode: params.publish_dir_mode,
         saveAs: { filename ->
                       if (filename.indexOf(".csv") > 0) filename
                       else null
@@ -757,15 +665,16 @@ process get_software_versions {
     file "software_versions.csv"
 
     script:
+    // TODO nf-core: Get all tools to print their version number here
     """
-    echo ${workflow.manifest.version} > v_pipeline.txt
-    echo ${workflow.nextflow.version} > v_nextflow.txt
+    echo $workflow.manifest.version > v_pipeline.txt
+    echo $workflow.nextflow.version > v_nextflow.txt
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
     cat ${baseDir}/containers/arriba/environment.yml > v_arriba.txt
     cat ${baseDir}/containers/fusioncatcher/environment.yml > v_fusioncatcher.txt
-    cat ${baseDir}/containers/star-fusion/environment.yml > v_fusion_inspector.txt
-    cat ${baseDir}/containers/star-fusion/environment.yml > v_star_fusion.txt
+    cat ${baseDir}/conf/base.config | grep -m1 fusion_inspector > v_fusion_inspector.txt
+    cat ${baseDir}/conf/base.config | grep -m1 star_fusion > v_star_fusion.txt
     cat ${baseDir}/containers/ericscript/environment.yml > v_ericscript.txt
     cat ${baseDir}/containers/pizzly/environment.yml > v_pizzly.txt
     cat ${baseDir}/containers/squid/environment.yml > v_squid.txt
@@ -775,12 +684,12 @@ process get_software_versions {
 }
 
 /*
- * FastQC
+ * STEP 1 - FastQC
  */
 process fastqc {
     tag "$name"
     label 'process_medium'
-    publishDir "${params.outdir}/fastqc", mode: 'copy',
+    publishDir "${params.outdir}/fastqc", mode: params.publish_dir_mode,
         saveAs: { filename ->
                       filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"
                 }
@@ -791,8 +700,6 @@ process fastqc {
     output:
     file "*_fastqc.{zip,html}" into ch_fastqc_results
 
-    when: !params.debug
-
     script:
     """
     fastqc --quiet --threads $task.cpus $reads
@@ -800,17 +707,17 @@ process fastqc {
 }
 
 /*
- * MultiQC
+ * STEP 2 - MultiQC
  */
 process multiqc {
-    publishDir "${params.outdir}/MultiQC", mode: 'copy'
+    publishDir "${params.outdir}/MultiQC", mode: params.publish_dir_mode
 
     input:
     file (multiqc_config) from ch_multiqc_config
     file (mqc_custom_config) from ch_multiqc_custom_config.collect().ifEmpty([])
+    // TODO nf-core: Add in log files from your new processes for MultiQC to find!
     file ('fastqc/*') from ch_fastqc_results.collect().ifEmpty([])
     file ('software_versions/*') from ch_software_versions_yaml.collect()
-    file (fusions_mq) from summary_fusions_mq.collect().ifEmpty([])
     file workflow_summary from ch_workflow_summary.collectFile(name: "workflow_summary_mqc.yaml")
 
     output:
@@ -818,30 +725,28 @@ process multiqc {
     file "*_data"
     file "multiqc_plots"
 
-    when: !params.debug
-
     script:
     rtitle = custom_runName ? "--title \"$custom_runName\"" : ''
     rfilename = custom_runName ? "--filename " + custom_runName.replaceAll('\\W','_').replaceAll('_+','_') + "_multiqc_report" : ''
     custom_config_file = params.multiqc_config ? "--config $mqc_custom_config" : ''
+    // TODO nf-core: Specify which MultiQC modules to use with -m for a faster run time
     """
     multiqc -f $rtitle $rfilename $custom_config_file .
     """
 }
 
 /*
- * Output Description HTML
+ * STEP 3 - Output Description HTML
  */
 process output_documentation {
-    publishDir "${params.outdir}/pipeline_info", mode: 'copy'
+    publishDir "${params.outdir}/pipeline_info", mode: params.publish_dir_mode
 
     input:
-        file(output_docs) from ch_output_docs
+    file output_docs from ch_output_docs
+    file images from ch_output_docs_images
 
     output:
-        file("results_description.html")
-
-    when: !params.debug
+    file "results_description.html"
 
     script:
     """
@@ -882,6 +787,8 @@ workflow.onComplete {
     email_fields['summary']['Nextflow Build'] = workflow.nextflow.build
     email_fields['summary']['Nextflow Compile Timestamp'] = workflow.nextflow.timestamp
 
+    // TODO nf-core: If not using MultiQC, strip out this code (including params.max_multiqc_email_size)
+    // On success try attach the multiqc report
     def mqc_report = null
     try {
         if (workflow.success) {
@@ -903,18 +810,18 @@ workflow.onComplete {
 
     // Render the TXT template
     def engine = new groovy.text.GStringTemplateEngine()
-    def tf = new File("${baseDir}/assets/email_template.txt")
+    def tf = new File("$projectDir/assets/email_template.txt")
     def txt_template = engine.createTemplate(tf).make(email_fields)
     def email_txt = txt_template.toString()
 
     // Render the HTML template
-    def hf = new File("${baseDir}/assets/email_template.html")
+    def hf = new File("$projectDir/assets/email_template.html")
     def html_template = engine.createTemplate(hf).make(email_fields)
     def email_html = html_template.toString()
 
     // Render the sendmail template
-    def smail_fields = [ email: email_address, subject: subject, email_txt: email_txt, email_html: email_html, baseDir: "$baseDir", mqcFile: mqc_report, mqcMaxSize: params.max_multiqc_email_size.toBytes() ]
-    def sf = new File("$baseDir/assets/sendmail_template.txt")
+    def smail_fields = [ email: email_address, subject: subject, email_txt: email_txt, email_html: email_html, projectDir: "$projectDir", mqcFile: mqc_report, mqcMaxSize: params.max_multiqc_email_size.toBytes() ]
+    def sf = new File("$projectDir/assets/sendmail_template.txt")
     def sendmail_template = engine.createTemplate(sf).make(smail_fields)
     def sendmail_html = sendmail_template.toString()
 
@@ -927,7 +834,11 @@ workflow.onComplete {
             log.info "[nf-core/rnafusion] Sent summary e-mail to $email_address (sendmail)"
         } catch (all) {
             // Catch failures and try with plaintext
-            [ 'mail', '-s', subject, email_address ].execute() << email_txt
+            def mail_cmd = [ 'mail', '-s', subject, '--content-type=text/html', email_address ]
+            if ( mqc_report.size() <= params.max_multiqc_email_size.toBytes() ) {
+              mail_cmd += [ '-A', mqc_report ]
+            }
+            mail_cmd.execute() << email_html
             log.info "[nf-core/rnafusion] Sent summary e-mail to $email_address (mail)"
         }
     }
@@ -961,6 +872,7 @@ workflow.onComplete {
     }
 
 }
+
 
 def nfcoreHeader() {
     // Log colors ANSI codes
