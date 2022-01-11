@@ -10,7 +10,7 @@ body:
         Before you post this issue, please check the documentation:
 
         - [nf-core website: troubleshooting](https://nf-co.re/usage/troubleshooting)
-        - [{{ name }} pipeline documentation](https://nf-co.re/{{ short_name }}/usage)
+        - [nf-core/rnafusion pipeline documentation](https://nf-co.re/rnafusion/usage)
 
   - type: textarea
     id: description
@@ -49,4 +49,4 @@ body:
         * Executor _(eg. slurm, local, awsbatch)_
         * Container engine: _(e.g. Docker, Singularity, Conda, Podman, Shifter or Charliecloud)_
         * OS _(eg. CentOS Linux, macOS, Linux Mint)_
-        * Version of {{ name }} _(eg. 1.1, 1.5, 1.8.2)_
+        * Version of nf-core/rnafusion _(eg. 1.1, 1.5, 1.8.2)_
