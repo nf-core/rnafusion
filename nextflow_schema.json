@@ -41,6 +41,84 @@
                     "type": "string",
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
+                },
+                "build_references": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-user-cog",
+                    "description": "Specifies which analysis type for the pipeline - either build references or analyse data",
+                    "default": "false"
+                },
+                "genome": {
+                    "type": "string",
+                    "fa_icon": "fas fa-user-cog",
+                    "description": "Which genome version",
+                    "default": "GRCh38"
+                },
+                "genomes_base": {
+                    "type": "string",
+                    "fa_icon": "fas fa-user-cog",
+                    "description": "Path to reference folder",
+                    "default": "GRCh38"
+                },
+                "ensembl_version": {
+                    "type": "string",
+                    "fa_icon": "fas fa-user-cog",
+                    "description": "ensembl version",
+                    "default": "97"
+                },
+                "read_length": {
+                    "type": "string",
+                    "fa_icon": "fas fa-user-cog",
+                    "description": "Read length",
+                    "default": "100"
+                },
+                "all": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-user-cog",
+                    "description": "Build or run all references/analyses",
+                    "default": "true"
+                },
+                "arriba": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-user-cog",
+                    "description": "Build or run arriba references/analyses",
+                    "default": "true"
+                },
+                "ericscript": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-user-cog",
+                    "description": "Build or run ericscript references/analyses",
+                    "default": "true"
+                },
+                "fusioncatcher": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-user-cog",
+                    "description": "Build or run fusioncatcher references/analyses",
+                    "default": "true"
+                },
+                "pizzly": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-user-cog",
+                    "description": "Build or run pizzly references/analyses",
+                    "default": "true"
+                },
+                "squid": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-user-cog",
+                    "description": "Build or run squid references/analyses",
+                    "default": "true"
+                },
+                "starindex": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-user-cog",
+                    "description": "Build or run starindex references/analyses",
+                    "default": "true"
+                },
+                "starfusion": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-user-cog",
+                    "description": "Build or run starfusion references/analyses",
+                    "default": "true"
                 }
             }
         },
