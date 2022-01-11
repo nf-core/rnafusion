@@ -28,9 +28,9 @@ process STARFUSION {
     def args2 = task.ext.args2 ?: ''
     """
     STAR \\
-	    --genomeDir $index \\
-	    --readFilesIn $reads \\
-	    --runThreadN $task.cpus \\
+        --genomeDir $index \\
+        --readFilesIn $reads \\
+        --runThreadN $task.cpus \\
         $args
 
     STAR-Fusion \\
