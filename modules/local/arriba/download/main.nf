@@ -13,7 +13,7 @@ process ARRIBA_DOWNLOAD {
     }
 
     output:
-    path "*versions.yml"            , emit: versions
+    path "versions.yml"            , emit: versions
     path "arriba_v2.1.0/database/*" , emit: reference
 
     script:

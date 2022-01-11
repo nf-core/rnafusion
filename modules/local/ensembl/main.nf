@@ -16,7 +16,7 @@ process ENSEMBL_DOWNLOAD {
     val ensembl_version
 
     output:
-    path "versions.yml"                                                    , emit: versionss
+    path "versions.yml"                                                   , emit: versions
     path "Homo_sapiens.${params.genome}.${ensembl_version}.all.fa"        , emit: fasta
     path "Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf"       , emit: gtf
     path "Homo_sapiens.${params.genome}.${ensembl_version}.cdna.all.fa.gz", emit: transcript
