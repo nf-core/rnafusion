@@ -1,6 +1,6 @@
 process STARFUSION_DOWNLOAD {
     tag 'star-fusion'
-    label 'process_low'
+    label 'process_high'
     publishDir "${params.genomes_base}",
         mode: params.publishDir_mode,
         saveAs: { filename -> filename.equals('versions.yml') ? null : filename }
