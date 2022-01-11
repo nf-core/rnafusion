@@ -18,6 +18,8 @@ nextflow.enable.dsl = 2
 */
 
 params.build_references           = WorkflowMain.getGenomeAttribute(params, 'build_references')
+params.genome                     = WorkflowMain.getGenomeAttribute(params, 'genome')
+
 /*
 ========================================================================================
     VALIDATE & PRINT PARAMETER SUMMARY
