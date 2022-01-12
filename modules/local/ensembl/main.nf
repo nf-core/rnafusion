@@ -34,4 +34,14 @@ process ENSEMBL_DOWNLOAD {
 
     echo \$(wget -V 2>&1) | grep "GNU Wget" | cut -d" " -f3 > versions.yml
     """
+
+    stub:
+    """
+    touch "Homo_sapiens.${params.genome}.${ensembl_version}.all.fa"
+    touch "Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf"
+    touch "Homo_sapiens.${params.genome}.${ensembl_version}.cdna.all.fa.gz"
+
+    touch versions.yml
+    """
+
 }

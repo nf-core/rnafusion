@@ -13,7 +13,7 @@ process ARRIBA_DOWNLOAD {
     }
 
     output:
-    path "versions.yml"            , emit: versions
+    path "versions.yml"             , emit: versions
     path "arriba_v2.1.0/database/*" , emit: reference
 
     script:
@@ -23,5 +23,13 @@ process ARRIBA_DOWNLOAD {
     rm arriba_v2.1.0.tar.gz
 
     echo \$(wget -V 2>&1) | grep "GNU Wget" | cut -d" " -f3 > versions.yml
+    """
+
+    stub:
+    """
+    mkdir -p arriba_v2.1.0/database/
+    touch arriba_v2.1.0/database/arriba.test
+
+    touch versions.yml
     """
 }
