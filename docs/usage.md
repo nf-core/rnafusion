@@ -46,7 +46,6 @@
     - [--fusioncatcher_ref](#--fusioncatcher_ref)
     - [--genome](#--genome)
     - [--gtf](#--gtf)
-    - [--reference_release](#--reference_release)
     - [--star_index](#--star_index)
     - [--star_fusion_ref](#--star_fusion_ref)
     - [--transcript](#--transcript)
@@ -189,7 +188,6 @@ sample,fastq_1,fastq_2
 CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
 CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
 CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
 TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
 TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
 TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
@@ -541,15 +539,6 @@ Required annotation file.
 
 ```bash
 --gtf '<path to GTF annotation>'
-```
-
-### --reference_release
-
-Ensembl version.
-
-```bash
-# ftp://ftp.ensembl.org/pub/release-97/fasta/homo_sapiens/
---reference_release '97'
 ```
 
 ### --star_index
