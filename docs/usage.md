@@ -77,9 +77,9 @@ To make the pipeline easier to work with, we provide a script to download all ne
 ```bash
 # Replace <COSMIC_USER> and <COSMIC_PASSWD> with yout credentials from COSMIC
 nextflow run nf-core/rnafusion/download-references.nf \
-  --download_all \
-  --outdir <PATH> \
-  --cosmic_usr <COSMIC_USER> --cosmic_passwd <COSMIC_PASSWD>
+--download_all \
+--outdir <PATH> \
+--cosmic_usr <COSMIC_USER> --cosmic_passwd <COSMIC_PASSWD>
 ```
 
 ### Download specific references
@@ -112,17 +112,17 @@ nextflow run nf-core/rnafusion/download-references.nf \
 nextflow run nf-core/rnafusion/download-references.nf \
 --fusion_report \
 --outdir <PATH>
-  --cosmic_usr <COSMIC_USER> --cosmic_passwd <COSMIC_PASSWD>
+--cosmic_usr <COSMIC_USER> --cosmic_passwd <COSMIC_PASSWD>
 ```
 
 ### Download and build CTAT
 
 ```bash
 nextflow run nf-core/rnafusion/build-ctat.nf \
-  --genome GRCh38 \
-  --outdir <PATH> \
-  --fasta <PATH>/<FASTA \
-  --gtf <PATH>/<GTF>
+--genome GRCh38 \
+--outdir <PATH> \
+--fasta <PATH>/<FASTA \
+--gtf <PATH>/<GTF>
 ```
 
 ### Download GRCh37 references
@@ -131,19 +131,19 @@ nextflow run nf-core/rnafusion/build-ctat.nf \
 # GRCh38 genome assembly is used by default.
 # To use the previous assembly specify it using the --genome flag
 nextflow run nf-core/rnafusion/download-references.nf \
-  --genome GRCh37 \
-  --download_all \
-  --outdir <PATH> \
-  --cosmic_usr <COSMIC_USER> --cosmic_passwd <COSMIC_PASSWD>
+--genome GRCh37 \
+--download_all \
+--outdir <PATH> \
+--cosmic_usr <COSMIC_USER> --cosmic_passwd <COSMIC_PASSWD>
 
 # Please note that using the above example command downloads NCBI-based references for STAR-Fusion.
 # To use Ensembl-based references run the following command with the same <PATH> as used above
 
 nextflow run nf-core/rnafusion/build-ctat.nf \
-  --genome GRCh37 \
-  --outdir <PATH> \
-  --fasta <PATH>/<FASTA> \
-  --gtf <PATH>/<GTF>
+--genome GRCh37 \
+--outdir <PATH> \
+--fasta <PATH>/<FASTA> \
+--gtf <PATH>/<GTF>
 ```
 
 ### Tool reference requirements
