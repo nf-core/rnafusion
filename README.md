@@ -31,8 +31,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 | [Squid](https://github.com/Kingsford-Group/squid)                         |         :x:        |   `1.5`  |
 | [Star-Fusion](https://github.com/STAR-Fusion/STAR-Fusion)                 | :white_check_mark: |  `1.9.1` |
 
-## Quick Start
-
 ## Pipeline summary
 
 <!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->

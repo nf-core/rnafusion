@@ -9,59 +9,59 @@
 - [:warning: Please read this documentation on the nf-core website: https://nf-co.re/rnafusion/usage](#warning-please-read-this-documentation-on-the-nf-core-website-httpsnf-corernafusionusage)
 - [Introduction](#introduction)
 - [Download references](#download-references)
-  - [Download all references](#download-all-references)
-  - [Download specific references](#download-specific-references)
-  - [Download and build CTAT](#download-and-build-ctat)
-  - [Download GRCh37 references](#download-grch37-references)
-  - [Tool reference requirements](#tool-reference-requirements)
+    - [Download all references](#download-all-references)
+    - [Download specific references](#download-specific-references)
+    - [Download and build CTAT](#download-and-build-ctat)
+    - [Download GRCh37 references](#download-grch37-references)
+    - [Tool reference requirements](#tool-reference-requirements)
 - [Running the pipeline](#running-the-pipeline)
-  - [Updating the pipeline](#updating-the-pipeline)
-  - [Reproducibility](#reproducibility)
+    - [Updating the pipeline](#updating-the-pipeline)
+    - [Reproducibility](#reproducibility)
 - [Core Nextflow arguments](#core-nextflow-arguments)
-  - [`-profile`](#-profile)
-  - [`-resume`](#-resume)
-  - [`-c`](#-c)
-    - [Custom resource requests](#custom-resource-requests)
-  - [Running in the background](#running-in-the-background)
-    - [Nextflow memory requirements](#nextflow-memory-requirements)
+    - [`-profile`](#-profile)
+    - [`-resume`](#-resume)
+    - [`-c`](#-c)
+        - [Custom resource requests](#custom-resource-requests)
+    - [Running in the background](#running-in-the-background)
+        - [Nextflow memory requirements](#nextflow-memory-requirements)
 - [Pipeline specific arguments](#pipeline-specific-arguments)
-  - [--input](#--input)
-  - [--single_end](#--single_end)
-  - [Tool flags](#tool-flags)
-  - [--arriba](#--arriba)
-  - [--ericscript](#--ericscript)
-  - [--fusioncatcher](#--fusioncatcher)
-  - [--fusion_report](#--fusion_report)
-  - [--pizzly](#--pizzly)
-  - [--squid](#--squid)
-  - [--star_fusion](#--star_fusion)
+    - [--input](#--input)
+    - [--single_end](#--single_end)
+    - [Tool flags](#tool-flags)
+    - [--arriba](#--arriba)
+    - [--ericscript](#--ericscript)
+    - [--fusioncatcher](#--fusioncatcher)
+    - [--fusion_report](#--fusion_report)
+    - [--pizzly](#--pizzly)
+    - [--squid](#--squid)
+    - [--star_fusion](#--star_fusion)
 - [Visualization flags](#visualization-flags)
-  - [--arriba_vis](#--arriba_vis)
-  - [--fusion_inspector](#--fusion_inspector)
+    - [--arriba_vis](#--arriba_vis)
+    - [--fusion_inspector](#--fusion_inspector)
 - [Reference genomes](#reference-genomes)
-  - [--arriba_ref](#--arriba_ref)
-  - [--databases](#--databases)
-  - [--ericscript_ref](#--ericscript_ref)
-  - [--fasta](#--fasta)
-  - [--fusioncatcher_ref](#--fusioncatcher_ref)
-  - [--genome](#--genome)
-  - [--gtf](#--gtf)
-  - [--reference_release](#--reference_release)
-  - [--star_index](#--star_index)
-  - [--star_fusion_ref](#--star_fusion_ref)
-  - [--transcript](#--transcript)
+    - [--arriba_ref](#--arriba_ref)
+    - [--databases](#--databases)
+    - [--ericscript_ref](#--ericscript_ref)
+    - [--fasta](#--fasta)
+    - [--fusioncatcher_ref](#--fusioncatcher_ref)
+    - [--genome](#--genome)
+    - [--gtf](#--gtf)
+    - [--reference_release](#--reference_release)
+    - [--star_index](#--star_index)
+    - [--star_fusion_ref](#--star_fusion_ref)
+    - [--transcript](#--transcript)
 - [Other command line parameters](#other-command-line-parameters)
-  - [--debug](#--debug)
-  - [--read_length](#--read_length)
-  - [--outdir](#--outdir)
-  - [--email](#--email)
-  - [--email_on_fail](#--email_on_fail)
-  - [--max_multiqc_email_size](#--max_multiqc_email_size)
-  - [-name](#-name)
-  - [--custom_config_version](#--custom_config_version)
-  - [--custom_config_base](#--custom_config_base)
+    - [--debug](#--debug)
+    - [--read_length](#--read_length)
+    - [--outdir](#--outdir)
+    - [--email](#--email)
+    - [--email_on_fail](#--email_on_fail)
+    - [--max_multiqc_email_size](#--max_multiqc_email_size)
+    - [-name](#-name)
+    - [--custom_config_version](#--custom_config_version)
+    - [--custom_config_base](#--custom_config_base)
 - [Job resources](#job-resources)
-  - [Automatic resubmission](#automatic-resubmission)
+    - [Automatic resubmission](#automatic-resubmission)
 
 ## Download references
 
@@ -257,21 +257,21 @@ They are loaded in sequence, so later profiles can overwrite earlier profiles.
 
 If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended.
 
-* `docker`
-    * A generic configuration profile to be used with [Docker](https://docker.com/)
-* `singularity`
-    * A generic configuration profile to be used with [Singularity](https://sylabs.io/docs/)
-* `podman`
-    * A generic configuration profile to be used with [Podman](https://podman.io/)
-* `shifter`
-    * A generic configuration profile to be used with [Shifter](https://nersc.gitlab.io/development/shifter/how-to-use/)
-* `charliecloud`
-    * A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
-* `conda`
-    * A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
-* `test`
-    * A profile with a complete configuration for automated testing
-    * Includes links to test data so needs no other parameters
+- `docker`
+    - A generic configuration profile to be used with [Docker](https://docker.com/)
+- `singularity`
+    - A generic configuration profile to be used with [Singularity](https://sylabs.io/docs/)
+- `podman`
+    - A generic configuration profile to be used with [Podman](https://podman.io/)
+- `shifter`
+    - A generic configuration profile to be used with [Shifter](https://nersc.gitlab.io/development/shifter/how-to-use/)
+- `charliecloud`
+    - A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
+- `conda`
+    - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
+- `test`
+    - A profile with a complete configuration for automated testing
+    - Includes links to test data so needs no other parameters
 
 ### `-resume`
 
@@ -340,7 +340,7 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
 2. Find the latest version of the Biocontainer available on [Quay.io](https://quay.io/repository/biocontainers/pangolin?tag=latest&tab=tags)
 3. Create the custom config accordingly:
 
-    * For Docker:
+    - For Docker:
 
         ```nextflow
         process {
@@ -350,7 +350,7 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
         }
         ```
 
-    * For Singularity:
+    - For Singularity:
 
         ```nextflow
         process {
@@ -360,7 +360,7 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
         }
         ```
 
-    * For Conda:
+    - For Conda:
 
         ```nextflow
         process {
@@ -431,14 +431,14 @@ By default, the pipeline expects paired-end data. If you have single-end data, y
 If enabled, executes `Arriba` tool.
 
 - `--arriba_opt`
-  - Specify additional parameters. For more information, please refer to the [documentation](http://arriba.readthedocs.io/en/latest/quickstart/) of the tool.
+    - Specify additional parameters. For more information, please refer to the [documentation](http://arriba.readthedocs.io/en/latest/quickstart/) of the tool.
 
 ### --ericscript
 
 If enabled, executes `Ericscript` tool.
 
 - `--ericscript_opt`
-  - Specify additional parameters. For more information, please refer to the [documentation](https://sites.google.com/site/bioericscript/home) of the tool.
+    - Specify additional parameters. For more information, please refer to the [documentation](https://sites.google.com/site/bioericscript/home) of the tool.
 
 ### --fusioncatcher
 
@@ -447,21 +447,21 @@ If enabled, executes `Fusioncatcher` tool.
 > N.B. that Fusioncatcher is not available when using the `GRCh37` genome assembly.
 
 - `--fusioncatcher_opt`
-  - Specify additional parameters. For more information, please refer to the [documentation](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) of the tool.
+    - Specify additional parameters. For more information, please refer to the [documentation](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) of the tool.
 
 ### --fusion_report
 
 If enabled, download databases for `fusion-report`.
 
 - `fusion_report_opt`
-  - Specify additional parameters. For more information, please refer to the [documentation](https://matq007.github.io/fusion-report/#/) of the tool.
+    - Specify additional parameters. For more information, please refer to the [documentation](https://matq007.github.io/fusion-report/#/) of the tool.
 
 ### --pizzly
 
 If enabled, executes `Pizzly` tool.
 
 - `--pizzly_k`
-  - Number of k-mers. Default `31`.
+    - Number of k-mers. Default `31`.
 
 ### --squid
 
@@ -472,7 +472,7 @@ If enabled, executes `Squid` tool.
 If enabled, executes `STAR-Fusion` tool.
 
 - `--star_fusion_opt`
-  - Parameter for specifying additional parameters. For more information, please refer to the [documentation](https://github.com/STAR-Fusion/STAR-Fusion/wiki) of the tool.
+    - Parameter for specifying additional parameters. For more information, please refer to the [documentation](https://github.com/STAR-Fusion/STAR-Fusion/wiki) of the tool.
 
 ## Visualization flags
 

@@ -37,20 +37,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] nfcore/rnafusion - 2020/02/10
 
 * Fusion gene detection tools:
-  * `Arriba v1.1.0`
-  * `Ericscript v0.5.5`
-  * `Fusioncatcher v1.20`
-  * `Pizzly v0.37.3`
-  * `Squid v1.5`
-  * `STAR-Fusion v1.6.0`
+    * `Arriba v1.1.0`
+    * `Ericscript v0.5.5`
+    * `Fusioncatcher v1.20`
+    * `Pizzly v0.37.3`
+    * `Squid v1.5`
+    * `STAR-Fusion v1.6.0`
 * Visualization tools:
-  * `Arriba v1.1.0`
-  * `FusionInspector v1.3.1`
+    * `Arriba v1.1.0`
+    * `FusionInspector v1.3.1`
 * Other tools:
-  * `fusion-report v2.0.1`
-  * `FastQ v0.11.8`
-  * `MultiQC v1.7`
-  * `STAR aligner v2.7.0f`
+    * `fusion-report v2.0.1`
+    * `FastQ v0.11.8`
+    * `MultiQC v1.7`
+    * `STAR aligner v2.7.0f`
 
 ### Added
 
