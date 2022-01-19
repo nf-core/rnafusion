@@ -21,7 +21,7 @@ fi
 if [ $1 == "-h" ]; then
     echo "Utility for building docker containers from tools/"
     echo "Usage: scripts/build.sh [options]"
-    echo 
+    echo
     echo "Options:"
     echo "  all             build all tools including main image"
     echo "  <tool name>     builds specific tool"

@@ -4,16 +4,16 @@
                                 nf-core/rnafusion
 ================================================================================
 nf-core/rnafusion:
- RNA-seq analysis pipeline for detection gene-fusions
+RNA-seq analysis pipeline for detection gene-fusions
 --------------------------------------------------------------------------------
- @Homepage
- https://nf-co.re/rnafusion
+@Homepage
+https://nf-co.re/rnafusion
 --------------------------------------------------------------------------------
- @Documentation
- https://nf-co.re/rnafusion/docs
+@Documentation
+https://nf-co.re/rnafusion/docs
 --------------------------------------------------------------------------------
- @Repository
- https://github.com/nf-core/rnafusion
+@Repository
+https://github.com/nf-core/rnafusion
 --------------------------------------------------------------------------------
 */
 
@@ -27,11 +27,11 @@ def helpMessage() {
     nextflow run nf-core/rnafusion/build-ctat.nf -profile [PROFILE] [OPTIONS] --outdir /path/to/output
 
     Mandatory arguments:
-      --fasta [file]                Path to fasta reference
-      --gtf [file]                  Path to GTF annotation
-      --genome [str]                Either "GRCh37" or "GRCh38" (default)
-      --outdir [path]               Output directory for downloading
-      -profile [str]                Configuration profile [https://github.com/nf-core/configs]
+        --fasta [file]                Path to fasta reference
+        --gtf [file]                  Path to GTF annotation
+        --genome [str]                Either "GRCh37" or "GRCh38" (default)
+        --outdir [path]               Output directory for downloading
+        -profile [str]                Configuration profile [https://github.com/nf-core/configs]
     """.stripIndent()
 }
 
@@ -67,7 +67,7 @@ checkHostname()
 
 /*
 ================================================================================
-                                  DOWNLOAD
+DOWNLOAD
 ================================================================================
 */
 
