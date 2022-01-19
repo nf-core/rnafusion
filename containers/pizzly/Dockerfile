@@ -1,4 +1,4 @@
-containers/pizzly/Dockerfile FROM nfcore/base:1.9
+FROM nfcore/base:1.9
 
 LABEL authors="Martin Proks" \
     description="Docker image containing all requirements for nfcore/rnafusion pipeline"
