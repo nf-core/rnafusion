@@ -22,7 +22,6 @@ process STAR_GENOMEGENERATE {
 
     script:
     def memory   = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
-    def args = task.ext.args ?: ''
     """
     mkdir star
     STAR \\

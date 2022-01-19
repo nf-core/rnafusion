@@ -20,6 +20,7 @@ process STARFUSION_DOWNLOAD {
     path "*"  , emit: reference
 
     script:
+    def binPath = if (workflow.containerEngine == "singularity" || workflow.containerEngine == "docker") ? "/usr/local/src/STAR-Fusion/ctat-genome-lib-builder/" : ""
     """
     export TMPDIR=/tmp
 
@@ -34,7 +35,7 @@ process STARFUSION_DOWNLOAD {
 
     gunzip Pfam-A.hmm.gz && hmmpress Pfam-A.hmm
 
-    /usr/local/src/STAR-Fusion/ctat-genome-lib-builder/prep_genome_lib.pl \\
+    ${binPath}prep_genome.pl \\
         --genome_fa $fasta \\
         --gtf $gtf \\
         --annot_filter_rule AnnotFilterRule.pm \\

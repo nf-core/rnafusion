@@ -22,8 +22,8 @@ process ERICSCRIPT {
     tuple val(meta), path "./tmp/${prefix}.ericscript.results.total.tsv"   , emit: fusions_total
 
     script:
-    def args = task.ext.args ?: ''
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
+
     """
     ericscript.pl \\
         -db $reference \\

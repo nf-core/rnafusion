@@ -17,11 +17,9 @@ process FUSIONCATCHER_DOWNLOAD {
     path "versions.yml"     , emit: versions
 
     script:
-
-    def args = task.ext.args ?: ''
-    def args2 = task.ext.args2 ?: ''
     def human_version = "v102"
     def url = "http://sourceforge.net/projects/fusioncatcher/files/data/human_${human_version}.tar.gz.aa"
+
     """
     if wget --spider "$url" 2>/dev/null; then
         wget $args $url
