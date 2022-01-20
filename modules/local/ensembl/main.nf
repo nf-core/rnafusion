@@ -1,15 +1,9 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options        = initOptions(params.options)
-
 process ENSEMBL_DOWNLOAD {
     tag "ensembl $ensembl_version"
     label 'process_low'
-    publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:[:], publish_by_meta:[]) }
+    publishDir "${params.genomes_base}",
+        mode: params.publishDir_mode,
+        saveAs: { filename -> filename.equals('versions.yml') ? null : filename }
 
     conda (params.enable_conda ? "bioconda::gnu-wget=1.18" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
@@ -22,13 +16,12 @@ process ENSEMBL_DOWNLOAD {
     val ensembl_version
 
     output:
-    path "*.version.txt"                                                  , emit: version
+    path "versions.yml"                                                   , emit: versions
     path "Homo_sapiens.${params.genome}.${ensembl_version}.all.fa"        , emit: fasta
     path "Homo_sapiens.${params.genome}.${ensembl_version}.gtf"           , emit: gtf
     path "Homo_sapiens.${params.genome}.${ensembl_version}.cdna.all.fa.gz", emit: transcript
 
     script:
-    def software = getSoftwareName(task.process)
     """
     wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/fasta/homo_sapiens/dna/Homo_sapiens.${params.genome}.dna.chromosome.{1..22}.fa.gz
     wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/fasta/homo_sapiens/dna/Homo_sapiens.${params.genome}.dna.chromosome.{MT,X,Y}.fa.gz
@@ -38,7 +31,17 @@ process ENSEMBL_DOWNLOAD {
 
     gunzip -c Homo_sapiens.${params.genome}.dna.chromosome.* > Homo_sapiens.${params.genome}.${ensembl_version}.all.fa
     gunzip Homo_sapiens.${params.genome}.${ensembl_version}.gtf.gz
-    
-    echo \$(wget -V 2>&1) | grep "GNU Wget" | cut -d" " -f3 > ${software}.version.txt
+
+    echo \$(wget -V 2>&1) | grep "GNU Wget" | cut -d" " -f3 > versions.yml
     """
+
+    stub:
+    """
+    touch "Homo_sapiens.${params.genome}.${ensembl_version}.all.fa"
+    touch "Homo_sapiens.${params.genome}.${ensembl_version}.gtf"
+    touch "Homo_sapiens.${params.genome}.${ensembl_version}.cdna.all.fa.gz"
+
+    touch versions.yml
+    """
+
 }

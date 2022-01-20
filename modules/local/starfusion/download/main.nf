@@ -1,21 +1,15 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options        = initOptions(params.options)
-
 process STARFUSION_DOWNLOAD {
     tag 'star-fusion'
-    label 'process_low'
-    publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:[:], publish_by_meta:[]) }
+    label 'process_high'
+    publishDir "${params.genomes_base}",
+        mode: params.publishDir_mode,
+        saveAs: { filename -> filename.equals('versions.yml') ? null : filename }
 
     conda (params.enable_conda ? "bioconda::dfam=3.3 bioconda::hmmer=3.3.2 bioconda::star-fusion=1.10.0 bioconda::trinity=date.2011_11_2 bioconda::samtools=1.9 bioconda::star=2.7.8a" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/mulled-v2-57582e8bdbf51679bdcff9de91ae016a44e322de:b978a3a1e8715581329a267a2c9904574384180a-0"
+        container "docker.io/trinityctat/starfusion:1.10.1"
     } else {
-        container "quay.io/biocontainers/mulled-v2-57582e8bdbf51679bdcff9de91ae016a44e322de:b978a3a1e8715581329a267a2c9904574384180a-0"
+        container "docker.io/trinityctat/starfusion:1.10.1"
     }
 
     input:
@@ -26,7 +20,7 @@ process STARFUSION_DOWNLOAD {
     path "*"  , emit: reference
 
     script:
-    def software = getSoftwareName(task.process)
+    def binPath = { workflow.containerEngine == "singularity" || workflow.containerEngine == "docker" ? "/usr/local/src/STAR-Fusion/ctat-genome-lib-builder/prep_genome_lib.pl" : "prep_genome_lib.pl" }
     """
     export TMPDIR=/tmp
 
@@ -38,10 +32,10 @@ process STARFUSION_DOWNLOAD {
     wget https://www.dfam.org/releases/Dfam_3.4/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3i
     wget https://www.dfam.org/releases/Dfam_3.4/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3m
     wget https://www.dfam.org/releases/Dfam_3.4/infrastructure/dfamscan/homo_sapiens_dfam.hmm.h3p
-    
+
     gunzip Pfam-A.hmm.gz && hmmpress Pfam-A.hmm
 
-    prep_genome_lib.pl \\
+    $binPath \\
         --genome_fa $fasta \\
         --gtf $gtf \\
         --annot_filter_rule AnnotFilterRule.pm \\

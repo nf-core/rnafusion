@@ -1,15 +1,9 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options        = initOptions(params.options)
-
 process ARRIBA {
     tag "$meta.id"
     label 'process_medium'
     publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
+        mode: params.publishDir_mode,
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publishDir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
 
     conda (params.enable_conda ? "bioconda::arriba=2.1.0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
@@ -27,17 +21,18 @@ process ARRIBA {
     output:
     tuple val(meta), path("*.fusions.tsv")          , emit: fusions
     tuple val(meta), path("*.fusions.discarded.tsv"), emit: fusions_fail
-    path "*.version.txt"                            , emit: version
+    path "versions.yml"                             , emit: versions
 
     script:
-    def software  = getSoftwareName(task.process)
     def prefix    = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
+    def args = task.ext.args ?: ''
+    def args2 = task.ext.args2 ?: ''
     """
     STAR \\
-	    --genomeDir $index \\
-	    --readFilesIn $reads \\
-	    --runThreadN $task.cpus \\
-        $options.args |
+        --genomeDir $index \\
+        --readFilesIn $reads \\
+        --runThreadN $task.cpus \\
+        $args |
 
     tee Aligned.out.bam |
 
@@ -47,8 +42,8 @@ process ARRIBA {
         -g $gtf \\
         -o ${prefix}.arriba.fusions.tsv \\
         -O ${prefix}.arriba.fusions.discarded.tsv \\
-        $options.args2
+        $args2
 
-    echo \$(arriba -h | grep 'Version:' 2>&1) |  sed 's/Version:\s//' > ${software}.version.txt
+    echo \$(arriba -h | grep 'Version:' 2>&1) |  sed 's/Version:\s//' > versions.yml
     """
 }

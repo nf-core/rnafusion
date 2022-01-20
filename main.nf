@@ -13,6 +13,14 @@ nextflow.enable.dsl = 2
 
 /*
 ========================================================================================
+    PARAMETER VALUES
+========================================================================================
+*/
+
+params.build_references           = WorkflowMain.getGenomeAttribute(params, 'build_references')
+
+/*
+========================================================================================
     VALIDATE & PRINT PARAMETER SUMMARY
 ========================================================================================
 */
@@ -25,23 +33,13 @@ WorkflowMain.initialise(workflow, params, log)
 ========================================================================================
 */
 
+include { BUILD_REFERENCES } from './workflows/build_references'
 
 //
 // WORKFLOW: Run main nf-core/rnafusion analysis pipeline
 //
 workflow NFCORE_RNAFUSION {
-
-    if (params.build_references) {
-
-        include { BUILD_REFERENCES } from './workflows/build_references'
-        BUILD_REFERENCES ()
-    
-    } else {
-
-        include { RNAFUSION } from './workflows/rnafusion'
-        // RNAFUSION ()
-
-    }
+    BUILD_REFERENCES ()
 
 }
 

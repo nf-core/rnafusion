@@ -41,6 +41,76 @@
                     "type": "string",
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
+                },
+                "build_references": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Specifies which analysis type for the pipeline - either build references or analyse data"
+                },
+                "genomes_base": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to reference folder"
+                },
+                "ensembl_version": {
+                    "type": "integer",
+                    "fa_icon": "far fa-file-code",
+                    "description": "ensembl version",
+                    "default": "97"
+                },
+                "read_length": {
+                    "type": "integer",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Read length",
+                    "default": "100"
+                },
+                "all": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Build or run all references/analyses",
+                    "default": "false"
+                },
+                "arriba": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Build or run arriba references/analyses",
+                    "default": "false"
+                },
+                "ericscript": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Build or run ericscript references/analyses",
+                    "default": "false"
+                },
+                "fusioncatcher": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Build or run fusioncatcher references/analyses",
+                    "default": "false"
+                },
+                "pizzly": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Build or run pizzly references/analyses",
+                    "default": "false"
+                },
+                "squid": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Build or run squid references/analyses",
+                    "default": "false"
+                },
+                "starindex": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Build or run starindex references/analyses",
+                    "default": "false"
+                },
+                "starfusion": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Build or run starfusion references/analyses",
+                    "default": "false"
                 }
             }
         },
@@ -58,6 +128,12 @@
                     "description": "Path to FASTA genome file.",
                     "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
                     "fa_icon": "far fa-file-code"
+                },
+                "genome": {
+                    "type": "string",
+                    "description": "Name of iGenomes reference.",
+                    "fa_icon": "fas fa-book",
+                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
                 }
             }
         },
@@ -163,7 +239,7 @@
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 },
-                "publish_dir_mode": {
+                "publishDir_mode": {
                     "type": "string",
                     "default": "copy",
                     "description": "Method used to save pipeline results to output directory.",
