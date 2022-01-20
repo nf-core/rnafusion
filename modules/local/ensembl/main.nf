@@ -30,7 +30,7 @@ process ENSEMBL_DOWNLOAD {
     wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/fasta/homo_sapiens/cdna/Homo_sapiens.${params.genome}.cdna.all.fa.gz -O Homo_sapiens.${params.genome}.${ensembl_version}.cdna.all.fa.gz
 
     gunzip -c Homo_sapiens.${params.genome}.dna.chromosome.* > Homo_sapiens.${params.genome}.${ensembl_version}.all.fa
-    gunzip Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf.gz
+    gunzip Homo_sapiens.${params.genome}.${ensembl_version}.gtf.gz
 
     echo \$(wget -V 2>&1) | grep "GNU Wget" | cut -d" " -f3 > versions.yml
     """
@@ -38,7 +38,7 @@ process ENSEMBL_DOWNLOAD {
     stub:
     """
     touch "Homo_sapiens.${params.genome}.${ensembl_version}.all.fa"
-    touch "Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf"
+    touch "Homo_sapiens.${params.genome}.${ensembl_version}.gtf"
     touch "Homo_sapiens.${params.genome}.${ensembl_version}.cdna.all.fa.gz"
 
     touch versions.yml
