@@ -16,6 +16,7 @@ process MULTIQC {
     path "versions.yml"        , emit: versions
 
     script:
+    def args = task.ext.args ?: ''
     """
     multiqc -f $args .
 

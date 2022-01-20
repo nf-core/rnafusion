@@ -15,6 +15,7 @@ process KALLISTO_INDEX {
     path "versions.yml" , emit: versions
 
     script:
+    def args = task.ext.args ?: ''
     """
     kallisto \\
         index \\

@@ -24,6 +24,8 @@ process STARFUSION {
 
     script:
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
+    def args = task.ext.args ?: ''
+    def args2 = task.ext.args2 ?: ''
     """
     STAR \\
         --genomeDir $index \\

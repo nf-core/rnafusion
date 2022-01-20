@@ -16,6 +16,7 @@ process FASTQC {
     path  "versions.yml"           , emit: versions
 
     script:
+    def args = task.ext.args ?: ''
     // Add soft-links to original FastQs for consistent naming in pipeline
     def prefix = task.ext.prefix ?: "${meta.id}"
     if (meta.single_end) {
