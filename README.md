@@ -72,7 +72,7 @@ The nf-core/rnafusion pipeline comes with documentation about the pipeline [usag
 nf-core/rnafusion was originally written by Martin Proks, @praveenraj2018
 
 We thank the following people for their extensive assistance in the development of this pipeline:
-- Annick Renevey (@rannick)
+* Annick Renevey (@rannick)
 
 ## Contributions and Support
 
