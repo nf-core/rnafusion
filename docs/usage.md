@@ -69,7 +69,7 @@ The rnafusion pipeline needs references for the fusion detection tools, so downl
 Downloading references manually is a tedious long process.
 To make the pipeline easier to work with, we provide a script to download all necessary references for fusion detection tools.
 
-> **TL;DR:** Make sure to download the correct references for your need!
+**TL;DR:** Make sure to download the correct references for your need!
 
 ### Download all references
 
@@ -79,8 +79,9 @@ nextflow run nf-core/rnafusion \
 --outdir <PATH> \
 ```
 
-# Example of downloading references for specific tool
+### Example of downloading references for specific tool
 
+```bash
 nextflow run nf-core/rnafusion/download-references.nf \
 --arriba \
 --outdir <PATH>
@@ -100,11 +101,9 @@ nextflow run nf-core/rnafusion/download-references.nf \
 nextflow run nf-core/rnafusion/download-references.nf \
 --fusion_report \
 --outdir <PATH>
---cosmic_usr <COSMIC_USER> --cosmic_passwd <COSMIC_PASSWD>
-
 ```
 
-### Download and build CTAT
+## Download and build CTAT
 
 ```bash
 nextflow run nf-core/rnafusion/build-ctat.nf \
@@ -114,7 +113,7 @@ nextflow run nf-core/rnafusion/build-ctat.nf \
 --gtf <PATH>/<GTF>
 ```
 
-### Download GRCh37 references
+## Download GRCh37 references
 
 ```bash
 # GRCh38 genome assembly is used by default.
