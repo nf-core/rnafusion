@@ -42,6 +42,11 @@
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
                 },
+                "build_references": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Specifies which analysis type for the pipeline - either build references or analyse data"
+                },
                 "genomes_base": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
@@ -288,6 +293,34 @@
                     "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
                     "hidden": true,
                     "fa_icon": "fas fa-bacon"
+                },
+                "seq_center": {
+                    "type": "boolean",
+                    "description": "Sequencing center",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "This will reported in the BAM header as CN"
+                },
+                "seq_platform": {
+                    "type": "boolean",
+                    "description": "Sequencing platform",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "This will reported in the BAM header as PL."
+                },
+                "star_ignore_sjdbgtf": {
+                    "type": "boolean",
+                    "description": "Whether to ignore the GTF in STAR alignment",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "Setting false will use GTF file for STAR alignment"
+                },
+                "star_index": {
+                    "type": "string",
+                    "description": "Path of STAR index directory",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "Provide the index directory for the STAR alignment"
                 }
             }
         }
