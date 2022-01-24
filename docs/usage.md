@@ -69,7 +69,7 @@ The rnafusion pipeline needs references for the fusion detection tools, so downl
 Downloading references manually is a tedious long process.
 To make the pipeline easier to work with, we provide a script to download all necessary references for fusion detection tools.
 
-**TL;DR:** Make sure to download the correct references for your need!
+> **TL;DR:** Make sure to download the correct references for your need!
 
 ### Download all references
 
