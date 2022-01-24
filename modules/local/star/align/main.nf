@@ -1,9 +1,6 @@
 process STAR_ALIGN {
     tag "$meta.id"
     label 'process_high'
-    publishDir "${params.outdir}",
-        mode: params.publishDir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publishDir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
 
     // Note: 2.7X indices incompatible with AWS iGenomes.
     conda (params.enable_conda ? 'bioconda::star=2.7.8a' : null)

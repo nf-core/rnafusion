@@ -1,9 +1,6 @@
 process FUSIONCATCHER_DOWNLOAD {
     tag 'fusioncatcher'
     label 'process_medium'
-    publishDir "${params.genomes_base}",
-        mode: params.publishDir_mode,
-        saveAs: { filename -> filename.equals('versions.yml') ? null : filename }
 
     conda (params.enable_conda ? "bioconda::fusioncatcher=1.33" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {

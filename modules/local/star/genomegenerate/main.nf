@@ -1,9 +1,6 @@
 process STAR_GENOMEGENERATE {
     tag "$fasta"
     label 'process_high'
-    publishDir "${params.genomes_base}",
-        mode: params.publishDir_mode,
-        saveAs: { filename -> filename.equals('versions.yml') ? null : filename }
 
     conda (params.enable_conda ? "bioconda::star=2.7.8a" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {

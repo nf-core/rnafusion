@@ -1,9 +1,6 @@
 process PIZZLY_DOWNLOAD {
     tag "pizzly"
     label 'process_medium'
-    publishDir "${params.genomes_base}",
-        mode: params.publishDir_mode,
-        saveAs: { filename -> filename.equals('versions.yml') ? null : filename }
 
     conda (params.enable_conda ? "bioconda::kallisto=0.46.2" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {

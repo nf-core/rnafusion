@@ -1,9 +1,6 @@
 process STARFUSION {
     tag "$meta.id"
     label 'process_high'
-    publishDir "${params.outdir}",
-        mode: params.publishDir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publishDir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
 
     conda (params.enable_conda ? "bioconda::dfam=3.3 bioconda::hmmer=3.3.2 bioconda::star-fusion=1.10.0 bioconda::trinity=date.2011_11_2 bioconda::samtools=1.9 bioconda::star=2.7.8a" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {

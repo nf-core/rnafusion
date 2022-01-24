@@ -1,9 +1,6 @@
 process ERICSCRIPT {
     tag "eriscript"
     label 'process_medium'
-    publishDir "${params.outdir}",
-        mode: params.publishDir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publishDir:getSoftwareName(task.process), meta:[:], publish_by_meta:[]) }
 
     conda (params.enable_conda ? "bioconda::ericscript=0.5.5" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {

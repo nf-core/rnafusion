@@ -1,9 +1,6 @@
 process ARRIBA {
     tag "$meta.id"
     label 'process_medium'
-    publishDir "${params.outdir}",
-        mode: params.publishDir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publishDir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
 
     conda (params.enable_conda ? "bioconda::arriba=2.1.0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {

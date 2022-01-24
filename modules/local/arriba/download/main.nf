@@ -1,9 +1,6 @@
 process ARRIBA_DOWNLOAD {
     tag "arriba"
     label 'process_low'
-    publishDir "${params.genomes_base}",
-        mode: params.publishDir_mode,
-        saveAs: { filename -> filename.equals('versions.yml') ? null : filename }
 
     conda (params.enable_conda ? "bioconda::gnu-wget=1.18" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
