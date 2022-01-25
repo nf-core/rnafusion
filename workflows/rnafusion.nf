@@ -50,6 +50,12 @@ include { FASTQC                      } from '../modules/nf-core/modules/fastqc/
 include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 
+include { FASTQC                      }   from '../modules/nf-core/modules/fastqc/main'           addParams( options: modules['fastqc'] )
+include { MULTIQC                     }   from '../modules/nf-core/modules/multiqc/main'          addParams( options: multiqc_options   )
+include { FUSION_STAR_ARRIBA          }   from '../subworkflows/nf-core/arriba'                   addParams( star_align_options: modules['star_align'], arriba_options: modules['arriba_fusion'])
+include { STARFUSION                  }   from '../modules/local/starfusion/detection/main'       addParams( options: modules['starfusion'] )
+include { FUSIONCATCHER               }   from '../modules/local/fusioncatcher/detection/main'    addParams( options: modules['fusioncatcher'] )
+
 /*
 ========================================================================================
     RUN MAIN WORKFLOW
@@ -99,8 +105,42 @@ workflow RNAFUSION {
     MULTIQC (
         ch_multiqc_files.collect()
     )
-    multiqc_report = MULTIQC.out.report.toList()
+
+    multiqc_report       = MULTIQC.out.report.toList()
     ch_versions    = ch_versions.mix(MULTIQC.out.versions)
+    // Run STAR alignment and Arriba
+    if (params.arriba){
+        ch_genome_bam     = Channel.empty()
+        ch_arriba_fusions = Channel.empty()
+        FUSION_STAR_ARRIBA (
+            ch_reads,
+            PREPARE_GENOME.out.star_index,
+            PREPARE_GENOME.out.fasta,
+            PREPARE_GENOME.out.gtf
+        )
+        ch_genome_bam     = FUSION_STAR_ARRIBA.out.bam
+        ch_arriba_fusions = FUSION_STAR_ARRIBA.out.fusions
+    }
+
+    //Run STAR fusion
+    if (params.starfusion){
+        ch_star_fusions = Channel.empty()
+        STARFUSION (
+            ch_reads,
+            PREPARE_GENOME.out.starfusion_resource
+        )
+        ch_starfusion_fusions = STARFUSION.out.fusions
+    }
+
+    //Run FusionCatcher
+    if (params.fusioncatcher){
+        ch_fusioncather_fusions = Channel.empty()
+        FUSIONCATCHER (
+            ch_reads,
+            PREPARE_GENOME.out.fusioncatcher_resource
+        )
+        ch_fusioncatcher_fusions = FUSIONCATCHER.out.fusions
+    }
 }
 
 /*

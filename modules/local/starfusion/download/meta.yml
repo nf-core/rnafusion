@@ -1,0 +1,27 @@
+name: starfusion_downloadgenome
+description: Download STAR-fusion genome resource required to run STAR-Fusion caller
+keywords:
+  - downoad
+tools:
+  - star-fusion:
+      description: Fusion calling algorithm for RNAseq data
+      homepage: https://github.com/STAR-Fusion/
+      documentation: https://github.com/STAR-Fusion/STAR-Fusion/wiki/installing-star-fusion
+      tool_dev_url: https://github.com/STAR-Fusion/STAR-Fusion
+      doi: "10.1186/s13059-019-1842-9"
+      licence: ['GPL v3']
+
+input:
+  - genome_version:
+      type: value
+      description: Genome version - either GRCh38 or GRCh38
+      pattern: "GRCh3*"
+
+output:
+  - reference:
+      type: directory
+      description: Genome resource path
+      pattern: "star-fusion-genome"
+
+authors:
+  - "@praveenraj2018"

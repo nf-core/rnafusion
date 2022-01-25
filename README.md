@@ -59,8 +59,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 4. Start running your own analysis!
 
-    <!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
-
     ```console
     nextflow run nf-core/rnafusion -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --genome GRCh38
     ```
@@ -71,11 +69,11 @@ The nf-core/rnafusion pipeline comes with documentation about the pipeline [usag
 
 ## Credits
 
-nf-core/rnafusion was originally written by Martin Proks.
+nf-core/rnafusion was originally written by Martin Proks, @praveenraj2018
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
+* Annick Renevey (@rannick)
 
 ## Contributions and Support
 
