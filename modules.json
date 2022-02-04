@@ -4,19 +4,22 @@
     "repos": {
         "nf-core/modules": {
             "custom/dumpsoftwareversions": {
-                "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
             },
             "fastqc": {
-                "git_sha": "9d0cad583b9a71a6509b754fdf589cbfbed08961"
-            },
-            "multiqc": {
-                "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
             },
             "kallisto/index": {
-                "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "multiqc": {
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
             },
             "samtools/faidx": {
-                "git_sha": "e751e5040af57e1b4e06ed4e0f3efe6de25c1683"
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
+            "star/genomegenerate": {
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
             }
         }
     }
