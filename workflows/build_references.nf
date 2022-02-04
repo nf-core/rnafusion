@@ -43,7 +43,7 @@ workflow BUILD_REFERENCES {
     }
 
     if (params.starfusion || params.all) {
-        STARFUSION_DOWNLOAD( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.gtf )
+        STARFUSION_DOWNLOAD( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.chrgtf )
     }
 
 }

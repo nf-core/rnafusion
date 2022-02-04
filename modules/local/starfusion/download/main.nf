@@ -1,6 +1,5 @@
 process STARFUSION_DOWNLOAD {
     tag 'star-fusion'
-    label 'process_high'
 
     conda (params.enable_conda ? "bioconda::dfam=3.3 bioconda::hmmer=3.3.2 bioconda::star-fusion=1.10.0 bioconda::trinity=date.2011_11_2 bioconda::samtools=1.9 bioconda::star=2.7.8a" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
@@ -17,7 +16,7 @@ process STARFUSION_DOWNLOAD {
     path "*"  , emit: reference
 
     script:
-    def binPath = { workflow.containerEngine == "singularity" || workflow.containerEngine == "docker" ? "/usr/local/src/STAR-Fusion/ctat-genome-lib-builder/prep_genome_lib.pl" : "prep_genome_lib.pl" }
+    def binPath = ( params.enable_conda ? "prep_genome_lib.pl" : "/usr/local/src/STAR-Fusion/ctat-genome-lib-builder/prep_genome_lib.pl" )
     """
     export TMPDIR=/tmp
 
