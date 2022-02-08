@@ -11,7 +11,7 @@ process ERICSCRIPT_DOWNLOAD {
 
     output:
     path "versions.yml"  , emit: versions
-    path "homo_sapiens/*", emit: reference
+    path "*"             , emit: reference
 
     script:
     """
