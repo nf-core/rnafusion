@@ -4,18 +4,15 @@ process PIZZLY {
 
     conda (params.enable_conda ? "bioconda::kallisto=0.46.2 bioconda::pizzly==0.37.3" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        // FIX: create a multicontainer image
         container "https://depot.galaxyproject.org/singularity/kallisto:0.46.2--h4f7b962_1"
     } else {
-        // FIX: create a multicontainer image
         container "quay.io/biocontainers/kallisto:0.46.2--h4f7b962_1"
     }
 
     input:
-    tuple val(meta), path(reads)
-    path gtf
-    path index
-    path transcript
+    tuple val(meta), path(txt)
+    transcript
+    gtf
 
     output:
     path "versions.yml"                                     , emit: versions
@@ -24,9 +21,8 @@ process PIZZLY {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    kallisto quant -t $task.cpus -i $index --fusion -o output $reads
     pizzly \\
         $args \\
         --gtf $gtf \\
