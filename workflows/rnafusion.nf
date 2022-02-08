@@ -25,7 +25,6 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
-// if (!params.build_references && !params.genomes_base) { exit 1 }
 
 
 /*
@@ -47,15 +46,13 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK                   } from '../subworkflows/local/input_check'
-// include { ARRIBA                        } from '../modules/local/arriba/detect/main'
-// include { PREPARE_GENOME                } from '../subworkflows/local/prepare_genome'
 
-// include { STARFUSION                 }   from '../modules/local/starfusion/detection/main'
 include { FUSIONCATCHER                 }   from '../modules/local/fusioncatcher/detect/main'
-include { ERICSCRIPT                    }   from '../modules/local/ericscript/detect/main'
+// include { ERICSCRIPT                    }   from '../modules/local/ericscript/detect/main'
 
 include { STARFUSION_WORKFLOW           }   from '../subworkflows/local/starfusion_workflow'
 include { ARRIBA_WORKFLOW               }   from '../subworkflows/local/arriba_workflow'
+// include { PIZZLY_WORKFLOW               }   from '../subworkflows/local/pizzly_workflow'
 
 /*
 ========================================================================================
@@ -97,50 +94,34 @@ workflow RNAFUSION {
     //
     // MODULE: Run FastQC
     //
-    // FASTQC (
-    //     INPUT_CHECK.out.reads
-    // )
-    // ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+    FASTQC (
+        INPUT_CHECK.out.reads
+    )
+    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
-    // CUSTOM_DUMPSOFTWAREVERSIONS (
-    //     ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    // )
+    CUSTOM_DUMPSOFTWAREVERSIONS (
+        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    )
 
     //
     // MODULE: MultiQC
     //
-    // workflow_summary    = WorkflowRnafusion.paramsSummaryMultiqc(workflow, summary_params)
-    // ch_workflow_summary = Channel.value(workflow_summary)
+    workflow_summary    = WorkflowRnafusion.paramsSummaryMultiqc(workflow, summary_params)
+    ch_workflow_summary = Channel.value(workflow_summary)
 
-    // ch_multiqc_files = Channel.empty()
-    // ch_multiqc_files = ch_multiqc_files.mix(Channel.from(ch_multiqc_config))
-    // ch_multiqc_files = ch_multiqc_files.mix(ch_multiqc_custom_config.collect().ifEmpty([]))
-    // ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    // ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
-    // ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = Channel.empty()
+    ch_multiqc_files = ch_multiqc_files.mix(Channel.from(ch_multiqc_config))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_multiqc_custom_config.collect().ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
 
-    // MULTIQC (
-    //     ch_multiqc_files.collect()
-    // )
+    MULTIQC (
+        ch_multiqc_files.collect()
+    )
 
-    // multiqc_report       = MULTIQC.out.report.toList()
-    // ch_versions          = ch_versions.mix(MULTIQC.out.versions)
-
-
-
-    if (params.ericscript){
-        // def checkPathParamList = []
-        // for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
-
-        ERICSCRIPT (
-            INPUT_CHECK.out.reads,
-            params.ericscript_ref
-        )
-    }
-
-
-
-
+    multiqc_report       = MULTIQC.out.report.toList()
+    ch_versions          = ch_versions.mix(MULTIQC.out.versions)
 
 
 
@@ -150,13 +131,23 @@ workflow RNAFUSION {
 
         ARRIBA_WORKFLOW (
             INPUT_CHECK.out.reads,
+            params.fasta,
             params.starindex_ref,
             gtf
         )
     }
 
+    // // Run pizzly/kallisto
+    // if (params.pizzly){
+    //     index ="${params.pizzly_ref}/kallisto.idx"
+    //     PIZZLY_WORKFLOW (
+    //         INPUT_CHECK.out.reads,
+    //         index
+    //     )
+    // }
 
-    // Run ericscript
+
+    // // Run ericscript
     // if (params.ericscript){
     //     ERICSCRIPT (
     //         INPUT_CHECK.out.reads,
@@ -168,20 +159,22 @@ workflow RNAFUSION {
     //Run STAR fusion
     if (params.starfusion){
         gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.chr.gtf"
+        index ="${params.starfusion_ref}/ctat_genome_lib_build_dir"
+
         STARFUSION_WORKFLOW (
             INPUT_CHECK.out.reads,
             params.starindex_ref,
             gtf,
-            params.starfusion_ref
+            index
         )
     }
-    //Run FusionCatcher
-    if (params.fusioncatcher){
-        FUSIONCATCHER (
-            INPUT_CHECK.out.reads,
-            params.fusioncatcher_ref
-        )
-    }
+    // //Run FusionCatcher
+    // if (params.fusioncatcher){
+    //     FUSIONCATCHER (
+    //         INPUT_CHECK.out.reads,
+    //         params.fusioncatcher_ref
+    //     )
+    // }
 }
 
 /*

@@ -2,7 +2,6 @@ name: fusioncatcher
 description: FusionCatcher searches for novel/known somatic fusion genes, translocations, and chimeras in RNA-seq data
 keywords:
   - fusioncatcher
-  - fusion
 tools:
   - fusioncatcher:
       description: FusionCatcher searches for novel/known somatic fusion genes, translocations, and chimeras in RNA-seq data
@@ -22,6 +21,10 @@ input:
       type: file
       description: FASTQ file
       pattern: "*.{fastq}"
+  - reference:
+      type: directory
+      description: Path to fusioncatcher references
+      pattern: "fusioncatcher-genome"
 
 output:
   - meta:
@@ -29,18 +32,22 @@ output:
       description: |
         Groovy Map containing sample information
         e.g. [ id:'test', single_end:false ]
-  - version:
-      type: file
-      description: File containing software version
-      pattern: "*.{version.txt}"
-  - fusions:
+  - fusiongenes:
       type: file
       description: Final list of candidate fusion genes
-      pattern: "*.{fusioncatcher.txt}"
-  - bam:
+      pattern: "*.fusioncatcher.fusion-genes.txt"
+  - summary:
       type: file
       description: Summary of fusion results
-      pattern: "*.{fusioncatcher_summary.txt}"
+      pattern: "*.fusioncatcher_summary.txt"
+  - log:
+      type: file
+      description: Log of fusion results
+      pattern: "*.fusioncatcher.log"
+  - versions:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
 
 authors:
   - "@praveenraj2018"

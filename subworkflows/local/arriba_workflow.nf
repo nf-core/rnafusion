@@ -8,6 +8,7 @@ include { ARRIBA }                           from '../../modules/nf-core/modules
 
 workflow ARRIBA_WORKFLOW {
     take:
+        reads
         fasta
         index
         gtf
@@ -19,8 +20,10 @@ workflow ARRIBA_WORKFLOW {
         seq_platform = false
         seq_center = false
 
-        STAR_FOR_ARRIBA( fasta, index, gtf, star_ignore_sjdbgtf, seq_platform, seq_center )
+        STAR_FOR_ARRIBA( reads, index, gtf, star_ignore_sjdbgtf, seq_platform, seq_center )
         ch_versions = ch_versions.mix(STAR_FOR_ARRIBA.out.versions)
+
+        // reads_align = reads.join(STAR_FOR_STARFUSION.out.junction )
 
         ARRIBA ( STAR_FOR_ARRIBA.out.bam, fasta, gtf )
         ch_versions = ch_versions.mix(ARRIBA.out.versions)
