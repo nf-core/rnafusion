@@ -33,6 +33,7 @@ process FUSIONCATCHER_DOWNLOAD {
             -o human_${human_version} \\
             $args2
     fi
+    ln -s human_v102 current
 
     fusioncatcher --version | sed 's/fusioncatcher.py //' > versions.yml
     """
