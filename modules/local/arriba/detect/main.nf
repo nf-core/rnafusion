@@ -21,7 +21,7 @@ process ARRIBA {
     path "versions.yml"                             , emit: versions
 
     script:
-    def prefix    = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
+    def prefix = task.ext.prefix ?: "${meta.id}"
     def args = task.ext.args ?: ''
     def args2 = task.ext.args2 ?: ''
     """
