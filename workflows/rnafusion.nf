@@ -11,11 +11,22 @@ WorkflowRnafusion.initialise(params, log)
 
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
+
+
+//TODO problem here as all the folders have to exist
+def checkPathParamList = [
+    params.input, params.multiqc_config, params.fasta,
+    params.genomes_base,
+    params.fusioncatcher_ref, params.starfusion_ref,
+    params.arriba_ref, params.ericscript_ref
+]
+
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
+// if (!params.build_references && !params.genomes_base) { exit 1 }
+
 
 /*
 ========================================================================================
@@ -35,7 +46,16 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include { INPUT_CHECK                   } from '../subworkflows/local/input_check'
+// include { ARRIBA                        } from '../modules/local/arriba/detect/main'
+// include { PREPARE_GENOME                } from '../subworkflows/local/prepare_genome'
+
+// include { STARFUSION                 }   from '../modules/local/starfusion/detection/main'
+include { FUSIONCATCHER                 }   from '../modules/local/fusioncatcher/detect/main'
+include { ERICSCRIPT                    }   from '../modules/local/ericscript/detect/main'
+
+include { STARFUSION_WORKFLOW           }   from '../subworkflows/local/starfusion_workflow'
+include { ARRIBA_WORKFLOW               }   from '../subworkflows/local/arriba_workflow'
 
 /*
 ========================================================================================
@@ -50,11 +70,8 @@ include { FASTQC                      } from '../modules/nf-core/modules/fastqc/
 include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 
-include { FASTQC                      }   from '../modules/nf-core/modules/fastqc/main'           addParams( options: modules['fastqc'] )
-include { MULTIQC                     }   from '../modules/nf-core/modules/multiqc/main'          addParams( options: multiqc_options   )
-include { FUSION_STAR_ARRIBA          }   from '../subworkflows/nf-core/arriba'                   addParams( star_align_options: modules['star_align'], arriba_options: modules['arriba_fusion'])
-include { STARFUSION                  }   from '../modules/local/starfusion/detection/main'       addParams( options: modules['starfusion'] )
-include { FUSIONCATCHER               }   from '../modules/local/fusioncatcher/detection/main'    addParams( options: modules['fusioncatcher'] )
+
+
 
 /*
 ========================================================================================
@@ -80,66 +97,90 @@ workflow RNAFUSION {
     //
     // MODULE: Run FastQC
     //
-    FASTQC (
-        INPUT_CHECK.out.reads
-    )
-    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+    // FASTQC (
+    //     INPUT_CHECK.out.reads
+    // )
+    // ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
+    // CUSTOM_DUMPSOFTWAREVERSIONS (
+    //     ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    // )
 
     //
     // MODULE: MultiQC
     //
-    workflow_summary    = WorkflowRnafusion.paramsSummaryMultiqc(workflow, summary_params)
-    ch_workflow_summary = Channel.value(workflow_summary)
+    // workflow_summary    = WorkflowRnafusion.paramsSummaryMultiqc(workflow, summary_params)
+    // ch_workflow_summary = Channel.value(workflow_summary)
 
-    ch_multiqc_files = Channel.empty()
-    ch_multiqc_files = ch_multiqc_files.mix(Channel.from(ch_multiqc_config))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_multiqc_custom_config.collect().ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+    // ch_multiqc_files = Channel.empty()
+    // ch_multiqc_files = ch_multiqc_files.mix(Channel.from(ch_multiqc_config))
+    // ch_multiqc_files = ch_multiqc_files.mix(ch_multiqc_custom_config.collect().ifEmpty([]))
+    // ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    // ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+    // ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
 
-    MULTIQC (
-        ch_multiqc_files.collect()
-    )
+    // MULTIQC (
+    //     ch_multiqc_files.collect()
+    // )
 
-    multiqc_report       = MULTIQC.out.report.toList()
-    ch_versions    = ch_versions.mix(MULTIQC.out.versions)
+    // multiqc_report       = MULTIQC.out.report.toList()
+    // ch_versions          = ch_versions.mix(MULTIQC.out.versions)
+
+
+
+    if (params.ericscript){
+        // def checkPathParamList = []
+        // for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
+
+        ERICSCRIPT (
+            INPUT_CHECK.out.reads,
+            params.ericscript_ref
+        )
+    }
+
+
+
+
+
+
+
     // Run STAR alignment and Arriba
     if (params.arriba){
-        ch_genome_bam     = Channel.empty()
-        ch_arriba_fusions = Channel.empty()
-        FUSION_STAR_ARRIBA (
-            ch_reads,
-            PREPARE_GENOME.out.star_index,
-            PREPARE_GENOME.out.fasta,
-            PREPARE_GENOME.out.gtf
+        gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf"
+
+        ARRIBA_WORKFLOW (
+            INPUT_CHECK.out.reads,
+            params.starindex_ref,
+            gtf
         )
-        ch_genome_bam     = FUSION_STAR_ARRIBA.out.bam
-        ch_arriba_fusions = FUSION_STAR_ARRIBA.out.fusions
     }
+
+
+    // Run ericscript
+    // if (params.ericscript){
+    //     ERICSCRIPT (
+    //         INPUT_CHECK.out.reads,
+    //         params.ericscript_ref
+    //     )
+    // }
+
 
     //Run STAR fusion
     if (params.starfusion){
-        ch_star_fusions = Channel.empty()
-        STARFUSION (
-            ch_reads,
-            PREPARE_GENOME.out.starfusion_resource
+        gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.chr.gtf"
+        STARFUSION_WORKFLOW (
+            INPUT_CHECK.out.reads,
+            params.starindex_ref,
+            gtf,
+            params.starfusion_ref
         )
-        ch_starfusion_fusions = STARFUSION.out.fusions
     }
-
     //Run FusionCatcher
     if (params.fusioncatcher){
-        ch_fusioncather_fusions = Channel.empty()
         FUSIONCATCHER (
-            ch_reads,
-            PREPARE_GENOME.out.fusioncatcher_resource
+            INPUT_CHECK.out.reads,
+            params.fusioncatcher_ref
         )
-        ch_fusioncatcher_fusions = FUSIONCATCHER.out.fusions
     }
 }
 
