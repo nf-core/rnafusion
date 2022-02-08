@@ -13,15 +13,13 @@ WorkflowRnafusion.initialise(params, log)
 // Check input path parameters to see if they exist
 
 
-//TODO problem here as all the folders have to exist
 def checkPathParamList = [
-    params.input, params.multiqc_config, params.fasta,
-    params.genomes_base,
+    params.input, params.multiqc_config,
+    params.fasta, params.genomes_base,
     params.fusioncatcher_ref, params.starfusion_ref,
     params.arriba_ref, params.ericscript_ref
 ]
 
-for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
