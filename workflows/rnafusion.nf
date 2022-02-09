@@ -16,8 +16,10 @@ WorkflowRnafusion.initialise(params, log)
 def checkPathParamList = [
     params.input, params.multiqc_config,
     params.fasta, params.genomes_base,
+    params.ensembl_ref,
     params.fusioncatcher_ref, params.starfusion_ref,
-    params.arriba_ref, params.ericscript_ref
+    params.arriba_ref, params.ericscript_ref,
+    params.ensembl_version
 ]
 
 
@@ -46,11 +48,11 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 include { INPUT_CHECK                   } from '../subworkflows/local/input_check'
 
 include { FUSIONCATCHER                 }   from '../modules/local/fusioncatcher/detect/main'
-// include { ERICSCRIPT                    }   from '../modules/local/ericscript/detect/main'
+include { ERICSCRIPT                    }   from '../modules/local/ericscript/detect/main'
 
 include { STARFUSION_WORKFLOW           }   from '../subworkflows/local/starfusion_workflow'
 include { ARRIBA_WORKFLOW               }   from '../subworkflows/local/arriba_workflow'
-// include { PIZZLY_WORKFLOW               }   from '../subworkflows/local/pizzly_workflow'
+include { PIZZLY_WORKFLOW               }   from '../subworkflows/local/pizzly_workflow'
 
 /*
 ========================================================================================
@@ -122,7 +124,6 @@ workflow RNAFUSION {
     ch_versions          = ch_versions.mix(MULTIQC.out.versions)
 
 
-
     // Run STAR alignment and Arriba
     if (params.arriba){
         gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf"
@@ -135,14 +136,19 @@ workflow RNAFUSION {
         )
     }
 
-    // // Run pizzly/kallisto
-    // if (params.pizzly){
-    //     index ="${params.pizzly_ref}/kallisto.idx"
-    //     PIZZLY_WORKFLOW (
-    //         INPUT_CHECK.out.reads,
-    //         index
-    //     )
-    // }
+    // Run pizzly/kallisto
+    if (params.pizzly){
+        index ="${params.pizzly_ref}/kallisto"
+        gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf"
+        transcript ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.cdna.all.fa.gz"
+
+        PIZZLY_WORKFLOW (
+            INPUT_CHECK.out.reads,
+            index,
+            gtf,
+            transcript
+        )
+    }
 
 
     // // Run ericscript

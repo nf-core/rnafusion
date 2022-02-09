@@ -27,12 +27,10 @@ process KALLISTO_QUANT {
         -o . \
         $reads
 
-    touch versions.yml
-
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        kallisto: \$(echo \$(kallisto 2>&1) | sed 's/^kallisto //; s/Usage.*\$//')
+    END_VERSIONS
     """
 }
-    // cat <<-END_VERSIONS > versions.yml
-    // "${task.process}":
-    //     kallisto: \$(kallisto | sed 's/^kallisto //; s/Usage.*\$//')
-    // END_VERSIONS
-    // echo \$(kallisto 2>&1) | sed 's/^kallisto //; s/Usage.*\$//' > versions.yml
+
