@@ -1,10 +1,10 @@
 process ERICSCRIPT {
     tag "eriscript"
-    label 'process_medium'
+    label 'process_low'
 
-    conda (params.enable_conda ? "bioconda::ericscript=0.5.5" : null)
+    conda (params.enable_conda ? "bioconda::ericscript=0.5.5 conda-forge::ncurses=6.1" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/ericscript:0.5.5--pl5.22.0r3.4.1_1"
+        container "quay.io/biocontainers/ericscript:0.5.5--4"
     } else {
         container "quay.io/biocontainers/ericscript:0.5.5--hdfd78af_5"
     }

@@ -45,14 +45,14 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK                   } from '../subworkflows/local/input_check'
-
+include { INPUT_CHECK                   }   from '../subworkflows/local/input_check'
+// include { ERICSCRIPT                    }   from '../modules/local/ericscript/detect/main'
 include { FUSIONCATCHER                 }   from '../modules/local/fusioncatcher/detect/main'
-include { ERICSCRIPT                    }   from '../modules/local/ericscript/detect/main'
 
-include { STARFUSION_WORKFLOW           }   from '../subworkflows/local/starfusion_workflow'
 include { ARRIBA_WORKFLOW               }   from '../subworkflows/local/arriba_workflow'
 include { PIZZLY_WORKFLOW               }   from '../subworkflows/local/pizzly_workflow'
+include { SQUID_WORKFLOW                }   from '../subworkflows/local/squid_workflow'
+include { STARFUSION_WORKFLOW           }   from '../subworkflows/local/starfusion_workflow'
 
 /*
 ========================================================================================
@@ -123,7 +123,6 @@ workflow RNAFUSION {
     multiqc_report       = MULTIQC.out.report.toList()
     ch_versions          = ch_versions.mix(MULTIQC.out.versions)
 
-
     // Run STAR alignment and Arriba
     if (params.arriba){
         gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf"
@@ -149,6 +148,21 @@ workflow RNAFUSION {
             transcript
         )
     }
+
+    // Run squid
+    if (params.squid){
+        // index ="${params.pizzly_ref}/kallisto"
+        gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf"
+        // transcript ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.cdna.all.fa.gz"
+
+        SQUID_WORKFLOW (
+            INPUT_CHECK.out.reads,
+            params.fasta,
+            params.starindex_ref,
+            gtf,
+        )
+    }
+
 
 
     // // Run ericscript
