@@ -1,0 +1,4 @@
+lint:
+    files_unchanged:
+    # Added to ignore linting error: actions/setup-node@v1 until fixed release
+    - .github/workflows/linting.yml
