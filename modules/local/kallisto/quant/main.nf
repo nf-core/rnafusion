@@ -1,5 +1,5 @@
 process KALLISTO_QUANT {
-    tag "kalliso_quant"
+    tag "kallisto_quant"
     label 'process_medium'
 
     conda (params.enable_conda ? "bioconda::kallisto=0.46.2" : null)
