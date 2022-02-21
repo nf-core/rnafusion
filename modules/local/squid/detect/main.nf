@@ -5,18 +5,16 @@ process SQUID {
 
     conda (params.enable_conda ? "bioconda::squid=1.5" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/squid:1.5--haac9b31_4' :
-        'https://depot.galaxyproject.org/singularity/squid:1.5--haac9b31_4' }"
+        'docker.io/nfcore/rnafusion:squid_1.5-star2.7.1a' :
+        'docker.io/nfcore/rnafusion:squid_1.5-star2.7.1a' }"
 
 
 
     input:
-    tuple val(meta), path(bam)
-    path gtf
+    tuple val(meta), path(bam), path(chimeric_bam)
 
     output:
     tuple val(meta), path("*_sv.txt"), emit: fusions
-    tuple val(meta), path("*_annotated.txt"), emit: fusions_annotated
     path  "versions.yml"          , emit: versions
 
 
@@ -24,7 +22,11 @@ process SQUID {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    squid -b $bam -o ${prefix}_fusions
-    AnnotateSQUIDOutput.py $gtf ${prefix}_fusions_sv.txt ${prefix}_fusions_annotated.txt
+    squid -b $bam -c $chimeric_bam -o ${prefix}_fusions
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        squid: \$(echo \$(squid --version 2>&1) | sed 's/v//')
+    END_VERSIONS
     """
 }

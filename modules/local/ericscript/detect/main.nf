@@ -4,9 +4,9 @@ process ERICSCRIPT {
 
     conda (params.enable_conda ? "bioconda::ericscript=0.5.5 conda-forge::ncurses=6.1" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "quay.io/biocontainers/ericscript:0.5.5--4"
+        container "docker.io/nfcore/rnafusion:ericscript_0.5.5"
     } else {
-        container "quay.io/biocontainers/ericscript:0.5.5--hdfd78af_5"
+        container "docker.io/nfcore/rnafusion:ericscript_0.5.5"
     }
 
     input:
