@@ -10,14 +10,16 @@ process ARRIBA_DOWNLOAD {
     }
 
     output:
-    path "versions.yml"             , emit: versions
-    path "arriba_v2.1.0/database/*" , emit: reference
+    path "versions.yml"   , emit: versions
+    path "*"              , emit: reference
 
     script:
     """
     wget https://github.com/suhrig/arriba/releases/download/v2.1.0/arriba_v2.1.0.tar.gz -O arriba_v2.1.0.tar.gz
     tar -xzvf arriba_v2.1.0.tar.gz
     rm arriba_v2.1.0.tar.gz
+    mv arriba_v2.1.0/database/* .
+    rm -r arriba_v2.1.0
 
     echo \$(wget -V 2>&1) | grep "GNU Wget" | cut -d" " -f3 > versions.yml
     """
