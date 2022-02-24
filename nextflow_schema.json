@@ -81,6 +81,11 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to arriba references"
                 },
+                "arriba_fusions": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to arriba output"
+                },
                 "ensembl_ref": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
@@ -107,6 +112,11 @@
                     "type": "string",
                     "fa_icon": "far fa-file-code",
                     "description": "Path to fusioncatcher references"
+                },
+                "fusionreport_ref": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to fusionreport references"
                 },
                 "pizzly": {
                     "type": "boolean",
@@ -151,6 +161,16 @@
                     "type": "string",
                     "fa_icon": "far fa-file-code",
                     "description": "Path to starindex references"
+                },
+                "cosmic_username": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "COSMIC username"
+                },
+                "cosmic_passwd": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "COSMIC password"
                 }
             }
         },
