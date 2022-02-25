@@ -53,6 +53,7 @@ include { ARRIBA_WORKFLOW               }   from '../subworkflows/local/arriba_w
 include { PIZZLY_WORKFLOW               }   from '../subworkflows/local/pizzly_workflow'
 include { SQUID_WORKFLOW                }   from '../subworkflows/local/squid_workflow'
 include { STARFUSION_WORKFLOW           }   from '../subworkflows/local/starfusion_workflow'
+include { FUSIONREPORT_WORKFLOW         }   from '../subworkflows/local/fusionreport_workflow'
 
 /*
 ========================================================================================
@@ -82,6 +83,7 @@ def multiqc_report = []
 workflow RNAFUSION {
 
     ch_versions = Channel.empty()
+    ch_fusions = Channel.empty()
 
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
@@ -90,6 +92,7 @@ workflow RNAFUSION {
         ch_input
     )
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+
 
     //
     // MODULE: Run FastQC
@@ -165,13 +168,13 @@ workflow RNAFUSION {
 
 
 
-    // Run ericscript
-    if (params.ericscript){
-        ERICSCRIPT (
-            INPUT_CHECK.out.reads,
-            params.ericscript_ref
-        )
-    }
+    // // Run ericscript
+    // if (params.ericscript){
+    //     ERICSCRIPT (
+    //         INPUT_CHECK.out.reads,
+    //         params.ericscript_ref
+    //     )
+    // }
 
 
     //Run STAR fusion
@@ -189,13 +192,26 @@ workflow RNAFUSION {
 
 
     //Run FusionCatcher
-    if (params.fusioncatcher){
-        FUSIONCATCHER (
-            INPUT_CHECK.out.reads,
-            params.fusioncatcher_ref
-        )
-    }
+    // if (params.fusioncatcher){
+    //     FUSIONCATCHER (
+    //         INPUT_CHECK.out.reads,
+    //         params.fusioncatcher_ref
+    //     )
+    // }
+
+
+
+     //Run fusion-report
+    // FUSIONREPORT_WORKFLOW (
+        // INPUT_CHECK.out.reads,
+        // params.fusionreport_ref,
+        // ARRIBA_WORKFLOW.out.arriba_tools
+    // )
 }
+
+
+
+
 
 /*
 ========================================================================================
