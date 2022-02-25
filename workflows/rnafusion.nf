@@ -129,16 +129,15 @@ workflow RNAFUSION {
 
 
     // Run STAR alignment and Arriba
-    if (params.arriba){
-        gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf"
+    gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf"
 
-        ARRIBA_WORKFLOW (
-            INPUT_CHECK.out.reads,
-            params.fasta,
-            params.starindex_ref,
-            gtf
-        )
-    }
+    ARRIBA_WORKFLOW (
+        INPUT_CHECK.out.reads,
+        params.fasta,
+        params.starindex_ref,
+        gtf
+    )
+
 
     // Run pizzly/kallisto
     if (params.pizzly){
@@ -202,11 +201,11 @@ workflow RNAFUSION {
 
 
      //Run fusion-report
-    // FUSIONREPORT_WORKFLOW (
-        // INPUT_CHECK.out.reads,
-        // params.fusionreport_ref,
-        // ARRIBA_WORKFLOW.out.arriba_tools
-    // )
+    FUSIONREPORT_WORKFLOW (
+        INPUT_CHECK.out.reads,
+        params.fusionreport_ref,
+        ARRIBA_WORKFLOW.out.fusions
+    )
 }
 
 

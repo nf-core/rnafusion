@@ -23,15 +23,14 @@ workflow ARRIBA_WORKFLOW {
         STAR_FOR_ARRIBA( reads, index, gtf, star_ignore_sjdbgtf, seq_platform, seq_center )
         ch_versions = ch_versions.mix(STAR_FOR_ARRIBA.out.versions)
 
-        // reads_align = reads.join(STAR_FOR_STARFUSION.out.junction )
 
         ARRIBA ( STAR_FOR_ARRIBA.out.bam, fasta, gtf )
         ch_versions = ch_versions.mix(ARRIBA.out.versions)
 
 
     emit:
-        ARRIBA.out.fusions
-        ARRIBA.out.fusions_fail
-        versions = ch_versions.ifEmpty(null)
+        fusions         = ARRIBA.out.fusions
+        fusions_fail    = ARRIBA.out.fusions_fail
+        versions        = ch_versions.ifEmpty(null)
     }
 

@@ -9,13 +9,13 @@ workflow FUSIONREPORT_WORKFLOW {
     take:
         reads
         fusionreport_ref
-        arriba_tools
+        fusions
 
     main:
         ch_versions = Channel.empty()
 
 
-    // def tools = !arriba.empty() ? "--arriba ${arriba} " : ''
+    tools = {fusions == [] ? "--arriba ${fusions} " : ''}
     // tools += !ericscript.empty() ? "--ericscript ${ericscript} " : ''
     // tools += !fusioncatcher.empty() ? "--fusioncatcher ${fusioncatcher} " : ''
     // tools += !pizzly.empty() ? "--pizzly ${pizzly} " : ''
@@ -24,8 +24,7 @@ workflow FUSIONREPORT_WORKFLOW {
 
         // def tools = !arriba ? "--arriba ${arriba_fusions} " : ''
 
-
-        FUSIONREPORT( reads, fusionreport_ref, arriba_tools )
+        FUSIONREPORT( reads, fusionreport_ref, tools )
         // ch_versions = ch_versions.mix(STAR_FOR_STARFUSION.out.versions)
         // reads_junction = reads.join(STAR_FOR_STARFUSION.out.junction )
 
