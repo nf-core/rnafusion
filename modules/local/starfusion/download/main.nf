@@ -41,5 +41,4 @@ process STARFUSION_DOWNLOAD {
         --max_readlength $params.read_length \\
         --CPU $task.cpus
     """
-
 }
