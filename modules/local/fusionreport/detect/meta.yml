@@ -1,10 +1,10 @@
-name: fusionreport_download
-description: Build DB for fusionreport
+name: fusionreport
+description: fusionreport
 keywords:
   - sort
 tools:
-  - fusioncatcher:
-      description: Build DB for fusionreport
+  - fusionreport:
+      description: fusionreport
       homepage: https://github.com/ndaniel/fusioncatcher/
       documentation: https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md
       tool_dev_url: https://github.com/ndaniel/fusioncatcher/
@@ -12,24 +12,25 @@ tools:
       licence: ['GPL v3']
 
 input:
-  - username:
-      type: value
-      description: Organism for which the data is downloaded from Ensembl database and built
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - reference:
+      type: path
+      description: DB
       pattern: "*"
-  - passwd:
-      type: value
-      description: Organism for which the data is downloaded from Ensembl database and built
-      pattern: "*"
+  - fusions:
+      type: path
+      description: File contains fusions which pass all of Arriba's filters.
+      pattern: "*.fusions.tsv"
 
 output:
   - versions:
         type: file
         description: File containing software versions
         pattern: "versions.yml"
-  - reference:
-      type: directory
-      description: directory containing the genome resource files required for fusioncatcher
-      pattern: "fusioncatcher-genome"
 
 authors:
   - "@praveenraj2018"
