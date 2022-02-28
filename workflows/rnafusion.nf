@@ -83,7 +83,6 @@ def multiqc_report = []
 workflow RNAFUSION {
 
     ch_versions = Channel.empty()
-    ch_fusions = Channel.empty()
 
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
@@ -97,7 +96,6 @@ workflow RNAFUSION {
     //
     // MODULE: Run FastQC
     //
-
     FASTQC (
         INPUT_CHECK.out.reads
     )
@@ -127,68 +125,32 @@ workflow RNAFUSION {
     multiqc_report       = MULTIQC.out.report.toList()
     ch_versions          = ch_versions.mix(MULTIQC.out.versions)
 
-
     // Run STAR alignment and Arriba
-    gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf"
-
     ARRIBA_WORKFLOW (
         INPUT_CHECK.out.reads,
         params.fasta,
         params.starindex_ref,
-        gtf
+    )
+
+    // Run pizzly/kallisto
+
+    PIZZLY_WORKFLOW (
+        INPUT_CHECK.out.reads,
     )
 
 
-    // Run pizzly/kallisto
-    if (params.pizzly){
-        index ="${params.pizzly_ref}/kallisto"
-        gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf"
-        transcript ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.cdna.all.fa.gz"
-
-        PIZZLY_WORKFLOW (
-            INPUT_CHECK.out.reads,
-            index,
-            gtf,
-            transcript
-        )
-    }
-
-    // Run squid
-    if (params.squid){
-        gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf"
-
-        SQUID_WORKFLOW (
-            INPUT_CHECK.out.reads,
-            params.fasta,
-            params.starindex_ref,
-            gtf
-        )
-    }
+// Run squid
+    SQUID_WORKFLOW (
+        INPUT_CHECK.out.reads,
+        params.fasta
+    )
 
 
+//Run STAR fusion
 
-    // // Run ericscript
-    // if (params.ericscript){
-    //     ERICSCRIPT (
-    //         INPUT_CHECK.out.reads,
-    //         params.ericscript_ref
-    //     )
-    // }
-
-
-    //Run STAR fusion
-    if (params.starfusion){
-        gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.chr.gtf"
-        index ="${params.starfusion_ref}/ctat_genome_lib_build_dir"
-
-        STARFUSION_WORKFLOW (
-            INPUT_CHECK.out.reads,
-            params.starindex_ref,
-            gtf,
-            index
-        )
-    }
-
+    STARFUSION_WORKFLOW (
+        INPUT_CHECK.out.reads
+    )
 
     //Run FusionCatcher
     // if (params.fusioncatcher){
@@ -204,10 +166,12 @@ workflow RNAFUSION {
     FUSIONREPORT_WORKFLOW (
         INPUT_CHECK.out.reads,
         params.fusionreport_ref,
-        ARRIBA_WORKFLOW.out.fusions
+        ARRIBA_WORKFLOW.out.fusions,
+        PIZZLY_WORKFLOW.out.fusions,
+        SQUID_WORKFLOW.out.fusions,
+        STARFUSION_WORKFLOW.out.fusions
     )
 }
-
 
 
 
