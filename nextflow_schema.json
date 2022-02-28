@@ -108,10 +108,21 @@
                     "description": "Build or run fusioncatcher references/analyses",
                     "default": "false"
                 },
+                "fusioncatcher_fusions": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to fusioncatcher output"
+                },
                 "fusioncatcher_ref": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
                     "description": "Path to fusioncatcher references"
+                },
+                "fusionreport": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Build fusionreport references",
+                    "default": "false"
                 },
                 "fusionreport_ref": {
                     "type": "string",
@@ -124,6 +135,11 @@
                     "description": "Build or run pizzly references/analyses",
                     "default": "false"
                 },
+                "pizzly_fusions": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to pizzly output"
+                },
                 "pizzly_ref": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
@@ -135,6 +151,11 @@
                     "description": "Build or run squid references/analyses",
                     "default": "false"
                 },
+                "squid_fusions": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to squid output"
+                },
                 "squid_ref": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
@@ -145,6 +166,11 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Build or run starfusion references/analyses",
                     "default": "false"
+                },
+                "starfusion_fusions": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to starfusion output",
                 },
                 "starfusion_ref": {
                     "type": "string",
