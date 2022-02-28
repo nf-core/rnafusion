@@ -12,17 +12,26 @@ process FUSIONREPORT {
     input:
     tuple val(meta), path(reads)
     path(fusionreport_ref)
-    file(arriba_tools)
+    path(arriba_fusions)
+    path(pizzly_fusions)
+    path(squid_fusions)
+    path(starfusion_fusions)
 
     output:
-    path "*"                , emit: reference
-    path "versions.yml"     , emit: versions
+    path "versions.yml"           , emit: versions
+    tuple val(meta), path("*.tsv") , emit: fusion_list
 
     script:
-
+    def tools = params.arriba      ? "--arriba ${arriba_fusions} " : ''
+    tools    += params.pizzly      ? "--pizzly ${pizzly_fusions} " : ''
+    tools    += params.squid       ? "--squid ${squid_fusions} " : ''
+    tools    += params.starfusion  ? "--squid ${starfusion_fusions} " : ''
     """
-    fusion_report run $meta.id . $fusionreport_ref --arriba $arriba_tools --allow-multiple-gene-symbols
+    fusion_report run $meta.id . $fusionreport_ref $tools --allow-multiple-gene-symbols
 
-    fusion_report --version > versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        fusion_report: \$(fusion_report --version)
+    END_VERSIONS
     """
 }
