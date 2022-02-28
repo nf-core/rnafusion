@@ -44,13 +44,10 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK                   } from '../subworkflows/local/input_check'
-
 include { FUSIONCATCHER                 }   from '../modules/local/fusioncatcher/detect/main'
-// include { ERICSCRIPT                    }   from '../modules/local/ericscript/detect/main'
 
 include { STARFUSION_WORKFLOW           }   from '../subworkflows/local/starfusion_workflow'
 include { ARRIBA_WORKFLOW               }   from '../subworkflows/local/arriba_workflow'
-// include { PIZZLY_WORKFLOW               }   from '../subworkflows/local/pizzly_workflow'
 
 /*
 ========================================================================================
@@ -135,25 +132,6 @@ workflow RNAFUSION {
         )
     }
 
-    // // Run pizzly/kallisto
-    // if (params.pizzly){
-    //     index ="${params.pizzly_ref}/kallisto.idx"
-    //     PIZZLY_WORKFLOW (
-    //         INPUT_CHECK.out.reads,
-    //         index
-    //     )
-    // }
-
-
-    // // Run ericscript
-    // if (params.ericscript){
-    //     ERICSCRIPT (
-    //         INPUT_CHECK.out.reads,
-    //         params.ericscript_ref
-    //     )
-    // }
-
-
     //Run STAR fusion
     if (params.starfusion){
         gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.chr.gtf"
@@ -166,13 +144,6 @@ workflow RNAFUSION {
             index
         )
     }
-    // //Run FusionCatcher
-    // if (params.fusioncatcher){
-    //     FUSIONCATCHER (
-    //         INPUT_CHECK.out.reads,
-    //         params.fusioncatcher_ref
-    //     )
-    // }
 }
 
 /*
