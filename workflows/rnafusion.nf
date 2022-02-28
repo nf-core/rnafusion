@@ -45,6 +45,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
+include { CAT_FASTQ                     }   from '../modules/nf-core/modules/cat/fastq/main'
 include { INPUT_CHECK                   }   from '../subworkflows/local/input_check'
 include { ERICSCRIPT                    }   from '../modules/local/ericscript/detect/main'
 include { FUSIONCATCHER                 }   from '../modules/local/fusioncatcher/detect/main'
@@ -90,14 +91,36 @@ workflow RNAFUSION {
     INPUT_CHECK (
         ch_input
     )
+    .reads
+    .map {
+        meta, fastq ->
+            meta.id = meta.id.split('_')[0..-2].join('_')
+            [ meta, fastq ] }
+    .groupTuple(by: [0])
+    .branch {
+        meta, fastq ->
+            single  : fastq.size() == 1
+                return [ meta, fastq.flatten() ]
+            multiple: fastq.size() > 1
+                return [ meta, fastq.flatten() ]
+    }
+    .set { ch_fastq }
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+
+    CAT_FASTQ (
+        ch_fastq.multiple
+    )
+    .reads
+    .mix(ch_fastq.single)
+    .set { ch_cat_fastq }
+    ch_versions = ch_versions.mix(CAT_FASTQ.out.versions.first().ifEmpty(null))
 
 
     //
     // MODULE: Run FastQC
     //
     FASTQC (
-        INPUT_CHECK.out.reads
+        ch_cat_fastq
     )
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
@@ -125,32 +148,39 @@ workflow RNAFUSION {
     multiqc_report       = MULTIQC.out.report.toList()
     ch_versions          = ch_versions.mix(MULTIQC.out.versions)
 
+
+
     // Run STAR alignment and Arriba
     ARRIBA_WORKFLOW (
-        INPUT_CHECK.out.reads,
+        ch_cat_fastq,
         params.fasta,
         params.starindex_ref,
     )
+    ch_versions = ch_versions.mix(ARRIBA_WORKFLOW.out.versions.first().ifEmpty(null))
 
     // Run pizzly/kallisto
 
     PIZZLY_WORKFLOW (
-        INPUT_CHECK.out.reads,
+        ch_cat_fastq,
     )
+    ch_versions = ch_versions.mix(PIZZLY_WORKFLOW.out.versions.first().ifEmpty(null))
 
 
 // Run squid
     SQUID_WORKFLOW (
-        INPUT_CHECK.out.reads,
+        ch_cat_fastq,
         params.fasta
     )
+    ch_versions = ch_versions.mix(SQUID_WORKFLOW.out.versions.first().ifEmpty(null))
 
 
 //Run STAR fusion
 
     STARFUSION_WORKFLOW (
-        INPUT_CHECK.out.reads
+        ch_cat_fastq
     )
+    ch_versions = ch_versions.mix(STARFUSION_WORKFLOW.out.versions.first().ifEmpty(null))
+
 
     //Run FusionCatcher
     // if (params.fusioncatcher){
@@ -164,7 +194,7 @@ workflow RNAFUSION {
 
      //Run fusion-report
     FUSIONREPORT_WORKFLOW (
-        INPUT_CHECK.out.reads,
+        ch_cat_fastq,
         params.fusionreport_ref,
         ARRIBA_WORKFLOW.out.fusions,
         PIZZLY_WORKFLOW.out.fusions,
