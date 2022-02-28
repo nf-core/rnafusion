@@ -4,6 +4,7 @@
 
 include { STAR_ALIGN as STAR_FOR_ARRIBA }    from '../../modules/nf-core/modules/star/align/main'
 include { ARRIBA }                           from '../../modules/nf-core/modules/arriba/main'
+include { GET_PATH }                         from '../../modules/local/getpath/main'
 
 
 workflow ARRIBA_WORKFLOW {
@@ -11,25 +12,37 @@ workflow ARRIBA_WORKFLOW {
         reads
         fasta
         index
-        gtf
 
     main:
         ch_versions = Channel.empty()
+        ch_dummy_file = file("$baseDir/assets/dummy_file_arriba.txt", checkIfExists: true)
 
-        star_ignore_sjdbgtf = false
-        seq_platform = false
-        seq_center = false
+        if (params.arriba) {
+            if (params.arriba_fusions) {
+                ch_arriba_fusions = params.arriba_fusions
+            } else {
+                gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf"
+                star_ignore_sjdbgtf = false
+                seq_platform = false
+                seq_center = false
 
-        STAR_FOR_ARRIBA( reads, index, gtf, star_ignore_sjdbgtf, seq_platform, seq_center )
-        ch_versions = ch_versions.mix(STAR_FOR_ARRIBA.out.versions)
+                STAR_FOR_ARRIBA( reads, index, gtf, star_ignore_sjdbgtf, seq_platform, seq_center )
+                ch_versions = ch_versions.mix(STAR_FOR_ARRIBA.out.versions)
 
 
-        ARRIBA ( STAR_FOR_ARRIBA.out.bam, fasta, gtf )
-        ch_versions = ch_versions.mix(ARRIBA.out.versions)
+                ARRIBA ( STAR_FOR_ARRIBA.out.bam, fasta, gtf )
+                ch_versions = ch_versions.mix(ARRIBA.out.versions)
 
+                GET_PATH(ARRIBA.out.fusions)
+                ch_arriba_fusions = GET_PATH.out.file
+            }
+        }
+        else {
+            ch_arriba_fusions = ch_dummy_file
+        }
 
     emit:
-        fusions         = ARRIBA.out.fusions
+        fusions         = ch_arriba_fusions
         fusions_fail    = ARRIBA.out.fusions_fail
         versions        = ch_versions.ifEmpty(null)
     }
