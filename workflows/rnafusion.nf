@@ -197,7 +197,7 @@ workflow RNAFUSION {
         STARFUSION_WORKFLOW.out.fusions,
         FUSIONCATCHER_WORKFLOW.out.fusions
     )
-    ch_versions = ch_versions.mix(FUSIONINREPORT_WORKFLOW.out.versions.first().ifEmpty(null))
+    ch_versions = ch_versions.mix(FUSIONREPORT_WORKFLOW.out.versions.first().ifEmpty(null))
 
 
      //Run fusionInpector
