@@ -14,10 +14,10 @@ process FUSIONCATCHER {
     path reference
 
     output:
-    tuple val(meta), path("*.fusioncatcher.fusion-genes.txt")   , optional:true, emit: fusions
-    tuple val(meta), path("*.fusioncatcher.summary.txt")        , optional:true, emit: summary
-    tuple val(meta), path("*.fusioncatcher.log")                               , emit: log
-    path "versions.yml"                                                        , emit: versions
+    tuple val(meta), path("*.fusioncatcher.fusion-genes.txt")   , optional:true  , emit: fusions
+    tuple val(meta), path("*.fusioncatcher.summary.txt")        , optional:true  , emit: summary
+    tuple val(meta), path("*.fusioncatcher.log")                                 , emit: log
+    path "versions.yml"                                                          , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
