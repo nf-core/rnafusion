@@ -6,11 +6,18 @@
 
 include { ENSEMBL_DOWNLOAD }                from '../modules/local/ensembl/main'
 include { ARRIBA_DOWNLOAD }                 from '../modules/local/arriba/download/main'
-include { STAR_GENOMEGENERATE }             from '../modules/local/star/genomegenerate/main'
 include { ERICSCRIPT_DOWNLOAD }             from '../modules/local/ericscript/download/main'
 include { FUSIONCATCHER_DOWNLOAD }          from '../modules/local/fusioncatcher/download/main'
-include { KALLISTO_INDEX as PIZZLY_INDEX }  from '../modules/nf-core/modules/kallisto/index/main'
 include { STARFUSION_DOWNLOAD }             from '../modules/local/starfusion/download/main'
+
+/*
+========================================================================================
+    IMPORT NF-CORE MODULES/SUBWORKFLOWS
+========================================================================================
+*/
+
+include { STAR_GENOMEGENERATE }             from '../modules/nf-core/modules/star/genomegenerate/main'
+include { KALLISTO_INDEX as PIZZLY_INDEX }  from '../modules/nf-core/modules/kallisto/index/main'
 
 /*
 ========================================================================================
@@ -43,7 +50,7 @@ workflow BUILD_REFERENCES {
     }
 
     if (params.starfusion || params.all) {
-        STARFUSION_DOWNLOAD( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.gtf )
+        STARFUSION_DOWNLOAD( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.chrgtf )
     }
 
 }

@@ -4,7 +4,7 @@ process ERICSCRIPT {
 
     conda (params.enable_conda ? "bioconda::ericscript=0.5.5" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/ericscript:0.5.5--hdfd78af_5"
+        container "https://depot.galaxyproject.org/singularity/ericscript:0.5.5--pl5.22.0r3.4.1_1"
     } else {
         container "quay.io/biocontainers/ericscript:0.5.5--hdfd78af_5"
     }
@@ -14,22 +14,31 @@ process ERICSCRIPT {
     path reference
 
     output:
-    path "versions.yml"                                                    , emit: versions
-    tuple val(meta), path "./tmp/${prefix}.ericscript.results.filtered.tsv", emit: fusions
-    tuple val(meta), path "./tmp/${prefix}.ericscript.results.total.tsv"   , emit: fusions_total
+    tuple val(meta), path("*.results.filtered.tsv"), emit: fusions
+    tuple val(meta), path("*.results.total.tsv")   , emit: fusions_total
+    path "versions.yml"                           , emit: versions
 
     script:
     def args = task.ext.args ?: ''
-    def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
+
     ericscript.pl \\
         -db $reference \\
-        -name ${prefix}.ericscript \\
+        -name ${prefix} \\
         -p $task.cpus \\
-        -o ./tmp \\
+        -o . \\
         $reads \\
         $args
 
     echo \$(wget -V 2>&1) | grep "GNU Wget" | cut -d" " -f3 > versions.yml
+
+    """
+
+    stub:
+    """
+    touch ${prefix}.results.filtered.tsv
+    touch ${prefix}.results.total.tsv
+    touch versions.yml
     """
 }

@@ -76,11 +76,26 @@
                     "description": "Build or run arriba references/analyses",
                     "default": "false"
                 },
+                "arriba_ref": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to arriba references"
+                },
+                "ensembl_ref": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to ensembl references"
+                },
                 "ericscript": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
                     "description": "Build or run ericscript references/analyses",
                     "default": "false"
+                },
+                "ericscript_ref": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to ericscript references"
                 },
                 "fusioncatcher": {
                     "type": "boolean",
@@ -88,11 +103,21 @@
                     "description": "Build or run fusioncatcher references/analyses",
                     "default": "false"
                 },
+                "fusioncatcher_ref": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to fusioncatcher references"
+                },
                 "pizzly": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
                     "description": "Build or run pizzly references/analyses",
                     "default": "false"
+                },
+                "pizzly_ref": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to pizzly references"
                 },
                 "squid": {
                     "type": "boolean",
@@ -100,17 +125,32 @@
                     "description": "Build or run squid references/analyses",
                     "default": "false"
                 },
-                "starindex": {
-                    "type": "boolean",
+                "squid_ref": {
+                    "type": "string",
                     "fa_icon": "far fa-file-code",
-                    "description": "Build or run starindex references/analyses",
-                    "default": "false"
+                    "description": "Path to squid references"
                 },
                 "starfusion": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
                     "description": "Build or run starfusion references/analyses",
                     "default": "false"
+                },
+                "starfusion_ref": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to starfusion references"
+                },
+                "starindex": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Build or run starindex references/analyses",
+                    "default": "false"
+                },
+                "starindex_ref": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to starindex references"
                 }
             }
         },

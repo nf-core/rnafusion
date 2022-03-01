@@ -17,14 +17,13 @@ input:
       description: |
         Groovy Map containing sample information
         e.g. [ id:'test', single_end:false ]
+  - genome_lib:
+      type: path
+      description: STAR-fusion reference genome lib folder
   - junction:
       type: file
       description: Chimeric junction output from STAR aligner
       pattern: "*.{out.junction}"
-  - genome_lib:
-      type: file
-      description: STAR-fusion reference genome lib folder
-      pattern: "*.*"
 
 output:
   - meta:
@@ -35,11 +34,19 @@ output:
   - version:
       type: file
       description: File containing software version
-      pattern: "*.{version.txt}"
+      pattern: "*.{versions.yml}"
   - fusions:
       type: file
       description: Fusion events from STAR-fusion
       pattern: "*.{fusion_predictions.tsv}"
+  - abridged:
+      type: file
+      description: Fusion events from STAR-fusion
+      pattern: "*.{fusion.abridged.tsv}"
+  - coding_effect:
+      type: file
+      description: Fusion events from STAR-fusion
+      pattern: "*.{coding_effect.tsv}"
 
 authors:
   - "@praveenraj2018"

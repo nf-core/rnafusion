@@ -4,13 +4,13 @@ process STARFUSION {
 
     conda (params.enable_conda ? "bioconda::dfam=3.3 bioconda::hmmer=3.3.2 bioconda::star-fusion=1.10.0 bioconda::trinity=date.2011_11_2 bioconda::samtools=1.9 bioconda::star=2.7.8a" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/mulled-v2-57582e8bdbf51679bdcff9de91ae016a44e322de:b978a3a1e8715581329a267a2c9904574384180a-0"
+        container "docker.io/trinityctat/starfusion:1.10.1"
     } else {
-        container "quay.io/biocontainers/mulled-v2-57582e8bdbf51679bdcff9de91ae016a44e322de:b978a3a1e8715581329a267a2c9904574384180a-0"
+        container "docker.io/trinityctat/starfusion:1.10.1"
     }
 
     input:
-    tuple val(meta), path(reads)
+    tuple val(meta), path(reads), path(junction)
     path reference
 
     output:
@@ -20,22 +20,18 @@ process STARFUSION {
     path "versions.yml"                              , emit: versions
 
     script:
-    def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    def fasta = params.single_end ? "--left_fq ${reads[0]}" : "--left_fq ${reads[0]} --right_fq ${reads[1]}"
     def args = task.ext.args ?: ''
-    def args2 = task.ext.args2 ?: ''
     """
-    STAR \\
-        --genomeDir $index \\
-        --readFilesIn $reads \\
-        --runThreadN $task.cpus \\
-        $args
-
     STAR-Fusion \\
         --genome_lib_dir $reference \\
-        $reads \\
+        $fasta \\
+        -J $junction \\
         --CPU $task.cpus \\
+        --examine_coding_effect \\
         --output_dir . \\
-        $args2
+        $args
 
     mv star-fusion.fusion_predictions.tsv ${prefix}.starfusion.fusion_predictions.tsv
     mv star-fusion.fusion_predictions.abridged.tsv ${prefix}.starfusion.abridged.tsv
@@ -43,4 +39,15 @@ process STARFUSION {
 
     echo \$(STAR-Fusion --version 2>&1) | grep -i 'version' | sed 's/STAR-Fusion version: //' > versions.yml
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}.starfusion.fusion_predictions.tsv
+    touch ${prefix}.starfusion.abridged.tsv
+    touch ${prefix}.starfusion.abridged.coding_effect.tsv
+    touch versions.yml
+    """
 }
+
+
