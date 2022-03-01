@@ -187,7 +187,7 @@ workflow RNAFUSION {
     ch_versions = ch_versions.mix(FUSIONCATCHER_WORKFLOW.out.versions.first().ifEmpty(null))
 
 
-     //Run fusion-report
+    //Run fusion-report
     FUSIONREPORT_WORKFLOW (
         ch_cat_fastq,
         params.fusionreport_ref,
@@ -200,7 +200,7 @@ workflow RNAFUSION {
     ch_versions = ch_versions.mix(FUSIONREPORT_WORKFLOW.out.versions.first().ifEmpty(null))
 
 
-     //Run fusionInpector
+    //Run fusionInpector
     FUSIONINSPECTOR_WORKFLOW (
         ch_cat_fastq,
         FUSIONREPORT_WORKFLOW.out.fusion_list
