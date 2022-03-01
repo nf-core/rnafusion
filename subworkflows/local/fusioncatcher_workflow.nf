@@ -9,7 +9,6 @@ include { GET_PATH }               from '../../modules/local/getpath/main'
 workflow FUSIONCATCHER_WORKFLOW {
     take:
         reads
-        fast
 
     main:
         ch_versions = Channel.empty()
@@ -20,7 +19,7 @@ workflow FUSIONCATCHER_WORKFLOW {
                 ch_fusioncatcher_fusions = params.fusioncatcher_fusions
             } else {
                 FUSIONCATCHER (
-                    INPUT_CHECK.out.reads,
+                    reads,
                     params.fusioncatcher_ref
                 )
                 GET_PATH(FUSIONCATCHER.out.fusions)
@@ -32,7 +31,7 @@ workflow FUSIONCATCHER_WORKFLOW {
         }
 
     emit:
-        fusions  = ch_squid_fusions
+        fusions  = ch_fusioncatcher_fusions
         versions = ch_versions.ifEmpty(null)
     }
 

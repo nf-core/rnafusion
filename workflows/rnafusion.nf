@@ -54,6 +54,8 @@ include { ARRIBA_WORKFLOW               }   from '../subworkflows/local/arriba_w
 include { PIZZLY_WORKFLOW               }   from '../subworkflows/local/pizzly_workflow'
 include { SQUID_WORKFLOW                }   from '../subworkflows/local/squid_workflow'
 include { STARFUSION_WORKFLOW           }   from '../subworkflows/local/starfusion_workflow'
+include { FUSIONCATCHER_WORKFLOW        }   from '../subworkflows/local/fusioncatcher_workflow'
+include { FUSIONINSPECTOR_WORKFLOW      }   from '../subworkflows/local/fusioninspector_workflow'
 include { FUSIONREPORT_WORKFLOW         }   from '../subworkflows/local/fusionreport_workflow'
 
 /*
@@ -182,13 +184,10 @@ workflow RNAFUSION {
 
 
 //Run fusioncatcher
-
     FUSIONCATCHER_WORKFLOW (
         ch_cat_fastq
     )
     ch_versions = ch_versions.mix(FUSIONCATCHER_WORKFLOW.out.versions.first().ifEmpty(null))
-
-
 
 
      //Run fusion-report
@@ -200,6 +199,16 @@ workflow RNAFUSION {
         SQUID_WORKFLOW.out.fusions,
         STARFUSION_WORKFLOW.out.fusions
     )
+
+
+     //Run fusionInpector
+    FUSIONINSPECTOR_WORKFLOW (
+        ch_cat_fastq,
+        FUSIONREPORT_WORKFLOW.out.fusion_list
+    )
+
+
+
 }
 
 
