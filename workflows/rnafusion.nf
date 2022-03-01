@@ -197,8 +197,10 @@ workflow RNAFUSION {
         ARRIBA_WORKFLOW.out.fusions,
         PIZZLY_WORKFLOW.out.fusions,
         SQUID_WORKFLOW.out.fusions,
-        STARFUSION_WORKFLOW.out.fusions
+        STARFUSION_WORKFLOW.out.fusions,
+        FUSIONCATCHER_WORKFLOW.out.fusions
     )
+    ch_versions = ch_versions.mix(FUSIONINREPORT_WORKFLOW.out.versions.first().ifEmpty(null))
 
 
      //Run fusionInpector
@@ -206,6 +208,7 @@ workflow RNAFUSION {
         ch_cat_fastq,
         FUSIONREPORT_WORKFLOW.out.fusion_list
     )
+    ch_versions = ch_versions.mix(FUSIONINSPECTOR_WORKFLOW.out.versions.first().ifEmpty(null))
 
 
 

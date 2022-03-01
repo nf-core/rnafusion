@@ -13,10 +13,12 @@ workflow FUSIONREPORT_WORKFLOW {
         pizzly_fusions
         squid_fusions
         starfusion_fusions
+        fusioncatcher_fusions
+
     main:
         ch_versions = Channel.empty()
 
-        FUSIONREPORT( reads, fusionreport_ref, arriba_fusions, pizzly_fusions, squid_fusions, starfusion_fusions )
+        FUSIONREPORT( reads, fusionreport_ref, arriba_fusions, pizzly_fusions, squid_fusions, starfusion_fusions, fusioncatcher_fusions )
         ch_versions = ch_versions.mix(FUSIONREPORT.out.versions)
 
     emit:

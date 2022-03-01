@@ -16,16 +16,21 @@ process FUSIONREPORT {
     path(pizzly_fusions)
     path(squid_fusions)
     path(starfusion_fusions)
+    path(fusioncatcher_fusions)
 
     output:
     path "versions.yml"           , emit: versions
     tuple val(meta), path("*.tsv") , emit: fusion_list
 
     script:
-    def tools = params.arriba      ? "--arriba ${arriba_fusions} " : ''
-    tools    += params.pizzly      ? "--pizzly ${pizzly_fusions} " : ''
-    tools    += params.squid       ? "--squid ${squid_fusions} " : ''
-    tools    += params.starfusion  ? "--squid ${starfusion_fusions} " : ''
+    def tools = params.arriba         ? "--arriba ${arriba_fusions} " : ''
+    tools    += params.pizzly         ? "--pizzly ${pizzly_fusions} " : ''
+    tools    += params.squid          ? "--squid ${squid_fusions} " : ''
+    tools    += params.starfusion     ? "--starfusion ${starfusion_fusions} " : ''
+    tools    += params.fusioncatcher  ? "--fusioncatcher ${fusioncatcher_fusions} " : ''
+
+
+
     """
     fusion_report run $meta.id . $fusionreport_ref $tools --allow-multiple-gene-symbols
 
