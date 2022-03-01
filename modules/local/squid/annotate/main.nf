@@ -1,6 +1,6 @@
 
 process SQUID_ANNOTATE {
-    tag "squid"
+    tag "$meta.id"
     label 'process_medium'
 
     conda (params.enable_conda ? "bioconda::squid=1.5" : null)
@@ -15,15 +15,15 @@ process SQUID_ANNOTATE {
     path gtf
 
     output:
-    tuple val(meta), path("*_annotated.txt"), emit: fusions_annotated
-    path  "versions.yml"          , emit: versions
+    tuple val(meta), path("*annotated.txt")    , emit: fusions_annotated
+    path  "versions.yml"                        , emit: versions
 
 
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    AnnotateSQUIDOutput.py $gtf $txt ${prefix}_fusions_annotated.txt
+    AnnotateSQUIDOutput.py $gtf $txt ${prefix}.squid.fusions.annotated.txt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

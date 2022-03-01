@@ -32,6 +32,9 @@ process FUSIONINSPECTOR {
         --out_prefix $prefix \\
         --vis $args
 
-    echo \$(STAR-Fusion --version 2>&1) | grep -i 'version' | sed 's/STAR-Fusion version: //' > versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        STAR-Fusion: \$(echo STAR-Fusion --version 2>&1 | grep -i 'version' | sed 's/STAR-Fusion version: //')
+    END_VERSIONS
     """
 }

@@ -1,5 +1,5 @@
 process FUSIONCATCHER_DOWNLOAD {
-    tag 'fusioncatcher'
+    tag "fusioncatcher_download"
     label 'process_medium'
 
     conda (params.enable_conda ? "bioconda::fusioncatcher=1.33" : null)

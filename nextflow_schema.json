@@ -170,7 +170,7 @@
                 "starfusion_fusions": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
-                    "description": "Path to starfusion output",
+                    "description": "Path to starfusion output"
                 },
                 "starfusion_ref": {
                     "type": "string",

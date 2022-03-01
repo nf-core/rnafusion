@@ -16,7 +16,7 @@ process PIZZLY {
 
     output:
     path "versions.yml"                              , emit: versions
-    tuple val(meta), path('*_pizzly.txt')            , emit: fusions
+    tuple val(meta), path('*pizzly.txt')            , emit: fusions
     tuple val(meta), path('*unfiltered.json')        , emit: fusions_unfiltered
 
     script:
@@ -27,9 +27,9 @@ process PIZZLY {
         $args \\
         --gtf $gtf \\
         --fasta $transcript \\
-        --output ${prefix}_pizzly $txt
+        --output ${prefix}.pizzly ./fusion.txt
 
-    pizzly_flatten_json.py ${prefix}_pizzly.json ${prefix}_pizzly.txt
+    pizzly_flatten_json.py ${prefix}.pizzly.json ${prefix}.pizzly.txt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -14,15 +14,15 @@ process SQUID {
     tuple val(meta), path(bam), path(chimeric_bam)
 
     output:
-    tuple val(meta), path("*_sv.txt"), emit: fusions
-    path  "versions.yml"          , emit: versions
+    tuple val(meta), path("*sv.txt") , emit: fusions
+    path  "versions.yml"             , emit: versions
 
 
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    squid -b $bam -c $chimeric_bam -o ${prefix}_fusions
+    squid -b $bam -c $chimeric_bam -o ${prefix}.squid.fusions
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

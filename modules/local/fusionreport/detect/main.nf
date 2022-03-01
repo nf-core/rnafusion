@@ -1,5 +1,5 @@
 process FUSIONREPORT {
-    tag 'fusionreport'
+    tag "$meta.id"
     label 'process_medium'
 
     // Note: 2.7X indices incompatible with AWS iGenomes.
@@ -30,7 +30,7 @@ process FUSIONREPORT {
     tools    += params.fusioncatcher  ? "--fusioncatcher ${fusioncatcher_fusions} " : ''
 
 
-
+// TODO: mv file to a prefix-including name including
     """
     fusion_report run $meta.id . $fusionreport_ref $tools --allow-multiple-gene-symbols
 
