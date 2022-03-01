@@ -47,9 +47,6 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 include { CAT_FASTQ                     }   from '../modules/nf-core/modules/cat/fastq/main'
 include { INPUT_CHECK                   }   from '../subworkflows/local/input_check'
-include { ERICSCRIPT                    }   from '../modules/local/ericscript/detect/main'
-include { FUSIONCATCHER                 }   from '../modules/local/fusioncatcher/detect/main'
-
 include { ARRIBA_WORKFLOW               }   from '../subworkflows/local/arriba_workflow'
 include { PIZZLY_WORKFLOW               }   from '../subworkflows/local/pizzly_workflow'
 include { SQUID_WORKFLOW                }   from '../subworkflows/local/squid_workflow'
@@ -209,8 +206,6 @@ workflow RNAFUSION {
         FUSIONREPORT_WORKFLOW.out.fusion_list
     )
     ch_versions = ch_versions.mix(FUSIONINSPECTOR_WORKFLOW.out.versions.first().ifEmpty(null))
-
-
 
 }
 
