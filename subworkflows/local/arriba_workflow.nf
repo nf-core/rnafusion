@@ -37,7 +37,7 @@ workflow ARRIBA_WORKFLOW {
 
                 GET_PATH_ARRIBA(ARRIBA.out.fusions)
                 ch_arriba_fusions = GET_PATH_ARRIBA.out.file
-                GET_PATH_ARRIBA(ARRIBA.out.fusions_fail)
+                GET_PATH_ARRIBA_FAIL(ARRIBA.out.fusions_fail)
                 ch_arriba_fusion_fail = GET_PATH_ARRIBA_FAIL.out.file
             }
         }
