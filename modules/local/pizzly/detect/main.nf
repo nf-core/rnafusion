@@ -27,7 +27,7 @@ process PIZZLY {
         $args \\
         --gtf $gtf \\
         --fasta $transcript \\
-        --output ${prefix}.pizzly ./fusion.txt
+        --output ${prefix}.pizzly $txt
 
     pizzly_flatten_json.py ${prefix}.pizzly.json ${prefix}.pizzly.txt
 
