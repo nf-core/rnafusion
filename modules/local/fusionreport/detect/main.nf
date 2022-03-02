@@ -19,8 +19,9 @@ process FUSIONREPORT {
     path(fusioncatcher_fusions)
 
     output:
-    path "versions.yml"           , emit: versions
+    path "versions.yml"            , emit: versions
     tuple val(meta), path("*.tsv") , emit: fusion_list
+    tuple val(meta), path(".html") , emit: report
 
     script:
     def tools = params.arriba         ? "--arriba ${arriba_fusions} " : ''
