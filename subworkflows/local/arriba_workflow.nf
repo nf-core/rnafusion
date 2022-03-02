@@ -2,9 +2,10 @@
 // Check input samplesheet and get read channels
 //
 
-include { STAR_ALIGN as STAR_FOR_ARRIBA }    from '../../modules/nf-core/modules/star/align/main'
-include { ARRIBA }                           from '../../modules/nf-core/modules/arriba/main'
-include { GET_PATH }                         from '../../modules/local/getpath/main'
+include { STAR_ALIGN as STAR_FOR_ARRIBA }         from '../../modules/nf-core/modules/star/align/main'
+include { ARRIBA }                                from '../../modules/nf-core/modules/arriba/main'
+include { GET_PATH as GET_PATH_ARRIBA }           from '../../modules/local/getpath/main'
+include { GET_PATH as GET_PATH_ARRIBA_FAIL }      from '../../modules/local/getpath/main'
 
 
 workflow ARRIBA_WORKFLOW {
@@ -20,6 +21,7 @@ workflow ARRIBA_WORKFLOW {
         if (params.arriba) {
             if (params.arriba_fusions) {
                 ch_arriba_fusions = params.arriba_fusions
+                ch_arriba_fusion_fail = ch_dummy_file
             } else {
                 gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf"
                 star_ignore_sjdbgtf = false
@@ -33,17 +35,20 @@ workflow ARRIBA_WORKFLOW {
                 ARRIBA ( STAR_FOR_ARRIBA.out.bam, fasta, gtf )
                 ch_versions = ch_versions.mix(ARRIBA.out.versions)
 
-                GET_PATH(ARRIBA.out.fusions)
-                ch_arriba_fusions = GET_PATH.out.file
+                GET_PATH_ARRIBA(ARRIBA.out.fusions)
+                ch_arriba_fusions = GET_PATH_ARRIBA.out.file
+                GET_PATH_ARRIBA(ARRIBA.out.fusions_fail)
+                ch_arriba_fusion_fail = GET_PATH_ARRIBA_FAIL.out.file
             }
         }
         else {
             ch_arriba_fusions = ch_dummy_file
+            ch_arriba_fusion_fail = ch_dummy_file
         }
 
     emit:
         fusions         = ch_arriba_fusions
-        fusions_fail    = ARRIBA.out.fusions_fail
+        fusions_fail    = ch_arriba_fusion_fail
         versions        = ch_versions.ifEmpty(null)
     }
 
