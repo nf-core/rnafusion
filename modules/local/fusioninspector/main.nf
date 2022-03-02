@@ -11,8 +11,8 @@ process FUSIONINSPECTOR {
 
     input:
     tuple val(meta), path(reads)
-    path fusion_list
-    path index
+    tuple val(meta), path(fusion_list)
+    path reference
 
     output:
     path "*"                , emit: output
@@ -24,7 +24,7 @@ process FUSIONINSPECTOR {
     def args = task.ext.args ?: ''
     """
     FusionInspector \\
-        --fusions ${fi_input_list} \\
+        --fusions $fusion_list \\
         --genome_lib ${reference} \\
         $fasta \\
         --CPU ${task.cpus} \\

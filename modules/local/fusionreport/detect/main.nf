@@ -19,9 +19,10 @@ process FUSIONREPORT {
     path(fusioncatcher_fusions)
 
     output:
-    path "versions.yml"            , emit: versions
-    tuple val(meta), path("*.tsv") , emit: fusion_list
-    tuple val(meta), path(".html") , emit: report
+    path "versions.yml"                        , emit: versions
+    tuple val(meta), path("*fusionreport.tsv") , emit: fusion_list
+    tuple val(meta), path("*fusionreport.tsv") , emit: fusion_list_filtered
+    tuple val(meta), path("*.html")            , emit: report
 
     script:
     def tools = params.arriba         ? "--arriba ${arriba_fusions} " : ''
@@ -29,11 +30,12 @@ process FUSIONREPORT {
     tools    += params.squid          ? "--squid ${squid_fusions} " : ''
     tools    += params.starfusion     ? "--starfusion ${starfusion_fusions} " : ''
     tools    += params.fusioncatcher  ? "--fusioncatcher ${fusioncatcher_fusions} " : ''
-
-
-// TODO: mv file to a prefix-including name including
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     fusion_report run $meta.id . $fusionreport_ref $tools --allow-multiple-gene-symbols
+
+    mv fusion_list.tsv ${prefix}.fusionreport.tsv
+    mv fusion_list_filtered.tsv ${prefix}.fusionreport_filtered.tsv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
