@@ -26,16 +26,16 @@ input:
       pattern: "*.fusions.tsv"
   - pizzly_fusions:
       type: path
-      description: File containing fusions from arriba
-      pattern: "*.fusions.tsv"
+      description: File containing fusions from pizzly
+      pattern: "*.pizzly.txt"
   - squid_fusions:
       type: path
       description: File containing fusions from squid
-      pattern: "*.fusions.tsv"
+      pattern: "*.annotated.txt"
   - starfusion_fusions:
       type: path
       description: File containing fusions from STARfusion
-      pattern: "*.fusions.tsv"
+      pattern: "*.starfusion.fusion_predictions.tsv"
   - fusioncatcher_fusions:
       type: path
       description: File containing fusions from fusioncatcher
@@ -53,7 +53,7 @@ output:
   - report:
       type: file
       description: HTML files
-      pattern: "*.{html}"
+      pattern: "*.html"
 
 authors:
   - "@praveenraj2018, @rannick"

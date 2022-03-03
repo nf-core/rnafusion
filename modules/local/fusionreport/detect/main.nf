@@ -19,10 +19,10 @@ process FUSIONREPORT {
     path(fusioncatcher_fusions)
 
     output:
-    path "versions.yml"                        , emit: versions
-    tuple val(meta), path("*fusionreport.tsv") , emit: fusion_list
-    tuple val(meta), path("*fusionreport.tsv") , emit: fusion_list_filtered
-    tuple val(meta), path("${prefix}/*.html")  , emit: report
+    path "versions.yml"                                  , emit: versions
+    tuple val(meta), path("*fusionreport.tsv")           , emit: fusion_list
+    tuple val(meta), path("*fusionreport_filtered.tsv")  , emit: fusion_list_filtered
+    tuple val(meta), path("*.html")                      , emit: report
 
     script:
     def tools = params.arriba         ? "--arriba ${arriba_fusions} " : ''
@@ -36,8 +36,7 @@ process FUSIONREPORT {
 
     mv fusion_list.tsv ${prefix}.fusionreport.tsv
     mv fusion_list_filtered.tsv ${prefix}.fusionreport_filtered.tsv
-    mkdir ${prefix}
-    mv *html ${prefix}/
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         fusion_report: \$(fusion_report --version)
