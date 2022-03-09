@@ -35,9 +35,9 @@ workflow SQUID_WORKFLOW {
             ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID.out.versions )
 
             SAMTOOLS_SORT_FOR_SQUID ( SAMTOOLS_VIEW_FOR_SQUID.out.bam )
-            ch_versions = ch_versions.mix(SAMTOOLS_SORT.out.versions )
+            ch_versions = ch_versions.mix(SAMTOOLS_SORT_FOR_SQUID.out.versions )
 
-            bam_sorted = STAR_FOR_SQUID.out.bam_sorted.join(SAMTOOLS_SORT.out.bam )
+            bam_sorted = STAR_FOR_SQUID.out.bam_sorted.join(SAMTOOLS_SORT_FOR_SQUID.out.bam )
 
             SQUID ( bam_sorted )
             ch_versions = ch_versions.mix(SQUID.out.versions)
