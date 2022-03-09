@@ -24,6 +24,9 @@
             "samtools/faidx": {
                 "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
             },
+            "samtools/index": {
+                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
+            },
             "samtools/sort": {
                 "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
             },
