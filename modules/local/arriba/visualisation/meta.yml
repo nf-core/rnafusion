@@ -1,7 +1,7 @@
-name: arriba
+name: arriba_visualisation
 description: Arriba is a command-line tool for the detection of gene fusions from RNA-Seq data.
 keywords:
-  - fusion
+  - visualisation
   - arriba
 tools:
   - arriba:
@@ -22,10 +22,14 @@ input:
       type: file
       description: BAM/CRAM/SAM file
       pattern: "*.{bam,cram,sam}"
-  - fasta:
+  - bai:
       type: file
-      description: Assembly FASTA file
-      pattern: "*.{fasta}"
+      description: BAMindex file
+      pattern: "*.{bai}"
+  - fusions:
+      type: file
+      description: Arriba fusions file
+      pattern: "*.{tsv}"
   - gtf:
       type: file
       description: Annotation GTF file
@@ -41,14 +45,10 @@ output:
       type: file
       description: File containing software versions
       pattern: "versions.yml"
-  - fusions:
+  - pdf:
       type: file
-      description: File contains fusions which pass all of Arriba's filters.
-      pattern: "*.{fusions.tsv}"
-  - fusions_fail:
-      type: file
-      description: File contains fusions that Arriba classified as an artifact or that are also observed in healthy tissue.
-      pattern: "*.{fusions.discarded.tsv}"
+      description: File contains fusions visualisation
+      pattern: "*.{pdf}"
 
 authors:
-  - "@praveenraj2018"
+  - "@rannick"
