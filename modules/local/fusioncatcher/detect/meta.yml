@@ -24,7 +24,7 @@ input:
   - reference:
       type: directory
       description: Path to fusioncatcher references
-      pattern: "fusioncatcher-genome"
+      pattern: "*"
 
 output:
   - meta:
@@ -32,7 +32,7 @@ output:
       description: |
         Groovy Map containing sample information
         e.g. [ id:'test', single_end:false ]
-  - fusiongenes:
+  - fusions:
       type: file
       description: Final list of candidate fusion genes
       pattern: "*.fusioncatcher.fusion-genes.txt"
@@ -50,4 +50,4 @@ output:
         pattern: "versions.yml"
 
 authors:
-  - "@praveenraj2018"
+  - "@praveenraj2018. @rannick"

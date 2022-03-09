@@ -2,30 +2,44 @@
 // Check input samplesheet and get read channels
 //
 
-include { KALLISTO_QUANT }     from '../../modules/local/kallisto/quant/main'
-// include { ARRIBA }                           from '../../modules/nf-core/modules/arriba/main'
+include { KALLISTO_QUANT    }     from '../../modules/local/kallisto/quant/main'
+include { PIZZLY            }     from '../../modules/local/pizzly/detect/main'
+include { GET_PATH          }     from '../../modules/local/getpath/main'
 
 
 workflow PIZZLY_WORKFLOW {
     take:
-        fasta
-        index
-        transcript
-        gtf
+        reads
 
     main:
         ch_versions = Channel.empty()
+        ch_dummy_file = file("$baseDir/assets/dummy_file_pizzly.txt", checkIfExists: true)
 
-        KALLISTO_QUANT( fasta, index, gtf,)
-        // ch_versions = ch_versions.mix(STAR_FOR_ARRIBA.out.versions)
+        if (params.pizzly) {
+            if (params.pizzly_fusions) {
+                ch_pizzly_fusions = params.pizzly_fusions
+            } else {
+                index ="${params.pizzly_ref}/kallisto"
+                gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf"
+                transcript ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.cdna.all.fa.gz"
 
-        // ARRIBA ( STAR_F/OR_ARRIBA.out.bam, fasta, gtf )
-        // ch_versions = ch_versions.mix(ARRIBA.out.versions)
+                KALLISTO_QUANT( reads, index )
+                ch_versions = ch_versions.mix(KALLISTO_QUANT.out.versions)
 
+                PIZZLY( KALLISTO_QUANT.out.txt, transcript, gtf )
+                ch_versions = ch_versions.mix(PIZZLY.out.versions)
+
+                GET_PATH(PIZZLY.out.fusions)
+                ch_pizzly_fusions = GET_PATH.out.file
+            }
+        }
+        else  {
+            ch_pizzly_fusions = ch_dummy_file
+
+        }
 
     emit:
-        KALLISTO_QUANT.out.txt
-        // ARRIBA.out.fusions_fail
-        // versions = ch_versions.ifEmpty(null)
+        fusions             = ch_pizzly_fusions
+        versions            = ch_versions.ifEmpty(null)
     }
 

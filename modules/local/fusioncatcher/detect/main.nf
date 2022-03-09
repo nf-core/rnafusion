@@ -4,11 +4,9 @@ process FUSIONCATCHER {
 
     conda (params.enable_conda ? "bioconda::fusioncatcher=1.33" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        // container "https://depot.galaxyproject.org/singularity/fusioncatcher:1.30--hdfd78af_1"
-        container "quay.io/biocontainers/fusioncatcher:1.33--hdfd78af_2"
+        container "docker.io/clinicalgenomics/fusioncatcher:1.33"
     } else {
-        container "https://depot.galaxyproject.org/singularity/fusioncatcher:1.30--0"
-        // container "quay.io/biocontainers/fusioncatcher:1.33--hdfd78af_1"
+        container "docker.io/clinicalgenomics/fusioncatcher:1.33"
     }
 
     input:
@@ -16,10 +14,13 @@ process FUSIONCATCHER {
     path reference
 
     output:
-    tuple val(meta), path("*.fusioncatcher.fusion-genes.txt")   , optional:true, emit: fusions
-    tuple val(meta), path("*.fusioncatcher.summary.txt")        , optional:true, emit: summary
-    tuple val(meta), path("*.fusioncatcher.log")                               , emit: log
-    path "versions.yml"                                                        , emit: versions
+    tuple val(meta), path("*.fusioncatcher.fusion-genes.txt")   , optional:true  , emit: fusions
+    tuple val(meta), path("*.fusioncatcher.summary.txt")        , optional:true  , emit: summary
+    tuple val(meta), path("*.fusioncatcher.log")                                 , emit: log
+    path "versions.yml"                                                          , emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
@@ -33,15 +34,15 @@ process FUSIONCATCHER {
         -o . \\
         --skip-blat \\
         $args
+
+    mv final-list_candidate-fusion-genes.txt ${prefix}.fusioncatcher.fusion-genes.txt
+    mv summary_candidate_fusions.txt ${prefix}.fusioncatcher.summary.txt
+    mv fusioncatcher.log ${prefix}.fusioncatcher.log
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        fusioncatcher: \$(echo \$(fusioncatcher --version 2>&1)| sed 's/fusioncatcher.py //')
+    END_VERSIONS
     touch versions.yml
     """
 }
-
-
-    // mv final-list_candidate-fusion-genes.txt ${prefix}.fusioncatcher.fusion-genes.txt
-    // mv summary_candidate_fusions.txt ${prefix}.fusioncatcher.summary.txt
-    // mv fusioncatcher.log ${prefix}.fusioncatcher.log
-    //  fusioncatcher --version | sed 's/fusioncatcher.py //' > versions.yml
-    // touch ${prefix}.fusioncatcher.fusion-genes.txt
-    // touch ${prefix}.fusioncatcher.summary.txt
-    // touch ${prefix}.fusioncatcher.log

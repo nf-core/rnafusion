@@ -11,12 +11,6 @@ tools:
       doi: "10.1101/011650"
       licence: ['GPL v3']
 
-input:
-  - organism:
-      type: value
-      description: Organism for which the data is downloaded from Ensembl database and built
-      pattern: "*"
-
 output:
   - versions:
         type: file
@@ -24,8 +18,8 @@ output:
         pattern: "versions.yml"
   - reference:
       type: directory
-      description: directory containing the genome resource files required for fusioncatcher
-      pattern: "fusioncatcher-genome"
+      description: Path to fusioncatcher references
+      pattern: "*"
 
 authors:
-  - "@praveenraj2018"
+  - "@praveenraj2018, @rannick"

@@ -1,5 +1,5 @@
 process KALLISTO_QUANT {
-    tag "kallisto_quant"
+    tag "$meta.id"
     label 'process_medium'
 
     conda (params.enable_conda ? "bioconda::kallisto=0.46.2" : null)
@@ -14,7 +14,7 @@ process KALLISTO_QUANT {
 
     output:
     path "versions.yml"                        , emit: versions
-    tuple val(meta), path("fusion.txt")        , emit: txt
+    tuple val(meta), path("*fusions.txt")      , emit: txt
 
     script:
     def args = task.ext.args ?: ''
@@ -26,13 +26,12 @@ process KALLISTO_QUANT {
         --fusion \
         -o . \
         $reads
+    mv fusion.txt ${prefix}.kallisto_quant.fusions.txt
 
-    touch versions.yml
-
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        kallisto: \$(echo \$(kallisto 2>&1) | sed 's/^kallisto //; s/Usage.*\$//')
+    END_VERSIONS
     """
 }
-    // cat <<-END_VERSIONS > versions.yml
-    // "${task.process}":
-    //     kallisto: \$(kallisto | sed 's/^kallisto //; s/Usage.*\$//')
-    // END_VERSIONS
-    // echo \$(kallisto 2>&1) | sed 's/^kallisto //; s/Usage.*\$//' > versions.yml
+

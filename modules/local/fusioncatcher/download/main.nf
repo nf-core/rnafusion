@@ -1,12 +1,13 @@
 process FUSIONCATCHER_DOWNLOAD {
-    tag 'fusioncatcher'
+    tag "fusioncatcher_download"
     label 'process_medium'
 
     conda (params.enable_conda ? "bioconda::fusioncatcher=1.33" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/fusioncatcher:1.33--hdfd78af_1"
+
+        container "docker.io/clinicalgenomics/fusioncatcher:1.33"
     } else {
-        container "quay.io/biocontainers/fusioncatcher:1.33--hdfd78af_1"
+        container "docker.io/clinicalgenomics/fusioncatcher:1.33"
     }
 
     output:
@@ -33,8 +34,10 @@ process FUSIONCATCHER_DOWNLOAD {
             -o human_${human_version} \\
             $args2
     fi
-    ln -s human_v102 current
 
-    fusioncatcher --version | sed 's/fusioncatcher.py //' > versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        fusioncatcher: \$(echo \$(fusioncatcher --version 2>&1))
+    END_VERSIONS
     """
 }

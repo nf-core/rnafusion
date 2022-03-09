@@ -1,14 +1,49 @@
-FROM nfcore/base:1.7
+FROM ubuntu:18.04
 
-LABEL authors="Martin Proks" \
-    description="Docker image containing all requirements for nfcore/rnafusion pipeline"
+LABEL Description="This image is used to run FusionCatcher" Version="1.33"
 
-# Install the conda environment
-COPY environment.yml /
-RUN conda env create -f /environment.yml && conda clean -a
+RUN apt-get -y clean \
+    && apt-get -y update \
+    && apt-get -y install \
+    automake \
+    build-essential \
+    bzip2 \
+    cmake \
+    curl \
+    g++ \
+    gawk \
+    gcc \
+    gzip  \
+    libc6-dev \
+    libncurses5-dev \
+    libtbb2 \
+    libtbb-dev \
+    make \
+    parallel \
+    pigz \
+    python \
+    python-dev \
+    python-biopython \
+    python-numpy \
+    python-openpyxl \
+    python-xlrd \
+    tar \
+    unzip \
+    wget \
+    zip \
+    zlib1g \
+    zlib1g-dev \
+    zlibc \
+    default-jdk \
+    && apt-get -y clean
 
-# Add conda installation dir to PATH (instead of doing 'conda activate')
-ENV PATH /opt/conda/envs/nf-core-rnafusion-fusioncatcher_1.20/bin:$PATH
+WORKDIR /opt
 
-# Dump the details of the installed packages to a file for posterity
-RUN conda env export --name nf-core-rnafusion-fusioncatcher_1.20 > nf-core-rnafusion-fusioncatcher_1.20.yml
+######################
+## INSTALLATION
+######################
+
+RUN wget --no-check-certificate http://sf.net/projects/fusioncatcher/files/bootstrap.py -O bootstrap.py \
+    && python bootstrap.py -t -y -i /opt/fusioncatcher/v1.33/
+
+ENV PATH /opt/fusioncatcher/v1.33/bin:$PATH
