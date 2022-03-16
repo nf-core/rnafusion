@@ -3,14 +3,41 @@
     "homePage": "https://github.com/nf-core/rnafusion",
     "repos": {
         "nf-core/modules": {
+            "arriba": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
+            "cat/fastq": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
             "custom/dumpsoftwareversions": {
-                "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
             },
             "fastqc": {
-                "git_sha": "9d0cad583b9a71a6509b754fdf589cbfbed08961"
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
+            "kallisto/index": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "multiqc": {
-                "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
+            "samtools/faidx": {
+                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
+            },
+            "samtools/index": {
+                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
+            },
+            "samtools/sort": {
+                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
+            },
+            "samtools/view": {
+                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
+            },
+            "star/align": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
+            "star/genomegenerate": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             }
         }
     }
