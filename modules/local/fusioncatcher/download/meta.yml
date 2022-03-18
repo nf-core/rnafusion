@@ -13,9 +13,9 @@ tools:
 
 output:
   - versions:
-        type: file
-        description: File containing software versions
-        pattern: "versions.yml"
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
   - reference:
       type: directory
       description: Path to fusioncatcher references
