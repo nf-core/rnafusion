@@ -21,7 +21,7 @@ workflow ARRIBA_WORKFLOW {
         ch_versions = Channel.empty()
         ch_dummy_file = file("$baseDir/assets/dummy_file_arriba.txt", checkIfExists: true)
 
-        if (params.arriba) {
+        if (params.arriba || params.all) {
             gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf"
             star_ignore_sjdbgtf = false
             seq_platform = false

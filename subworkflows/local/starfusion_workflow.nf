@@ -15,7 +15,7 @@ workflow STARFUSION_WORKFLOW {
         ch_versions = Channel.empty()
         ch_dummy_file = file("$baseDir/assets/dummy_file_starfusion.txt", checkIfExists: true)
 
-        if (params.starfusion){
+        if (params.starfusion || params.all){
             if (params.starfusion_fusions){
                 ch_starfusion_fusions = params.starfusion_fusions
             } else {

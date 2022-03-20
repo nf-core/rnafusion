@@ -67,7 +67,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
     * [STAR](https://github.com/alexdobin/STAR) alignment
     * [STAR-fusion](https://github.com/STAR-Fusion/STAR-Fusion) fusion detection
 9. Fusioncatcher subworkflow
-    * [Fusioncatcher](https://github.com/ndaniel/fusioncatcher) fusion detection
+    * [FusionCatcher](https://github.com/ndaniel/fusioncatcher) fusion detection
 10. Fusion-report subworkflow
     * Merge all fusions detected by the different tools
     * [Fusion-report](https://github.com/matq007/fusion-report)
@@ -107,7 +107,7 @@ The nf-core/rnafusion pipeline comes with documentation about the pipeline [usag
 
 ## Credits
 
-nf-core/rnafusion was originally written by Martin Proks, @praveenraj2018, on the basis of work from Rickard Hammar&eacute;n.
+nf-core/rnafusion was originally written by Martin Proks, @praveenraj2018, on the basis of work from Rickard Hammarén.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 

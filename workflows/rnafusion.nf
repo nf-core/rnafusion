@@ -18,7 +18,7 @@ def checkPathParamList = [
     params.fasta, params.genomes_base,
     params.ensembl_ref,
     params.fusioncatcher_ref, params.starfusion_ref,
-    params.arriba_ref, params.ericscript_ref,
+    params.arriba_ref,
     params.ensembl_version
 ]
 

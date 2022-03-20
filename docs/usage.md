@@ -3,150 +3,57 @@
 ## :warning: Please read this documentation on the nf-core website: [https://nf-co.re/rnafusion/usage](https://nf-co.re/rnafusion/usage)
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
-
 ## Introduction
 
-- [:warning: Please read this documentation on the nf-core website: https://nf-co.re/rnafusion/usage](#warning-please-read-this-documentation-on-the-nf-core-website-httpsnf-corernafusionusage)
-- [Introduction](#introduction)
-- [Download references](#download-references)
-    - [Download all references](#download-all-references)
-    - [Download specific references](#download-specific-references)
-    - [Download and build CTAT](#download-and-build-ctat)
-    - [Download GRCh37 references](#download-grch37-references)
-    - [Tool reference requirements](#tool-reference-requirements)
-- [Running the pipeline](#running-the-pipeline)
-    - [Updating the pipeline](#updating-the-pipeline)
-    - [Reproducibility](#reproducibility)
-- [Core Nextflow arguments](#core-nextflow-arguments)
-    - [`-profile`](#-profile)
-    - [`-resume`](#-resume)
-    - [`-c`](#-c)
-        - [Custom resource requests](#custom-resource-requests)
-    - [Running in the background](#running-in-the-background)
-        - [Nextflow memory requirements](#nextflow-memory-requirements)
-- [Pipeline specific arguments](#pipeline-specific-arguments)
-    - [--input](#--input)
-    - [--single_end](#--single_end)
-    - [Tool flags](#tool-flags)
-    - [--arriba](#--arriba)
-    - [--ericscript](#--ericscript)
-    - [--fusioncatcher](#--fusioncatcher)
-    - [--fusion_report](#--fusion_report)
-    - [--pizzly](#--pizzly)
-    - [--squid](#--squid)
-    - [--star_fusion](#--star_fusion)
-- [Visualization flags](#visualization-flags)
-    - [--arriba_vis](#--arriba_vis)
-    - [--fusion_inspector](#--fusion_inspector)
-- [Reference genomes](#reference-genomes)
-    - [--arriba_ref](#--arriba_ref)
-    - [--databases](#--databases)
-    - [--ericscript_ref](#--ericscript_ref)
-    - [--fasta](#--fasta)
-    - [--fusioncatcher_ref](#--fusioncatcher_ref)
-    - [--genome](#--genome)
-    - [--gtf](#--gtf)
-    - [--star_index](#--star_index)
-    - [--star_fusion_ref](#--star_fusion_ref)
-    - [--transcript](#--transcript)
-- [Other command line parameters](#other-command-line-parameters)
-    - [--debug](#--debug)
-    - [--read_length](#--read_length)
-    - [--outdir](#--outdir)
-    - [--email](#--email)
-    - [--email_on_fail](#--email_on_fail)
-    - [--max_multiqc_email_size](#--max_multiqc_email_size)
-    - [-name](#-name)
-    - [--custom_config_version](#--custom_config_version)
-    - [--custom_config_base](#--custom_config_base)
-- [Job resources](#job-resources)
-    - [Automatic resubmission](#automatic-resubmission)
+The pipeline is divided into two parts:
 
-## Download references
+1. Downloading and building the references, using `--build_references`: done only once and after each update.
+2. Detecting fusions using (any combination of) the following tools:
+    * arriba
+    * fusioncatcher
+    * pizzly
+    * squid
+    * starfusion
+3. QC and visualisation tools
+    * Fastqc
+    * MultiQC
+    * arriba visualisation (for fusion detected by arriba only)
+    * fusion-report
+    * fusionInspector
 
-The rnafusion pipeline needs references for the fusion detection tools, so downloading these is a prerequisite.
+### Prerequisite: download and build references
 
-Downloading references manually is a tedious long process.
-To make the pipeline easier to work with, we provide a script to download all necessary references for fusion detection tools.
-
-> **TL;DR:** Make sure to download the correct references for your need!
-
-### Download all references
+The rnafusion pipeline needs references for the fusion detection tools, so downloading these is a **requirement**.
+It is possible to download and build each reference manually (for example in case of non-human samples that are not supported currently) feed references manually to rnafusion using the arguments `--<tool>_ref` but it is advised to download references with rnafusion:
 
 ```bash
 nextflow run nf-core/rnafusion \
---build-references \
---outdir <PATH> \
+--build_references --all \
+--genomes_base <PATH> \
 ```
 
-### Example of downloading references for specific tool
+References for the different tools can also be downloaded separately:
+```bash
+nextflow run nf-core/rnafusion \
+--build_references --<tool> \
+--genomes_base <PATH>
+```
+
+This PATH will be the place the references will be saved.
+
+### Running the detection tools
 
 ```bash
-nextflow run nf-core/rnafusion/download-references.nf \
---arriba \
---outdir <PATH>
-
-nextflow run nf-core/rnafusion/download-references.nf \
---star_fusion \
---outdir <PATH>
-
-nextflow run nf-core/rnafusion/download-references.nf \
---fusioncatcher \
---outdir <PATH>
-
-nextflow run nf-core/rnafusion/download-references.nf \
---ericscript \
---outdir <PATH>
-
-nextflow run nf-core/rnafusion/download-references.nf \
---fusion_report \
---outdir <PATH>
+nextflow run nf-core/rnafusion \
+--build_references --all \
+--outdir <PATH> \
 ```
 
-## Download and build CTAT
+Visualisation tools will be run on all fusion detected.
 
-```bash
-nextflow run nf-core/rnafusion/build-ctat.nf \
---genome GRCh38 \
---outdir <PATH> \
---fasta <PATH>/<FASTA \
---gtf <PATH>/<GTF>
-```
+#### Optional manual feed-in of fusion files
 
-## Download GRCh37 references
-
-```bash
-# GRCh38 genome assembly is used by default.
-# To use the previous assembly specify it using the --genome flag
-nextflow run nf-core/rnafusion/download-references.nf \
---genome GRCh37 \
---download_all \
---outdir <PATH> \
---cosmic_usr <COSMIC_USER> --cosmic_passwd <COSMIC_PASSWD>
-
-# Please note that using the above example command downloads NCBI-based references for STAR-Fusion.
-# To use Ensembl-based references run the following command with the same <PATH> as used above
-
-nextflow run nf-core/rnafusion/build-ctat.nf \
---genome GRCh37 \
---outdir <PATH> \
---fasta <PATH>/<FASTA> \
---gtf <PATH>/<GTF>
-```
-
-### Tool reference requirements
-
-| Tool             |        FASTA       |         GTF        |     STAR-index     |     Genome     |       Other       |
-| ---------------- | :----------------: | :----------------: | :----------------: | :------------: | :----------------: |
-| Arriba           | :white_check_mark: | :white_check_mark: | :white_check_mark: | GRCh37, GRCh38 | `custom_reference` |
-| EricScript       |         :x:        |         :x:        |         :x:        | GRCh37, GRCh38 | `custom_reference` |
-| FusionCatcher    |         :x:        |         :x:        |         :x:        |     GRCh38     | `custom_reference` |
-| Fusion-Inspector | :white_check_mark: | :white_check_mark: | :white_check_mark: | GRCh37, GRCh38 |  `ctat_genome_lib` |
-| fusion-report    |         :x:        |         :x:        |         :x:        | GRCh37, GRCh38 |     `databases`    |
-| Pizzly           |         :x:        | :white_check_mark: | :white_check_mark: | GRCh37, GRCh38 |       `cDNA`       |
-| Squid            |         :x:        | :white_check_mark: | :white_check_mark: | GRCh37, GRCh38 |          -         |
-| Star-Fusion      | :white_check_mark: | :white_check_mark: | :white_check_mark: | GRCh37, GRCh38 |  `ctat_genome_lib` |
-
+It is possible to give the output of each tool manually using the argument: `--<tool>_fusions PATH/TO/FUSION/FILE`.
 ## Samplesheet input
 
 You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
@@ -196,7 +103,7 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 The typical command for running the pipeline is as follows.
 
 ```console
-nextflow run nf-core/rnafusion --input samplesheet.csv --genome GRCh37 -profile docker
+nextflow run nf-core/rnafusion --input samplesheet.csv --genome GRCh38 -profile docker
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -245,21 +152,21 @@ They are loaded in sequence, so later profiles can overwrite earlier profiles.
 
 If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended.
 
-- `docker`
-    - A generic configuration profile to be used with [Docker](https://docker.com/)
-- `singularity`
-    - A generic configuration profile to be used with [Singularity](https://sylabs.io/docs/)
-- `podman`
-    - A generic configuration profile to be used with [Podman](https://podman.io/)
-- `shifter`
-    - A generic configuration profile to be used with [Shifter](https://nersc.gitlab.io/development/shifter/how-to-use/)
-- `charliecloud`
-    - A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
-- `conda`
-    - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
-- `test`
-    - A profile with a complete configuration for automated testing
-    - Includes links to test data so needs no other parameters
+* `docker`
+    * A generic configuration profile to be used with [Docker](https://docker.com/)
+* `singularity`
+    * A generic configuration profile to be used with [Singularity](https://sylabs.io/docs/)
+* `podman`
+    * A generic configuration profile to be used with [Podman](https://podman.io/)
+* `shifter`
+    * A generic configuration profile to be used with [Shifter](https://nersc.gitlab.io/development/shifter/how-to-use/)
+* `charliecloud`
+    * A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
+* `conda`
+    * A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
+* `test`
+    * A profile with a complete configuration for automated testing
+    * Includes links to test data so needs no other parameters
 
 ### `-resume`
 
@@ -280,11 +187,11 @@ Whilst the default requirements set within the pipeline will hopefully work for 
 For example, if the nf-core/rnaseq pipeline is failing after multiple re-submissions of the `STAR_ALIGN` process due to an exit code of `137` this would indicate that there is an out of memory issue:
 
 ```console
-[62/149eb0] NOTE: Process `RNASEQ:ALIGN_STAR:STAR_ALIGN (WT_REP1)` terminated with an error exit status (137) -- Execution is retried (1)
-Error executing process > 'RNASEQ:ALIGN_STAR:STAR_ALIGN (WT_REP1)'
+[62/149eb0] NOTE: Process `NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN (WT_REP1)` terminated with an error exit status (137) -- Execution is retried (1)
+Error executing process > 'NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN (WT_REP1)'
 
 Caused by:
-    Process `RNASEQ:ALIGN_STAR:STAR_ALIGN (WT_REP1)` terminated with an error exit status (137)
+    Process `NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN (WT_REP1)` terminated with an error exit status (137)
 
 Command executed:
     STAR \
@@ -308,55 +215,24 @@ Work dir:
 Tip: you can replicate the issue by changing to the process work dir and entering the command `bash .command.run`
 ```
 
-To bypass this error you would need to find exactly which resources are set by the `STAR_ALIGN` process. The quickest way is to search for `process STAR_ALIGN` in the [nf-core/rnaseq Github repo](https://github.com/nf-core/rnaseq/search?q=process+STAR_ALIGN). We have standardised the structure of Nextflow DSL2 pipelines such that all module files will be present in the `modules/` directory and so based on the search results the file we want is `modules/nf-core/software/star/align/main.nf`. If you click on the link to that file you will notice that there is a `label` directive at the top of the module that is set to [`label process_high`](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/modules/nf-core/software/star/align/main.nf#L9). The [Nextflow `label`](https://www.nextflow.io/docs/latest/process.html#label) directive allows us to organise workflow processes in separate groups which can be referenced in a configuration file to select and configure subset of processes having similar computing requirements. The default values for the `process_high` label are set in the pipeline's [`base.config`](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/base.config#L33-L37) which in this case is defined as 72GB. Providing you haven't set any other standard nf-core parameters to **cap** the [maximum resources](https://nf-co.re/usage/configuration#max-resources) used by the pipeline then we can try and bypass the `STAR_ALIGN` process failure by creating a custom config file that sets at least 72GB of memory, in this case increased to 100GB. The custom config below can then be provided to the pipeline via the [`-c`](#-c) parameter as highlighted in previous sections.
+To bypass this error you would need to find exactly which resources are set by the `STAR_ALIGN` process. The quickest way is to search for `process STAR_ALIGN` in the [nf-core/rnaseq Github repo](https://github.com/nf-core/rnaseq/search?q=process+STAR_ALIGN).
+We have standardised the structure of Nextflow DSL2 pipelines such that all module files will be present in the `modules/` directory and so, based on the search results, the file we want is `modules/nf-core/software/star/align/main.nf`.
+If you click on the link to that file you will notice that there is a `label` directive at the top of the module that is set to [`label process_high`](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/modules/nf-core/software/star/align/main.nf#L9).
+The [Nextflow `label`](https://www.nextflow.io/docs/latest/process.html#label) directive allows us to organise workflow processes in separate groups which can be referenced in a configuration file to select and configure subset of processes having similar computing requirements.
+The default values for the `process_high` label are set in the pipeline's [`base.config`](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/base.config#L33-L37) which in this case is defined as 72GB.
+Providing you haven't set any other standard nf-core parameters to **cap** the [maximum resources](https://nf-co.re/usage/configuration#max-resources) used by the pipeline then we can try and bypass the `STAR_ALIGN` process failure by creating a custom config file that sets at least 72GB of memory, in this case increased to 100GB.
+The custom config below can then be provided to the pipeline via the [`-c`](#-c) parameter as highlighted in previous sections.
 
 ```nextflow
 process {
-    withName: STAR_ALIGN {
+    withName: 'NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN' {
         memory = 100.GB
     }
 }
 ```
 
-> **NB:** We specify just the process name i.e. `STAR_ALIGN` in the config file and not the full task name string that is printed to screen in the error message or on the terminal whilst the pipeline is running i.e. `RNASEQ:ALIGN_STAR:STAR_ALIGN`. You may get a warning suggesting that the process selector isn't recognised but you can ignore that if the process name has been specified correctly. This is something that needs to be fixed upstream in core Nextflow.
-
-<!-- TODO: adapt to current DSL2 parameters -->
-### Tool-specific options
-
-For the ultimate flexibility, we have implemented and are using Nextflow DSL2 modules in a way where it is possible for both developers and users to change tool-specific command-line arguments (e.g. providing an additional command-line argument to the `STAR_ALIGN` process) as well as publishing options (e.g. saving files produced by the `STAR_ALIGN` process that aren't saved by default by the pipeline). In the majority of instances, as a user you won't have to change the default options set by the pipeline developer(s), however, there may be edge cases where creating a simple custom config file can improve the behaviour of the pipeline if for example it is failing due to a weird error that requires setting a tool-specific parameter to deal with smaller / larger genomes.
-
-The command-line arguments passed to STAR in the `STAR_ALIGN` module are a combination of:
-
-- Mandatory arguments or those that need to be evaluated within the scope of the module, as supplied in the [`script`](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/modules/nf-core/software/star/align/main.nf#L49-L55) section of the module file.
-
-- An [`options.args`](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/modules/nf-core/software/star/align/main.nf#L56) string of non-mandatory parameters that is set to be empty by default in the module but can be overwritten when including the module in the sub-workflow / workflow context via the `addParams` Nextflow option.
-
-The nf-core/rnaseq pipeline has a sub-workflow (see [terminology](https://github.com/nf-core/modules#terminology)) specifically to align reads with STAR and to sort, index and generate some basic stats on the resulting BAM files using SAMtools. At the top of this file we import the `STAR_ALIGN` module via the Nextflow [`include`](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/subworkflows/nf-core/align_star.nf#L10) keyword and by default the options passed to the module via the `addParams` option are set as an empty Groovy map [here](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/subworkflows/nf-core/align_star.nf#L5); this in turn means `options.args` will be set to empty by default in the module file too. This is an intentional design choice and allows us to implement well-written sub-workflows composed of a chain of tools that by default run with the bare minimum parameter set for any given tool in order to make it much easier to share across pipelines and to provide the flexibility for users and developers to customise any non-mandatory arguments.
-
-When including the sub-workflow above in the main pipeline workflow we use the same `include` statement, however, we now have the ability to overwrite options for each of the tools in the sub-workflow including the [`align_options`](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/workflows/rnaseq.nf#L225) variable that will be used specifically to overwrite the optional arguments passed to the `STAR_ALIGN` module. In this case, the options to be provided to `STAR_ALIGN` have been assigned sensible defaults by the developer(s) in the pipeline's [`modules.config`](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/modules.config#L70-L74) and can be accessed and customised in the [workflow context](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/workflows/rnaseq.nf#L201-L204) too before eventually passing them to the sub-workflow as a Groovy map called `star_align_options`. These options will then be propagated from `workflow -> sub-workflow -> module`.
-
-As mentioned at the beginning of this section it may also be necessary for users to overwrite the options passed to modules to be able to customise specific aspects of the way in which a particular tool is executed by the pipeline. Given that all of the default module options are stored in the pipeline's `modules.config` as a [`params` variable](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/modules.config#L24-L25) it is also possible to overwrite any of these options via a custom config file.
-
-Say for example we want to append an additional, non-mandatory parameter (i.e. `--outFilterMismatchNmax 16`) to the arguments passed to the `STAR_ALIGN` module. Firstly, we need to copy across the default `args` specified in the [`modules.config`](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/modules.config#L71) and create a custom config file that is a composite of the default `args` as well as the additional options you would like to provide. This is very important because Nextflow will overwrite the default value of `args` that you provide via the custom config.
-
-As you will see in the example below, we have:
-
-- appended `--outFilterMismatchNmax 16` to the default `args` used by the module.
-- changed the default `publishDir` value to where the files will eventually be published in the main results directory.
-- appended `'bam':''` to the default value of `publish_files` so that the BAM files generated by the process will also be saved in the top-level results directory for the module. Note: `'out':'log'` means any file/directory ending in `out` will now be saved in a separate directory called `my_star_directory/log/`.
-
-```nextflow
-params {
-    modules {
-        'star_align' {
-            args          = "--quantMode TranscriptomeSAM --twopassMode Basic --outSAMtype BAM Unsorted --readFilesCommand zcat --runRNGseed 0 --outFilterMultimapNmax 20 --alignSJDBoverhangMin 1 --outSAMattributes NH HI AS NM MD --quantTranscriptomeBan Singleend --outFilterMismatchNmax 16"
-            publishDir    = "my_star_directory"
-            publish_files = ['out':'log', 'tab':'log', 'bam':'']
-        }
-    }
-}
-```
-
+> **NB:** We specify the full process name i.e. `NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN` in the config file because this takes priority over the short name (`STAR_ALIGN`) and allows existing configuration using the full process name to be correctly overridden.
+> If you get a warning suggesting that the process selector isn't recognised check that the process name has been specified correctly.
 ### Updating containers
 
 The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. If for some reason you need to use a different version of a particular tool with the pipeline then you just need to identify the `process` name and override the Nextflow `container` definition for that process using the `withName` declaration. For example, in the [nf-core/viralrecon](https://nf-co.re/viralrecon) pipeline a tool called [Pangolin](https://github.com/cov-lineages/pangolin) has been used during the COVID-19 pandemic to assign lineages to SARS-CoV-2 genome sequenced samples. Given that the lineage assignments change quite frequently it doesn't make sense to re-release the nf-core/viralrecon everytime a new version of Pangolin has been released. However, you can override the default container used by the pipeline by creating a custom config file and passing it as a command-line argument via `-c custom.config`.
@@ -365,7 +241,7 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
 2. Find the latest version of the Biocontainer available on [Quay.io](https://quay.io/repository/biocontainers/pangolin?tag=latest&tab=tags)
 3. Create the custom config accordingly:
 
-    - For Docker:
+    * For Docker:
 
         ```nextflow
         process {
@@ -375,7 +251,7 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
         }
         ```
 
-    - For Singularity:
+    * For Singularity:
 
         ```nextflow
         process {
@@ -385,7 +261,7 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
         }
         ```
 
-    - For Conda:
+    * For Conda:
 
         ```nextflow
         process {
@@ -403,7 +279,7 @@ In most cases, you will only need to create a custom config as a one-off but if 
 
 See the main [Nextflow documentation](https://www.nextflow.io/docs/latest/config.html) for more information about creating your own configuration files.
 
-If you have any questions or issues please send us a message on [Slack](https://nf-co.re/join/slack) on the [`#configs` channel](https://nfcore.slack.com/channels/configs).
+If you have any questions or issues please send us a message on [Slack](https://nf-co.re/join/slack) on the [`#configs` channel](https://nfcore.slack.com/channels/configs). -->
 
 ## Running in the background
 
@@ -422,238 +298,3 @@ We recommend adding the following line to your environment to limit this (typica
 ```console
 NXF_OPTS='-Xms1g -Xmx4g'
 ```
-
-## Pipeline specific arguments
-
-### --input
-
-Use this to specify the location of your input FastQ files. For example:
-
-```bash
---input 'path/to/data/sample_*_{1,2}.fastq.gz'
-```
-
-Please note the following requirements:
-
-1. The path must be enclosed in quotes
-2. The path must have at least one `*` wildcard character
-3. When using the pipeline with paired end data, the path must use `{1,2}` notation to specify read pairs.
-
-If left unspecified, a default pattern is used: `data/*{1,2}.fastq.gz`
-
-### --single_end
-
-By default, the pipeline expects paired-end data. If you have single-end data, you need to specify `--single_end` on the command line when you launch the pipeline. A normal glob pattern, enclosed in quotation marks, can then be used for `--input`. For example:
-
-```bash
---single_end --input '*.fastq'
-```
-
-### Tool flags
-
-### --arriba
-
-If enabled, executes `Arriba` tool.
-
-- `--arriba_opt`
-    - Specify additional parameters. For more information, please refer to the [documentation](http://arriba.readthedocs.io/en/latest/quickstart/) of the tool.
-
-### --ericscript
-
-If enabled, executes `Ericscript` tool.
-
-- `--ericscript_opt`
-    - Specify additional parameters. For more information, please refer to the [documentation](https://sites.google.com/site/bioericscript/home) of the tool.
-
-### --fusioncatcher
-
-If enabled, executes `Fusioncatcher` tool.
-
-> N.B. that Fusioncatcher is not available when using the `GRCh37` genome assembly.
-
-- `--fusioncatcher_opt`
-    - Specify additional parameters. For more information, please refer to the [documentation](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) of the tool.
-
-### --fusion_report
-
-If enabled, download databases for `fusion-report`.
-
-- `fusion_report_opt`
-    - Specify additional parameters. For more information, please refer to the [documentation](https://matq007.github.io/fusion-report/#/) of the tool.
-
-### --pizzly
-
-If enabled, executes `Pizzly` tool.
-
-- `--pizzly_k`
-    - Number of k-mers. Default `31`.
-
-### --squid
-
-If enabled, executes `Squid` tool.
-
-### --star_fusion
-
-If enabled, executes `STAR-Fusion` tool.
-
-- `--star_fusion_opt`
-    - Parameter for specifying additional parameters. For more information, please refer to the [documentation](https://github.com/STAR-Fusion/STAR-Fusion/wiki) of the tool.
-
-## Visualization flags
-
-### --arriba_vis
-
-If enabled, executes build in `Arriba` visualization tool.
-
-### --fusion_inspector
-
-If enabled, executes `Fusion-Inspector` tool.
-
-## Reference genomes
-
-### --arriba_ref
-
-```bash
---arriba_ref '<path to Arriba reference>'
-```
-
-### --databases
-
-Required databases in order to run `fusion-report`.
-
-```bash
---databases '<path to fusion-report databases>'
-```
-
-### --ericscript_ref
-
-Required reference in order to run `EricScript`.
-
-```bash
---ericscript_ref '<path to EricScript reference>'
-```
-
-### --fasta
-
-If you prefer, you can specify the full path to your reference genome when you run the pipeline:
-
-```bash
---fasta '<path to Fasta reference>'
-```
-
-### --fusioncatcher_ref
-
-Required reference in order to run `Fusioncatcher`.
-
-```bash
---fusioncatcher_ref '<path to Fusioncatcher reference>'
-```
-
-### --genome
-
-This pipeline uses `Homo Sapiens` version `GRCh38` by default. Assembly `GRCh37` is optionally available.
-
-> N.B. that using `GRCh37` precludes use of the `Fusioncatcher` tool.
-> Also make sure to specify `--genomes_base`.
-
-```bash
---genome 'GRCh38' --genome_base '</path/to/references>'
-```
-
-### --gtf
-
-Required annotation file.
-
-```bash
---gtf '<path to GTF annotation>'
-```
-
-### --star_index
-
-If you prefer, you can specify the full path for `STAR` index when you run the pipeline.
-If not specified, the pipeline will build the index using for reads with length `100bp` (can be adjusted with parameter `--read_length`).
-
-```bash
---star_index '<path to STAR index>'
-```
-
-### --star_fusion_ref
-
-Required reference in order to run `STAR-Fusion`.
-
-```bash
---star_fusion_ref '<path to STAR-Fusion reference>'
-```
-
-### --transcript
-
-Required transcript file.
-
-```bash
---transcript '<path to transcript reference>'
-```
-
-## Other command line parameters
-
-### --debug
-
-To run only a specific tool (testing freshly implemented tool) just add `--debug` parameter.
-This parameter only works on **fusion tools only**!
-
-### --read_length
-
-Length is used to build a STAR index.
-Default is `100bp` (Illumina).
-
-### --outdir
-
-The output directory where the results will be saved.
-
-### --email
-
-Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits.
-If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.
-
-### --email_on_fail
-
-This works exactly as with `--email`, except emails are only sent if the workflow is not successful.
-
-### --max_multiqc_email_size
-
-Threshold size for MultiQC report to be attached in notification email.
-If file generated by pipeline exceeds the threshold, it will not be attached (Default: 25MB).
-
-### -name
-
-Name for the pipeline run. If not specified, Nextflow will automatically generate a random mnemonic.
-This is used in the MultiQC report (if not default) and in the summary HTML / e-mail (always).
-
-**NB:** Single hyphen (core Nextflow option)
-
-### --custom_config_version
-
-Provide git commit id for custom Institutional configs hosted at `nf-core/configs`. This was implemented for reproducibility purposes. Default: `master`.
-
-```bash
-## Download and use config file with following git commid id
---custom_config_version d52db660777c4bf36546ddb188ec530c3ada1b96
-```
-
-### --custom_config_base
-
-If you're running offline, nextflow will not be able to fetch the institutional config files
-from the internet. If you don't need them, then this is not a problem. If you do need them,
-you should download the files from the repo and tell nextflow where to find them with the
-`custom_config_base` option. For example:
-
-```bash
-NXF_OPTS='-Xms1g -Xmx4g'
-```
-
-## Job resources
-
-### Automatic resubmission
-
-Each step in the pipeline has a default set of requirements for number of CPUs, memory and time.
-For most of the steps in the pipeline, if the job exits with an error code of `143` (exceeded requested resources) it will automatically resubmit with higher requests (2 x original, then 3 x original).
-If it still fails after three times then the pipeline is stopped.
