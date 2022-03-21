@@ -42,10 +42,9 @@ def check_samplesheet(file_in, file_out):
     """
     This function checks that the samplesheet follows the following structure:
 
-    sample,fastq_1,fastq_2
-    SAMPLE_PE,SAMPLE_PE_RUN1_1.fastq.gz,SAMPLE_PE_RUN1_2.fastq.gz
-    SAMPLE_PE,SAMPLE_PE_RUN2_1.fastq.gz,SAMPLE_PE_RUN2_2.fastq.gz
-    SAMPLE_SE,SAMPLE_SE_RUN1_1.fastq.gz,
+    sample,fastq_1,fastq_2,strandedness
+    SAMPLE_PE,SAMPLE_PE_RUN1_1.fastq.gz,SAMPLE_PE_RUN1_2.fastq.gz,forward
+    SAMPLE_PE,SAMPLE_PE_RUN2_1.fastq.gz,SAMPLE_PE_RUN2_2.fastq.gz,forward
 
     For an example see:
     https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/samplesheet/samplesheet_test_illumina_amplicon.csv
@@ -56,7 +55,7 @@ def check_samplesheet(file_in, file_out):
 
         ## Check header
         MIN_COLS = 2
-        HEADER = ["sample", "fastq_1", "fastq_2"]
+        HEADER = ["sample", "fastq_1", "fastq_2", "strandedness"]
         header = [x.strip('"') for x in fin.readline().strip().split(",")]
         if header[: len(HEADER)] != HEADER:
             print("ERROR: Please check samplesheet header -> {} != {}".format(",".join(header), ",".join(HEADER)))
@@ -82,7 +81,7 @@ def check_samplesheet(file_in, file_out):
                 )
 
             ## Check sample name entries
-            sample, fastq_1, fastq_2 = lspl[: len(HEADER)]
+            sample, fastq_1, fastq_2 , strandedness = lspl[: len(HEADER)]
             sample = sample.replace(" ", "_")
             if not sample:
                 print_error("Sample entry has not been specified!", "Line", line)
@@ -99,16 +98,32 @@ def check_samplesheet(file_in, file_out):
                             line,
                         )
 
+            ## Check strandedness
+            strandednesses = ["unstranded", "forward", "reverse"]
+            if strandedness:
+                if strandedness not in strandednesses:
+                    print_error(
+                        f"Strandedness must be one of '{', '.join(strandednesses)}'!",
+                        "Line",
+                        line,
+                    )
+            else:
+                print_error(
+                    f"Strandedness has not been specified! Must be one of {', '.join(strandednesses)}.",
+                    "Line",
+                    line,
+                )
+
             ## Auto-detect paired-end/single-end
-            sample_info = []  ## [single_end, fastq_1, fastq_2]
+            sample_info = []  ## [single_end, fastq_1, fastq_2, strandedness]
             if sample and fastq_1 and fastq_2:  ## Paired-end short reads
-                sample_info = ["0", fastq_1, fastq_2]
+                sample_info = ["0", fastq_1, fastq_2, strandedness]
             elif sample and fastq_1 and not fastq_2:  ## Single-end short reads
-                sample_info = ["1", fastq_1, fastq_2]
+                sample_info = ["1", fastq_1, fastq_2, strandedness]
             else:
                 print_error("Invalid combination of columns provided!", "Line", line)
 
-            ## Create sample mapping dictionary = { sample: [ single_end, fastq_1, fastq_2 ] }
+            ## Create sample mapping dictionary = { sample: [ single_end, fastq_1, fastq_2, strandedness ] }
             if sample not in sample_mapping_dict:
                 sample_mapping_dict[sample] = [sample_info]
             else:
@@ -128,6 +143,17 @@ def check_samplesheet(file_in, file_out):
                 ## Check that multiple runs of the same sample are of the same datatype
                 if not all(x[0] == sample_mapping_dict[sample][0][0] for x in sample_mapping_dict[sample]):
                     print_error("Multiple runs of a sample must be of the same datatype!", "Sample: {}".format(sample))
+
+                ## Check that multiple runs of the same sample are of the same strandedness
+                if not all(
+                    x[-1] == sample_mapping_dict[sample][0][-1]
+                    for x in sample_mapping_dict[sample]
+                ):
+                    print_error(
+                        f"Multiple runs of a sample must have the same strandedness!",
+                        "Sample",
+                        sample,
+                    )
 
                 for idx, val in enumerate(sample_mapping_dict[sample]):
                     fout.write(",".join(["{}_T{}".format(sample, idx + 1)] + val) + "\n")
