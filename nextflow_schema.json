@@ -55,8 +55,7 @@
                 "ensembl_version": {
                     "type": "integer",
                     "fa_icon": "far fa-file-code",
-                    "description": "ensembl version",
-                    "default": "97"
+                    "description": "ensembl version"
                 },
                 "read_length": {
                     "type": "integer",
