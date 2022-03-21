@@ -7,7 +7,7 @@ include { ARRIBA_VISUALISATION }                        from '../../modules/loca
 include { GET_PATH as GET_PATH_ARRIBA }                 from '../../modules/local/getpath/main'
 include { GET_PATH as GET_PATH_ARRIBA_FAIL }            from '../../modules/local/getpath/main'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_ARRIBA }   from '../../modules/nf-core/modules/samtools/sort/main'
-include { SAMTOOLS_INDEX }                              from '../../modules/nf-core/modules/samtools/index/main'
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_ARRIBA}  from '../../modules/nf-core/modules/samtools/index/main'
 include { STAR_ALIGN as STAR_FOR_ARRIBA }               from '../../modules/nf-core/modules/star/align/main'
 
 
@@ -33,10 +33,10 @@ workflow ARRIBA_WORKFLOW {
             SAMTOOLS_SORT_FOR_ARRIBA(STAR_FOR_ARRIBA.out.bam)
             ch_versions = ch_versions.mix(SAMTOOLS_SORT_FOR_ARRIBA.out.versions)
 
-            SAMTOOLS_INDEX(SAMTOOLS_SORT_FOR_ARRIBA.out.bam)
-            ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions)
+            SAMTOOLS_INDEX_FOR_ARRIBA(SAMTOOLS_SORT_FOR_ARRIBA.out.bam)
+            ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FOR_ARRIBA.out.versions)
 
-            bam_indexed = SAMTOOLS_SORT_FOR_ARRIBA.out.bam.join(SAMTOOLS_INDEX.out.bai)
+            bam_indexed = SAMTOOLS_SORT_FOR_ARRIBA.out.bam.join(SAMTOOLS_INDEX_FOR_ARRIBA.out.bai)
 
             if (params.arriba_fusions) {
                 ch_arriba_fusions = params.arriba_fusions
