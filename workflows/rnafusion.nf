@@ -18,7 +18,7 @@ def checkPathParamList = [
     params.fasta, params.genomes_base,
     params.ensembl_ref,
     params.fusioncatcher_ref, params.starfusion_ref,
-    params.arriba_ref, params.ericscript_ref,
+    params.arriba_ref, params.starindex_ref,
     params.ensembl_version
 ]
 
@@ -45,10 +45,11 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { CAT_FASTQ                     }   from '../modules/nf-core/modules/cat/fastq/main'
+
 include { INPUT_CHECK                   }   from '../subworkflows/local/input_check'
 include { ARRIBA_WORKFLOW               }   from '../subworkflows/local/arriba_workflow'
 include { PIZZLY_WORKFLOW               }   from '../subworkflows/local/pizzly_workflow'
+include { QC_WORKFLOW                   }   from '../subworkflows/local/qc_workflow'
 include { SQUID_WORKFLOW                }   from '../subworkflows/local/squid_workflow'
 include { STARFUSION_WORKFLOW           }   from '../subworkflows/local/starfusion_workflow'
 include { FUSIONCATCHER_WORKFLOW        }   from '../subworkflows/local/fusioncatcher_workflow'
@@ -64,6 +65,7 @@ include { FUSIONREPORT_WORKFLOW         }   from '../subworkflows/local/fusionre
 //
 // MODULE: Installed directly from nf-core/modules
 //
+include { CAT_FASTQ                   } from '../modules/nf-core/modules/cat/fastq/main'
 include { FASTQC                      } from '../modules/nf-core/modules/fastqc/main'
 include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
@@ -206,6 +208,13 @@ workflow RNAFUSION {
         FUSIONREPORT_WORKFLOW.out.fusion_list
     )
     ch_versions = ch_versions.mix(FUSIONINSPECTOR_WORKFLOW.out.versions.first().ifEmpty(null))
+
+
+    //QC
+    QC_WORKFLOW (
+        STARFUSION_WORKFLOW.out.bam,
+    )
+    ch_versions = ch_versions.mix(QC_WORKFLOW.out.versions.first().ifEmpty(null))
 
 }
 
