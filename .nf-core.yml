@@ -5,4 +5,3 @@ lint:
     - .github/workflows/linting.yml
     - .github/workflows/branch.yml
     - .github/workflows/linting_comment.yml
-    
