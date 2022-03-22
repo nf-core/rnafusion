@@ -153,17 +153,18 @@ def sniff_format(handle):
     handle.seek(0)
     return dialect
 
+def check_samplesheet(file_in, file_out):
+    """
+    This function checks that the samplesheet follows the following structure:
     sample,fastq_1,fastq_2,strandedness
     SAMPLE_PE,SAMPLE_PE_RUN1_1.fastq.gz,SAMPLE_PE_RUN1_2.fastq.gz,forward
     SAMPLE_PE,SAMPLE_PE_RUN2_1.fastq.gz,SAMPLE_PE_RUN2_2.fastq.gz,forward
-
-
-def check_samplesheet(file_in, file_out):
+    For an example see:
+    https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/samplesheet/samplesheet_test_illumina_amplicon.csv
     """
-    Check that the tabular samplesheet has the structure expected by nf-core pipelines.
 
-    Validate the general shape of the table, expected columns, and each row. Also add
-    an additional column which records whether one or two FASTQ reads were found.
+    sample_mapping_dict = {}
+    with open(file_in, "r") as fin:
 
         ## Check header
         MIN_COLS = 2
