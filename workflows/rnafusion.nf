@@ -212,7 +212,7 @@ workflow RNAFUSION {
 
     //QC
     QC_WORKFLOW (
-        STARFUSION_WORKFLOW.out.bam,
+        STARFUSION_WORKFLOW.out.bam_sorted
     )
     ch_versions = ch_versions.mix(QC_WORKFLOW.out.versions.first().ifEmpty(null))
 

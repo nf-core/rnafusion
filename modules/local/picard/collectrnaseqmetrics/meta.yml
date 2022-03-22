@@ -1,5 +1,5 @@
 name: picard_collectrnaseqmetrics
-description: Produces RNA alignment metrics for a SAM or BAM file. 
+description: Produces RNA alignment metrics for a SAM or BAM file.
 keywords:
   - alignment
   - metrics
@@ -25,6 +25,10 @@ input:
       type: file
       description: BAM file
       pattern: "*.{bam}"
+  - bai:
+      type: file
+      description: An optional BAM index file. If desired, --CREATE_INDEX must be passed as a flag
+      pattern: "*.{bai}"
   - refflat:
       type: file
       description: Gene annotations in refFlat form

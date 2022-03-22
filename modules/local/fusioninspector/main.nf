@@ -18,6 +18,9 @@ process FUSIONINSPECTOR {
     path "*"                , emit: output
     path "versions.yml"     , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     def fasta = params.single_end ? "--left_fq ${reads[0]}" : "--left_fq ${reads[0]} --right_fq ${reads[1]}"

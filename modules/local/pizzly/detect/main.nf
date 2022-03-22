@@ -6,7 +6,7 @@ process PIZZLY {
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/pizzly:0.37.3--py36_2"
     } else {
-        container "quay.io/biocontainers/kallisto:0.46.2--h4f7b962_1"
+        container "quay.io/biocontainers/pizzly:0.37.3--h470a237_3"
     }
 
     input:

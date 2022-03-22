@@ -1,5 +1,4 @@
 process GTF_TO_REFFLAT {
-    tag "$meta.id"
     label 'process_medium'
 
     conda (params.enable_conda ? "bioconda::ucsc-gtftogenepred=377" : null)
@@ -7,17 +6,25 @@ process GTF_TO_REFFLAT {
         'https://depot.galaxyproject.org/singularity/ucsc-gtftogenepred:377--ha8a8165_5' :
         'quay.io/biocontainers/ucsc-gtftogenepred:377--ha8a8165_5' }"
 
+//TODO easier with meta/or add to ensembl
     input:
     path gtf
 
     output:
     path('*.refflat'), emit: refflat
 
+
+    // TODO:add version
     script:
-    def genepred = ${gtf}.getSimpleName() + '.genepred'
-    def refflat = ${gtf}.getSimpleName() + '.refflat'
+    def genepred = gtf + '.genepred'
+    def refflat = gtf + '.refflat'
     """
     gtfToGenePred -genePredExt -geneNameAsName2 ${gtf} ${genepred}
     paste ${genepred} ${genepred} | cut -f12,16-25 > ${refflat}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gtfToGenePred: 377
+    END_VERSIONS
     """
 }

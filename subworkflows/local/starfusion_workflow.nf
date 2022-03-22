@@ -29,7 +29,7 @@ workflow STARFUSION_WORKFLOW {
 
                 STAR_FOR_STARFUSION( reads, params.starindex_ref, gtf, star_ignore_sjdbgtf, seq_platform, seq_center )
                 ch_versions = ch_versions.mix(STAR_FOR_STARFUSION.out.versions)
-                ch_align = STAR_FOR_STARFUSION.out.bam
+                ch_align = STAR_FOR_STARFUSION.out.bam_sorted
 
                 reads_junction = reads.join(STAR_FOR_STARFUSION.out.junction )
 
@@ -45,7 +45,7 @@ workflow STARFUSION_WORKFLOW {
         }
     emit:
         fusions         = ch_starfusion_fusions
-        bam             = ch_align.ifEmpty(null)
+        bam_sorted      = ch_align
         versions        = ch_versions.ifEmpty(null)
 
 
