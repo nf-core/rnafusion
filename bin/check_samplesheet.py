@@ -8,6 +8,7 @@ import argparse
 import csv
 import logging
 import sys
+import os
 from collections import Counter
 from pathlib import Path
 
@@ -60,6 +61,17 @@ class RowChecker:
         self._single_col = single_col
         self._seen = set()
         self.modified = []
+
+def parse_args(args=None):
+    Description = "Reformat nf-core/rnafusion samplesheet file and check its contents."
+    Epilog = "Example usage: python check_samplesheet.py <FILE_IN> <FILE_OUT>"
+
+    parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
+    parser.add_argument("FILE_IN", help="Input samplesheet file.")
+    parser.add_argument("FILE_OUT", help="Output file.")
+    return parser.parse_args(args)
+
+
 
     def validate_and_transform(self, row):
         """
