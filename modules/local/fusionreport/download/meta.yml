@@ -23,9 +23,9 @@ input:
 
 output:
   - versions:
-        type: file
-        description: File containing software versions
-        pattern: "versions.yml"
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
   - reference:
       type: directory
       description: directory containing the genome resource files required for fusioncatcher
