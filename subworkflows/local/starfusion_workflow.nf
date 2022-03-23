@@ -1,10 +1,6 @@
-//
-// Check input samplesheet and get read channels
-//
-
 include { STAR_ALIGN as STAR_FOR_STARFUSION }    from '../../modules/nf-core/modules/star/align/main'
 include { STARFUSION }                           from '../../modules/local/starfusion/detect/main'
-include { GET_PATH }                         from '../../modules/local/getpath/main'
+include { GET_PATH }                             from '../../modules/local/getpath/main'
 
 
 workflow STARFUSION_WORKFLOW {

@@ -1,7 +1,3 @@
-//
-// Check input samplesheet and get read channels
-//
-
 include { KALLISTO_QUANT    }     from '../../modules/local/kallisto/quant/main'
 include { PIZZLY            }     from '../../modules/local/pizzly/detect/main'
 include { GET_PATH          }     from '../../modules/local/getpath/main'

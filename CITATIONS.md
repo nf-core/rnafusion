@@ -23,6 +23,7 @@
     > Nicorici D, Satalan M, Edgren H, Kangaspeska S, Murumagi A, Kallioniemi O, Virtanen S, Kilkku O. FusionCatcher – a tool for finding somatic fusion genes in paired-end RNA-sequencing data. BioRxiv, 2014 Nov. doi: 10.1101/011650.
 
 * [Fusion-report](https://github.com/matq007/fusion-report)
+    > Proks M, Genomic Profiling of a Comprehensive Nation-wide Collection of Childhood Solid Tumors, Master Thesis, Supervisors: Grøntved L, Díaz de Ståhl T, Nistér M, Ewels P, Garcia MU, Juhos S, University of Southern Denmark, 2019, unpublished.
 
 * [Kallisto](https://pachterlab.github.io/kallisto/)
     > Bray NL, Pimentel H, Melsted P, Pachter L. Near-optimal probabilistic RNA-seq quantification. Nature Biotechnology 2016 Apr. 34, 525–527. doi:10.1038/nbt.3519. PMID: 27043002.

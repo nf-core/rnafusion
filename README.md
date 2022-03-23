@@ -4,7 +4,6 @@
 [![GitHub Actions Linting Status](https://github.com/nf-core/rnafusion/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/rnafusion/actions?query=workflow%3A%22nf-core+linting%22)
 [![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/rnafusion/results)
 [![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.3946477)
-<!-- TODO update zenodo after release -->
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A521.10.3-23aa62.svg?labelColor=000000)](https://www.nextflow.io/)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
@@ -21,6 +20,11 @@
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
+
+> **IMPORTANT: conda is not supported currently.** Run with singularity or docker.
+
+> GRCh38 is the only supported reference
+
 | Tool                                                                      |  Single-end reads  |  Version |
 | ------------------------------------------------------------------------- | :----------------: | :------: |
 | [Arriba](https://github.com/suhrig/arriba)                                |         :x:        |  `2.1.0` |
@@ -29,7 +33,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 | [Pizzly](https://github.com/pmelsted/pizzly)                              |         :x:        | `0.37.3` |
 | [Squid](https://github.com/Kingsford-Group/squid)                         |         :x:        |   `1.5`  |
 | [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion)                 | :white_check_mark: | `1.10.1` |
-<!-- TODO fusion-report: check version after release -->
 
 ## Pipeline summary
 

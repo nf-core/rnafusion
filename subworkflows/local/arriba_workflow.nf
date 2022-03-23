@@ -1,7 +1,3 @@
-//
-// Check input samplesheet and get read channels
-//
-
 include { ARRIBA }                                      from '../../modules/nf-core/modules/arriba/main'
 include { ARRIBA_VISUALISATION }                        from '../../modules/local/arriba/visualisation/main'
 include { GET_PATH as GET_PATH_ARRIBA }                 from '../../modules/local/getpath/main'

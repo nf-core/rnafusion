@@ -1,7 +1,3 @@
-//
-// Check input samplesheet and get read channels
-//
-
 include { GET_PATH }                                    from '../../modules/local/getpath/main'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_SQUID }    from '../../modules/nf-core/modules/samtools/sort/main'
 include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_SQUID }    from '../../modules/nf-core/modules/samtools/view/main'

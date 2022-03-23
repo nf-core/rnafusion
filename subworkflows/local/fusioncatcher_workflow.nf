@@ -1,7 +1,3 @@
-//
-// Check input samplesheet and get read channels
-//
-
 include { FUSIONCATCHER }          from '../../modules/local/fusioncatcher/detect/main'
 include { GET_PATH }               from '../../modules/local/getpath/main'
 
