@@ -5,13 +5,30 @@
     "description": "Nextflow rnafusion analysis pipeline, part of the nf-core community.",
     "type": "object",
     "definitions": {
+        "skip_steps": {
+            "title": "Skip steps",
+            "type": "object",
+            "description": "Skip analysis steps",
+            "default": "",
+            "properties": {
+                "skip_qc": {
+                    "type": "boolean",
+                    "description": "Skip QC steps"
+                },
+                "skip_vis": {
+                    "type": "boolean",
+                    "description": "Skip visualisation steps"
+                }
+            },
+            "fa_icon": "fas fa-fast-forward"
+        },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
             "required": [
-                "input",
+                "genomes_base",
                 "outdir"
             ],
             "properties": {
@@ -56,26 +73,23 @@
                 "ensembl_version": {
                     "type": "integer",
                     "fa_icon": "far fa-file-code",
-                    "description": "ensembl version",
-                    "default": "97"
+                    "description": "ensembl version"
                 },
                 "read_length": {
                     "type": "integer",
                     "fa_icon": "far fa-file-code",
                     "description": "Read length",
-                    "default": "100"
+                    "default": 100
                 },
                 "all": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
-                    "description": "Build or run all references/analyses",
-                    "default": "false"
+                    "description": "Build or run all references/analyses"
                 },
                 "arriba": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
-                    "description": "Build or run arriba references/analyses",
-                    "default": "false"
+                    "description": "Build or run arriba references/analyses"
                 },
                 "arriba_ref": {
                     "type": "string",
@@ -95,8 +109,7 @@
                 "ericscript": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
-                    "description": "Build or run ericscript references/analyses",
-                    "default": "false"
+                    "description": "Build or run ericscript references/analyses"
                 },
                 "ericscript_ref": {
                     "type": "string",
@@ -106,8 +119,7 @@
                 "fusioncatcher": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
-                    "description": "Build or run fusioncatcher references/analyses",
-                    "default": "false"
+                    "description": "Build or run fusioncatcher references/analyses"
                 },
                 "fusioncatcher_fusions": {
                     "type": "string",
@@ -122,8 +134,7 @@
                 "fusionreport": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
-                    "description": "Build fusionreport references",
-                    "default": "false"
+                    "description": "Build fusionreport references"
                 },
                 "fusionreport_ref": {
                     "type": "string",
@@ -133,8 +144,7 @@
                 "pizzly": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
-                    "description": "Build or run pizzly references/analyses",
-                    "default": "false"
+                    "description": "Build or run pizzly references/analyses"
                 },
                 "pizzly_fusions": {
                     "type": "string",
@@ -149,8 +159,7 @@
                 "squid": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
-                    "description": "Build or run squid references/analyses",
-                    "default": "false"
+                    "description": "Build or run squid references/analyses"
                 },
                 "squid_fusions": {
                     "type": "string",
@@ -165,8 +174,7 @@
                 "starfusion": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
-                    "description": "Build or run starfusion references/analyses",
-                    "default": "false"
+                    "description": "Build or run starfusion references/analyses"
                 },
                 "starfusion_fusions": {
                     "type": "string",
@@ -181,8 +189,7 @@
                 "starindex": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
-                    "description": "Build or run starindex references/analyses",
-                    "default": "false"
+                    "description": "Build or run starindex references/analyses"
                 },
                 "starindex_ref": {
                     "type": "string",
@@ -429,6 +436,9 @@
         }
     },
     "allOf": [
+        {
+            "$ref": "#/definitions/skip_steps"
+        },
         {
             "$ref": "#/definitions/input_output_options"
         },

@@ -10,6 +10,7 @@ include { ERICSCRIPT_DOWNLOAD }             from '../modules/local/ericscript/do
 include { FUSIONCATCHER_DOWNLOAD }          from '../modules/local/fusioncatcher/download/main'
 include { FUSIONREPORT_DOWNLOAD }           from '../modules/local/fusionreport/download/main'
 include { STARFUSION_DOWNLOAD }             from '../modules/local/starfusion/download/main'
+include { GTF_TO_REFFLAT }                  from '../modules/local/uscs/custom_gtftogenepred/main'
 
 /*
 ========================================================================================
@@ -29,6 +30,8 @@ include { KALLISTO_INDEX as PIZZLY_INDEX }  from '../modules/nf-core/modules/kal
 workflow BUILD_REFERENCES {
 
     ENSEMBL_DOWNLOAD( params.ensembl_version )
+
+    GTF_TO_REFFLAT(ENSEMBL_DOWNLOAD.out.chrgtf)
 
     if (params.starindex || params.all) {
         STAR_GENOMEGENERATE( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.gtf )

@@ -24,6 +24,9 @@ process FUSIONREPORT {
     tuple val(meta), path("*fusionreport_filtered.tsv")  , emit: fusion_list_filtered
     tuple val(meta), path("*.html")                      , emit: report
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     def tools = params.arriba         ? "--arriba ${arriba_fusions} " : ''
     tools    += params.pizzly         ? "--pizzly ${pizzly_fusions} " : ''

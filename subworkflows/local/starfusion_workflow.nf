@@ -4,7 +4,7 @@
 
 include { STAR_ALIGN as STAR_FOR_STARFUSION }    from '../../modules/nf-core/modules/star/align/main'
 include { STARFUSION }                           from '../../modules/local/starfusion/detect/main'
-include { GET_PATH }                         from '../../modules/local/getpath/main'
+include { GET_PATH }                             from '../../modules/local/getpath/main'
 
 
 workflow STARFUSION_WORKFLOW {
@@ -13,6 +13,7 @@ workflow STARFUSION_WORKFLOW {
 
     main:
         ch_versions = Channel.empty()
+        ch_align = Channel.empty()
         ch_dummy_file = file("$baseDir/assets/dummy_file_starfusion.txt", checkIfExists: true)
 
         if (params.starfusion){
@@ -28,6 +29,8 @@ workflow STARFUSION_WORKFLOW {
 
                 STAR_FOR_STARFUSION( reads, params.starindex_ref, gtf, star_ignore_sjdbgtf, seq_platform, seq_center )
                 ch_versions = ch_versions.mix(STAR_FOR_STARFUSION.out.versions)
+                ch_align = STAR_FOR_STARFUSION.out.bam_sorted
+
                 reads_junction = reads.join(STAR_FOR_STARFUSION.out.junction )
 
                 STARFUSION( reads_junction, ref)
@@ -42,6 +45,7 @@ workflow STARFUSION_WORKFLOW {
         }
     emit:
         fusions         = ch_starfusion_fusions
+        bam_sorted      = ch_align
         versions        = ch_versions.ifEmpty(null)
 
 
