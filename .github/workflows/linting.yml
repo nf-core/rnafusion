@@ -78,5 +78,4 @@ jobs:
             lint_log.txt
             lint_results.md
             PR_number.txt
-
 #
