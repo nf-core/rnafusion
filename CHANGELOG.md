@@ -3,6 +3,157 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] nfcore/rnafusion - 2022/03/??
+
+Update to DSL2 and newer software/reference versions
+
+### Non-DSL2 related changes
+- replace gtf file with chr.gtf: Please confirm if this change is ok for the whole pipeline
+- remove subdirectory with params.genome as only GRCh38 is supported (not necessary but helped me see the output more clearly, can be reversed)
+- modification of output parameters to make sure every important file is published
+- additional build_references flag to trigger the workflow to build references
+- container for starfusion is changed and the absolute path to prep_genome_lib.pl is given
+    --fasta argument is not required when executing the workflow to build references
+- increase cpu + memory for process STARFUSION_DOWNLOAD
+- ci test done on stubs of reference building subprocesses ensembl and arriba
+- **For the moment, the rnafusion workflow (to analyse data and not build the references) is removed as dependencies and links would have to be fixed in the rnafusion workflow for execution of the build references otherwise**
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Added
+
+* Added `qualimap/rnaseq v2.2.2d` from nf-core modules
+* Added UCSC `gtfToGenePred v377`
+* Added `picard CollectRnaSeqMetrics v2.26.10`
+* Added `picard MarkDuplicates v2.26.10` from nf-core modules
+* Added `cat/fastqc` from nf-core modules
+* Added possibility for manually feeding the results of fusions from different tools to speed-up reruns
+
+### Changed
+
+* Upgrade to `nf-core/tools v2.3`
+* Upgrade `Arriba v1.2.0` to `Arriba v2.1.0`
+* Upgrade `FusionCatcher v1.20` to `FusionCatcher v1.33`
+* Upgrade `STAR-fusion v1.8.1` to `STAR-fusion v1.10.1`
+* Upgrade `STAR v2.7.1` to `STAR v2.7.9`
+* Upgrade `fusion-report v2.1.3` to `fusion-report v2.1.5`
+* Upgrade `kallisto v0.44.0` to `kallisto v0.46.2`
+* Upgrade `fastqc v0.11.8` to `fastqc v0.11.9`
+* Upgrade `samtools v1.9` to `samtools v1.15`
+* Upgrade `arriba` references from `v1.2.0` to `v2.1.0`
+* Upgrade `fusioncatcher` references from `v98` to `v102`
+* Use `arriba` (detect only), `kallisto` and `STAR` from nf-core modules
+
+Parameters for `STAR` for `arriba` changed from:
+
+```bash
+--readFilesCommand zcat \\
+        --outSAMtype BAM Unsorted \\
+--outStd BAM_Unsorted \\
+--outSAMunmapped Within \\
+--outBAMcompression 0 \\
+--outFilterMultimapNmax 1 \\
+--outFilterMismatchNmax 3 \\
+--chimSegmentMin 10 \\
+--chimOutType WithinBAM SoftClip \\
+--chimJunctionOverhangMin 10 \\
+--chimScoreMin 1 \\
+--chimScoreDropMax 30 \\
+--chimScoreJunctionNonGTAG 0 \\
+--chimScoreSeparation 1 \\
+--alignSJstitchMismatchNmax 5 -1 5 5 \\
+--chimSegmentReadGapMax 3 \\
+--sjdbOverhang ${params.read_length - 1}
+```
+
+to
+
+```bash
+--readFilesCommand zcat \
+--outSAMtype BAM Unsorted \
+--outSAMunmapped Within \
+--outBAMcompression 0 \
+--outFilterMultimapNmax 50 \
+--peOverlapNbasesMin 10 \
+--alignSplicedMateMapLminOverLmate 0.5 \
+--alignSJstitchMismatchNmax 5 -1 5 5 \
+--chimSegmentMin 10 \
+--chimOutType WithinBAM HardClip \
+--chimJunctionOverhangMin 10 \
+--chimScoreDropMax 30 \
+--chimScoreJunctionNonGTAG 0 \
+--chimScoreSeparation 1 \
+--chimSegmentReadGapMax 3 \
+--chimMultimapNmax 50
+```
+
+As recommended [here](https://arriba.readthedocs.io/en/latest/workflow/).
+
+Parameters for `STAR` for `STAR-fusion` changed from:
+
+```bash
+--twopassMode Basic \\
+--outReadsUnmapped None \\
+--chimSegmentMin 12 \\
+--chimJunctionOverhangMin 12 \\
+--alignSJDBoverhangMin 10 \\
+--alignMatesGapMax 100000 \\
+--alignIntronMax 100000 \\
+--chimSegmentReadGapMax 3 \\
+--alignSJstitchMismatchNmax 5 -1 5 5 \\
+--runThreadN ${task.cpus} \\
+--outSAMstrandField intronMotif ${avail_mem} \\
+--outSAMunmapped Within \\
+--outSAMtype BAM Unsorted \\
+--outSAMattrRGline ID:GRPundef \\
+--chimMultimapScoreRange 10 \\
+--chimMultimapNmax 10 \\
+--chimNonchimScoreDropMin 10 \\
+--peOverlapNbasesMin 12 \\
+--peOverlapMMp 0.1 \\
+--readFilesCommand zcat \\
+--sjdbOverhang ${params.read_length - 1} \\
+--chimOutJunctionFormat 1
+```
+
+to
+
+```bash
+--outReadsUnmapped None \
+--readFilesCommand zcat \
+--outSAMtype BAM SortedByCoordinate \
+--outSAMstrandField intronMotif \
+--outSAMunmapped Within \
+--chimSegmentMin 12 \
+--chimJunctionOverhangMin 8 \
+--chimOutJunctionFormat 1 \
+--alignSJDBoverhangMin 10 \
+--alignMatesGapMax 100000 \
+--alignIntronMax 100000 \
+--alignSJstitchMismatchNmax 5 -1 5 5 \
+--chimMultimapScoreRange 3 \
+--chimScoreJunctionNonGTAG -4 \
+--chimMultimapNmax 20 \
+--chimNonchimScoreDropMin 10 \
+--peOverlapNbasesMin 12 \
+--peOverlapMMp 0.1 \
+--alignInsertionFlush Right \
+--alignSplicedMateMapLminOverLmate 0 \
+--alignSplicedMateMapLmin 30 \
+--chimOutType Junctions
+```
+
+`Homo_sapiens.${params.genome}.${ensembl_version}.gtf.gz` used for squid and arriba, `Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf.gz` used for STAR-fusion and the quality control as the quality control is based on the STAR-fusion alignment.
+
+### Fixed
+
+
+### Removed
+
+* Ericscript tool
+* GRCh37 support
+* Running with conda
+
 ## v1.3.0dev nfcore/rnafusion - 2020/07/15
 
 * Using official STAR-Fusion container [#160](https://github.com/nf-core/rnafusion/issues/160)
