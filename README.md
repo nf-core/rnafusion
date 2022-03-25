@@ -20,7 +20,6 @@
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
-
 | Tool                                                                      |  Single-end reads  |  Version |
 | ------------------------------------------------------------------------- | :----------------: | :------: |
 | [Arriba](https://github.com/suhrig/arriba)                                |         :x:        |  `1.2.0` |
