@@ -17,9 +17,6 @@ process FUSIONREPORT_DOWNLOAD {
     path "*"                , emit: reference
     path "versions.yml"     , emit: versions
 
-
-    //TODO: update mitelman to take DB from https://storage.googleapis.com/mitelman-data-files/prod/mitelman_db.zip
-    //TODO: update fusionGDB to GRCh38
     script:
     """
     fusion_report download --cosmic_usr $username --cosmic_passwd $passwd .

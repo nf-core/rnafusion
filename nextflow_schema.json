@@ -70,7 +70,8 @@
                 "ensembl_version": {
                     "type": "integer",
                     "fa_icon": "far fa-file-code",
-                    "description": "ensembl version"
+                    "description": "ensembl version",
+                    "default": 105
                 },
                 "read_length": {
                     "type": "integer",
@@ -102,16 +103,6 @@
                     "type": "string",
                     "fa_icon": "far fa-file-code",
                     "description": "Path to ensembl references"
-                },
-                "ericscript": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Build or run ericscript references/analyses"
-                },
-                "ericscript_ref": {
-                    "type": "string",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Path to ericscript references"
                 },
                 "fusioncatcher": {
                     "type": "boolean",

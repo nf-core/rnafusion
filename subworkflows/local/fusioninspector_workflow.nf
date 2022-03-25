@@ -1,7 +1,3 @@
-//
-// Check input samplesheet and get read channels
-//
-
 include { FUSIONINSPECTOR }                           from '../../modules/local/fusioninspector/main'
 
 
@@ -19,7 +15,5 @@ workflow FUSIONINSPECTOR_WORKFLOW {
 
     emit:
         versions        = ch_versions.ifEmpty(null)
-        // fusion_list     = FUSIONINSPECTOR.out.fusion_list
-
 }
 

@@ -6,146 +6,56 @@
 
 ## Introduction
 
-- [:warning: Please read this documentation on the nf-core website: https://nf-co.re/rnafusion/usage](#warning-please-read-this-documentation-on-the-nf-core-website-httpsnf-corernafusionusage)
-- [Introduction](#introduction)
-- [Download references](#download-references)
-  - [Download all references](#download-all-references)
-  - [Download specific references](#download-specific-references)
-  - [Download and build CTAT](#download-and-build-ctat)
-  - [Download GRCh37 references](#download-grch37-references)
-  - [Tool reference requirements](#tool-reference-requirements)
-- [Running the pipeline](#running-the-pipeline)
-  - [Updating the pipeline](#updating-the-pipeline)
-  - [Reproducibility](#reproducibility)
-- [Core Nextflow arguments](#core-nextflow-arguments)
-  - [`-profile`](#-profile)
-  - [`-resume`](#-resume)
-  - [`-c`](#-c)
-    - [Custom resource requests](#custom-resource-requests)
-  - [Running in the background](#running-in-the-background)
-    - [Nextflow memory requirements](#nextflow-memory-requirements)
-- [Pipeline specific arguments](#pipeline-specific-arguments)
-  - [--input](#--input)
-  - [--single_end](#--single_end)
-  - [Tool flags](#tool-flags)
-  - [--arriba](#--arriba)
-  - [--ericscript](#--ericscript)
-  - [--fusioncatcher](#--fusioncatcher)
-  - [--fusion_report](#--fusion_report)
-  - [--pizzly](#--pizzly)
-  - [--squid](#--squid)
-  - [--star_fusion](#--star_fusion)
-- [Visualization flags](#visualization-flags)
-  - [--arriba_vis](#--arriba_vis)
-  - [--fusion_inspector](#--fusion_inspector)
-- [Reference genomes](#reference-genomes)
-  - [--arriba_ref](#--arriba_ref)
-  - [--databases](#--databases)
-  - [--ericscript_ref](#--ericscript_ref)
-  - [--fasta](#--fasta)
-  - [--fusioncatcher_ref](#--fusioncatcher_ref)
-  - [--genome](#--genome)
-  - [--gtf](#--gtf)
-  - [--star_index](#--star_index)
-  - [--star_fusion_ref](#--star_fusion_ref)
-  - [--transcript](#--transcript)
-- [Other command line parameters](#other-command-line-parameters)
-  - [--debug](#--debug)
-  - [--read_length](#--read_length)
-  - [--outdir](#--outdir)
-  - [--email](#--email)
-  - [--email_on_fail](#--email_on_fail)
-  - [--max_multiqc_email_size](#--max_multiqc_email_size)
-  - [-name](#-name)
-  - [--custom_config_version](#--custom_config_version)
-  - [--custom_config_base](#--custom_config_base)
-- [Job resources](#job-resources)
-  - [Automatic resubmission](#automatic-resubmission)
+The pipeline is divided into two parts:
 
-## Download references
+1. Downloading and building the references, using `--build_references`: done only once and after each update.
+2. Detecting fusions using (any combination of) the following tools:
+    - arriba
+    - fusioncatcher
+    - pizzly
+    - squid
+    - starfusion
+3. QC and visualisation tools
+    - Fastqc
+    - MultiQC
+    - arriba visualisation (for fusion detected by arriba only)
+    - fusion-report
+    - fusionInspector
 
-The rnafusion pipeline needs references for the fusion detection tools, so downloading these is a prerequisite.
+### Prerequisite: download and build references
 
-Downloading references manually is a tedious long process.
-To make the pipeline easier to work with, we provide a script to download all necessary references for fusion detection tools.
-
-> **TL;DR:** Make sure to download the correct references for your need!
-
-### Download all references
+The rnafusion pipeline needs references for the fusion detection tools, so downloading these is a **requirement**.
+It is possible to download and build each reference manually (for example in case of non-human samples that are not supported currently) feed references manually to rnafusion using the arguments `--<tool>_ref` but it is advised to download references with rnafusion:
 
 ```bash
 nextflow run nf-core/rnafusion \
---build-references \
---outdir <PATH> \
+--build_references --all \
+--genomes_base <PATH> \
 ```
 
-### Example of downloading references for specific tool
+References for the different tools can also be downloaded separately:
 
 ```bash
-nextflow run nf-core/rnafusion/download-references.nf \
---arriba \
---outdir <PATH>
-
-nextflow run nf-core/rnafusion/download-references.nf \
---star_fusion \
---outdir <PATH>
-
-nextflow run nf-core/rnafusion/download-references.nf \
---fusioncatcher \
---outdir <PATH>
-
-nextflow run nf-core/rnafusion/download-references.nf \
---ericscript \
---outdir <PATH>
-
-nextflow run nf-core/rnafusion/download-references.nf \
---fusion_report \
---outdir <PATH>
+nextflow run nf-core/rnafusion \
+--build_references --<tool> \
+--genomes_base <PATH>
 ```
 
-## Download and build CTAT
+This PATH will be the place the references will be saved.
+
+### Running the detection tools
 
 ```bash
-nextflow run nf-core/rnafusion/build-ctat.nf \
---genome GRCh38 \
+nextflow run nf-core/rnafusion \
+--build_references --all \
 --outdir <PATH> \
---fasta <PATH>/<FASTA \
---gtf <PATH>/<GTF>
 ```
 
-## Download GRCh37 references
+Visualisation tools will be run on all fusion detected.
 
-```bash
-# GRCh38 genome assembly is used by default.
-# To use the previous assembly specify it using the --genome flag
-nextflow run nf-core/rnafusion/download-references.nf \
---genome GRCh37 \
---download_all \
---outdir <PATH> \
---cosmic_usr <COSMIC_USER> --cosmic_passwd <COSMIC_PASSWD>
+#### Optional manual feed-in of fusion files
 
-# Please note that using the above example command downloads NCBI-based references for STAR-Fusion.
-# To use Ensembl-based references run the following command with the same <PATH> as used above
-
-nextflow run nf-core/rnafusion/build-ctat.nf \
---genome GRCh37 \
---outdir <PATH> \
---fasta <PATH>/<FASTA> \
---gtf <PATH>/<GTF>
-```
-
-### Tool reference requirements
-
-| Tool             |       FASTA        |        GTF         |     STAR-index     |     Genome     |       Other        |
-| ---------------- | :----------------: | :----------------: | :----------------: | :------------: | :----------------: |
-| Arriba           | :white_check_mark: | :white_check_mark: | :white_check_mark: | GRCh37, GRCh38 | `custom_reference` |
-| EricScript       |        :x:         |        :x:         |        :x:         | GRCh37, GRCh38 | `custom_reference` |
-| FusionCatcher    |        :x:         |        :x:         |        :x:         |     GRCh38     | `custom_reference` |
-| Fusion-Inspector | :white_check_mark: | :white_check_mark: | :white_check_mark: | GRCh37, GRCh38 | `ctat_genome_lib`  |
-| fusion-report    |        :x:         |        :x:         |        :x:         | GRCh37, GRCh38 |    `databases`     |
-| Pizzly           |        :x:         | :white_check_mark: | :white_check_mark: | GRCh37, GRCh38 |       `cDNA`       |
-| Squid            |        :x:         | :white_check_mark: | :white_check_mark: | GRCh37, GRCh38 |         -          |
-| Star-Fusion      | :white_check_mark: | :white_check_mark: | :white_check_mark: | GRCh37, GRCh38 | `ctat_genome_lib`  |
+It is possible to give the output of each tool manually using the argument: `--<tool>_fusions PATH/TO/FUSION/FILE`.
 
 ## Samplesheet input
 
@@ -168,26 +78,27 @@ CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
 
 ### Full samplesheet
 
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
+The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 4 columns to match those defined in the table below.
 
 A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
 
 ```console
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
-CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
+sample,fastq_1,fastq_2,strandedness
+CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,forward
+CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz,forward
+CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz,forward
+TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,,forward
+TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,,forward
+TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,,forward
+TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,,forward
 ```
 
-| Column    | Description                                                                                                                                                                            |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+| Column         | Description                                                                                                                                                                            |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`       | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
+| `fastq_1`      | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+| `fastq_2`      | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+| `strandedness` | Strandedness: forward or reverse.                                                                                                                                                      |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
@@ -196,7 +107,7 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 The typical command for running the pipeline is as follows.
 
 ```console
-nextflow run nf-core/rnafusion --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile docker
+nextflow run nf-core/rnafusion --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 -profile docker
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -325,10 +236,8 @@ process {
 ```
 
 > **NB:** We specify the full process name i.e. `NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN` in the config file because this takes priority over the short name (`STAR_ALIGN`) and allows existing configuration using the full process name to be correctly overridden.
->
-> If you get a warning suggesting that the process selector isn't recognised check that the process name has been specified correctly.
 
-<!-- TODO: adapt to current DSL2 parameters -->
+If you get a warning suggesting that the process selector isn't recognised check that the process name has been specified correctly.
 
 ### Tool-specific options
 
@@ -412,7 +321,7 @@ In most cases, you will only need to create a custom config as a one-off but if 
 
 See the main [Nextflow documentation](https://www.nextflow.io/docs/latest/config.html) for more information about creating your own configuration files.
 
-If you have any questions or issues please send us a message on [Slack](https://nf-co.re/join/slack) on the [`#configs` channel](https://nfcore.slack.com/channels/configs).
+If you have any questions or issues please send us a message on [Slack](https://nf-co.re/join/slack) on the [`#configs` channel](https://nfcore.slack.com/channels/configs). -->
 
 ## Running in the background
 
@@ -432,237 +341,3 @@ We recommend adding the following line to your environment to limit this (typica
 NXF_OPTS='-Xms1g -Xmx4g'
 ```
 
-## Pipeline specific arguments
-
-### --input
-
-Use this to specify the location of your input FastQ files. For example:
-
-```bash
---input 'path/to/data/sample_*_{1,2}.fastq.gz'
-```
-
-Please note the following requirements:
-
-1. The path must be enclosed in quotes
-2. The path must have at least one `*` wildcard character
-3. When using the pipeline with paired end data, the path must use `{1,2}` notation to specify read pairs.
-
-If left unspecified, a default pattern is used: `data/*{1,2}.fastq.gz`
-
-### --single_end
-
-By default, the pipeline expects paired-end data. If you have single-end data, you need to specify `--single_end` on the command line when you launch the pipeline. A normal glob pattern, enclosed in quotation marks, can then be used for `--input`. For example:
-
-```bash
---single_end --input '*.fastq'
-```
-
-### Tool flags
-
-### --arriba
-
-If enabled, executes `Arriba` tool.
-
-- `--arriba_opt`
-  - Specify additional parameters. For more information, please refer to the [documentation](http://arriba.readthedocs.io/en/latest/quickstart/) of the tool.
-
-### --ericscript
-
-If enabled, executes `Ericscript` tool.
-
-- `--ericscript_opt`
-  - Specify additional parameters. For more information, please refer to the [documentation](https://sites.google.com/site/bioericscript/home) of the tool.
-
-### --fusioncatcher
-
-If enabled, executes `Fusioncatcher` tool.
-
-> N.B. that Fusioncatcher is not available when using the `GRCh37` genome assembly.
-
-- `--fusioncatcher_opt`
-  - Specify additional parameters. For more information, please refer to the [documentation](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) of the tool.
-
-### --fusion_report
-
-If enabled, download databases for `fusion-report`.
-
-- `fusion_report_opt`
-  - Specify additional parameters. For more information, please refer to the [documentation](https://matq007.github.io/fusion-report/#/) of the tool.
-
-### --pizzly
-
-If enabled, executes `Pizzly` tool.
-
-- `--pizzly_k`
-  - Number of k-mers. Default `31`.
-
-### --squid
-
-If enabled, executes `Squid` tool.
-
-### --star_fusion
-
-If enabled, executes `STAR-Fusion` tool.
-
-- `--star_fusion_opt`
-  - Parameter for specifying additional parameters. For more information, please refer to the [documentation](https://github.com/STAR-Fusion/STAR-Fusion/wiki) of the tool.
-
-## Visualization flags
-
-### --arriba_vis
-
-If enabled, executes build in `Arriba` visualization tool.
-
-### --fusion_inspector
-
-If enabled, executes `Fusion-Inspector` tool.
-
-## Reference genomes
-
-### --arriba_ref
-
-```bash
---arriba_ref '<path to Arriba reference>'
-```
-
-### --databases
-
-Required databases in order to run `fusion-report`.
-
-```bash
---databases '<path to fusion-report databases>'
-```
-
-### --ericscript_ref
-
-Required reference in order to run `EricScript`.
-
-```bash
---ericscript_ref '<path to EricScript reference>'
-```
-
-### --fasta
-
-If you prefer, you can specify the full path to your reference genome when you run the pipeline:
-
-```bash
---fasta '<path to Fasta reference>'
-```
-
-### --fusioncatcher_ref
-
-Required reference in order to run `Fusioncatcher`.
-
-```bash
---fusioncatcher_ref '<path to Fusioncatcher reference>'
-```
-
-### --genome
-
-This pipeline uses `Homo Sapiens` version `GRCh38` by default. Assembly `GRCh37` is optionally available.
-
-> N.B. that using `GRCh37` precludes use of the `Fusioncatcher` tool.
-> Also make sure to specify `--genomes_base`.
-
-```bash
---genome 'GRCh38' --genome_base '</path/to/references>'
-```
-
-### --gtf
-
-Required annotation file.
-
-```bash
---gtf '<path to GTF annotation>'
-```
-
-### --star_index
-
-If you prefer, you can specify the full path for `STAR` index when you run the pipeline.
-If not specified, the pipeline will build the index using for reads with length `100bp` (can be adjusted with parameter `--read_length`).
-
-```bash
---star_index '<path to STAR index>'
-```
-
-### --star_fusion_ref
-
-Required reference in order to run `STAR-Fusion`.
-
-```bash
---star_fusion_ref '<path to STAR-Fusion reference>'
-```
-
-### --transcript
-
-Required transcript file.
-
-```bash
---transcript '<path to transcript reference>'
-```
-
-## Other command line parameters
-
-### --debug
-
-To run only a specific tool (testing freshly implemented tool) just add `--debug` parameter.
-This parameter only works on **fusion tools only**!
-
-### --read_length
-
-Length is used to build a STAR index.
-Default is `100bp` (Illumina).
-
-### --outdir
-
-The output directory where the results will be saved.
-
-### --email
-
-Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits.
-If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.
-
-### --email_on_fail
-
-This works exactly as with `--email`, except emails are only sent if the workflow is not successful.
-
-### --max_multiqc_email_size
-
-Threshold size for MultiQC report to be attached in notification email.
-If file generated by pipeline exceeds the threshold, it will not be attached (Default: 25MB).
-
-### -name
-
-Name for the pipeline run. If not specified, Nextflow will automatically generate a random mnemonic.
-This is used in the MultiQC report (if not default) and in the summary HTML / e-mail (always).
-
-**NB:** Single hyphen (core Nextflow option)
-
-### --custom_config_version
-
-Provide git commit id for custom Institutional configs hosted at `nf-core/configs`. This was implemented for reproducibility purposes. Default: `master`.
-
-```bash
-## Download and use config file with following git commid id
---custom_config_version d52db660777c4bf36546ddb188ec530c3ada1b96
-```
-
-### --custom_config_base
-
-If you're running offline, nextflow will not be able to fetch the institutional config files
-from the internet. If you don't need them, then this is not a problem. If you do need them,
-you should download the files from the repo and tell nextflow where to find them with the
-`custom_config_base` option. For example:
-
-```bash
-NXF_OPTS='-Xms1g -Xmx4g'
-```
-
-## Job resources
-
-### Automatic resubmission
-
-Each step in the pipeline has a default set of requirements for number of CPUs, memory and time.
-For most of the steps in the pipeline, if the job exits with an error code of `143` (exceeded requested resources) it will automatically resubmit with higher requests (2 x original, then 3 x original).
-If it still fails after three times then the pipeline is stopped.
