@@ -13,42 +13,43 @@
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 
 - [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
+
   > Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.
 
--   [Arriba](https://github.com/suhrig/arriba)
+- [Arriba](https://github.com/suhrig/arriba)
 
-    > Uhrig S, Ellermann J, Walther T, Burkhardt P, Fröhlich M, Hutter B, Toprak UH, Neumann O, Stenzinger A, Scholl C, Fröhling S, Brors B. Accurate and efficient detection of gene fusions from RNA sequencing data.
-    > Genome Research. 2021 Mar 31;448-460. doi: 10.1101/gr.257246.119. Epub 2021 Jan 13. PubMed PMID: 33441414; PubMed Central PMCID: PMC7919457.
+  > Uhrig S, Ellermann J, Walther T, Burkhardt P, Fröhlich M, Hutter B, Toprak UH, Neumann O, Stenzinger A, Scholl C, Fröhling S, Brors B. Accurate and efficient detection of gene fusions from RNA sequencing data.
+  > Genome Research. 2021 Mar 31;448-460. doi: 10.1101/gr.257246.119. Epub 2021 Jan 13. PubMed PMID: 33441414; PubMed Central PMCID: PMC7919457.
 
--   [FusionCatcher](https://github.com/ndaniel/fusioncatcher)
+- [FusionCatcher](https://github.com/ndaniel/fusioncatcher)
 
-    > Nicorici D, Satalan M, Edgren H, Kangaspeska S, Murumagi A, Kallioniemi O, Virtanen S, Kilkku O. FusionCatcher – a tool for finding somatic fusion genes in paired-end RNA-sequencing data. BioRxiv, 2014 Nov. doi: 10.1101/011650.
+  > Nicorici D, Satalan M, Edgren H, Kangaspeska S, Murumagi A, Kallioniemi O, Virtanen S, Kilkku O. FusionCatcher – a tool for finding somatic fusion genes in paired-end RNA-sequencing data. BioRxiv, 2014 Nov. doi: 10.1101/011650.
 
--   [Fusion-report](https://github.com/matq007/fusion-report)
+- [Fusion-report](https://github.com/matq007/fusion-report)
 
-    > Proks M, Genomic Profiling of a Comprehensive Nation-wide Collection of Childhood Solid Tumors, Master Thesis, Supervisors: Grøntved L, Díaz de Ståhl T, Nistér M, Ewels P, Garcia MU, Juhos S, University of Southern Denmark, 2019, unpublished.
+  > Proks M, Genomic Profiling of a Comprehensive Nation-wide Collection of Childhood Solid Tumors, Master Thesis, Supervisors: Grøntved L, Díaz de Ståhl T, Nistér M, Ewels P, Garcia MU, Juhos S, University of Southern Denmark, 2019, unpublished.
 
--   [Kallisto](https://pachterlab.github.io/kallisto/)
+- [Kallisto](https://pachterlab.github.io/kallisto/)
 
-    > Bray NL, Pimentel H, Melsted P, Pachter L. Near-optimal probabilistic RNA-seq quantification. Nature Biotechnology 2016 Apr. 34, 525–527. doi:10.1038/nbt.3519. PMID: 27043002.
+  > Bray NL, Pimentel H, Melsted P, Pachter L. Near-optimal probabilistic RNA-seq quantification. Nature Biotechnology 2016 Apr. 34, 525–527. doi:10.1038/nbt.3519. PMID: 27043002.
 
--   [Pizzly](https://github.com/pmelsted/pizzly)
-    Melsted P, Hateley S, Joseph IC, Pimentel H, Bray N, Pachter L. Fusion detection and quantification by pseudoalignment. BioRxiv, 2017 Jul. doi: 10.1101/166322.
+- [Pizzly](https://github.com/pmelsted/pizzly)
+  Melsted P, Hateley S, Joseph IC, Pimentel H, Bray N, Pachter L. Fusion detection and quantification by pseudoalignment. BioRxiv, 2017 Jul. doi: 10.1101/166322.
 
--   [SAMtools](https://pubmed.ncbi.nlm.nih.gov/19505943/)
+- [SAMtools](https://pubmed.ncbi.nlm.nih.gov/19505943/)
 
-    > Li H, Handsaker B, Wysoker A, Fennell T, Ruan J, Homer N, Marth G, Abecasis G, Durbin R; 1000 Genome Project Data Processing Subgroup. The Sequence Alignment/Map format and SAMtools. Bioinformatics. 2009 Aug 15;25(16):2078-9. doi: 10.1093/bioinformatics/btp352. Epub 2009 Jun 8. PubMed PMID: 19505943; PubMed Central PMCID: PMC2723002.
+  > Li H, Handsaker B, Wysoker A, Fennell T, Ruan J, Homer N, Marth G, Abecasis G, Durbin R; 1000 Genome Project Data Processing Subgroup. The Sequence Alignment/Map format and SAMtools. Bioinformatics. 2009 Aug 15;25(16):2078-9. doi: 10.1093/bioinformatics/btp352. Epub 2009 Jun 8. PubMed PMID: 19505943; PubMed Central PMCID: PMC2723002.
 
--   [Squid](https://github.com/Kingsford-Group/squid)
+- [Squid](https://github.com/Kingsford-Group/squid)
 
-    > Ma C, Shao M, Kingsford C. SQUID: transcriptomic structural variation detection from RNA-seq. Genome Biol 2028 Apr. 19, 52. doi: 10.1186/s13059-018-1421-5. PubMed PMID: 29650026. PubMed Central PMCID: PMC5896115.
+  > Ma C, Shao M, Kingsford C. SQUID: transcriptomic structural variation detection from RNA-seq. Genome Biol 2028 Apr. 19, 52. doi: 10.1186/s13059-018-1421-5. PubMed PMID: 29650026. PubMed Central PMCID: PMC5896115.
 
--   [STAR](https://pubmed.ncbi.nlm.nih.gov/23104886/)
+- [STAR](https://pubmed.ncbi.nlm.nih.gov/23104886/)
 
-    > Dobin A, Davis CA, Schlesinger F, Drenkow J, Zaleski C, Jha S, Batut P, Chaisson M, Gingeras TR. STAR: ultrafast universal RNA-seq aligner Bioinformatics. 2013 Jan 1;29(1):15-21. doi: 10.1093/bioinformatics/bts635. Epub 2012 Oct 25. PubMed PMID: 23104886; PubMed Central PMCID: PMC3530905.
+  > Dobin A, Davis CA, Schlesinger F, Drenkow J, Zaleski C, Jha S, Batut P, Chaisson M, Gingeras TR. STAR: ultrafast universal RNA-seq aligner Bioinformatics. 2013 Jan 1;29(1):15-21. doi: 10.1093/bioinformatics/bts635. Epub 2012 Oct 25. PubMed PMID: 23104886; PubMed Central PMCID: PMC3530905.
 
--   [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion)
-    > Haas BJ, Dobin A, Li B, Stransky N, Pochet N, Regev A. Accuracy assessment of fusion transcript detection via read-mapping and de novo fusion transcript assembly-based methods. Genome Biology 2019 Oct;20,213. doi: 10.1186/s13059-019-1842-9
+- [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion)
+  > Haas BJ, Dobin A, Li B, Stransky N, Pochet N, Regev A. Accuracy assessment of fusion transcript detection via read-mapping and de novo fusion transcript assembly-based methods. Genome Biology 2019 Oct;20,213. doi: 10.1186/s13059-019-1842-9
 
 ## Software packaging/containerisation tools
 

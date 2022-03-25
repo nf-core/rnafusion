@@ -10,17 +10,17 @@ The pipeline is divided into two parts:
 
 1. Downloading and building the references, using `--build_references`: done only once and after each update.
 2. Detecting fusions using (any combination of) the following tools:
-    - arriba
-    - fusioncatcher
-    - pizzly
-    - squid
-    - starfusion
+   - arriba
+   - fusioncatcher
+   - pizzly
+   - squid
+   - starfusion
 3. QC and visualisation tools
-    - Fastqc
-    - MultiQC
-    - arriba visualisation (for fusion detected by arriba only)
-    - fusion-report
-    - fusionInspector
+   - Fastqc
+   - MultiQC
+   - arriba visualisation (for fusion detected by arriba only)
+   - fusion-report
+   - fusionInspector
 
 ### Prerequisite: download and build references
 
@@ -340,4 +340,3 @@ We recommend adding the following line to your environment to limit this (typica
 ```console
 NXF_OPTS='-Xms1g -Xmx4g'
 ```
-

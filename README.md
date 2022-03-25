@@ -34,6 +34,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 | [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) | :white_check_mark: | `1.10.1` |
 
 <!-- TODO nf-core: Add full-sized test dataset and amend the paragraph below if applicable -->
+
 On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/rnafusion/results).
 
 ## Pipeline summary
@@ -57,25 +58,25 @@ On release, automated continuous integration tests run the pipeline on a full-si
 3. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 4. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 5. Arriba subworkflow
-    - STAR alignment
-    - Samtool sort
-    - Samtool index
-    - [Arriba](https://github.com/suhrig/arriba) fusion detection
-    - [Arriba](https://github.com/suhrig/arriba) visualisation
+   - STAR alignment
+   - Samtool sort
+   - Samtool index
+   - [Arriba](https://github.com/suhrig/arriba) fusion detection
+   - [Arriba](https://github.com/suhrig/arriba) visualisation
 6. Pizzly subworkflow
-    - [Kallisto](https://pachterlab.github.io/kallisto/) quantification
-    - [Pizzly](https://github.com/pmelsted/pizzly) fusion detection
+   - [Kallisto](https://pachterlab.github.io/kallisto/) quantification
+   - [Pizzly](https://github.com/pmelsted/pizzly) fusion detection
 7. Squid subworkflow
-    - [STAR](https://github.com/alexdobin/STAR) alignment
-    - [Samtools view](http://www.htslib.org/): convert sam output from STAR to bam
-    - [Samtools sort](http://www.htslib.org/): bam output from STAR
-    - [Squid](https://github.com/Kingsford-Group/squid) fusion detection
-    - [Squid](https://github.com/Kingsford-Group/squid) annotate
+   - [STAR](https://github.com/alexdobin/STAR) alignment
+   - [Samtools view](http://www.htslib.org/): convert sam output from STAR to bam
+   - [Samtools sort](http://www.htslib.org/): bam output from STAR
+   - [Squid](https://github.com/Kingsford-Group/squid) fusion detection
+   - [Squid](https://github.com/Kingsford-Group/squid) annotate
 8. STAR-fusion subworkflow
-    - [STAR](https://github.com/alexdobin/STAR) alignment
-    - [STAR-fusion](https://github.com/STAR-Fusion/STAR-Fusion) fusion detection
+   - [STAR](https://github.com/alexdobin/STAR) alignment
+   - [STAR-fusion](https://github.com/STAR-Fusion/STAR-Fusion) fusion detection
 9. Fusioncatcher subworkflow
-    - [FusionCatcher](https://github.com/ndaniel/fusioncatcher) fusion detection
+   - [FusionCatcher](https://github.com/ndaniel/fusioncatcher) fusion detection
 10. Fusion-report subworkflow
     - Merge all fusions detected by the different tools
     - [Fusion-report](https://github.com/matq007/fusion-report)
@@ -122,7 +123,6 @@ nf-core/rnafusion was originally written by Martin Proks (matq007), Praveen Raj 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
 - Annick Renevey (@rannick)
-
 
 ## Contributions and Support
 
