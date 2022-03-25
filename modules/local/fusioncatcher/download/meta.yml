@@ -9,7 +9,7 @@ tools:
       documentation: https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md
       tool_dev_url: https://github.com/ndaniel/fusioncatcher/
       doi: "10.1101/011650"
-      licence: ['GPL v3']
+      licence: ["GPL v3"]
 
 output:
   - versions:
