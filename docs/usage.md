@@ -9,58 +9,58 @@
 - [:warning: Please read this documentation on the nf-core website: https://nf-co.re/rnafusion/usage](#warning-please-read-this-documentation-on-the-nf-core-website-httpsnf-corernafusionusage)
 - [Introduction](#introduction)
 - [Download references](#download-references)
-    - [Download all references](#download-all-references)
-    - [Download specific references](#download-specific-references)
-    - [Download and build CTAT](#download-and-build-ctat)
-    - [Download GRCh37 references](#download-grch37-references)
-    - [Tool reference requirements](#tool-reference-requirements)
+  - [Download all references](#download-all-references)
+  - [Download specific references](#download-specific-references)
+  - [Download and build CTAT](#download-and-build-ctat)
+  - [Download GRCh37 references](#download-grch37-references)
+  - [Tool reference requirements](#tool-reference-requirements)
 - [Running the pipeline](#running-the-pipeline)
-    - [Updating the pipeline](#updating-the-pipeline)
-    - [Reproducibility](#reproducibility)
+  - [Updating the pipeline](#updating-the-pipeline)
+  - [Reproducibility](#reproducibility)
 - [Core Nextflow arguments](#core-nextflow-arguments)
-    - [`-profile`](#-profile)
-    - [`-resume`](#-resume)
-    - [`-c`](#-c)
-        - [Custom resource requests](#custom-resource-requests)
-    - [Running in the background](#running-in-the-background)
-        - [Nextflow memory requirements](#nextflow-memory-requirements)
+  - [`-profile`](#-profile)
+  - [`-resume`](#-resume)
+  - [`-c`](#-c)
+    - [Custom resource requests](#custom-resource-requests)
+  - [Running in the background](#running-in-the-background)
+    - [Nextflow memory requirements](#nextflow-memory-requirements)
 - [Pipeline specific arguments](#pipeline-specific-arguments)
-    - [--input](#--input)
-    - [--single_end](#--single_end)
-    - [Tool flags](#tool-flags)
-    - [--arriba](#--arriba)
-    - [--ericscript](#--ericscript)
-    - [--fusioncatcher](#--fusioncatcher)
-    - [--fusion_report](#--fusion_report)
-    - [--pizzly](#--pizzly)
-    - [--squid](#--squid)
-    - [--star_fusion](#--star_fusion)
+  - [--input](#--input)
+  - [--single_end](#--single_end)
+  - [Tool flags](#tool-flags)
+  - [--arriba](#--arriba)
+  - [--ericscript](#--ericscript)
+  - [--fusioncatcher](#--fusioncatcher)
+  - [--fusion_report](#--fusion_report)
+  - [--pizzly](#--pizzly)
+  - [--squid](#--squid)
+  - [--star_fusion](#--star_fusion)
 - [Visualization flags](#visualization-flags)
-    - [--arriba_vis](#--arriba_vis)
-    - [--fusion_inspector](#--fusion_inspector)
+  - [--arriba_vis](#--arriba_vis)
+  - [--fusion_inspector](#--fusion_inspector)
 - [Reference genomes](#reference-genomes)
-    - [--arriba_ref](#--arriba_ref)
-    - [--databases](#--databases)
-    - [--ericscript_ref](#--ericscript_ref)
-    - [--fasta](#--fasta)
-    - [--fusioncatcher_ref](#--fusioncatcher_ref)
-    - [--genome](#--genome)
-    - [--gtf](#--gtf)
-    - [--star_index](#--star_index)
-    - [--star_fusion_ref](#--star_fusion_ref)
-    - [--transcript](#--transcript)
+  - [--arriba_ref](#--arriba_ref)
+  - [--databases](#--databases)
+  - [--ericscript_ref](#--ericscript_ref)
+  - [--fasta](#--fasta)
+  - [--fusioncatcher_ref](#--fusioncatcher_ref)
+  - [--genome](#--genome)
+  - [--gtf](#--gtf)
+  - [--star_index](#--star_index)
+  - [--star_fusion_ref](#--star_fusion_ref)
+  - [--transcript](#--transcript)
 - [Other command line parameters](#other-command-line-parameters)
-    - [--debug](#--debug)
-    - [--read_length](#--read_length)
-    - [--outdir](#--outdir)
-    - [--email](#--email)
-    - [--email_on_fail](#--email_on_fail)
-    - [--max_multiqc_email_size](#--max_multiqc_email_size)
-    - [-name](#-name)
-    - [--custom_config_version](#--custom_config_version)
-    - [--custom_config_base](#--custom_config_base)
+  - [--debug](#--debug)
+  - [--read_length](#--read_length)
+  - [--outdir](#--outdir)
+  - [--email](#--email)
+  - [--email_on_fail](#--email_on_fail)
+  - [--max_multiqc_email_size](#--max_multiqc_email_size)
+  - [-name](#-name)
+  - [--custom_config_version](#--custom_config_version)
+  - [--custom_config_base](#--custom_config_base)
 - [Job resources](#job-resources)
-    - [Automatic resubmission](#automatic-resubmission)
+  - [Automatic resubmission](#automatic-resubmission)
 
 ## Download references
 
@@ -136,16 +136,16 @@ nextflow run nf-core/rnafusion/build-ctat.nf \
 
 ### Tool reference requirements
 
-| Tool             |        FASTA       |         GTF        |     STAR-index     |     Genome     |       Other       |
+| Tool             |       FASTA        |        GTF         |     STAR-index     |     Genome     |       Other        |
 | ---------------- | :----------------: | :----------------: | :----------------: | :------------: | :----------------: |
 | Arriba           | :white_check_mark: | :white_check_mark: | :white_check_mark: | GRCh37, GRCh38 | `custom_reference` |
-| EricScript       |         :x:        |         :x:        |         :x:        | GRCh37, GRCh38 | `custom_reference` |
-| FusionCatcher    |         :x:        |         :x:        |         :x:        |     GRCh38     | `custom_reference` |
-| Fusion-Inspector | :white_check_mark: | :white_check_mark: | :white_check_mark: | GRCh37, GRCh38 |  `ctat_genome_lib` |
-| fusion-report    |         :x:        |         :x:        |         :x:        | GRCh37, GRCh38 |     `databases`    |
-| Pizzly           |         :x:        | :white_check_mark: | :white_check_mark: | GRCh37, GRCh38 |       `cDNA`       |
-| Squid            |         :x:        | :white_check_mark: | :white_check_mark: | GRCh37, GRCh38 |          -         |
-| Star-Fusion      | :white_check_mark: | :white_check_mark: | :white_check_mark: | GRCh37, GRCh38 |  `ctat_genome_lib` |
+| EricScript       |        :x:         |        :x:         |        :x:         | GRCh37, GRCh38 | `custom_reference` |
+| FusionCatcher    |        :x:         |        :x:         |        :x:         |     GRCh38     | `custom_reference` |
+| Fusion-Inspector | :white_check_mark: | :white_check_mark: | :white_check_mark: | GRCh37, GRCh38 | `ctat_genome_lib`  |
+| fusion-report    |        :x:         |        :x:         |        :x:         | GRCh37, GRCh38 |    `databases`     |
+| Pizzly           |        :x:         | :white_check_mark: | :white_check_mark: | GRCh37, GRCh38 |       `cDNA`       |
+| Squid            |        :x:         | :white_check_mark: | :white_check_mark: | GRCh37, GRCh38 |         -          |
+| Star-Fusion      | :white_check_mark: | :white_check_mark: | :white_check_mark: | GRCh37, GRCh38 | `ctat_genome_lib`  |
 
 ## Samplesheet input
 
@@ -183,11 +183,11 @@ TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
 TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
 ```
 
-| Column         | Description                                                                                                                                                                            |
-|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `sample`       | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1`      | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2`      | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+| Column    | Description                                                                                                                                                                            |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
+| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
@@ -196,7 +196,7 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 The typical command for running the pipeline is as follows.
 
 ```console
-nextflow run nf-core/rnafusion --input samplesheet.csv  --outdir <OUTDIR> --genome GRCh37 -profile docker
+nextflow run nf-core/rnafusion --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile docker
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -204,9 +204,9 @@ This will launch the pipeline with the `docker` configuration profile. See below
 Note that the pipeline will create the following files in your working directory:
 
 ```console
-work            # Directory containing the nextflow working files
-results         # Finished results (configurable, see below)
-.nextflow_log   # Log file from Nextflow
+work                # Directory containing the nextflow working files
+<OUTIDR>            # Finished results in specified location (defined with --outdir)
+.nextflow_log       # Log file from Nextflow
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
 ```
 
@@ -246,24 +246,24 @@ They are loaded in sequence, so later profiles can overwrite earlier profiles.
 If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended.
 
 - `docker`
-    - A generic configuration profile to be used with [Docker](https://docker.com/)
+  - A generic configuration profile to be used with [Docker](https://docker.com/)
 - `singularity`
-    - A generic configuration profile to be used with [Singularity](https://sylabs.io/docs/)
+  - A generic configuration profile to be used with [Singularity](https://sylabs.io/docs/)
 - `podman`
-    - A generic configuration profile to be used with [Podman](https://podman.io/)
+  - A generic configuration profile to be used with [Podman](https://podman.io/)
 - `shifter`
-    - A generic configuration profile to be used with [Shifter](https://nersc.gitlab.io/development/shifter/how-to-use/)
+  - A generic configuration profile to be used with [Shifter](https://nersc.gitlab.io/development/shifter/how-to-use/)
 - `charliecloud`
-    - A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
+  - A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
 - `conda`
-    - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
+  - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
 - `test`
-    - A profile with a complete configuration for automated testing
-    - Includes links to test data so needs no other parameters
+  - A profile with a complete configuration for automated testing
+  - Includes links to test data so needs no other parameters
 
 ### `-resume`
 
-Specify this when restarting a pipeline. Nextflow will used cached results from any pipeline steps where the inputs are the same, continuing from where it got to previously.
+Specify this when restarting a pipeline. Nextflow will use cached results from any pipeline steps where the inputs are the same, continuing from where it got to previously. For input to be considered the same, not only the names must be identical but the files' contents as well. For more info about this parameter, see [this blog post](https://www.nextflow.io/blog/2019/demystifying-nextflow-resume.html).
 
 You can also supply a run name to resume a specific run: `-resume [run-name]`. Use the `nextflow log` command to show previous run names.
 
@@ -325,9 +325,11 @@ process {
 ```
 
 > **NB:** We specify the full process name i.e. `NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN` in the config file because this takes priority over the short name (`STAR_ALIGN`) and allows existing configuration using the full process name to be correctly overridden.
+>
 > If you get a warning suggesting that the process selector isn't recognised check that the process name has been specified correctly.
 
 <!-- TODO: adapt to current DSL2 parameters -->
+
 ### Tool-specific options
 
 For the ultimate flexibility, we have implemented and are using Nextflow DSL2 modules in a way where it is possible for both developers and users to change tool-specific command-line arguments (e.g. providing an additional command-line argument to the `STAR_ALIGN` process) as well as publishing options (e.g. saving files produced by the `STAR_ALIGN` process that aren't saved by default by the pipeline). In the majority of instances, as a user you won't have to change the default options set by the pipeline developer(s), however, there may be edge cases where creating a simple custom config file can improve the behaviour of the pipeline if for example it is failing due to a weird error that requires setting a tool-specific parameter to deal with smaller / larger genomes.
@@ -372,35 +374,35 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
 2. Find the latest version of the Biocontainer available on [Quay.io](https://quay.io/repository/biocontainers/pangolin?tag=latest&tab=tags)
 3. Create the custom config accordingly:
 
-    - For Docker:
+   - For Docker:
 
-        ```nextflow
-        process {
-            withName: PANGOLIN {
-                container = 'quay.io/biocontainers/pangolin:3.0.5--pyhdfd78af_0'
-            }
-        }
-        ```
+     ```nextflow
+     process {
+         withName: PANGOLIN {
+             container = 'quay.io/biocontainers/pangolin:3.0.5--pyhdfd78af_0'
+         }
+     }
+     ```
 
-    - For Singularity:
+   - For Singularity:
 
-        ```nextflow
-        process {
-            withName: PANGOLIN {
-                container = 'https://depot.galaxyproject.org/singularity/pangolin:3.0.5--pyhdfd78af_0'
-            }
-        }
-        ```
+     ```nextflow
+     process {
+         withName: PANGOLIN {
+             container = 'https://depot.galaxyproject.org/singularity/pangolin:3.0.5--pyhdfd78af_0'
+         }
+     }
+     ```
 
-    - For Conda:
+   - For Conda:
 
-        ```nextflow
-        process {
-            withName: PANGOLIN {
-                conda = 'bioconda::pangolin=3.0.5'
-            }
-        }
-        ```
+     ```nextflow
+     process {
+         withName: PANGOLIN {
+             conda = 'bioconda::pangolin=3.0.5'
+         }
+     }
+     ```
 
 > **NB:** If you wish to periodically update individual tool-specific results (e.g. Pangolin) generated by the pipeline then you must ensure to keep the `work/` directory otherwise the `-resume` ability of the pipeline will be compromised and it will restart from scratch.
 
@@ -463,14 +465,14 @@ By default, the pipeline expects paired-end data. If you have single-end data, y
 If enabled, executes `Arriba` tool.
 
 - `--arriba_opt`
-    - Specify additional parameters. For more information, please refer to the [documentation](http://arriba.readthedocs.io/en/latest/quickstart/) of the tool.
+  - Specify additional parameters. For more information, please refer to the [documentation](http://arriba.readthedocs.io/en/latest/quickstart/) of the tool.
 
 ### --ericscript
 
 If enabled, executes `Ericscript` tool.
 
 - `--ericscript_opt`
-    - Specify additional parameters. For more information, please refer to the [documentation](https://sites.google.com/site/bioericscript/home) of the tool.
+  - Specify additional parameters. For more information, please refer to the [documentation](https://sites.google.com/site/bioericscript/home) of the tool.
 
 ### --fusioncatcher
 
@@ -479,21 +481,21 @@ If enabled, executes `Fusioncatcher` tool.
 > N.B. that Fusioncatcher is not available when using the `GRCh37` genome assembly.
 
 - `--fusioncatcher_opt`
-    - Specify additional parameters. For more information, please refer to the [documentation](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) of the tool.
+  - Specify additional parameters. For more information, please refer to the [documentation](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md) of the tool.
 
 ### --fusion_report
 
 If enabled, download databases for `fusion-report`.
 
 - `fusion_report_opt`
-    - Specify additional parameters. For more information, please refer to the [documentation](https://matq007.github.io/fusion-report/#/) of the tool.
+  - Specify additional parameters. For more information, please refer to the [documentation](https://matq007.github.io/fusion-report/#/) of the tool.
 
 ### --pizzly
 
 If enabled, executes `Pizzly` tool.
 
 - `--pizzly_k`
-    - Number of k-mers. Default `31`.
+  - Number of k-mers. Default `31`.
 
 ### --squid
 
@@ -504,7 +506,7 @@ If enabled, executes `Squid` tool.
 If enabled, executes `STAR-Fusion` tool.
 
 - `--star_fusion_opt`
-    - Parameter for specifying additional parameters. For more information, please refer to the [documentation](https://github.com/STAR-Fusion/STAR-Fusion/wiki) of the tool.
+  - Parameter for specifying additional parameters. For more information, please refer to the [documentation](https://github.com/STAR-Fusion/STAR-Fusion/wiki) of the tool.
 
 ## Visualization flags
 

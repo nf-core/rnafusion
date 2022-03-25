@@ -10,7 +10,7 @@ tools:
       documentation: https://github.com/Kingsford-Group/squid
       tool_dev_url: https://github.com/Kingsford-Group/squid
       doi: ""
-      licence: ['BSD-3-Clause']
+      licence: ["BSD-3-Clause"]
 
 input:
   - fusions:
