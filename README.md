@@ -20,24 +20,25 @@
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
-
 > **IMPORTANT: conda is not supported currently.** Run with singularity or docker.
 
 > GRCh38 is the only supported reference
 
-| Tool                                                                      |  Single-end reads  |  Version |
-| ------------------------------------------------------------------------- | :----------------: | :------: |
-| [Arriba](https://github.com/suhrig/arriba)                                |         :x:        |  `2.1.0` |
-| [FusionCatcher](https://github.com/ndaniel/fusioncatcher)                 | :white_check_mark: |  `1.33`  |
-| [Fusion-report](https://github.com/matq007/fusion-report)                 |          -         |  `2.1.5` |
-| [Pizzly](https://github.com/pmelsted/pizzly)                              |         :x:        | `0.37.3` |
-| [Squid](https://github.com/Kingsford-Group/squid)                         |         :x:        |   `1.5`  |
-| [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion)                 | :white_check_mark: | `1.10.1` |
+| Tool                                                      |  Single-end reads  | Version  |
+| --------------------------------------------------------- | :----------------: | :------: |
+| [Arriba](https://github.com/suhrig/arriba)                |        :x:         | `2.1.0`  |
+| [FusionCatcher](https://github.com/ndaniel/fusioncatcher) | :white_check_mark: |  `1.33`  |
+| [Fusion-report](https://github.com/matq007/fusion-report) |         -          | `2.1.5`  |
+| [Pizzly](https://github.com/pmelsted/pizzly)              |        :x:         | `0.37.3` |
+| [Squid](https://github.com/Kingsford-Group/squid)         |        :x:         |  `1.5`   |
+| [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) | :white_check_mark: | `1.10.1` |
 
 ## Pipeline summary
 
 #### Build references
+
 `--build_references` triggers a parallel workflow to build all references
+
 1. Download ensembl fasta and gtf files
 2. Create STAR index
 3. Download arriba references
@@ -45,6 +46,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 5. Download pizzly references (kallisto index)
 6. Download and build STAR-fusion references
 7. Download fusion-report DBs
+
 #### Main workflow
 
 1. Input samplesheet check
@@ -52,30 +54,30 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 3. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 4. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 5. Arriba subworkflow
-    * STAR alignment
-    * Samtool sort
-    * Samtool index
-    * [Arriba](https://github.com/suhrig/arriba) fusion detection
-    * [Arriba](https://github.com/suhrig/arriba) visualisation
+    - STAR alignment
+    - Samtool sort
+    - Samtool index
+    - [Arriba](https://github.com/suhrig/arriba) fusion detection
+    - [Arriba](https://github.com/suhrig/arriba) visualisation
 6. Pizzly subworkflow
-    * [Kallisto](https://pachterlab.github.io/kallisto/) quantification
-    * [Pizzly](https://github.com/pmelsted/pizzly) fusion detection
+    - [Kallisto](https://pachterlab.github.io/kallisto/) quantification
+    - [Pizzly](https://github.com/pmelsted/pizzly) fusion detection
 7. Squid subworkflow
-    * [STAR](https://github.com/alexdobin/STAR) alignment
-    * [Samtools view](http://www.htslib.org/): convert sam output from STAR to bam
-    * [Samtools sort](http://www.htslib.org/): bam output from STAR
-    * [Squid](https://github.com/Kingsford-Group/squid) fusion detection
-    * [Squid](https://github.com/Kingsford-Group/squid) annotate
+    - [STAR](https://github.com/alexdobin/STAR) alignment
+    - [Samtools view](http://www.htslib.org/): convert sam output from STAR to bam
+    - [Samtools sort](http://www.htslib.org/): bam output from STAR
+    - [Squid](https://github.com/Kingsford-Group/squid) fusion detection
+    - [Squid](https://github.com/Kingsford-Group/squid) annotate
 8. STAR-fusion subworkflow
-    * [STAR](https://github.com/alexdobin/STAR) alignment
-    * [STAR-fusion](https://github.com/STAR-Fusion/STAR-Fusion) fusion detection
+    - [STAR](https://github.com/alexdobin/STAR) alignment
+    - [STAR-fusion](https://github.com/STAR-Fusion/STAR-Fusion) fusion detection
 9. Fusioncatcher subworkflow
-    * [FusionCatcher](https://github.com/ndaniel/fusioncatcher) fusion detection
+    - [FusionCatcher](https://github.com/ndaniel/fusioncatcher) fusion detection
 10. Fusion-report subworkflow
-    * Merge all fusions detected by the different tools
-    * [Fusion-report](https://github.com/matq007/fusion-report)
+    - Merge all fusions detected by the different tools
+    - [Fusion-report](https://github.com/matq007/fusion-report)
 11. FusionInspector subworkflow
-    * [FusionInspector](https://github.com/FusionInspector/FusionInspector)
+    - [FusionInspector](https://github.com/FusionInspector/FusionInspector)
 
 <!-- TODO Add QC steps, MultiQC details -->
 
@@ -93,10 +95,10 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
     Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
 
-    > * The pipeline comes with config profiles called `docker`, `singularity`, `podman`, `shifter`, `charliecloud` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
-    > * Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
-    > * If you are using `singularity` and are persistently observing issues downloading Singularity images directly due to timeout or network issues, then you can use the `--singularity_pull_docker_container` parameter to pull and convert the Docker image instead. Alternatively, you can use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
-    > * If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
+    > - The pipeline comes with config profiles called `docker`, `singularity`, `podman`, `shifter`, `charliecloud` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
+    > - Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
+    > - If you are using `singularity` and are persistently observing issues downloading Singularity images directly due to timeout or network issues, then you can use the `--singularity_pull_docker_container` parameter to pull and convert the Docker image instead. Alternatively, you can use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
+    > - If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
 
 4. Start running your own analysis!
 
@@ -114,7 +116,7 @@ nf-core/rnafusion was originally written by Martin Proks, @praveenraj2018, on th
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
-* Annick Renevey (@rannick)
+-   Annick Renevey (@rannick)
 
 ## Contributions and Support
 
@@ -125,7 +127,8 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 ## Citations
 
 <!-- TODO update zenodo after release -->
-If you use  nf-core/rnafusion for your analysis, please cite it using the following doi: [10.5281/zenodo.3946477](https://doi.org/10.5281/zenodo.3946477)
+
+If you use nf-core/rnafusion for your analysis, please cite it using the following doi: [10.5281/zenodo.3946477](https://doi.org/10.5281/zenodo.3946477)
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 

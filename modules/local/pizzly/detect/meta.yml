@@ -10,7 +10,7 @@ tools:
       documentation: https://github.com/pmelsted/pizzly
       tool_dev_url: https://github.com/pmelsted/pizzly
       doi: ""
-      licence: ['BSD-2-Clause']
+      licence: ["BSD-2-Clause"]
 
 input:
   - fasta:

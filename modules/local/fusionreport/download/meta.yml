@@ -9,7 +9,7 @@ tools:
       documentation: https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md
       tool_dev_url: https://github.com/ndaniel/fusioncatcher/
       doi: "10.1101/011650"
-      licence: ['GPL v3']
+      licence: ["GPL v3"]
 
 input:
   - username:
@@ -23,9 +23,9 @@ input:
 
 output:
   - versions:
-        type: file
-        description: File containing software versions
-        pattern: "versions.yml"
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
   - reference:
       type: directory
       description: directory containing the genome resource files required for fusioncatcher

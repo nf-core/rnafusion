@@ -9,7 +9,7 @@ tools:
       documentation: https://github.com/STAR-Fusion/STAR-Fusion/wiki
       tool_dev_url: https://github.com/STAR-Fusion/STAR-Fusion/releases
       doi: "10.1101/120295v1"
-      licence: ['GPL v3']
+      licence: ["GPL v3"]
 
 input:
   - meta:

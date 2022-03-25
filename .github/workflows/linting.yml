@@ -95,7 +95,6 @@ jobs:
   nf-core:
     runs-on: ubuntu-latest
     steps:
-
       - name: Check out pipeline code
         uses: actions/checkout@v2
 
@@ -108,8 +107,8 @@ jobs:
 
       - uses: actions/setup-python@v1
         with:
-          python-version: '3.6'
-          architecture: 'x64'
+          python-version: "3.6"
+          architecture: "x64"
 
       - name: Install dependencies
         run: |
@@ -136,4 +135,3 @@ jobs:
             lint_log.txt
             lint_results.md
             PR_number.txt
-

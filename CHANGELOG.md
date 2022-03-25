@@ -8,41 +8,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Update to DSL2 and newer software/reference versions
 
 ### Non-DSL2 related changes
-- replace gtf file with chr.gtf: Please confirm if this change is ok for the whole pipeline
-- remove subdirectory with params.genome as only GRCh38 is supported (not necessary but helped me see the output more clearly, can be reversed)
-- modification of output parameters to make sure every important file is published
-- additional build_references flag to trigger the workflow to build references
-- container for starfusion is changed and the absolute path to prep_genome_lib.pl is given
-    --fasta argument is not required when executing the workflow to build references
-- increase cpu + memory for process STARFUSION_DOWNLOAD
-- ci test done on stubs of reference building subprocesses ensembl and arriba
-- **For the moment, the rnafusion workflow (to analyse data and not build the references) is removed as dependencies and links would have to be fixed in the rnafusion workflow for execution of the build references otherwise**
 
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-   replace gtf file with chr.gtf: Please confirm if this change is ok for the whole pipeline
+-   remove subdirectory with params.genome as only GRCh38 is supported (not necessary but helped me see the output more clearly, can be reversed)
+-   modification of output parameters to make sure every important file is published
+-   additional build_references flag to trigger the workflow to build references
+-   container for starfusion is changed and the absolute path to prep_genome_lib.pl is given
+    --fasta argument is not required when executing the workflow to build references
+-   increase cpu + memory for process STARFUSION_DOWNLOAD
+-   ci test done on stubs of reference building subprocesses ensembl and arriba
+-   **For the moment, the rnafusion workflow (to analyse data and not build the references) is removed as dependencies and links would have to be fixed in the rnafusion workflow for execution of the build references otherwise**
+
+---
 
 ### Added
 
-* Added `qualimap/rnaseq v2.2.2d` from nf-core modules
-* Added UCSC `gtfToGenePred v377`
-* Added `picard CollectRnaSeqMetrics v2.26.10`
-* Added `picard MarkDuplicates v2.26.10` from nf-core modules
-* Added `cat/fastqc` from nf-core modules
-* Added possibility for manually feeding the results of fusions from different tools to speed-up reruns
+-   Added `qualimap/rnaseq v2.2.2d` from nf-core modules
+-   Added UCSC `gtfToGenePred v377`
+-   Added `picard CollectRnaSeqMetrics v2.26.10`
+-   Added `picard MarkDuplicates v2.26.10` from nf-core modules
+-   Added `cat/fastqc` from nf-core modules
+-   Added possibility for manually feeding the results of fusions from different tools to speed-up reruns
 
 ### Changed
 
-* Upgrade to `nf-core/tools v2.3`
-* Upgrade `Arriba v1.2.0` to `Arriba v2.1.0`
-* Upgrade `FusionCatcher v1.20` to `FusionCatcher v1.33`
-* Upgrade `STAR-fusion v1.8.1` to `STAR-fusion v1.10.1`
-* Upgrade `STAR v2.7.1` to `STAR v2.7.9`
-* Upgrade `fusion-report v2.1.3` to `fusion-report v2.1.5`
-* Upgrade `kallisto v0.44.0` to `kallisto v0.46.2`
-* Upgrade `fastqc v0.11.8` to `fastqc v0.11.9`
-* Upgrade `samtools v1.9` to `samtools v1.15`
-* Upgrade `arriba` references from `v1.2.0` to `v2.1.0`
-* Upgrade `fusioncatcher` references from `v98` to `v102`
-* Use `arriba` (detect only), `kallisto` and `STAR` from nf-core modules
+-   Upgrade to `nf-core/tools v2.3`
+-   Upgrade `Arriba v1.2.0` to `Arriba v2.1.0`
+-   Upgrade `FusionCatcher v1.20` to `FusionCatcher v1.33`
+-   Upgrade `STAR-fusion v1.8.1` to `STAR-fusion v1.10.1`
+-   Upgrade `STAR v2.7.1` to `STAR v2.7.9`
+-   Upgrade `fusion-report v2.1.3` to `fusion-report v2.1.5`
+-   Upgrade `kallisto v0.44.0` to `kallisto v0.46.2`
+-   Upgrade `fastqc v0.11.8` to `fastqc v0.11.9`
+-   Upgrade `samtools v1.9` to `samtools v1.15`
+-   Upgrade `arriba` references from `v1.2.0` to `v2.1.0`
+-   Upgrade `fusioncatcher` references from `v98` to `v102`
+-   Use `arriba` (detect only), `kallisto` and `STAR` from nf-core modules
 
 Parameters for `STAR` for `arriba` changed from:
 
@@ -147,89 +148,88 @@ to
 
 ### Fixed
 
-
 ### Removed
 
-* Ericscript tool
-* GRCh37 support
-* Running with conda
+-   Ericscript tool
+-   GRCh37 support
+-   Running with conda
 
 ## v1.3.0dev nfcore/rnafusion - 2020/07/15
 
-* Using official STAR-Fusion container [#160](https://github.com/nf-core/rnafusion/issues/160)
+-   Using official STAR-Fusion container [#160](https://github.com/nf-core/rnafusion/issues/160)
 
 ### Added
 
-* Added social preview image [#107](https://github.com/nf-core/rnafusion/issues/107)
-* Added support for GRCh37 genome assembly [#77](https://github.com/nf-core/rnafusion/issues/77)
+-   Added social preview image [#107](https://github.com/nf-core/rnafusion/issues/107)
+-   Added support for GRCh37 genome assembly [#77](https://github.com/nf-core/rnafusion/issues/77)
 
 ### Changed
 
-* Upgrade `fusion-report v2.1.2` to `fusion-report v2.1.3`
-* Upgrade `fusion-report v2.1.1` to `fusion-report v2.1.2`
-* Upgrade `fusion-report v2.1.0` to `fusion-report v2.1.1`
-* Upgrade `Arriba v1.1.0` to `Arriba v1.2.0`
-* Upgrade `fusion-report v2.0.2` to `fusion-report v2.1.0`
+-   Upgrade `fusion-report v2.1.2` to `fusion-report v2.1.3`
+-   Upgrade `fusion-report v2.1.1` to `fusion-report v2.1.2`
+-   Upgrade `fusion-report v2.1.0` to `fusion-report v2.1.1`
+-   Upgrade `Arriba v1.1.0` to `Arriba v1.2.0`
+-   Upgrade `fusion-report v2.0.2` to `fusion-report v2.1.0`
 
 ### Fixed
 
-* Missing `strip-components` in `download-references.nf/star-fusion` [#148](https://github.com/nf-core/rnafusion/issues/148)
-* Missing version prefix for cdna [#143](https://github.com/nf-core/rnafusion/issues/143)
-* `samtools` missing header in empty file for FusionInspector [ref](https://github.com/STAR-Fusion/STAR-Fusion/issues/191)
-* Removed `profile` from helper scripts [#139](https://github.com/nf-core/rnafusion/issues/139)
-* Wrong url path for `Pfam-A.hmm.gz` [#140](https://github.com/nf-core/rnafusion/issues/140)
+-   Missing `strip-components` in `download-references.nf/star-fusion` [#148](https://github.com/nf-core/rnafusion/issues/148)
+-   Missing version prefix for cdna [#143](https://github.com/nf-core/rnafusion/issues/143)
+-   `samtools` missing header in empty file for FusionInspector [ref](https://github.com/STAR-Fusion/STAR-Fusion/issues/191)
+-   Removed `profile` from helper scripts [#139](https://github.com/nf-core/rnafusion/issues/139)
+-   Wrong url path for `Pfam-A.hmm.gz` [#140](https://github.com/nf-core/rnafusion/issues/140)
 
 ### Removed
 
-* Removed `scripts/download-singularity-img.sh` and `download-singularity-img.nf` as they are not necessary any more
+-   Removed `scripts/download-singularity-img.sh` and `download-singularity-img.nf` as they are not necessary any more
 
 ---
 
 ## [1.1.0] nfcore/rnafusion - 2020/02/10
 
-* Fusion gene detection tools:
-    * `Arriba v1.1.0`
-    * `Ericscript v0.5.5`
-    * `Fusioncatcher v1.20`
-    * `Pizzly v0.37.3`
-    * `Squid v1.5`
-    * `STAR-Fusion v1.6.0`
-* Visualization tools:
-    * `Arriba v1.1.0`
-    * `FusionInspector v1.3.1`
-* Other tools:
-    * `fusion-report v2.0.1`
-    * `FastQ v0.11.8`
-    * `MultiQC v1.7`
-    * `STAR aligner v2.7.0f`
+-   Fusion gene detection tools:
+    -   `Arriba v1.1.0`
+    -   `Ericscript v0.5.5`
+    -   `Fusioncatcher v1.20`
+    -   `Pizzly v0.37.3`
+    -   `Squid v1.5`
+    -   `STAR-Fusion v1.6.0`
+-   Visualization tools:
+    -   `Arriba v1.1.0`
+    -   `FusionInspector v1.3.1`
+-   Other tools:
+    -   `fusion-report v2.0.1`
+    -   `FastQ v0.11.8`
+    -   `MultiQC v1.7`
+    -   `STAR aligner v2.7.0f`
 
 ### Added
 
-* Added `Arriba 1.1.0` [#63](https://github.com/nf-core/rnafusion/issues/63)
-* Added Batch mode [#54](https://github.com/nf-core/rnafusion/issues/54)
+-   Added `Arriba 1.1.0` [#63](https://github.com/nf-core/rnafusion/issues/63)
+-   Added Batch mode [#54](https://github.com/nf-core/rnafusion/issues/54)
 
 ### Changed
 
-* Updated examples and configurations
-* Upgraded `fusion-report v1.0.0` to `fusion-report v2.0.1`
-* Divided `running_tools` into fusion and visualization tools
-* Updated `STAR` in `Squid`, `Fusion-Inspector` version to `2.7.0f`
-* Upgraded `STAR-Fusion v1.5.0` to `STAR-Fusion v1.6.0` [#83](https://github.com/nf-core/rnafusion/issues/83)
-* Parameter `igenomesIgnore` renamed to `igenome` [#81](https://github.com/nf-core/rnafusion/issues/81)
-* Finished STAR-Fusion file renaming [#18](https://github.com/nf-core/rnafusion/issues/18)
-* Updated logos
-* Updated to nf-core `1.8` TEMPLATE
+-   Updated examples and configurations
+-   Upgraded `fusion-report v1.0.0` to `fusion-report v2.0.1`
+-   Divided `running_tools` into fusion and visualization tools
+-   Updated `STAR` in `Squid`, `Fusion-Inspector` version to `2.7.0f`
+-   Upgraded `STAR-Fusion v1.5.0` to `STAR-Fusion v1.6.0` [#83](https://github.com/nf-core/rnafusion/issues/83)
+-   Parameter `igenomesIgnore` renamed to `igenome` [#81](https://github.com/nf-core/rnafusion/issues/81)
+-   Finished STAR-Fusion file renaming [#18](https://github.com/nf-core/rnafusion/issues/18)
+-   Updated logos
+-   Updated to nf-core `1.8` TEMPLATE
 
 ### Fixed
 
-* iGenomes optional, but not really [#91](https://github.com/nf-core/rnafusion/issues/91)
-* Updated `fusioncatcher` to latest `1.20` version also solving [#95](https://github.com/nf-core/rnafusion/issues/95)
+-   iGenomes optional, but not really [#91](https://github.com/nf-core/rnafusion/issues/91)
+-   Updated `fusioncatcher` to latest `1.20` version also solving [#95](https://github.com/nf-core/rnafusion/issues/95)
 
 ### Removed
 
-* Variables `pizzly_fasta` and `pizzly_gtf` have been removed and replaced with `transcript` and `gtf`
-* `Jenkisfile`, test configuration, pylintrc configuration
-* Removed `igenomes.config` because the pipeline only supports `Ensembl` version
+-   Variables `pizzly_fasta` and `pizzly_gtf` have been removed and replaced with `transcript` and `gtf`
+-   `Jenkisfile`, test configuration, pylintrc configuration
+-   Removed `igenomes.config` because the pipeline only supports `Ensembl` version
 
 ---
 
@@ -237,13 +237,13 @@ to
 
 ### Changed
 
-* Bumped nf-core template to 1.6 [#69](https://github.com/nf-core/rnafusion/pull/69)
+-   Bumped nf-core template to 1.6 [#69](https://github.com/nf-core/rnafusion/pull/69)
 
 ### Fixed
 
-* Fixed COSMIC parameters not wrapped in quotes [#75](https://github.com/nf-core/rnafusion/issues/75)
-* Implemented output output for fusion tools [#72](https://github.com/nf-core/rnafusion/issues/72)
-* Fixed reference download link for STAR-Fusion [#71](https://github.com/nf-core/rnafusion/issues/71)
+-   Fixed COSMIC parameters not wrapped in quotes [#75](https://github.com/nf-core/rnafusion/issues/75)
+-   Implemented output output for fusion tools [#72](https://github.com/nf-core/rnafusion/issues/72)
+-   Fixed reference download link for STAR-Fusion [#71](https://github.com/nf-core/rnafusion/issues/71)
 
 ---
 
@@ -251,27 +251,27 @@ to
 
 ### Added
 
-* Added support for extra parameters for tools STAR-Fusion, FusionCatcher and fusion-report
-* Added example configuration for `singularity` and `docker`
-* Added [fusion-report](https://github.com/matq007/fusion-report) into the stack [#62](https://github.com/nf-core/rnafusion/issues/62), [#55](https://github.com/nf-core/rnafusion/issues/55), [#53](https://github.com/nf-core/rnafusion/issues/53), [#51](https://github.com/nf-core/rnafusion/issues/51)
-* Added nextflow helper script `download-singularity-img.nf`
-* Added nextflow helper script `download-references.nf`
-* Added `Jenkinsfile` for in-house testing
+-   Added support for extra parameters for tools STAR-Fusion, FusionCatcher and fusion-report
+-   Added example configuration for `singularity` and `docker`
+-   Added [fusion-report](https://github.com/matq007/fusion-report) into the stack [#62](https://github.com/nf-core/rnafusion/issues/62), [#55](https://github.com/nf-core/rnafusion/issues/55), [#53](https://github.com/nf-core/rnafusion/issues/53), [#51](https://github.com/nf-core/rnafusion/issues/51)
+-   Added nextflow helper script `download-singularity-img.nf`
+-   Added nextflow helper script `download-references.nf`
+-   Added `Jenkinsfile` for in-house testing
 
 ### Changed
 
-* Updated installation of `FusionCatcher` (available now on bioconda)
+-   Updated installation of `FusionCatcher` (available now on bioconda)
 
 ### Fixed
 
-* Fixed empty symlinks (`input.X`) in fusion-report [#68](https://github.com/nf-core/rnafusion/issues/68)
-* Fixed FASTA issues [#60](https://github.com/nf-core/rnafusion/issues/60)
-* Fixed centralized nf-core/config [#64](https://github.com/nf-core/rnafusion/issues/64)
-* Fixed `scrape_software_versions.py` to parse tools versions correctly [#65](https://github.com/nf-core/rnafusion/issues/65)
+-   Fixed empty symlinks (`input.X`) in fusion-report [#68](https://github.com/nf-core/rnafusion/issues/68)
+-   Fixed FASTA issues [#60](https://github.com/nf-core/rnafusion/issues/60)
+-   Fixed centralized nf-core/config [#64](https://github.com/nf-core/rnafusion/issues/64)
+-   Fixed `scrape_software_versions.py` to parse tools versions correctly [#65](https://github.com/nf-core/rnafusion/issues/65)
 
 ### Removed
 
-* Removed `Singularity`
+-   Removed `Singularity`
 
 ---
 

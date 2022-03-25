@@ -8,7 +8,7 @@ tools:
       homepage: https://github.com/matq007/fusion-report
       documentation: https://matq007.github.io/fusion-report/#/
       doi: "10.1101/011650"
-      licence: ['GPL v3']
+      licence: ["GPL v3"]
 
 input:
   - meta:
@@ -43,13 +43,13 @@ input:
 
 output:
   - versions:
-        type: file
-        description: File containing software versions
-        pattern: "versions.yml"
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
   - fusion_list:
-        type: file
-        description: File containing the summary of all fusions fed-in
-        pattern: "*.tsv"
+      type: file
+      description: File containing the summary of all fusions fed-in
+      pattern: "*.tsv"
   - report:
       type: file
       description: HTML files
