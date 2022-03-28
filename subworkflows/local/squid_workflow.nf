@@ -7,7 +7,7 @@ include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_SQUID }    from '../../modules/nf-c
 include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_SQUID }    from '../../modules/nf-core/modules/samtools/view/main'
 include { SQUID }                                       from '../../modules/local/squid/detect/main'
 include { SQUID_ANNOTATE }                              from '../../modules/local/squid/annotate/main'
-include { STAR_ALIGN as STAR_FOR_SQUID }                from '../../modules/local/star/align/main'
+include { STAR_ALIGN as STAR_FOR_SQUID }                from '../../modules/nf-core/modules/star/align/main'
 
 workflow SQUID_WORKFLOW {
     take:
