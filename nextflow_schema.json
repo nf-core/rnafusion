@@ -103,16 +103,6 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to ensembl references"
                 },
-                "ericscript": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Build or run ericscript references/analyses"
-                },
-                "ericscript_ref": {
-                    "type": "string",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Path to ericscript references"
-                },
                 "fusioncatcher": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
@@ -391,6 +381,12 @@
                 "enable_conda": {
                     "type": "boolean",
                     "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-bacon"
+                },
+                "singularity_pull_docker_container": {
+                    "type": "boolean",
+                    "description": "Use to pull docker containers to run with singularity",
                     "hidden": true,
                     "fa_icon": "fas fa-bacon"
                 },

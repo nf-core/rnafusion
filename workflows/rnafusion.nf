@@ -9,23 +9,9 @@ def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 // Validate input parameters
 WorkflowRnafusion.initialise(params, log)
 
-// TODO nf-core: Add all file path parameters for the pipeline to the list below
-// Check input path parameters to see if they exist
-
-
-def checkPathParamList = [
-    params.input, params.multiqc_config,
-    params.fasta, params.genomes_base,
-    params.ensembl_ref,
-    params.fusioncatcher_ref, params.starfusion_ref,
-    params.arriba_ref, params.starindex_ref,
-    params.ensembl_version
-]
-
-
 // Check mandatory parameters
-if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 
+if (file(params.input).exists() || params.build_references) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet does not exist or was not specified!' }
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
