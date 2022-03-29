@@ -22,8 +22,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [Arriba visualisation](#arriba-visualisation) - Arriba visualisation report
 - [Fusion-report](#fusion-report) - Summary of the findings of each tool and comparison to COSMIC, Mitelman and FusionGBD databases
 - [FusionInspector](#fusionInspector) - IGV-based visualisation tool for fusions filtered by fusion-report
-- [Qualimap](#qualimap) - quality control of alignment
-- [Picard](#picard) - collect metrics
+- [Qualimap](#qualimap) - Quality control of alignment
+- [Picard](#picard) - Collect metrics
 - [FastQC](#fastqc) - Raw read quality control
 - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
