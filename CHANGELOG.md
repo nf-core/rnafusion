@@ -6,21 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.0] nfcore/rnafusion - 2022/03/??
 
 Update to DSL2 and newer software/reference versions
-
-### Non-DSL2 related changes
-
-- replace gtf file with chr.gtf: Please confirm if this change is ok for the whole pipeline
-- remove subdirectory with params.genome as only GRCh38 is supported (not necessary but helped me see the output more clearly, can be reversed)
-- modification of output parameters to make sure every important file is published
-- additional build_references flag to trigger the workflow to build references
-- container for starfusion is changed and the absolute path to prep_genome_lib.pl is given
-  --fasta argument is not required when executing the workflow to build references
-- increase cpu + memory for process STARFUSION_DOWNLOAD
-- ci test done on stubs of reference building subprocesses ensembl and arriba
-- **For the moment, the rnafusion workflow (to analyse data and not build the references) is removed as dependencies and links would have to be fixed in the rnafusion workflow for execution of the build references otherwise**
-
----
-
 ### Added
 
 - Added `qualimap/rnaseq v2.2.2d` from nf-core modules
@@ -44,6 +29,11 @@ Update to DSL2 and newer software/reference versions
 - Upgrade `arriba` references from `v1.2.0` to `v2.1.0`
 - Upgrade `fusioncatcher` references from `v98` to `v102`
 - Use `arriba` (detect only), `kallisto` and `STAR` from nf-core modules
+- Instead of separate script to build the references, added `--build_references` argument in the main
+- `--fasta` argument is not required with `--build_references` and set by default to the ensembl references built in the detection workflow
+- CI test done on stubs of reference building for subprocesses ensembl and arriba
+
+
 
 Parameters for `STAR` for `arriba` changed from:
 
@@ -151,7 +141,7 @@ to
 ### Removed
 
 - Ericscript tool
-- GRCh37 support
+- GRCh37 support. Subdirectory with params.genome are removed
 - Running with conda
 
 ## v1.3.0dev nfcore/rnafusion - 2020/07/15
