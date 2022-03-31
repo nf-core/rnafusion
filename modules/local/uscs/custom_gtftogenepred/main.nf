@@ -1,5 +1,5 @@
 process GTF_TO_REFFLAT {
-    label 'process_medium'
+    label 'process_low'
 
     conda (params.enable_conda ? "bioconda::ucsc-gtftogenepred=377" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
