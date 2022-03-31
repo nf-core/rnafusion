@@ -20,13 +20,11 @@ workflow PIZZLY_WORKFLOW {
                 ch_pizzly_fusions = params.pizzly_fusions
             } else {
                 index ="${params.pizzly_ref}/kallisto"
-                gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf"
-                transcript ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.cdna.all.fa.gz"
 
                 KALLISTO_QUANT( reads, index )
                 ch_versions = ch_versions.mix(KALLISTO_QUANT.out.versions)
 
-                PIZZLY( KALLISTO_QUANT.out.txt, transcript, gtf )
+                PIZZLY( KALLISTO_QUANT.out.txt, params.transcript, params.gtf )
                 ch_versions = ch_versions.mix(PIZZLY.out.versions)
 
                 GET_PATH(PIZZLY.out.fusions)

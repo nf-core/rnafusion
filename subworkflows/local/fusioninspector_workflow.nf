@@ -12,14 +12,12 @@ workflow FUSIONINSPECTOR_WORKFLOW {
 
     main:
         ch_versions = Channel.empty()
-        index ="${params.starfusion_ref}/ctat_genome_lib_build_dir"
+        index ="${params.starfusion_ref}"
 
         FUSIONINSPECTOR( reads, fusion_list , index )
         ch_versions = ch_versions.mix(FUSIONINSPECTOR.out.versions)
 
     emit:
         versions        = ch_versions.ifEmpty(null)
-        // fusion_list     = FUSIONINSPECTOR.out.fusion_list
-
 }
 

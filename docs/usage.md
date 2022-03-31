@@ -48,7 +48,7 @@
   - [--gtf](#--gtf)
   - [--star_index](#--star_index)
   - [--star_fusion_ref](#--star_fusion_ref)
-  - [--transcript](#--transcript)
+  - [--](#--)
 - [Other command line parameters](#other-command-line-parameters)
   - [--debug](#--debug)
   - [--read_length](#--read_length)
@@ -358,7 +358,7 @@ As you will see in the example below, we have:
 params {
     modules {
         'star_align' {
-            args          = "--quantMode TranscriptomeSAM --twopassMode Basic --outSAMtype BAM Unsorted --readFilesCommand zcat --runRNGseed 0 --outFilterMultimapNmax 20 --alignSJDBoverhangMin 1 --outSAMattributes NH HI AS NM MD --quantTranscriptomeBan Singleend --outFilterMismatchNmax 16"
+            args          = "--quantMode omeSAM --twopassMode Basic --outSAMtype BAM Unsorted --readFilesCommand zcat --runRNGseed 0 --outFilterMultimapNmax 20 --alignSJDBoverhangMin 1 --outSAMattributes NH HI AS NM MD --quantomeBan Singleend --outFilterMismatchNmax 16"
             publishDir    = "my_star_directory"
             publish_files = ['out':'log', 'tab':'log', 'bam':'']
         }
@@ -594,12 +594,12 @@ Required reference in order to run `STAR-Fusion`.
 --star_fusion_ref '<path to STAR-Fusion reference>'
 ```
 
-### --transcript
+### --
 
-Required transcript file.
+Required  file.
 
 ```bash
---transcript '<path to transcript reference>'
+-- '<path to  reference>'
 ```
 
 ## Other command line parameters

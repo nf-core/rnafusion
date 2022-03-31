@@ -6,7 +6,6 @@
 
 include { ENSEMBL_DOWNLOAD }                from '../modules/local/ensembl/main'
 include { ARRIBA_DOWNLOAD }                 from '../modules/local/arriba/download/main'
-include { ERICSCRIPT_DOWNLOAD }             from '../modules/local/ericscript/download/main'
 include { FUSIONCATCHER_DOWNLOAD }          from '../modules/local/fusioncatcher/download/main'
 include { FUSIONREPORT_DOWNLOAD }           from '../modules/local/fusionreport/download/main'
 include { STARFUSION_DOWNLOAD }             from '../modules/local/starfusion/download/main'
@@ -31,18 +30,12 @@ workflow BUILD_REFERENCES {
 
     ENSEMBL_DOWNLOAD( params.ensembl_version )
 
-    GTF_TO_REFFLAT(ENSEMBL_DOWNLOAD.out.chrgtf)
-
-    if (params.starindex || params.all) {
+    if (params.starindex || params.all || params.starfusion || params.arriba || params.squid ) {
         STAR_GENOMEGENERATE( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.gtf )
     }
 
     if (params.arriba || params.all) {
         ARRIBA_DOWNLOAD()
-    }
-
-    if (params.ericscript || params.all) {
-        ERICSCRIPT_DOWNLOAD()
     }
 
     if (params.fusioncatcher || params.all) {
@@ -54,6 +47,7 @@ workflow BUILD_REFERENCES {
     }
 
     if (params.starfusion || params.all) {
+        GTF_TO_REFFLAT(ENSEMBL_DOWNLOAD.out.chrgtf)
         STARFUSION_DOWNLOAD( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.chrgtf )
     }
 

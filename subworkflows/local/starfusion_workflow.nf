@@ -20,20 +20,14 @@ workflow STARFUSION_WORKFLOW {
             if (params.starfusion_fusions){
                 ch_starfusion_fusions = params.starfusion_fusions
             } else {
-                gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.chr.gtf"
-                ref ="${params.starfusion_ref}/ctat_genome_lib_build_dir"
 
-                star_ignore_sjdbgtf = false
-                seq_platform = false
-                seq_center = false
-
-                STAR_FOR_STARFUSION( reads, params.starindex_ref, gtf, star_ignore_sjdbgtf, seq_platform, seq_center )
+                STAR_FOR_STARFUSION( reads, params.starindex_ref, params.chrgtf, params.star_ignore_sjdbgtf, params.seq_platform, params.seq_center )
                 ch_versions = ch_versions.mix(STAR_FOR_STARFUSION.out.versions)
                 ch_align = STAR_FOR_STARFUSION.out.bam_sorted
 
                 reads_junction = reads.join(STAR_FOR_STARFUSION.out.junction )
 
-                STARFUSION( reads_junction, ref)
+                STARFUSION( reads_junction, params.starfusion_ref)
                 ch_versions = ch_versions.mix(STARFUSION.out.versions)
 
                 GET_PATH(STARFUSION.out.fusions)

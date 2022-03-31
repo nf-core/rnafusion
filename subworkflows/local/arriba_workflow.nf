@@ -22,12 +22,8 @@ workflow ARRIBA_WORKFLOW {
         ch_dummy_file = file("$baseDir/assets/dummy_file_arriba.txt", checkIfExists: true)
 
         if (params.arriba) {
-            gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf"
-            star_ignore_sjdbgtf = false
-            seq_platform = false
-            seq_center = false
 
-            STAR_FOR_ARRIBA( reads, index, gtf, star_ignore_sjdbgtf, seq_platform, seq_center )
+            STAR_FOR_ARRIBA( reads, index, params.gtf, params.star_ignore_sjdbgtf, params.seq_platform, params.seq_center )
             ch_versions = ch_versions.mix(STAR_FOR_ARRIBA.out.versions)
 
             SAMTOOLS_SORT_FOR_ARRIBA(STAR_FOR_ARRIBA.out.bam)

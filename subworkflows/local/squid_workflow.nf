@@ -22,13 +22,8 @@ workflow SQUID_WORKFLOW {
             if (params.squid_fusions){
                 ch_squid_fusions = params.squid_fusions
             } else {
-            gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf"
-            star_ignore_sjdbgtf = false
-            seq_platform = false
-            seq_center = false
-            index = params.starindex_ref
 
-            STAR_FOR_SQUID( reads, index, gtf, star_ignore_sjdbgtf, seq_platform, seq_center )
+            STAR_FOR_SQUID( reads, params.starindex_ref, params.gtf, params.star_ignore_sjdbgtf, params.seq_platform, params.seq_center )
             ch_versions = ch_versions.mix(STAR_FOR_SQUID.out.versions )
 
             SAMTOOLS_VIEW_FOR_SQUID ( STAR_FOR_SQUID.out.sam, [] )
@@ -42,7 +37,7 @@ workflow SQUID_WORKFLOW {
             SQUID ( bam_sorted )
             ch_versions = ch_versions.mix(SQUID.out.versions)
 
-            SQUID_ANNOTATE ( SQUID.out.fusions, gtf )
+            SQUID_ANNOTATE ( SQUID.out.fusions, params.gtf )
             ch_versions = ch_versions.mix(SQUID_ANNOTATE.out.versions)
 
             GET_PATH(SQUID_ANNOTATE.out.fusions_annotated)
