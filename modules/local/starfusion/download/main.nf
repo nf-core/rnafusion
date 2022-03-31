@@ -19,8 +19,8 @@ process STARFUSION_DOWNLOAD {
     """
     wget https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/GRCh38_gencode_v37_CTAT_lib_Mar012021.plug-n-play.tar.gz --no-check-certificate
 
-    tar xvf CTAT_resource_lib.tar.gz
+    tar xvf GRCh38_gencode_v37_CTAT_lib_Mar012021.plug-n-play.tar.gz
 
-    rm CTAT_resource_lib.tar.gz
+    rm GRCh38_gencode_v37_CTAT_lib_Mar012021.plug-n-play.tar.gz
     """
 }
