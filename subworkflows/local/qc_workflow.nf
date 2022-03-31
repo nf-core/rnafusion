@@ -24,7 +24,7 @@ workflow QC_WORKFLOW {
 
         bam_indexed = bam_sorted.join(SAMTOOLS_INDEX_FOR_QC.out.bai)
 
-        PICARD_COLLECTRNASEQMETRICS(bam_indexed, paramsrefflat, [])
+        PICARD_COLLECTRNASEQMETRICS(bam_indexed, params.refflat, [])
         ch_versions = ch_versions.mix(PICARD_COLLECTRNASEQMETRICS.out.versions)
 
         PICARD_MARKDUPLICATES(bam_sorted)
