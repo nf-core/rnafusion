@@ -596,7 +596,7 @@ Required reference in order to run `STAR-Fusion`.
 
 ### --
 
-Required  file.
+Required file.
 
 ```bash
 -- '<path to  reference>'
