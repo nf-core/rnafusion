@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.0] nfcore/rnafusion - 2022/03/??
 
 Update to DSL2 and newer software/reference versions
+
 ### Added
 
 - Added `qualimap/rnaseq v2.2.2d` from nf-core modules
@@ -32,8 +33,6 @@ Update to DSL2 and newer software/reference versions
 - Instead of separate script to build the references, added `--build_references` argument in the main
 - `--fasta` argument is not required with `--build_references` and set by default to the ensembl references built in the detection workflow
 - CI test done on stubs of reference building for subprocesses ensembl and arriba
-
-
 
 Parameters for `STAR` for `arriba` changed from:
 
