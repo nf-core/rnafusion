@@ -19,9 +19,8 @@ workflow PIZZLY_WORKFLOW {
             if (params.pizzly_fusions) {
                 ch_pizzly_fusions = params.pizzly_fusions
             } else {
-                index ="${params.pizzly_ref}/kallisto"
 
-                KALLISTO_QUANT( reads, index )
+                KALLISTO_QUANT( reads, params.pizzly_ref )
                 ch_versions = ch_versions.mix(KALLISTO_QUANT.out.versions)
 
                 PIZZLY( KALLISTO_QUANT.out.txt, params.transcript, params.gtf )
