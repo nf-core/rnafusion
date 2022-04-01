@@ -1,7 +1,3 @@
-//
-// Check input samplesheet and get read channels
-//
-
 include { ARRIBA }                                      from '../../modules/nf-core/modules/arriba/main'
 include { ARRIBA_VISUALISATION }                        from '../../modules/local/arriba/visualisation/main'
 include { GET_PATH as GET_PATH_ARRIBA }                 from '../../modules/local/getpath/main'
@@ -21,7 +17,11 @@ workflow ARRIBA_WORKFLOW {
         ch_versions = Channel.empty()
         ch_dummy_file = file("$baseDir/assets/dummy_file_arriba.txt", checkIfExists: true)
 
-        if (params.arriba) {
+        if (params.arriba || params.all) {
+            gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf"
+            star_ignore_sjdbgtf = false
+            seq_platform = false
+            seq_center = false
 
             STAR_FOR_ARRIBA( reads, index, params.gtf, params.star_ignore_sjdbgtf, params.seq_platform, params.seq_center )
             ch_versions = ch_versions.mix(STAR_FOR_ARRIBA.out.versions)

@@ -1,7 +1,3 @@
-//
-// Check input samplesheet and get read channels
-//
-
 include { FUSIONINSPECTOR }                           from '../../modules/local/fusioninspector/main'
 
 

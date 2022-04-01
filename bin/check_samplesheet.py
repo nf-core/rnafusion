@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-# This script is based on the example at: https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/samplesheet/samplesheet_test_illumina_amplicon.csv
 
 import os
 import sys

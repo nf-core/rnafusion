@@ -1,7 +1,3 @@
-//
-// Check input samplesheet and get read channels
-//
-
 include { FUSIONREPORT }                           from '../../modules/local/fusionreport/detect/main'
 
 
