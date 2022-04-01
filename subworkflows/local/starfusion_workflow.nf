@@ -1,7 +1,3 @@
-//
-// Check input samplesheet and get read channels
-//
-
 include { STAR_ALIGN as STAR_FOR_STARFUSION }    from '../../modules/nf-core/modules/star/align/main'
 include { STARFUSION }                           from '../../modules/local/starfusion/detect/main'
 include { GET_PATH }                             from '../../modules/local/getpath/main'
@@ -16,7 +12,7 @@ workflow STARFUSION_WORKFLOW {
         ch_align = Channel.empty()
         ch_dummy_file = file("$baseDir/assets/dummy_file_starfusion.txt", checkIfExists: true)
 
-        if (params.starfusion){
+        if (params.starfusion || params.all){
             if (params.starfusion_fusions){
                 ch_starfusion_fusions = params.starfusion_fusions
             } else {

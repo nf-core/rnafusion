@@ -26,7 +26,6 @@ input:
       description: Path to ctat references
       pattern: "*"
 
-# TODO complete output
 output:
   - versions:
       type: file

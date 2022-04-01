@@ -1,7 +1,3 @@
-//
-// Check input samplesheet and get read channels
-//
-
 include { FUSIONCATCHER }          from '../../modules/local/fusioncatcher/detect/main'
 include { GET_PATH }               from '../../modules/local/getpath/main'
 
@@ -14,7 +10,7 @@ workflow FUSIONCATCHER_WORKFLOW {
         ch_versions = Channel.empty()
         ch_dummy_file = file("$baseDir/assets/dummy_file_fusioncatcher.txt", checkIfExists: true)
 
-        if (params.fusioncatcher) {
+        if (params.fusioncatcher || params.all) {
             if (params.fusioncatcher_fusions){
                 ch_fusioncatcher_fusions = params.fusioncatcher_fusions
             } else {

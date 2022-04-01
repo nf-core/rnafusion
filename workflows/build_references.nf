@@ -6,7 +6,6 @@
 
 include { ENSEMBL_DOWNLOAD }                from '../modules/local/ensembl/main'
 include { ARRIBA_DOWNLOAD }                 from '../modules/local/arriba/download/main'
-include { ERICSCRIPT_DOWNLOAD }             from '../modules/local/ericscript/download/main'
 include { FUSIONCATCHER_DOWNLOAD }          from '../modules/local/fusioncatcher/download/main'
 include { FUSIONREPORT_DOWNLOAD }           from '../modules/local/fusionreport/download/main'
 include { STARFUSION_DOWNLOAD }             from '../modules/local/starfusion/download/main'
@@ -39,10 +38,6 @@ workflow BUILD_REFERENCES {
 
     if (params.arriba || params.all) {
         ARRIBA_DOWNLOAD()
-    }
-
-    if (params.ericscript || params.all) {
-        ERICSCRIPT_DOWNLOAD()
     }
 
     if (params.fusioncatcher || params.all) {
