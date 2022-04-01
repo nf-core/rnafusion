@@ -236,7 +236,7 @@
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/plain",
-                    "pattern":  "^\\S+\\.fn?a(sta)?(\\.gz)?$",
+                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
                     "description": "Path to GTF genome file.",
                     "fa_icon": "far fa-file-code"
                 },
@@ -244,7 +244,7 @@
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/plain",
-                    "pattern":  "^\\S+\\.refflat?$",
+                    "pattern": "^\\S+\\.refflat?$",
                     "description": "Path to GTF genome file.",
                     "fa_icon": "far fa-file-code"
                 }
