@@ -215,6 +215,38 @@
                     "description": "Path to FASTA genome file.",
                     "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
                     "fa_icon": "far fa-file-code"
+                },
+                "gtf": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.gtf?(\\.gz)?$",
+                    "description": "Path to GTF genome file.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "chrgtf": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.chr.gtf?(\\.gz)?$",
+                    "description": "Path to GTF genome file.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "transcript": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern":  "^\\S+\\.fn?a(sta)?(\\.gz)?$",
+                    "description": "Path to GTF genome file.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "refflat": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern":  "^\\S+\\.refflat?$",
+                    "description": "Path to GTF genome file.",
+                    "fa_icon": "far fa-file-code"
                 }
             }
         },
