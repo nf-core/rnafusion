@@ -64,8 +64,9 @@ workflow BUILD_REFERENCES {
 */
 
 workflow.onComplete {
-    def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
-    NfcoreTemplate.email(workflow, params, summary_params, projectDir, log)
+    if (params.email || params.email_on_fail) {
+        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
+    }
     NfcoreTemplate.summary(workflow, params, log)
 }
 
