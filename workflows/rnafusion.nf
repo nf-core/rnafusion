@@ -140,8 +140,6 @@ workflow RNAFUSION {
     // Run STAR alignment and Arriba
     ARRIBA_WORKFLOW (
         ch_cat_fastq,
-        params.fasta,
-        params.starindex_ref,
     )
     ch_versions = ch_versions.mix(ARRIBA_WORKFLOW.out.versions.first().ifEmpty(null))
 
