@@ -13,6 +13,14 @@ WorkflowRnafusion.initialise(params, log)
 
 if (file(params.input).exists() || params.build_references) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet does not exist or was not specified!' }
 
+def checkPathParamList = [
+    params.multiqc_config, params.fasta,
+    params.gtf, params.chrgtf, params.transcript
+]
+
+for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
+
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     CONFIG FILES
