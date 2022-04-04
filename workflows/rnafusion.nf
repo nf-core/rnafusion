@@ -14,11 +14,19 @@ WorkflowRnafusion.initialise(params, log)
 if (file(params.input).exists() || params.build_references) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet does not exist or was not specified!' }
 
 def checkPathParamList = [
-    params.multiqc_config, params.fasta,
-    params.gtf, params.chrgtf, params.transcript
+    params.fasta,
+    params.gtf,
+    params.chrgtf,
+    params.transcript
 ]
+for (param in checkPathParamList) if (param) file(param, checkIfExists: true)
 
-for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
+
+for (param in checkPathParamList) {
+    if (!file(param).exists()) { exit 1, 'Check that references were built (use --build_references)' }
+    if (!(param == file(param))) { exit 1, 'Check that ABSOLUTE PATHS are used' }
+}
+
 
 
 /*
