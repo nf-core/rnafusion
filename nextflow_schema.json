@@ -443,13 +443,6 @@
                     "hidden": true,
                     "fa_icon": "fas fa-toolbox",
                     "help_text": "Setting false will use GTF file for STAR alignment"
-                },
-                "star_index": {
-                    "type": "string",
-                    "description": "Path of STAR index directory",
-                    "hidden": true,
-                    "fa_icon": "fas fa-toolbox",
-                    "help_text": "Provide the index directory for the STAR alignment"
                 }
             }
         }
