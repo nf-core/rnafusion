@@ -19,8 +19,6 @@ def checkPathParamList = [
     params.chrgtf,
     params.transcript
 ]
-for (param in checkPathParamList) if (param) file(param, checkIfExists: true)
-
 
 for (param in checkPathParamList) {
     if (!file(param).exists()) { exit 1, 'Check that references were built (use --build_references)' }
