@@ -52,7 +52,7 @@ workflow BUILD_REFERENCES {
     }
 
     if (params.fusionreport || params.all) {
-        FUSIONREPORT_DOWNLOAD( params.cosmic_usr, params.cosmic_passwd )
+        FUSIONREPORT_DOWNLOAD( params.cosmic_username, params.cosmic_passwd )
     }
 
 }
