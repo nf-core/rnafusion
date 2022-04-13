@@ -28,11 +28,11 @@ process FUSIONREPORT {
     task.ext.when == null || task.ext.when
 
     script:
-    def tools = params.arriba         ? "--arriba ${arriba_fusions} " : ''
-    tools    += params.pizzly         ? "--pizzly ${pizzly_fusions} " : ''
-    tools    += params.squid          ? "--squid ${squid_fusions} " : ''
-    tools    += params.starfusion     ? "--starfusion ${starfusion_fusions} " : ''
-    tools    += params.fusioncatcher  ? "--fusioncatcher ${fusioncatcher_fusions} " : ''
+    def tools = params.arriba || params.all         ? "--arriba ${arriba_fusions} " : ''
+    tools    += params.pizzly || params.all         ? "--pizzly ${pizzly_fusions} " : ''
+    tools    += params.squid  || params.all         ? "--squid ${squid_fusions} " : ''
+    tools    += params.starfusion  || params.all    ? "--starfusion ${starfusion_fusions} " : ''
+    tools    += params.fusioncatcher  || params.all ? "--fusioncatcher ${fusioncatcher_fusions} " : ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     fusion_report run $meta.id . $fusionreport_ref $tools --allow-multiple-gene-symbols
