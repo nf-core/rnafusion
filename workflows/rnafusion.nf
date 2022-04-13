@@ -13,19 +13,25 @@ WorkflowRnafusion.initialise(params, log)
 
 if (file(params.input).exists() || params.build_references) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet does not exist or was not specified!' }
 
+
+
 def checkPathParamList = [
     params.fasta,
     params.gtf,
     params.chrgtf,
-    params.transcript
+    params.transcript,
+    params.refflat
 ]
 
-for (param in checkPathParamList) {
-    if (!file(param).exists()) { exit 1, 'Check that references were built (use --build_references)' }
-    if (!(param == file(param))) { exit 1, 'Check that ABSOLUTE PATHS are used' }
-}
+for (param in checkPathParamList) if ((param) && !params.build_references) file(param, checkIfExists: true)
+for (param in checkPathParamList) if ((param)!= file(param).toString() && !params.build_references) { exit 1, 'ABSOLUTE PATHS are required! Check for trailing "/" at the end of paths too.' }
+if ((params.squid || params.all) && params.ensembl_version == 105) { exit 1, 'Ensembl version 105 is not supported by squid' }
 
-
+ch_fasta = file(params.fasta)
+ch_gtf = file(params.gtf)
+ch_chrgtf = file(params.chrgtf)
+ch_transcript = file(params.transcript)
+ch_refflat = file(params.refflat)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -125,35 +131,14 @@ workflow RNAFUSION {
     )
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
-
-    //
-    // MODULE: MultiQC
-    //
-    workflow_summary    = WorkflowRnafusion.paramsSummaryMultiqc(workflow, summary_params)
-    ch_workflow_summary = Channel.value(workflow_summary)
-
-    ch_multiqc_files = Channel.empty()
-    ch_multiqc_files = ch_multiqc_files.mix(Channel.from(ch_multiqc_config))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_multiqc_custom_config.collect().ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
-
-    MULTIQC (
-        ch_multiqc_files.collect()
-    )
-
-    multiqc_report       = MULTIQC.out.report.toList()
-    ch_versions          = ch_versions.mix(MULTIQC.out.versions)
 
 
 
     // Run STAR alignment and Arriba
     ARRIBA_WORKFLOW (
         ch_cat_fastq,
+        ch_gtf,
+        ch_fasta
     )
     ch_versions = ch_versions.mix(ARRIBA_WORKFLOW.out.versions.first().ifEmpty(null))
 
@@ -161,21 +146,25 @@ workflow RNAFUSION {
 
     PIZZLY_WORKFLOW (
         ch_cat_fastq,
+        ch_gtf,
+        ch_transcript
     )
     ch_versions = ch_versions.mix(PIZZLY_WORKFLOW.out.versions.first().ifEmpty(null))
 
 
 // Run squid
+
     SQUID_WORKFLOW (
         ch_cat_fastq,
-        params.fasta
+        ch_gtf
     )
     ch_versions = ch_versions.mix(SQUID_WORKFLOW.out.versions.first().ifEmpty(null))
 
 
 //Run STAR fusion
     STARFUSION_WORKFLOW (
-        ch_cat_fastq
+        ch_cat_fastq,
+        ch_chrgtf
     )
     ch_versions = ch_versions.mix(STARFUSION_WORKFLOW.out.versions.first().ifEmpty(null))
 
@@ -210,9 +199,36 @@ workflow RNAFUSION {
 
     //QC
     QC_WORKFLOW (
-        STARFUSION_WORKFLOW.out.bam_sorted
+        STARFUSION_WORKFLOW.out.bam_sorted,
+        ch_gtf,
+        ch_refflat
     )
     ch_versions = ch_versions.mix(QC_WORKFLOW.out.versions.first().ifEmpty(null))
+
+    CUSTOM_DUMPSOFTWAREVERSIONS (
+        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    )
+
+
+    //
+    // MODULE: MultiQC
+    //
+    workflow_summary    = WorkflowRnafusion.paramsSummaryMultiqc(workflow, summary_params)
+    ch_workflow_summary = Channel.value(workflow_summary)
+
+    ch_multiqc_files = Channel.empty()
+    ch_multiqc_files = ch_multiqc_files.mix(Channel.from(ch_multiqc_config))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_multiqc_custom_config.collect().ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+
+    MULTIQC (
+        ch_multiqc_files.collect()
+    )
+
+    multiqc_report       = MULTIQC.out.report.toList()
+    ch_versions          = ch_versions.mix(MULTIQC.out.versions)
 
 }
 
