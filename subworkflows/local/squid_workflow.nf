@@ -6,9 +6,10 @@ include { SQUID_ANNOTATE }                              from '../../modules/loca
 include { STAR_ALIGN as STAR_FOR_SQUID }                from '../../modules/nf-core/modules/star/align/main'
 
 workflow SQUID_WORKFLOW {
+
     take:
         reads
-        fast
+        ch_gtf
 
     main:
         ch_versions = Channel.empty()
@@ -19,7 +20,7 @@ workflow SQUID_WORKFLOW {
                 ch_squid_fusions = params.squid_fusions
             } else {
 
-            STAR_FOR_SQUID( reads, params.starindex_ref, params.gtf, params.star_ignore_sjdbgtf, params.seq_platform, params.seq_center )
+            STAR_FOR_SQUID( reads, params.starindex_ref, ch_gtf, params.star_ignore_sjdbgtf, params.seq_platform, params.seq_center )
             ch_versions = ch_versions.mix(STAR_FOR_SQUID.out.versions )
 
             SAMTOOLS_VIEW_FOR_SQUID ( STAR_FOR_SQUID.out.sam, [] )
@@ -33,7 +34,7 @@ workflow SQUID_WORKFLOW {
             SQUID ( bam_sorted )
             ch_versions = ch_versions.mix(SQUID.out.versions)
 
-            SQUID_ANNOTATE ( SQUID.out.fusions, params.gtf )
+            SQUID_ANNOTATE ( SQUID.out.fusions, ch_gtf )
             ch_versions = ch_versions.mix(SQUID_ANNOTATE.out.versions)
 
             GET_PATH(SQUID_ANNOTATE.out.fusions_annotated)

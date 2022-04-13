@@ -6,6 +6,8 @@ include { GET_PATH          }     from '../../modules/local/getpath/main'
 workflow PIZZLY_WORKFLOW {
     take:
         reads
+        ch_gtf
+        ch_transcript
 
     main:
         ch_versions = Channel.empty()
@@ -19,7 +21,7 @@ workflow PIZZLY_WORKFLOW {
                 KALLISTO_QUANT( reads, params.pizzly_ref )
                 ch_versions = ch_versions.mix(KALLISTO_QUANT.out.versions)
 
-                PIZZLY( KALLISTO_QUANT.out.txt, params.transcript, params.gtf )
+                PIZZLY( KALLISTO_QUANT.out.txt, ch_transcript, ch_gtf )
                 ch_versions = ch_versions.mix(PIZZLY.out.versions)
 
                 GET_PATH(PIZZLY.out.fusions)
