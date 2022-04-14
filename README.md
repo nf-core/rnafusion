@@ -77,8 +77,8 @@ In rnafusion the full-sized test includes reference building and fusion detectio
 8. Fusioncatcher subworkflow
    - [FusionCatcher](https://github.com/ndaniel/fusioncatcher) fusion detection
 9. Fusion-report subworkflow
-    - Merge all fusions detected by the different tools
-    - [Fusion-report](https://github.com/matq007/fusion-report)
+   - Merge all fusions detected by the different tools
+   - [Fusion-report](https://github.com/matq007/fusion-report)
 10. FusionInspector subworkflow
     - [FusionInspector](https://github.com/FusionInspector/FusionInspector)
 11. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))

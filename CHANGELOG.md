@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0] nfcore/rnafusion - 2022/03/??
+## [2.0.0] nfcore/rnafusion - 2022/04/14
 
 Update to DSL2 and newer software/reference versions
 
@@ -15,6 +15,7 @@ Update to DSL2 and newer software/reference versions
 - Added `picard MarkDuplicates v2.26.10` from nf-core modules
 - Added `cat/fastqc` from nf-core modules
 - Added possibility for manually feeding the results of fusions from different tools to speed-up reruns
+- STAR-Fusion references can be downloaded or built (--starfusion_build parameter)
 
 ### Changed
 
@@ -26,7 +27,7 @@ Update to DSL2 and newer software/reference versions
 - Upgrade `fusion-report v2.1.3` to `fusion-report v2.1.5`
 - Upgrade `kallisto v0.44.0` to `kallisto v0.46.2`
 - Upgrade `fastqc v0.11.8` to `fastqc v0.11.9`
-- Upgrade `samtools v1.9` to `samtools v1.15`
+- Upgrade `samtools v1.9` to `samtools v1.15.1`
 - Upgrade `arriba` references from `v1.2.0` to `v2.1.0`
 - Upgrade `fusioncatcher` references from `v98` to `v102`
 - Use `arriba` (detect only), `kallisto` and `STAR` from nf-core modules
