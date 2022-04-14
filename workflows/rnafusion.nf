@@ -14,22 +14,23 @@ WorkflowRnafusion.initialise(params, log)
 if (file(params.input).exists() || params.build_references) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet does not exist or was not specified!' }
 
 
+ch_chrgtf = params.starfusion_build ? file(params.chrgtf) : file("${params.starfusion_ref}/ref_annot.gtf")
+ch_starindex_ref = params.starfusion_build ? params.starindex_ref : "${params.starfusion_ref}/ref_genome.fa.star.idx"
 
 def checkPathParamList = [
     params.fasta,
     params.gtf,
-    params.chrgtf,
+    ch_chrgtf,
     params.transcript,
-    params.refflat
+    // params.refflat
 ]
 
 for (param in checkPathParamList) if ((param) && !params.build_references) file(param, checkIfExists: true)
-for (param in checkPathParamList) if ((param)!= file(param).toString() && !params.build_references) { exit 1, 'ABSOLUTE PATHS are required! Check for trailing "/" at the end of paths too.' }
+for (param in checkPathParamList) if ((param.toString())!= file(param).toString() && !params.build_references) { exit 1, "Problem with ${param}: ABSOLUTE PATHS are required! Check for trailing '/' at the end of paths too." }
 if ((params.squid || params.all) && params.ensembl_version == 105) { exit 1, 'Ensembl version 105 is not supported by squid' }
 
 ch_fasta = file(params.fasta)
 ch_gtf = file(params.gtf)
-ch_chrgtf = file(params.chrgtf)
 ch_transcript = file(params.transcript)
 ch_refflat = file(params.refflat)
 
@@ -138,7 +139,8 @@ workflow RNAFUSION {
     ARRIBA_WORKFLOW (
         ch_cat_fastq,
         ch_gtf,
-        ch_fasta
+        ch_fasta,
+        ch_starindex_ref
     )
     ch_versions = ch_versions.mix(ARRIBA_WORKFLOW.out.versions.first().ifEmpty(null))
 
@@ -156,7 +158,8 @@ workflow RNAFUSION {
 
     SQUID_WORKFLOW (
         ch_cat_fastq,
-        ch_gtf
+        ch_gtf,
+        ch_starindex_ref
     )
     ch_versions = ch_versions.mix(SQUID_WORKFLOW.out.versions.first().ifEmpty(null))
 
@@ -164,7 +167,8 @@ workflow RNAFUSION {
 //Run STAR fusion
     STARFUSION_WORKFLOW (
         ch_cat_fastq,
-        ch_chrgtf
+        ch_chrgtf,
+        ch_starindex_ref
     )
     ch_versions = ch_versions.mix(STARFUSION_WORKFLOW.out.versions.first().ifEmpty(null))
 
@@ -200,7 +204,7 @@ workflow RNAFUSION {
     //QC
     QC_WORKFLOW (
         STARFUSION_WORKFLOW.out.bam_sorted,
-        ch_gtf,
+        ch_chrgtf,
         ch_refflat
     )
     ch_versions = ch_versions.mix(QC_WORKFLOW.out.versions.first().ifEmpty(null))
