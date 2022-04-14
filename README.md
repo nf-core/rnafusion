@@ -33,9 +33,9 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 | [Squid](https://github.com/Kingsford-Group/squid)         |        :x:         |  `1.5`   |
 | [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) | :white_check_mark: | `1.10.1` |
 
-<!-- TODO nf-core: Add full-sized test dataset and amend the paragraph below if applicable -->
-
 On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/rnafusion/results).
+
+In rnafusion the full-sized test includes reference building and fusion detection. The test dataset is taken from [here](https://github.com/nf-core/test-datasets/tree/rnafusion/testdata/human).
 
 ## Pipeline summary
 
@@ -56,34 +56,35 @@ On release, automated continuous integration tests run the pipeline on a full-si
 1. Input samplesheet check
 2. Concatenate fastq files per sample
 3. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-4. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
-5. Arriba subworkflow
+4. Arriba subworkflow
    - STAR alignment
    - Samtool sort
    - Samtool index
    - [Arriba](https://github.com/suhrig/arriba) fusion detection
    - [Arriba](https://github.com/suhrig/arriba) visualisation
-6. Pizzly subworkflow
+5. Pizzly subworkflow
    - [Kallisto](https://pachterlab.github.io/kallisto/) quantification
    - [Pizzly](https://github.com/pmelsted/pizzly) fusion detection
-7. Squid subworkflow
+6. Squid subworkflow
    - [STAR](https://github.com/alexdobin/STAR) alignment
    - [Samtools view](http://www.htslib.org/): convert sam output from STAR to bam
    - [Samtools sort](http://www.htslib.org/): bam output from STAR
    - [Squid](https://github.com/Kingsford-Group/squid) fusion detection
    - [Squid](https://github.com/Kingsford-Group/squid) annotate
-8. STAR-fusion subworkflow
+7. STAR-fusion subworkflow
    - [STAR](https://github.com/alexdobin/STAR) alignment
    - [STAR-fusion](https://github.com/STAR-Fusion/STAR-Fusion) fusion detection
-9. Fusioncatcher subworkflow
+8. Fusioncatcher subworkflow
    - [FusionCatcher](https://github.com/ndaniel/fusioncatcher) fusion detection
-10. Fusion-report subworkflow
-    - Merge all fusions detected by the different tools
-    - [Fusion-report](https://github.com/matq007/fusion-report)
-11. FusionInspector subworkflow
+9. Fusion-report subworkflow
+   - Merge all fusions detected by the different tools
+   - [Fusion-report](https://github.com/matq007/fusion-report)
+10. FusionInspector subworkflow
     - [FusionInspector](https://github.com/FusionInspector/FusionInspector)
-
-<!-- TODO Add QC steps, MultiQC details -->
+11. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+12. QC for mapped reads ([`QualiMap: BAM QC`](https://kokonech.github.io/qualimap/HG00096.chr20_bamqc/qualimapReport.html))
+13. Index mapped reads ([samtools index`](http://www.htslib.org/))
+14. Collect metrics ([picard CollectRnaSeqMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037057492-CollectRnaSeqMetrics-Picard-)) and ([picard MarkDuplicates`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-))
 
 ## Quick Start
 
@@ -106,11 +107,11 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 4. Start running your own analysis!
 
-<!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
-
 ```console
-nextflow run nf-core/rnafusion --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
+nextflow run nf-core/rnafusion --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 --all -profile <docker/singularity/podman/shifter/charliecloud/institute>
 ```
+
+> Note that paths need to be absolute and that runs with conda are not supported.
 
 ## Documentation
 
@@ -131,8 +132,6 @@ If you would like to contribute to this pipeline, please see the [contributing g
 For further information or help, don't hesitate to get in touch on the [Slack `#rnafusion` channel](https://nfcore.slack.com/channels/rnafusion) (you can join with [this invite](https://nf-co.re/join/slack)).
 
 ## Citations
-
-<!-- TODO update zenodo after release -->
 
 If you use nf-core/rnafusion for your analysis, please cite it using the following doi: [10.5281/zenodo.3946477](https://doi.org/10.5281/zenodo.3946477)
 

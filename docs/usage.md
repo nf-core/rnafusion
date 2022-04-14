@@ -43,6 +43,15 @@ nextflow run nf-core/rnafusion \
 
 This PATH will be the place the references will be saved.
 
+Optional: by default STAR-Fusion references are downloaded. You can also build them from ensembl fasta and gtf files. This allows more flexibility for different organisms but be aware that **this is slow and computationally intensive**:
+
+```bash
+nextflow run nf-core/rnafusion \
+--build_references --starfusion \
+--starfusion_build \
+--genomes_base <PATH>
+```
+
 ### Running the detection tools
 
 ```bash
@@ -55,7 +64,7 @@ Visualisation tools will be run on all fusion detected.
 
 #### Optional manual feed-in of fusion files
 
-It is possible to give the output of each tool manually using the argument: `--<tool>_fusions PATH/TO/FUSION/FILE`.
+It is possible to give the output of each tool manually using the argument: `--<tool>_fusions PATH/TO/FUSION/FILE`: this feature need more testing, don't hesitate to open an issue if you encounter problems.
 
 ## Samplesheet input
 
@@ -267,7 +276,7 @@ As you will see in the example below, we have:
 params {
     modules {
         'star_align' {
-            args          = "--quantMode TranscriptomeSAM --twopassMode Basic --outSAMtype BAM Unsorted --readFilesCommand zcat --runRNGseed 0 --outFilterMultimapNmax 20 --alignSJDBoverhangMin 1 --outSAMattributes NH HI AS NM MD --quantTranscriptomeBan Singleend --outFilterMismatchNmax 16"
+            args          = "--quantMode omeSAM --twopassMode Basic --outSAMtype BAM Unsorted --readFilesCommand zcat --runRNGseed 0 --outFilterMultimapNmax 20 --alignSJDBoverhangMin 1 --outSAMattributes NH HI AS NM MD --quantomeBan Singleend --outFilterMismatchNmax 16"
             publishDir    = "my_star_directory"
             publish_files = ['out':'log', 'tab':'log', 'bam':'']
         }

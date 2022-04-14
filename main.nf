@@ -17,9 +17,11 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-params.fasta             = WorkflowMain.getGenomeAttribute(params, 'fasta')
-params.genomes_base      = WorkflowMain.getGenomeAttribute(params, 'genomes_base')
-
+params.fasta           = WorkflowMain.getGenomeAttribute(params, 'fasta')
+params.gtf             = WorkflowMain.getGenomeAttribute(params, 'gtf')
+params.chrgtf          = WorkflowMain.getGenomeAttribute(params, 'chrgtf')
+params.transcript      = WorkflowMain.getGenomeAttribute(params, 'transcript')
+params.refflat         = WorkflowMain.getGenomeAttribute(params, 'refflat')
 
 /*
 ========================================================================================
@@ -27,7 +29,6 @@ params.genomes_base      = WorkflowMain.getGenomeAttribute(params, 'genomes_base
 ========================================================================================
 */
 
-params.build_references  = WorkflowMain.getGenomeAttribute(params, 'build_references')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -11,15 +11,21 @@ tools:
       doi: "10.1186/s13059-019-1842-9"
       licence: ["GPL v3"]
 
-output:
-  - reference:
-      type: directory
-      description: Genome resource path
-      pattern: "star-fusion-genome"
+input:
+  - fasta:
+      type: file
+      description: genome fasta file
+      pattern: "*.{fasta}"
   - gtf:
       type: file
       description: genome gtf file
       pattern: "*.{gtf}"
 
+output:
+  - reference:
+      type: directory
+      description: Reference dir
+      pattern: "ctat_genome_lib_build_dir"
+
 authors:
-  - "@praveenraj2018,@rannick"
+  - "@praveenraj2018"

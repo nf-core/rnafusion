@@ -10,15 +10,14 @@ include { PICARD_MARKDUPLICATES }                      from '../../modules/nf-co
 workflow QC_WORKFLOW {
     take:
         bam_sorted
+        ch_chrgtf
+        ch_refflat
 
     main:
         ch_versions = Channel.empty()
         ch_qualimap_qc = Channel.empty()
 
-        gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.chr.gtf"
-        refflat ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.chr.gtf.refflat"
-
-        QUALIMAP_RNASEQ(bam_sorted, gtf)
+        QUALIMAP_RNASEQ(bam_sorted, ch_chrgtf)
         ch_versions = ch_versions.mix(QUALIMAP_RNASEQ.out.versions)
         ch_qualimap_qc = QUALIMAP_RNASEQ.out.results.ifEmpty(null)
 
@@ -27,13 +26,12 @@ workflow QC_WORKFLOW {
 
         bam_indexed = bam_sorted.join(SAMTOOLS_INDEX_FOR_QC.out.bai)
 
-        PICARD_COLLECTRNASEQMETRICS(bam_indexed, refflat, [])
+        PICARD_COLLECTRNASEQMETRICS(bam_indexed, ch_refflat, [])
         ch_versions = ch_versions.mix(PICARD_COLLECTRNASEQMETRICS.out.versions)
 
         PICARD_MARKDUPLICATES(bam_sorted)
         ch_versions = ch_versions.mix(PICARD_MARKDUPLICATES.out.versions)
 
-// TODO: check what happens with skip qc
     emit:
         versions            = ch_versions.ifEmpty(null)
         qualimap_qc         = ch_qualimap_qc.ifEmpty(null)

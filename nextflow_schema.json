@@ -73,6 +73,11 @@
                     "description": "ensembl version",
                     "default": 105
                 },
+                "starfusion_build": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "If set, starfusion references are built from scratch instead of downloaded (default)"
+                },
                 "read_length": {
                     "type": "integer",
                     "fa_icon": "far fa-file-code",
@@ -215,6 +220,38 @@
                     "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
                     "description": "Path to FASTA genome file.",
                     "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "gtf": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.gtf?(\\.gz)?$",
+                    "description": "Path to GTF genome file.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "chrgtf": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.gtf?(\\.gz)?$",
+                    "description": "Path to GTF genome file.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "transcript": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
+                    "description": "Path to GTF genome file.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "refflat": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.refflat?$",
+                    "description": "Path to GTF genome file.",
                     "fa_icon": "far fa-file-code"
                 }
             }
@@ -385,6 +422,12 @@
                     "hidden": true,
                     "fa_icon": "fas fa-bacon"
                 },
+                "singularity_pull_docker_container": {
+                    "type": "boolean",
+                    "description": "Use to pull docker containers to run with singularity",
+                    "hidden": true,
+                    "fa_icon": "fas fa-bacon"
+                },
                 "seq_center": {
                     "type": "boolean",
                     "description": "Sequencing center",
@@ -405,13 +448,6 @@
                     "hidden": true,
                     "fa_icon": "fas fa-toolbox",
                     "help_text": "Setting false will use GTF file for STAR alignment"
-                },
-                "star_index": {
-                    "type": "string",
-                    "description": "Path of STAR index directory",
-                    "hidden": true,
-                    "fa_icon": "fas fa-toolbox",
-                    "help_text": "Provide the index directory for the STAR alignment"
                 }
             }
         }

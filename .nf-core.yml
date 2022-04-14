@@ -1,7 +1,1 @@
 repository_type: pipeline
-lint:
-  files_unchanged:
-    # Added to ignore linting error: actions/setup-node@v1 until fixed release
-    - .github/workflows/linting.yml
-    - .github/workflows/branch.yml
-    - .github/workflows/linting_comment.yml

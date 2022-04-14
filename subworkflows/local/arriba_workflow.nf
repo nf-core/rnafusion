@@ -10,20 +10,17 @@ include { STAR_ALIGN as STAR_FOR_ARRIBA }               from '../../modules/nf-c
 workflow ARRIBA_WORKFLOW {
     take:
         reads
-        fasta
-        index
+        ch_gtf
+        ch_fasta
+        ch_starindex_ref
 
     main:
         ch_versions = Channel.empty()
         ch_dummy_file = file("$baseDir/assets/dummy_file_arriba.txt", checkIfExists: true)
 
         if (params.arriba || params.all) {
-            gtf ="${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf"
-            star_ignore_sjdbgtf = false
-            seq_platform = false
-            seq_center = false
 
-            STAR_FOR_ARRIBA( reads, index, gtf, star_ignore_sjdbgtf, seq_platform, seq_center )
+            STAR_FOR_ARRIBA( reads, ch_starindex_ref, ch_gtf, params.star_ignore_sjdbgtf, params.seq_platform, params.seq_center )
             ch_versions = ch_versions.mix(STAR_FOR_ARRIBA.out.versions)
 
             SAMTOOLS_SORT_FOR_ARRIBA(STAR_FOR_ARRIBA.out.bam)
@@ -38,7 +35,7 @@ workflow ARRIBA_WORKFLOW {
                 ch_arriba_fusions = params.arriba_fusions
                 ch_arriba_fusion_fail = ch_dummy_file
             } else {
-                ARRIBA ( STAR_FOR_ARRIBA.out.bam, fasta, gtf )
+                ARRIBA ( STAR_FOR_ARRIBA.out.bam, ch_fasta, ch_gtf )
                 ch_versions = ch_versions.mix(ARRIBA.out.versions)
 
                 GET_PATH_ARRIBA(ARRIBA.out.fusions)
@@ -48,7 +45,7 @@ workflow ARRIBA_WORKFLOW {
                 ch_arriba_fusion_fail = GET_PATH_ARRIBA_FAIL.out.file
             }
 
-            ARRIBA_VISUALISATION(bam_indexed, ch_arriba_fusions, params.arriba_ref, gtf)
+            ARRIBA_VISUALISATION(bam_indexed, ch_arriba_fusions, params.arriba_ref, ch_gtf)
             ch_versions = ch_versions.mix(ARRIBA_VISUALISATION.out.versions)
 
             ch_arriba_visualisation = ARRIBA_VISUALISATION.out.pdf

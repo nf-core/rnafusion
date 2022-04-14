@@ -21,7 +21,7 @@ process STARFUSION {
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def fasta = params.single_end ? "--left_fq ${reads[0]}" : "--left_fq ${reads[0]} --right_fq ${reads[1]}"
+    def fasta = meta.single_end ? "--left_fq ${reads[0]}" : "--left_fq ${reads[0]} --right_fq ${reads[1]}"
     def args = task.ext.args ?: ''
     """
     STAR-Fusion \\

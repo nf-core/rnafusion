@@ -13,19 +13,19 @@
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "fastqc": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                "git_sha": "49b18b1639f4f7104187058866a8fab33332bdfe"
             },
             "kallisto/index": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "multiqc": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                "git_sha": "49b18b1639f4f7104187058866a8fab33332bdfe"
             },
             "picard/collectwgsmetrics": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "picard/markduplicates": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                "git_sha": "49b18b1639f4f7104187058866a8fab33332bdfe"
             },
             "qualimap/rnaseq": {
                 "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
@@ -34,22 +34,22 @@
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "samtools/faidx": {
-                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
+                "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
             },
             "samtools/index": {
-                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
+                "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
             },
             "samtools/sort": {
-                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
+                "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
             },
             "samtools/view": {
-                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
+                "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
             },
             "star/align": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                "git_sha": "1dddf1ce9443e3d93853d86e7a7aab52e5b4d614"
             },
             "star/genomegenerate": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
             }
         }
     }
