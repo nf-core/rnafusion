@@ -19,6 +19,7 @@ Update to DSL2 and newer software/reference versions
 
 ### Changed
 
+- Upgrade default ensembl version to `105`
 - Upgrade to `nf-core/tools v2.3`
 - Upgrade `Arriba v1.2.0` to `Arriba v2.1.0`
 - Upgrade `FusionCatcher v1.20` to `FusionCatcher v1.33`

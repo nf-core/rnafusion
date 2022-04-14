@@ -11,17 +11,15 @@ tools:
       doi: "10.1186/s13059-019-1842-9"
       licence: ["GPL v3"]
 
-input:
-  - genome_version:
-      type: value
-      description: Genome version - either GRCh38 or GRCh38
-      pattern: "GRCh3*"
-
 output:
   - reference:
       type: directory
       description: Genome resource path
       pattern: "star-fusion-genome"
+  - gtf:
+      type: file
+      description: genome gtf file
+      pattern: "*.{gtf}"
 
 authors:
-  - "@praveenraj2018"
+  - "@praveenraj2018,@rannick"

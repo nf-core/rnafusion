@@ -12,16 +12,20 @@ tools:
       licence: ["GPL v3"]
 
 input:
-  - genome_version:
-      type: value
-      description: Genome version - either GRCh38 or GRCh38
-      pattern: "GRCh3*"
+  - fasta:
+      type: file
+      description: genome fasta file
+      pattern: "*.{fasta}"
+  - gtf:
+      type: file
+      description: genome gtf file
+      pattern: "*.{gtf}"
 
 output:
   - reference:
       type: directory
-      description: Genome resource path
-      pattern: "star-fusion-genome"
+      description: Reference dir
+      pattern: "ctat_genome_lib_build_dir"
 
 authors:
   - "@praveenraj2018"

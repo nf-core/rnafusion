@@ -24,6 +24,10 @@ input:
       type: file
       description: Chimeric junction output from STAR aligner
       pattern: "*.{out.junction}"
+  - reference:
+      type: directory
+      description: Reference dir
+      pattern: "ctat_genome_lib_build_dir"
 
 output:
   - meta:
