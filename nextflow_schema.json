@@ -73,6 +73,11 @@
                     "description": "ensembl version",
                     "default": 105
                 },
+                "starfusion_build":{
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "If set, starfusion references are built from scratch instead of downloaded (default)"
+                },
                 "read_length": {
                     "type": "integer",
                     "fa_icon": "far fa-file-code",
@@ -229,7 +234,7 @@
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/plain",
-                    "pattern": "^\\S+\\.chr.gtf?(\\.gz)?$",
+                    "pattern": "^\\S+\\.gtf?(\\.gz)?$",
                     "description": "Path to GTF genome file.",
                     "fa_icon": "far fa-file-code"
                 },
