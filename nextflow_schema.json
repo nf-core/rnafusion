@@ -73,7 +73,7 @@
                     "description": "ensembl version",
                     "default": 105
                 },
-                "starfusion_build":{
+                "starfusion_build": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
                     "description": "If set, starfusion references are built from scratch instead of downloaded (default)"
