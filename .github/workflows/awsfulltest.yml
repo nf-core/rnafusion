@@ -15,9 +15,6 @@ jobs:
     steps:
       - name: Launch build workflow via tower
         uses: nf-core/tower-action@v3
-        # TODO nf-core: You can customise AWS full pipeline tests as required
-        # Add full size test data (but still relatively small datasets for few samples)
-        # on the `test_full_build.config` test runs with only one set of parameters
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
@@ -33,9 +30,6 @@ jobs:
             process.maxRetries = 3
       - name: Launch workflow via tower
         uses: nf-core/tower-action@v3
-        # TODO nf-core: You can customise AWS full pipeline tests as required
-        # Add full size test data (but still relatively small datasets for few samples)
-        # on the `test_full.config` test runs with only one set of parameters
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
