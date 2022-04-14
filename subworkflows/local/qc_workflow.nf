@@ -10,14 +10,14 @@ include { PICARD_MARKDUPLICATES }                      from '../../modules/nf-co
 workflow QC_WORKFLOW {
     take:
         bam_sorted
-        ch_gtf
+        ch_chrgtf
         ch_refflat
 
     main:
         ch_versions = Channel.empty()
         ch_qualimap_qc = Channel.empty()
 
-        QUALIMAP_RNASEQ(bam_sorted, ch_gtf)
+        QUALIMAP_RNASEQ(bam_sorted, ch_chrgtf)
         ch_versions = ch_versions.mix(QUALIMAP_RNASEQ.out.versions)
         ch_qualimap_qc = QUALIMAP_RNASEQ.out.results.ifEmpty(null)
 
