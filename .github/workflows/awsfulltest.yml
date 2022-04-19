@@ -6,8 +6,6 @@ name: nf-core AWS full size tests
 on:
   release:
     types: [published]
-  pull_request_target:
-    branches: [master]
   workflow_dispatch:
 jobs:
   run-tower:
