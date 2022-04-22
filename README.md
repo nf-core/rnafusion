@@ -57,9 +57,9 @@ In rnafusion the full-sized test includes reference building and fusion detectio
 2. Concatenate fastq files per sample
 3. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 4. Arriba subworkflow
-   - STAR alignment
-   - Samtool sort
-   - Samtool index
+   - [STAR](https://github.com/alexdobin/STAR) alignment
+   - [Samtool](https://github.com/samtools/samtools) sort
+   - [Samtool](https://github.com/samtools/samtools) index
    - [Arriba](https://github.com/suhrig/arriba) fusion detection
    - [Arriba](https://github.com/suhrig/arriba) visualisation
 5. Pizzly subworkflow
