@@ -16,14 +16,16 @@ if (file(params.input).exists() || params.build_references) { ch_input = file(pa
 
 ch_chrgtf = params.starfusion_build ? file(params.chrgtf) : file("${params.starfusion_ref}/ref_annot.gtf")
 ch_starindex_ref = params.starfusion_build ? params.starindex_ref : "${params.starfusion_ref}/ref_genome.fa.star.idx"
+ch_refflat = params.starfusion_build ? file(params.refflat) : "${params.ensembl_ref}/ref_annot.gtf.refflat"
 
 def checkPathParamList = [
     params.fasta,
     params.gtf,
     ch_chrgtf,
     params.transcript,
-    // params.refflat
+    ch_refflat
 ]
+
 
 for (param in checkPathParamList) if ((param) && !params.build_references) file(param, checkIfExists: true)
 for (param in checkPathParamList) if ((param.toString())!= file(param).toString() && !params.build_references) { exit 1, "Problem with ${param}: ABSOLUTE PATHS are required! Check for trailing '/' at the end of paths too." }
@@ -32,7 +34,6 @@ if ((params.squid || params.all) && params.ensembl_version == 105) { exit 1, 'En
 ch_fasta = file(params.fasta)
 ch_gtf = file(params.gtf)
 ch_transcript = file(params.transcript)
-ch_refflat = file(params.refflat)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
