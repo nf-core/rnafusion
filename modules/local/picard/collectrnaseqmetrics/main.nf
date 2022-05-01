@@ -26,7 +26,10 @@ process PICARD_COLLECTRNASEQMETRICS {
         strandedness = '--STRAND_SPECIFICITY FIRST_READ_TRANSCRIPTION_STRAND'
     } else if ("${meta.strandedness}" == 'reverse') {
         strandedness = '--STRAND_SPECIFICITY SECOND_READ_TRANSCRIPTION_STRAND'
+    } else {
+        strandedness = '--STRAND_SPECIFICITY NONE'
     }
+
     def rrna = rrna_intervals == [] ? '' : "--RIBOSOMAL_INTERVALS ${rrna_intervals}"
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
