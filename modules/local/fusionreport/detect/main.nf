@@ -11,7 +11,7 @@ process FUSIONREPORT {
 
     input:
     tuple val(meta), path(reads)
-    tuple val(meta), path(fusionreport_ref)
+    path(fusionreport_ref)
     tuple val(meta), path(arriba_fusions)
     tuple val(meta), path(pizzly_fusions)
     tuple val(meta), path(squid_fusions)
