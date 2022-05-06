@@ -11,6 +11,12 @@ process ARRIBA {
     tuple val(meta), path(bam)
     path fasta
     path gtf
+    path blacklist
+    path known_fusions
+    path structural_variants
+    path tags
+    path protein_domains
+
 
     output:
     tuple val(meta), path("*.fusions.tsv")          , emit: fusions
@@ -23,7 +29,13 @@ process ARRIBA {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def blacklist = (args.contains('-b')) ? '' : '-f blacklist'
+    def blacklist = blacklist ? "-b $blacklist" : ""
+    def known_fusions = known_fusions ? "-k $known_fusions" : ""
+    def structural_variants = structural_variants ? "-d $structual_variants" : ""
+    def tags = tags ? "-t $tags" : ""
+    def protein_domains = protein_domains ? "-p $protein_domains" : ""
+
+
     """
     arriba \\
         -x $bam \\
@@ -32,6 +44,10 @@ process ARRIBA {
         -o ${prefix}.fusions.tsv \\
         -O ${prefix}.fusions.discarded.tsv \\
         $blacklist \\
+        $known_fusions \\
+        $structural_variants \\
+        $tags \\
+        $protein_domains \\
         $args
 
     cat <<-END_VERSIONS > versions.yml
