@@ -9,7 +9,7 @@ process ARRIBA_VISUALISATION {
 
     input:
     tuple val(meta), path(bam), path(bai)
-    path fusions
+    tuple val(meta), path(fusions)
     path reference
     path gtf
 

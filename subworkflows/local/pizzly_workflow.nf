@@ -1,7 +1,6 @@
 include { KALLISTO_QUANT    }     from '../../modules/local/kallisto/quant/main'
 include { PIZZLY            }     from '../../modules/local/pizzly/detect/main'
-include { GET_PATH          }     from '../../modules/local/getpath/main'
-
+include { GET_META          }     from '../../modules/local/getmeta/main'
 
 workflow PIZZLY_WORKFLOW {
     take:
@@ -15,21 +14,19 @@ workflow PIZZLY_WORKFLOW {
 
         if (params.pizzly || params.all) {
             if (params.pizzly_fusions) {
-                ch_pizzly_fusions = params.pizzly_fusions
+                ch_pizzly_fusions = GET_META(reads, params.pizzly_fusions)
             } else {
-
-                KALLISTO_QUANT( reads, params.pizzly_ref )
+                KALLISTO_QUANT(reads, params.pizzly_ref )
                 ch_versions = ch_versions.mix(KALLISTO_QUANT.out.versions)
 
                 PIZZLY( KALLISTO_QUANT.out.txt, ch_transcript, ch_gtf )
                 ch_versions = ch_versions.mix(PIZZLY.out.versions)
 
-                GET_PATH(PIZZLY.out.fusions)
-                ch_pizzly_fusions = GET_PATH.out.file
+                ch_pizzly_fusions = PIZZLY.out.fusions
             }
         }
         else  {
-            ch_pizzly_fusions = ch_dummy_file
+            ch_pizzly_fusions = GET_META(reads, ch_dummy_file)
 
         }
 

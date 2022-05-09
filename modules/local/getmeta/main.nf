@@ -1,5 +1,5 @@
-process GET_PATH {
-    tag 'getpath'
+process GET_META {
+    tag 'getmeta'
     label 'process_low'
 
     conda (params.enable_conda ? "conda-forge::sed=4.7" : null)
@@ -8,10 +8,11 @@ process GET_PATH {
         'biocontainers/biocontainers:v1.2.0_cv1' }"
 
     input:
-    tuple val(meta), path(file)
+    tuple val(meta), path(reads)
+    path file
 
     output:
-    path file                , emit: file
+    tuple val(meta), path(file)     , emit: file
 
     script:
     """

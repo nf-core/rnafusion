@@ -10,13 +10,8 @@ process FUSIONREPORT {
 
 
     input:
-    tuple val(meta), path(reads)
+    tuple val(meta), path(reads), path(arriba_fusions), path(pizzly_fusions), path(squid_fusions), path(starfusion_fusions),  path(fusioncatcher_fusions)
     path(fusionreport_ref)
-    path(arriba_fusions)
-    path(pizzly_fusions)
-    path(squid_fusions)
-    path(starfusion_fusions)
-    path(fusioncatcher_fusions)
 
     output:
     path "versions.yml"                                  , emit: versions

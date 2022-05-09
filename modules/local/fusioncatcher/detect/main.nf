@@ -43,6 +43,5 @@ process FUSIONCATCHER {
     "${task.process}":
         fusioncatcher: \$(echo \$(fusioncatcher --version 2>&1)| sed 's/fusioncatcher.py //')
     END_VERSIONS
-    touch versions.yml
     """
 }

@@ -28,7 +28,12 @@ def checkPathParamList = [
 
 
 for (param in checkPathParamList) if ((param) && !params.build_references) file(param, checkIfExists: true)
-for (param in checkPathParamList) if ((param.toString())!= file(param).toString() && !params.build_references) { exit 1, "Problem with ${param}: ABSOLUTE PATHS are required! Check for trailing '/' at the end of paths too." }
+if (params.fasta[0,1] == "s3") {
+    log.info "INFO: s3 path detected, check for absolute path and trailing '/' not performed"
+}
+else {
+    for (param in checkPathParamList) if ((param.toString())!= file(param).toString() && !params.build_references) { exit 1, "Problem with ${param}: ABSOLUTE PATHS are required! Check for trailing '/' at the end of paths too." }
+}
 if ((params.squid || params.all) && params.ensembl_version == 105) { exit 1, 'Ensembl version 105 is not supported by squid' }
 
 ch_fasta = file(params.fasta)
