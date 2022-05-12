@@ -2,10 +2,10 @@ process ARRIBA {
     tag "$meta.id"
     label 'process_medium'
 
-    conda (params.enable_conda ? "bioconda::arriba=2.1.0" : null)
+    conda (params.enable_conda ? "bioconda::arriba=2.2.1" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/arriba:2.1.0--h3198e80_1' :
-        'quay.io/biocontainers/arriba:2.1.0--h3198e80_1' }"
+        'https://depot.galaxyproject.org/singularity/arriba:2.2.1--hecb563c_2' :
+        'quay.io/biocontainers/arriba:2.2.1--hecb563c_2' }"
 
     input:
     tuple val(meta), path(bam)
@@ -16,7 +16,6 @@ process ARRIBA {
     path structural_variants
     path tags
     path protein_domains
-
 
     output:
     tuple val(meta), path("*.fusions.tsv")          , emit: fusions
@@ -29,12 +28,11 @@ process ARRIBA {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def blacklist = blacklist ? "-b $blacklist" : ""
+    def blacklist = blacklist ? "-b $blacklist" : "-f blacklist"
     def known_fusions = known_fusions ? "-k $known_fusions" : ""
     def structural_variants = structural_variants ? "-d $structual_variants" : ""
     def tags = tags ? "-t $tags" : ""
     def protein_domains = protein_domains ? "-p $protein_domains" : ""
-
 
     """
     arriba \\
@@ -54,5 +52,15 @@ process ARRIBA {
     "${task.process}":
         arriba: \$(arriba -h | grep 'Version:' 2>&1 |  sed 's/Version:\s//')
     END_VERSIONS
+    """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    echo stub > ${prefix}.fusions.tsv
+    echo stub > ${prefix}.fusions.discarded.tsv
+
+    echo "${task.process}:" > versions.yml
+    echo ' arriba: 2.2.1' >> versions.yml
     """
 }
