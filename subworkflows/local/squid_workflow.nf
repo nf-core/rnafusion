@@ -25,9 +25,9 @@ workflow SQUID_WORKFLOW {
             STAR_FOR_SQUID( reads, ch_starindex_ref, ch_gtf, params.star_ignore_sjdbgtf, params.seq_platform, params.seq_center )
             ch_versions = ch_versions.mix(STAR_FOR_SQUID.out.versions )
 
-            SAMTOOLS_INDEX_FOR_SQUID(STAR_FOR_SQUID.out.sam)
+            // SAMTOOLS_INDEX_FOR_SQUID(STAR_FOR_SQUID.out.sam)
 
-            sam_indexed = STAR_FOR_SQUID.out.sam.join(SAMTOOLS_INDEX_FOR_SQUID.out.bai)
+            sam_indexed = STAR_FOR_SQUID.out.sam.join([])
 
             SAMTOOLS_VIEW_FOR_SQUID ( sam_indexed, [] )
             ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID.out.versions )
