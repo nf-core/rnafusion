@@ -16,6 +16,7 @@ if (file(params.input).exists() || params.build_references) { ch_input = file(pa
 
 ch_chrgtf = params.starfusion_build ? file(params.chrgtf) : file("${params.starfusion_ref}/ref_annot.gtf")
 ch_starindex_ref = params.starfusion_build ? params.starindex_ref : "${params.starfusion_ref}/ref_genome.fa.star.idx"
+ch_starindex_ensembl_ref = params.starindex_ref
 ch_refflat = params.starfusion_build ? file(params.refflat) : "${params.ensembl_ref}/ref_annot.gtf.refflat"
 
 def checkPathParamList = [
@@ -165,7 +166,7 @@ workflow RNAFUSION {
     SQUID_WORKFLOW (
         ch_cat_fastq,
         ch_gtf,
-        ch_starindex_ref
+        ch_starindex_ensembl_ref
     )
     ch_versions = ch_versions.mix(SQUID_WORKFLOW.out.versions.first().ifEmpty(null))
 

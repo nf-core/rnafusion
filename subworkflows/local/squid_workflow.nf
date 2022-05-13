@@ -11,7 +11,7 @@ workflow SQUID_WORKFLOW {
     take:
         reads
         ch_gtf
-        ch_starindex_ref
+        ch_starindex_ensembl_ref
 
     main:
         ch_versions = Channel.empty()
@@ -22,7 +22,7 @@ workflow SQUID_WORKFLOW {
                 ch_squid_fusions = GET_META(reads, params.squid_fusions)
             } else {
 
-            STAR_FOR_SQUID( reads, ch_starindex_ref, ch_gtf, params.star_ignore_sjdbgtf, params.seq_platform, params.seq_center )
+            STAR_FOR_SQUID( reads, ch_starindex_ensembl_ref, ch_gtf, params.star_ignore_sjdbgtf, params.seq_platform, params.seq_center )
             ch_versions = ch_versions.mix(STAR_FOR_SQUID.out.versions )
 
             // SAMTOOLS_INDEX_FOR_SQUID(STAR_FOR_SQUID.out.sam)
