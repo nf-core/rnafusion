@@ -203,7 +203,7 @@ workflow RNAFUSION {
     //Run fusionInpector
     FUSIONINSPECTOR_WORKFLOW (
         ch_cat_fastq,
-        FUSIONREPORT_WORKFLOW.out.fusion_list
+        FUSIONREPORT_WORKFLOW.out.fusion_list_filtered
     )
     ch_versions = ch_versions.mix(FUSIONINSPECTOR_WORKFLOW.out.versions.first().ifEmpty(null))
 
