@@ -43,12 +43,12 @@ nextflow run nf-core/rnafusion \
 
 This PATH will be the place the references will be saved.
 
-Optional: by default STAR-Fusion references are downloaded. You can also build them from ensembl fasta and gtf files. This allows more flexibility for different organisms but be aware that **this is slow and computationally intensive**:
+Optional: by default STAR-Fusion references are built. You can also download them from CTAT. This allows more flexibility for different organisms but be aware that **this is not fully tested -> not recommended**:
 
 ```bash
 nextflow run nf-core/rnafusion \
 --build_references --starfusion \
---starfusion_build \
+--starfusion_build false \
 --genomes_base <PATH>
 ```
 

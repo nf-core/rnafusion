@@ -15,7 +15,7 @@ Update to DSL2 and newer software/reference versions
 - Added `picard MarkDuplicates v2.26.10` from nf-core modules
 - Added `cat/fastqc` from nf-core modules
 - Added possibility for manually feeding the results of fusions from different tools to speed-up reruns
-- STAR-Fusion references can be downloaded or built (--starfusion_build parameter)
+- STAR-Fusion references can be downloaded or built but downloaded references are NOT RECOMMENDED as not thoroughly tested (--starfusion_build parameter is true by default, use --starfusion_build false to use downloaded STAR-Fusion references).
 
 ### Changed
 
