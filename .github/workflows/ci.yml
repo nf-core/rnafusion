@@ -47,7 +47,7 @@ jobs:
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker \
           --outdir /home/runner/work/rnafusion/rnafusion/results --pizzly --fusionreport \
           --build_references --genomes_base /home/runner/work/rnafusion/rnafusion/results/references \
-          --cosmic_username secrets.COSMIC_USERNAME --cosmic_passwd secrets.COSMIC_PASSWD
+          --cosmic_username ${{ secrets.COSMIC_USERNAME }} --cosmic_passwd ${{ secrets.COSMIC_PASSWD }}
 
       - name: Test running pizzly references
         run: |
