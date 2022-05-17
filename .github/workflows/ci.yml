@@ -48,10 +48,10 @@ jobs:
           --outdir /home/runner/work/rnafusion/rnafusion/results --pizzly \
           --build_references --genomes_base /home/runner/work/rnafusion/rnafusion/results/references
 
-      - name: Test building pizzly references
+      - name: Test running pizzly references
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker \
           --outdir /home/runner/work/rnafusion/rnafusion/results --pizzly \
-          --build_references --genomes_base /home/runner/work/rnafusion/rnafusion/results/references
+          --genomes_base /home/runner/work/rnafusion/rnafusion/results/references
 
 #
