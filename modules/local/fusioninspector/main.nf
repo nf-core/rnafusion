@@ -40,4 +40,10 @@ process FUSIONINSPECTOR {
         STAR-Fusion: \$(echo STAR-Fusion --version 2>&1 | grep -i 'version' | sed 's/STAR-Fusion version: //')
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch versions.yml
+    touch FusionInspector.log
+    """
 }
