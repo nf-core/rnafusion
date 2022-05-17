@@ -50,12 +50,15 @@ workflow BUILD_REFERENCES {
     if (params.starfusion || params.all) {
         if (params.starfusion_build){
             STARFUSION_BUILD( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.chrgtf )
-            GTF_TO_REFFLAT(ENSEMBL_DOWNLOAD.out.chrgtf)
-        }
-        else {
+        } else {
             STARFUSION_DOWNLOAD()
-            GTF_TO_REFFLAT(STARFUSION_DOWNLOAD.out.chrgtf)
         }
+    }
+
+    if (params.starfusion_build){
+        GTF_TO_REFFLAT(ENSEMBL_DOWNLOAD.out.chrgtf)
+    } else {
+        GTF_TO_REFFLAT(STARFUSION_DOWNLOAD.out.chrgtf)
     }
 
     if (params.fusionreport || params.all) {
