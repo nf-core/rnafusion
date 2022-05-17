@@ -47,20 +47,32 @@ Optional: by default STAR-Fusion references are built. You can also download the
 
 ```bash
 nextflow run nf-core/rnafusion \
---build_references --starfusion \
+--build_references --starfusion/--all \
 --starfusion_build false \
 --genomes_base <PATH>
 ```
 
-### Running the detection tools
+Then use the flag `--starfusion_build` while running the detection.
+
+### Running all detection tools
 
 ```bash
 nextflow run nf-core/rnafusion \
---build_references --all \
+--input '[path to samplesheet file]' --all \
 --outdir <PATH> \
 ```
 
-Visualisation tools will be run on all fusion detected.
+Visualisation tools will be run on all fusions detected.
+
+### Running a specific detection tool
+
+```bash
+nextflow run nf-core/rnafusion \
+--input '[path to samplesheet file]' --<tool> \
+--outdir <PATH> \
+```
+
+Visualisation tools will be run on all fusions detected.
 
 #### Optional manual feed-in of fusion files
 
