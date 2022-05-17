@@ -45,7 +45,7 @@ jobs:
       - name: Test building pizzly references
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker \
-          --outdir /home/runner/work/rnafusion/rnafusion/results --pizzly \
+          --outdir /home/runner/work/rnafusion/rnafusion/results --pizzly --fusionreport\
           --build_references --genomes_base /home/runner/work/rnafusion/rnafusion/results/references
 
       - name: Test running pizzly references
