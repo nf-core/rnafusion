@@ -1,0 +1,36 @@
+name: squid
+description: Squid detection of fusions.
+keywords:
+  - fusion
+  - pizzly
+tools:
+  - pizzly:
+      description: Fusion detection using squid
+      homepage: https://github.com/Kingsford-Group/squid
+      documentation: https://github.com/Kingsford-Group/squid
+      tool_dev_url: https://github.com/Kingsford-Group/squid
+      doi: ""
+      licence: ["BSD-3-Clause"]
+
+input:
+  - fusions:
+      type: directory
+      description: Path to squid fusions
+      pattern: "*.txt"
+  - gtf:
+      type: file
+      description: gtf reference
+      pattern: "*.gtf"
+
+output:
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+  - fusions_annotated:
+      type: file
+      description: squid fusions annotated
+      pattern: "*squid.fusions.annotated.txt"
+
+authors:
+  - "@rannick"

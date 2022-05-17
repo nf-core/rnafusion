@@ -1,0 +1,44 @@
+name: pizzly
+description: Pizzly detection of fusions.
+keywords:
+  - fusion
+  - pizzly
+tools:
+  - pizzly:
+      description: Fast fusion detection using kallisto
+      homepage: https://github.com/pmelsted/pizzly
+      documentation: https://github.com/pmelsted/pizzly
+      tool_dev_url: https://github.com/pmelsted/pizzly
+      doi: ""
+      licence: ["BSD-2-Clause"]
+
+input:
+  - fasta:
+      type: file
+      description: genome fasta file
+      pattern: "*.{fasta*}"
+  - reference:
+      type: directory
+      description: Path to kallisto index
+      pattern: "*"
+  - gtf:
+      type: file
+      description: gtf reference
+      pattern: "*.gtf"
+
+output:
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+  - fusions:
+      type: file
+      description: fusions
+      pattern: "*pizzly.txt"
+  - unfiltered:
+      type: file
+      description: unfiltered fusions
+      pattern: "*unfiltered.json"
+
+authors:
+  - "@rannick"

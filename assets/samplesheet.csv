@@ -1,3 +1,2 @@
-sample,fastq_1,fastq_2
-SAMPLE_PAIRED_END,/path/to/fastq/files/AEG588A1_S1_L002_R1_001.fastq.gz,/path/to/fastq/files/AEG588A1_S1_L002_R2_001.fastq.gz
-SAMPLE_SINGLE_END,/path/to/fastq/files/AEG588A4_S4_L003_R1_001.fastq.gz,
+sample,fastq_1,fastq_2,strandedness
+test_rnafusion,https://github.com/nf-core/test-datasets/raw/d6cd12c9a69c148ef986d156d110f741df482b04/testdata/human/reads_1.fq.gz,https://github.com/nf-core/test-datasets/raw/d6cd12c9a69c148ef986d156d110f741df482b04/testdata/human/reads_2.fq.gz,forward

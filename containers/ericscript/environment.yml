@@ -1,0 +1,8 @@
+name: nf-core-rnafusion-ericscript_0.5.5
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bioconda::ericscript=0.5.5
+  - conda-forge::ncurses=6.1

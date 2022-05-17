@@ -17,22 +17,75 @@
 
 ## Introduction
 
-<!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
-
-**nf-core/rnafusion** is a bioinformatics best-practice analysis pipeline for Nextflow rnafusion analysis pipeline, part of the nf-core community..
+**nf-core/rnafusion** is a bioinformatics best-practice analysis pipeline for RNA sequencing analysis pipeline with curated list of tools for detecting and visualizing fusion genes.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
-<!-- TODO nf-core: Add full-sized test dataset and amend the paragraph below if applicable -->
+> **IMPORTANT: conda is not supported currently.** Run with singularity or docker.
+
+> GRCh38 is the only supported reference
+
+| Tool                                                      |  Single-end reads  | Version  |
+| --------------------------------------------------------- | :----------------: | :------: |
+| [Arriba](https://github.com/suhrig/arriba)                |        :x:         | `2.1.0`  |
+| [FusionCatcher](https://github.com/ndaniel/fusioncatcher) | :white_check_mark: |  `1.33`  |
+| [Fusion-report](https://github.com/matq007/fusion-report) |         -          | `2.1.5`  |
+| [Pizzly](https://github.com/pmelsted/pizzly)              |        :x:         | `0.37.3` |
+| [Squid](https://github.com/Kingsford-Group/squid)         |        :x:         |  `1.5`   |
+| [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) | :white_check_mark: | `1.10.1` |
 
 On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/rnafusion/results).
 
+In rnafusion the full-sized test includes reference building and fusion detection. The test dataset is taken from [here](https://github.com/nf-core/test-datasets/tree/rnafusion/testdata/human).
+
 ## Pipeline summary
 
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
+#### Build references
 
-1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+`--build_references` triggers a parallel workflow to build all references
+
+1. Download ensembl fasta and gtf files
+2. Create STAR index
+3. Download arriba references
+4. Download fusioncatcher references
+5. Download pizzly references (kallisto index)
+6. Download and build STAR-fusion references
+7. Download fusion-report DBs
+
+#### Main workflow
+
+1. Input samplesheet check
+2. Concatenate fastq files per sample
+3. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
+4. Arriba subworkflow
+   - [STAR](https://github.com/alexdobin/STAR) alignment
+   - [Samtool](https://github.com/samtools/samtools) sort
+   - [Samtool](https://github.com/samtools/samtools) index
+   - [Arriba](https://github.com/suhrig/arriba) fusion detection
+   - [Arriba](https://github.com/suhrig/arriba) visualisation
+5. Pizzly subworkflow
+   - [Kallisto](https://pachterlab.github.io/kallisto/) quantification
+   - [Pizzly](https://github.com/pmelsted/pizzly) fusion detection
+6. Squid subworkflow
+   - [STAR](https://github.com/alexdobin/STAR) alignment
+   - [Samtools view](http://www.htslib.org/): convert sam output from STAR to bam
+   - [Samtools sort](http://www.htslib.org/): bam output from STAR
+   - [Squid](https://github.com/Kingsford-Group/squid) fusion detection
+   - [Squid](https://github.com/Kingsford-Group/squid) annotate
+7. STAR-fusion subworkflow
+   - [STAR](https://github.com/alexdobin/STAR) alignment
+   - [STAR-fusion](https://github.com/STAR-Fusion/STAR-Fusion) fusion detection
+8. Fusioncatcher subworkflow
+   - [FusionCatcher](https://github.com/ndaniel/fusioncatcher) fusion detection
+9. Fusion-report subworkflow
+   - Merge all fusions detected by the different tools
+   - [Fusion-report](https://github.com/matq007/fusion-report)
+10. FusionInspector subworkflow
+    - [FusionInspector](https://github.com/FusionInspector/FusionInspector)
+11. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+12. QC for mapped reads ([`QualiMap: BAM QC`](https://kokonech.github.io/qualimap/HG00096.chr20_bamqc/qualimapReport.html))
+13. Index mapped reads ([samtools index](http://www.htslib.org/))
+14. Collect metrics ([`picard CollectRnaSeqMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037057492-CollectRnaSeqMetrics-Picard-) and ([`picard MarkDuplicates`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-))
 
 ## Quick Start
 
@@ -55,11 +108,11 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 4. Start running your own analysis!
 
-   <!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
+```console
+nextflow run nf-core/rnafusion --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 --all -profile <docker/singularity/podman/shifter/charliecloud/institute>
+```
 
-   ```console
-   nextflow run nf-core/rnafusion --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
-   ```
+> Note that paths need to be absolute and that runs with conda are not supported.
 
 ## Documentation
 
@@ -67,11 +120,11 @@ The nf-core/rnafusion pipeline comes with documentation about the pipeline [usag
 
 ## Credits
 
-nf-core/rnafusion was originally written by Martin Proks, @praveenraj2018.
+nf-core/rnafusion was originally written by Martin Proks ([@matq007](https://github.com/matq007)), Praveen Raj ([@praveenraj2018](https://github.com/praveenraj2018))
 
-We thank the following people for their extensive assistance in the development of this pipeline:
+We thank the following people for their **extensive assistance** in the development of this pipeline:
 
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
+- Annick Renevey ([@rannick](https://github.com/rannick))
 
 ## Contributions and Support
 
@@ -81,10 +134,7 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 
 ## Citations
 
-<!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use  nf-core/rnafusion for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
-
-<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
+If you use nf-core/rnafusion for your analysis, please cite it using the following doi: [10.5281/zenodo.3946477](https://doi.org/10.5281/zenodo.3946477)
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
