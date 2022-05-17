@@ -53,5 +53,3 @@ jobs:
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker \
           --outdir /home/runner/work/rnafusion/rnafusion/results --pizzly \
           --build_references --genomes_base /home/runner/work/rnafusion/rnafusion/results/references
-
-#
