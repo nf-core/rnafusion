@@ -134,6 +134,11 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to fusioncatcher references"
                 },
+                "fusioninspector_filter": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Feed filtered fusionreport fusions to fusioninspector"
+                },
                 "fusionreport": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
