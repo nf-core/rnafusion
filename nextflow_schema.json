@@ -99,6 +99,16 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to arriba references"
                 },
+                "arriba_ref_blacklist": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to arriba reference blacklist"
+                },
+                "arriba_ref_protein_domain": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to arriba reference protein domain"
+                },
                 "arriba_fusions": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
@@ -123,6 +133,11 @@
                     "type": "string",
                     "fa_icon": "far fa-file-code",
                     "description": "Path to fusioncatcher references"
+                },
+                "fusioninspector_filter": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Feed filtered fusionreport fusions to fusioninspector"
                 },
                 "fusionreport": {
                     "type": "boolean",

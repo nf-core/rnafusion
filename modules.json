@@ -4,10 +4,10 @@
     "repos": {
         "nf-core/modules": {
             "arriba": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                "git_sha": "bf91f9dd9b62c98175d962bd51dbe2d0b7f91d4c"
             },
             "cat/fastq": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                "git_sha": "9aadd9a6d3f5964476582319b3a1c54a3e3fe7c9"
             },
             "custom/dumpsoftwareversions": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
@@ -22,16 +22,13 @@
                 "git_sha": "49b18b1639f4f7104187058866a8fab33332bdfe"
             },
             "picard/collectwgsmetrics": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                "git_sha": "e263f267a7b3c2cbf95372c832e38ba8b76dfd2e"
             },
             "picard/markduplicates": {
-                "git_sha": "49b18b1639f4f7104187058866a8fab33332bdfe"
+                "git_sha": "20ebb89ff97a2665106be9cace5ccb9aa4eed1be"
             },
             "qualimap/rnaseq": {
                 "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
-            },
-            "salmon/index": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "samtools/faidx": {
                 "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
@@ -43,7 +40,7 @@
                 "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
             },
             "samtools/view": {
-                "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
+                "git_sha": "6b64f9cb6c3dd3577931cc3cd032d6fb730000ce"
             },
             "star/align": {
                 "git_sha": "1dddf1ce9443e3d93853d86e7a7aab52e5b4d614"

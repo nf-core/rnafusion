@@ -25,8 +25,10 @@ workflow FUSIONREPORT_WORKFLOW {
         ch_versions = ch_versions.mix(FUSIONREPORT.out.versions)
 
     emit:
-        versions        = ch_versions.ifEmpty(null)
-        fusion_list     = FUSIONREPORT.out.fusion_list
+        versions                 = ch_versions.ifEmpty(null)
+        fusion_list              = FUSIONREPORT.out.fusion_list
+        fusion_list_filtered     = FUSIONREPORT.out.fusion_list_filtered
+
 
 }
 

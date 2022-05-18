@@ -35,7 +35,7 @@ workflow ARRIBA_WORKFLOW {
                 ch_arriba_fusions = GET_META(reads, params.arriba_fusions)
                 ch_arriba_fusion_fail = ch_dummy_file
             } else {
-                ARRIBA ( STAR_FOR_ARRIBA.out.bam, ch_fasta, ch_gtf )
+                ARRIBA ( STAR_FOR_ARRIBA.out.bam, ch_fasta, ch_gtf, params.arriba_ref_blacklist, [], [], [], params.arriba_ref_protein_domain )
                 ch_versions = ch_versions.mix(ARRIBA.out.versions)
 
                 ch_arriba_fusions = ARRIBA.out.fusions

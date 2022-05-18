@@ -1,4 +1,5 @@
 include { GET_META }                                    from '../../modules/local/getmeta/main'
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_SQUID}   from '../../modules/nf-core/modules/samtools/index/main'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_SQUID }    from '../../modules/nf-core/modules/samtools/sort/main'
 include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_SQUID }    from '../../modules/nf-core/modules/samtools/view/main'
 include { SQUID }                                       from '../../modules/local/squid/detect/main'
@@ -24,7 +25,12 @@ workflow SQUID_WORKFLOW {
             STAR_FOR_SQUID( reads, ch_starindex_ensembl_ref, ch_gtf, params.star_ignore_sjdbgtf, params.seq_platform, params.seq_center )
             ch_versions = ch_versions.mix(STAR_FOR_SQUID.out.versions )
 
-            SAMTOOLS_VIEW_FOR_SQUID ( STAR_FOR_SQUID.out.sam, [] )
+            STAR_FOR_SQUID.out.sam
+            .map { meta, sam ->
+            return [meta, sam, []]
+            }.set { sam_indexed }
+
+            SAMTOOLS_VIEW_FOR_SQUID ( sam_indexed, [] )
             ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID.out.versions )
 
             SAMTOOLS_SORT_FOR_SQUID ( SAMTOOLS_VIEW_FOR_SQUID.out.bam )

@@ -15,13 +15,13 @@ Update to DSL2 and newer software/reference versions
 - Added `picard MarkDuplicates v2.26.10` from nf-core modules
 - Added `cat/fastqc` from nf-core modules
 - Added possibility for manually feeding the results of fusions from different tools to speed-up reruns
-- STAR-Fusion references can be downloaded or built (--starfusion_build parameter)
+- STAR-Fusion references can be downloaded or built but downloaded references are NOT RECOMMENDED as not thoroughly tested (--starfusion_build parameter is true by default, use --starfusion_build false to use downloaded STAR-Fusion references).
 
 ### Changed
 
-- Upgrade default ensembl version to `105`
-- Upgrade to `nf-core/tools v2.3`
-- Upgrade `Arriba v1.2.0` to `Arriba v2.1.0`
+- Upgrade default ensembl version to `102`
+- Upgrade to `nf-core/tools v2.3.2`
+- Upgrade `Arriba v1.2.0` to `Arriba v2.2.1`
 - Upgrade `FusionCatcher v1.20` to `FusionCatcher v1.33`
 - Upgrade `STAR-fusion v1.8.1` to `STAR-fusion v1.10.1`
 - Upgrade `STAR v2.7.1` to `STAR v2.7.9`
