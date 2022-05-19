@@ -120,13 +120,13 @@ The nf-core/rnafusion pipeline comes with documentation about the pipeline [usag
 
 ## Credits
 
-nf-core/rnafusion was written by Martin Proks ([@matq007](https://github.com/matq007)), and extended by Annick Renevey ([@rannick](https://github.com/rannick))
+nf-core/rnafusion was written by Martin Proks ([@matq007](https://github.com/matq007)), Maxime Garcia ([@maxulysse](https://github.com/maxulysse)) and Annick Renevey ([@rannick](https://github.com/rannick))
 
-We thank the following people for their **extensive assistance** in the development of this pipeline:
+We thank the following people for their help in the development of this pipeline:
 
 - [Phil Ewels](https://github.com/ewels)
-- [Maxime Garcia](https://github.com/maxulysse)
 - [Rickard Hammarén](https://github.com/Hammarn)
+- [Alexander Peltzer](https://github.com/apeltzer)
 - [Praveen Raj](https://github.com/praveenraj2018)
 
 ## Contributions and Support
