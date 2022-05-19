@@ -1,0 +1,2 @@
+sample,fastq_1,fastq_2,strandedness
+test_rnafusion,https://github.com/nf-core/test-datasets/raw/d6cd12c9a69c148ef986d156d110f741df482b04/testdata/human/reads_1.fq.gz,https://github.com/nf-core/test-datasets/raw/d6cd12c9a69c148ef986d156d110f741df482b04/testdata/human/reads_2.fq.gz,forward

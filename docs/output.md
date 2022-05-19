@@ -1,258 +1,405 @@
-<!-- omit in toc -->
 # nf-core/rnafusion: Output
 
-This document describes the output produced by the pipeline.
+## Introduction
 
-<!-- omit in toc -->
-## Pipeline overview
+This document describes the output produced by the pipeline. Most of the plots are taken from the MultiQC report, which summarises results at the end of the pipeline.
 
-The pipeline is built using [Nextflow](https://www.nextflow.io/)
-and processes data using the following steps:
+The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
 
-- [Arriba](#arriba)
-- [EricScript](#ericscript)
-- [FastQC](#fastqc)
-- [Fusioncatcher](#fusioncatcher)
-- [Fusion Inspector](#fusion-inspector)
-- [fusion-report](#fusion-report)
-  - [Tool detection](#tool-detection)
-  - [Found in database](#found-in-database)
-  - [Tool detection distribution](#tool-detection-distribution)
-- [MultiQC](#multiqc)
-- [Pizzly](#pizzly)
-- [Squid](#squid)
-- [Star-Fusion](#star-fusion)
+## Pipeline overview <!-- omit in toc -->
 
-## Arriba
+The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
-**Output directory: `results/tools/Arriba`**
+- [Download and build references](#references) - Build references needed to run the rest of the pipeline
+- [STAR](#star) - Alignment for arriba, squid and STAR-fusion
+- [Cat](#cat) - Concatenated fastq files per sample ID
+- [Arriba](#arriba) - Arriba fusion detection
+- [Pizzly](#pizzly) - Pizzly fusion detection
+- [Squid](#squid) - Squid fusion detection
+- [STAR-fusion](#starfusion) - STAR-fusion fusion detection
+- [FusionCatcher](#fusioncatcher) - Fusion catcher fusion detection
+- [Samtools](#samtools) - SAM/BAM file manipulation
+- [Arriba visualisation](#arriba-visualisation) - Arriba visualisation report
+- [Fusion-report](#fusion-report) - Summary of the findings of each tool and comparison to COSMIC, Mitelman and FusionGBD databases
+- [FusionInspector](#fusionInspector) - IGV-based visualisation tool for fusions filtered by fusion-report
+- [Qualimap](#qualimap) - Quality control of alignment
+- [Picard](#picard) - Collect metrics
+- [FastQC](#fastqc) - Raw read quality control
+- [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
+- [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
-- `fusions.tsv`
-  - contains fusions which pass all of Arriba's filters. It should be highly enriched for true predictions. The predictions are listed from highest to lowest confidence.
-- `fusions.discarded.tsv`
-  - contains all events that Arriba classified as an artifact or that are also observed in healthy tissue. This file may be useful, if one suspects that an event should be present, but was erroneously discarded by Arriba.
-- `<sample>.pdf`
-  - contains fusion visualization when opted for `--arriba_vis`
+### Download and build references
 
-## EricScript
+<details markdown="1">
+<summary>Output files</summary>
 
-**Output directory: `results/tools/Ericscript/tmp`**
+- `genomes_base/`
+  - `arriba`
+    - `blacklist_hg38_GRCh38_v2.1.0.tsv.gz`
+    - `protein_domains_hg38_GRCh38_v2.1.0.gff3`
+    - `cytobands_hg38_GRCh38_v2.1.0.tsv`
+  - `ensembl`
+    - `Homo_sapiens.GRCh38.{ensembl_version}.all.fa`
+    - `Homo_sapiens.GRCh38.{ensembl_version}.cdna.all.fa.gz`
+    - `Homo_sapiens.GRCh38.{ensembl_version}.gtf`
+    - `Homo_sapiens.GRCh38.{ensembl_version}.chr.gtf`
+    - `Homo_sapiens.GRCh38.{ensembl_version}.chr.gtf.refflat`
+  - `fusioncatcher`
+    - `human_v<version>` - dir with all references for fusioncatcher
+  - `fusion_report_db`
+    - `cosmic.db`
+    - `fusiongdb.db`
+    - `fusiongdb2.db`
+    - `mitelman.db`
+  - `pizzly`
+    - `kallisto` - file containing the kallisto index
+  - `star` - dir with STAR index
+  - `starfusion`
+    - files and dirs used to build the index
+    - `ctat_genome_lib_build_dir` - dir containing the index
 
-- `fusions.results.filtered.tsv`
-  - contains all the predicted gene fusions
+(Only files or folders used by the pipeline are mentioned explicitly.)
 
-|  Column | Description |
-| ------- | ----------- |
-| GeneName1 | official gene name of 5' gene. |
-| GeneName2 | official gene name of 3' gene. |
-| chr1 | chromosome of 5' gene. |
-| Breakpoint1 | predicted breakpoint on 5' gene. |
-| strand1 | strand (-/+) of 5' gene. |
-| chr2 | chromosome of 3' gene. |
-| Breakpoint2 | predicted breakpoint on 3' gene. |
-| strand2 | strand (-/+) of 3' gene. |
-| EnsemblGene1 | Ensembl gene ID of 5' gene. |
-| EnsemblGene2 | Ensembl gene ID of 3' gene. |
-| crossingreads | the number of paired end discordant reads. |
-| spanningreads | the number of paired end reads spanning the junction. |
-| mean.insertsize | mean of insert sizes of crossing + spanning reads. |
-| homology | if filled, all the homologies between the fusion junction and Ensembl genes. |
-| fusiontype | intra-chromosomal, inter-chromosomal, read-through or CIS. |
-| InfoGene1 | gene information about 5' gene. |
-| InfoGene2 | gene information about 3' gene. |
-| JunctionSequence | predicted junction fusion sequence. |
-| GeneExpr1 | Read count based estimation of the expression level of 5' gene. |
-| GeneExpr2 | Read count based estimation of the expression level of 3' gene. |
-| GeneExpr_fused | Read count based estimation of the expression level of the predicted chimeric transcript. |
-| ES | Edge score. |
-| GJS | Genuine Junction score. |
-| US | Uniformity score. |
-| EricScore | EricScore score (adaboost classifier). |
+</details>
 
-For more info check the [documentation](https://sites.google.com/site/bioericscript/getting-started).
+### STAR
 
-## FastQC
+STAR is used to align to genome reference
 
-[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your reads. It provides information about the quality score distribution across your reads, the per base sequence content (%T/A/G/C). You get information about adapter contamination and other overrepresented sequences.
+STAR is run 3 times:
 
-For further reading and documentation see the [FastQC help](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
+For arriba with the parameters:
 
-> **NB:** The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality. To see how your reads look after trimming, look at the FastQC reports in the `trim_galore` directory.
+```bash
+--readFilesCommand zcat \
+--outSAMtype BAM Unsorted \
+--outSAMunmapped Within \
+--outBAMcompression 0 \
+--outFilterMultimapNmax 50 \
+--peOverlapNbasesMin 10 \
+--alignSplicedMateMapLminOverLmate 0.5 \
+--alignSJstitchMismatchNmax 5 -1 5 5 \
+--chimSegmentMin 10 \
+--chimOutType WithinBAM HardClip \
+--chimJunctionOverhangMin 10 \
+--chimScoreDropMax 30 \
+--chimScoreJunctionNonGTAG 0 \
+--chimScoreSeparation 1 \
+--chimSegmentReadGapMax 3 \
+--chimMultimapNmax 50
+```
 
-**Output directory: `results/fastqc`**
+For squid with the parameters:
 
-- `sample_fastqc.html`
-  - FastQC report, containing quality metrics for your untrimmed raw fastq files
-- `zips/sample_fastqc.zip`
-  - zip file containing the FastQC report, tab-delimited data file and plot images
+```bash
+--twopassMode Basic \
+--chimOutType SeparateSAMold \
+--chimSegmentMin 20 \
+--chimJunctionOverhangMin 12 \
+--alignSJDBoverhangMin 10 \
+--outReadsUnmapped Fastx \
+--outSAMstrandField intronMotif \
+--outSAMtype BAM SortedByCoordinate \
+--readFilesCommand zcat
+```
 
-## Fusioncatcher
+For STAR-fusion with the parameters:
 
-**Output directory: `results/tools/Fusioncatcher`**
+```bash
+--twopassMode Basic \
+--outReadsUnmapped None \
+--readFilesCommand zcat \
+--outSAMstrandField intronMotif \
+--outSAMunmapped Within \
+--chimSegmentMin 12 \
+--chimJunctionOverhangMin 8 \
+--chimOutJunctionFormat 1 \
+--alignSJDBoverhangMin 10 \
+--alignMatesGapMax 100000 \
+--alignIntronMax 100000 \
+--alignSJstitchMismatchNmax 5 -1 5 5 \
+--chimMultimapScoreRange 3 \
+--chimScoreJunctionNonGTAG -4 \
+--chimMultimapNmax 20 \
+--chimNonchimScoreDropMin 10 \
+--peOverlapNbasesMin 12 \
+--peOverlapMMp 0.1 \
+--alignInsertionFlush Right \
+--alignSplicedMateMapLminOverLmate 0 \
+--alignSplicedMateMapLmin 30 \
+--chimOutType Junctions
+```
 
-- `final-list_candidate-fusion-genes.txt`
-  - contains all the predicted gene fusions
+> STAR_FOR_STARFUSION uses `${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.chr.gtf` whereas STAR_FOR_ARRIBA and STAR_FOR_SQUID use `${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf`
 
-|  Column | Description |
-| ------- | ----------- |
-| **Gene\_1\_symbol(5end\_fusion\_partner)** | Gene symbol of the 5' end fusion partner |
-| **Gene\_2\_symbol\_2(3end\_fusion\_partner)** | Gene symbol of the 3' end fusion partner |
-| **Gene\_1\_id(5end\_fusion\_partner)** | Ensembl gene id of the 5' end fusion partner |
-| **Gene\_2\_id(3end\_fusion\_partner)** | Ensembl gene id of the 3' end fusion partner |
-| **Exon\_1\_id(5end\_fusion\_partner)** | Ensembl exon id of the 5' end fusion exon-exon junction |
-| **Exon\_2\_id(3end\_fusion\_partner)** | Ensembl exon id of the 3' end fusion exon-exon junction |
-| **Fusion\_point\_for\_gene\_1(5end\_fusion\_partner)** | Chromosomal position of the 5' end of fusion junction (chromosome:position:strand); 1-based coordinate |
-| **Fusion\_point\_for\_gene\_2(3end\_fusion\_partner)** | Chromosomal position of the 3' end of fusion junction (chromosome:position:strand); 1-based coordinate |
-| **Spanning\_pairs** | Count of pairs of reads supporting the fusion (**including** also the multimapping reads) |
-| **Spanning\_unique\_reads** | Count of unique reads (i.e. unique mapping positions) mapping on the fusion junction. Shortly, here are counted all the reads which map on fusion junction minus the PCR duplicated reads. |
-| **Longest\_anchor\_found** | Longest anchor (hangover) found among the unique reads mapping on the fusion junction |
-| **Fusion\_finding\_method** | Aligning method used for mapping the reads and finding the fusion genes. Here are two methods used which are: (i) **BOWTIE** = only Bowtie aligner is used for mapping the reads on the genome and exon-exon fusion junctions, (ii) **BOWTIE+BLAT** = Bowtie aligner is used for mapping reads on the genome and BLAT is used for mapping reads for finding the fusion junction,  (iii) **BOWTIE+STAR** = Bowtie aligner is used for mapping reads on the genome and STAR is used for mapping reads for finding the fusion junction, (iv) **BOWTIE+BOWTIE2** = Bowtie aligner is used for mapping reads on the genome and Bowtie2 is used for mapping reads for finding the fusion junction. |
-| **Fusion\_sequence** | The inferred fusion junction (the asterisk sign marks the junction point) |
-| **Fusion\_description** | Type of the fusion gene (see the Table 2) |
-| **Counts\_of\_common\_mapping\_reads** | Count of reads mapping simultaneously on both genes which form the fusion gene. This is an indication how similar are the DNA/RNA sequences of the genes forming the fusion gene (i.e. what is their homology because highly homologous genes tend to appear show as candidate fusion genes). In case of completely different sequences of the genes involved in forming a fusion gene then here it is expected to have the value zero. |
-| **Predicted\_effect** | Predicted effect of the candidate fusion gene using the annotation from Ensembl database. This is shown in format **effect\_gene\_1**/**effect\_gene\_2**, where the possible values for effect\_gene\_1 or effect\_gene\_2 are: **intergenic**, **intronic**, **exonic(no-known-CDS)**, **UTR**, **CDS(not-reliable-start-or-end)**, **CDS(truncated)**, or **CDS(complete)**. In case that the fusion junction for both genes is within their CDS (coding sequence) then only the values **in-frame** or **out-of-frame** will be shown. |
-| **Predicted\_fused\_transcripts** | All possible known fused transcripts in format ENSEMBL-TRANSCRIPT-1:POSITION-1/ENSEMBLE-TRANSCRIPT-B:POSITION-2, where are fused the sequence 1:POSITION-1 of transcript ENSEMBL-TRANSCRIPT-1 with sequence POSITION-2:END of transcript ENSEMBL-TRANSCRIPT-2 |
-| **Predicted\_fused\_proteins** | Predicted amino acid sequences of all possible fused proteins (separated by ";").  |
+<details markdown="1">
+<summary>Output files</summary>
 
-For more info check the [documentation](https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md#62---output-data-output-data).
+- `star_for_<tool>`
+_ **Common**
+_ `<sample_id>.Log.final.out`
+_ `<sample_id>.Log.progress.out`
+_ `<sample_id>.SJ.out.tab`
+_ **For arriba:**
+_ `<sample_id>.Aligned.out.bam`
+_ **For squid:**
+_ `<sample_id>.Aligned.sortedByCoord.out.bam`
+_ `<sample_id>.Chimeric.out.sam`
+_ `<sample_id>.unmapped_1.fastq.gz`
+_ `<sample_id>.unmapped_2.fastq.gz`
+_ **For starfusion:**
+_ `<sample_id>.Aligned.sortedByCoord.out.bam`
+_ `<sample_id>.Chimeric.out.junction`
+</details>
 
-## Fusion Inspector
+### Cat
 
-**Output directory: `results/tools/FusionInspector`**
+Cat is used to concatenate fastq files belonging to the same sample.
 
-- `finspector.fa`
-  - the candidate fusion-gene contigs (if you copy things elsewhere, make sure to also copy the index file: `finspector.fa.fai`)
-- `finspector.bed`
-  - the reference gene structure annotations for fusion partners
-- `finspector.junction_reads.bam`
-  - alignments of the breakpoint-junction supporting reads.
-- `finspector.spanning_reads.bam`
-  - alignments of the breakpoint-spanning paired-end reads.
+<details markdown="1">
+<summary>Output files</summary>
 
-To visualize fusion genes in [IGV tool](https://software.broadinstitute.org/software/igv/igvtools) first create a genome `Menu->Genomes->Create .genome File`, choose name and description, then choose the following files:
+- `cat`
+  - `<sample_id>_1.merged.fastq.gz`
+  - `<sample_id>_2.merged.fastq.gz`
 
-- `finspector.fa`
-  - make sure the index file finspector.fa.fai is in the same folder
-- `finspector.gtf`
-  - use this for 'Genes'
-- `cytoBand.txt`
-  - use this for 'optional Cytoband'
+</details>
 
-Add the bam files by choosing `File->Load from File` and make sure to select your generated mini genome in the upper-left corner.
-For more info and help check [wiki page](https://github.com/FusionInspector/FusionInspector/wiki).
+### Arriba
 
-## fusion-report
+Arriba is used for i) detect fusion and ii) output a PDF report for the fusions found (visualisation):
 
-**Output directory: `results/Report-<READS_BASE_NAME>`**
+#### Detection
 
-- `fusions.json`
-  - contains all main information about found fusions (fusion name, score, explanation of the score calculation, cherry picked output from fusion tools)
-- `index.html`
-  - main dashboard containing the list of all detected fusions
-- `*.html`
-  - each fusion gets a custom page with fetched data from the local database
-- `fusions_list_filtered.txt`
-  - filtered list of found fusions (uses tool cutoff as filter, by default: 2, can be adjusted by adding `-t <num>` when running the tool)
-- `fusions_list.txt`
-  - unfiltered list of found fusions
-  
-### Tool detection
+<details markdown="1">
+<summary>Output files</summary>
 
-Graphs displaying ratio of fusion genes caught by different tools. The last part *all tools* is an intersection of all tools.
+- `arriba`
+  - `<sample_id>.arriba.fusions.tsv` - contains the identified fusions
+  - `<sample_id>.arriba.fusions.discarded.tsv`
 
-![Tool detection](images/summary_graph_1.png)
+</details>
 
-### Found in database
+#### Visualisation
 
-Displays how many fusions were found in a downloaded databases of the summary report.
+<details markdown="1">
+<summary>Output files</summary>
 
-![Known/unknown fusions](images/summary_graph_2.png)
+- `arriba_visualisation`
+  - `<sample_id>.pdf`
 
-### Tool detection distribution
+</details>
 
-For each fusion a sum of detected tools is calculated. This counts are then visualized in the graph below.
+### Pizzly
 
-![Known/unknown fusions](images/summary_graph_3.png)
+The first step of the pizzly workflow is to run `kallisto quant`:
 
-## MultiQC
+#### Kallisto
 
-[MultiQC](http://multiqc.info) is a visualisation tool that generates a single HTML report summarising all samples in your project. Most of the pipeline QC results are visualised in the report and further statistics are available in within the report data directory.
+<details markdown="1">
+<summary>Output files</summary>
 
-The pipeline has special steps which allow the software versions used to be reported in the MultiQC output for future traceability.
+- `kallisto`
+  - `<sample_id>.kallisto_quant.fusions.txt`
 
-**Output directory: `results/multiqc`**
+</details>
 
-- `Project_multiqc_report.html`
-  - MultiQC report - a standalone HTML file that can be viewed in your web browser
-- `Project_multiqc_data/`
-  - Directory containing parsed statistics from the different tools used in the pipeline
+Pizzly refines kallisto output.
 
-For more information about how to use MultiQC reports, see [http://multiqc.info](http://multiqc.info)
+#### Pizzly
 
-## Pizzly
+Pizzly uses the following arguments:
 
-**Output directory: `results/tools/Pizzly`**
+```bash
+-k 31 \
+--align-score 2 \
+--insert-size 400 \
+--cache index.cache.txt
+```
 
-- `pizzly_fusions.json`
-  - contains all the predicted gene fusions
+<details markdown="1">
+<summary>Output files</summary>
 
-|  Column | Description |
-| ------- | ----------- |
-| geneA | `id`: reference id and `name`: gene name |
-| geneB | Describes reference id and gene name |
-| paircount | Number of paired count |
-| splitcount | Number of split count |
-| transcripts | List of all transcripts `fasta_record`, `transcriptA`, `transcriptB`, `support`, `reads` |
-| readpairs | List of read pairs containing (`type`, `read1`, `read2`) |
+- `pizzly`
+  - `<sample_id>.pizzly.txt` - contains the identified fusions
+  - `<sample_id>.pizzly.unfiltered.json`
 
-For more info check the [documentation](https://github.com/pmelsted/pizzly#output).
+</details>
 
-## Squid
+### Squid
 
-**Output directory: `results/tools/Squid`**
+Squid is run in two steps: i) fusion detection and ii) fusion annotation but the output is in a common `squid` directory.
 
-- `fusions_annotated.txt`
-  - contains all the predicted gene fusions
+<details markdown="1">
+<summary>Output files</summary>
 
-|  Column | Description |
-| ------- | ----------- |
-| chr1 | chromosome name of the first breakpoint.
-| start1 | starting position of the segment of the first breakpoint, or the predicted breakpoint position if strand1 is "-" |
-| end1 | ending position of the segment of the first breakpoint, or the predicted breakpoint position if strand1 is "+" |
-| chr2 | chromosome name of the second breakpoint |
-| start2 | starting position of the segment of the second breakpoint, or the predicted breakpoint position if strand2 is "-" |
-| end2 | ending position of the segment of the second breakpoint, or the predicted breakpoint position if strand2 is "+" |
-| name | TSV is not named yet, this column shows with dot.
-| score | number of reads supporting this TSV (without weighted by Discordant edge ratio multiplier) |
-| strand1 | strand of the first segment in TSV.
-| strand2 | strand of the second segment in TSV.
-| num_concordantfrag_bp1 | number of concordant paired-end reads covering the first breakpoint. For a concordant paired-end read, it includes two ends and a inserted region in between, if any of the 3 regions covers the breakpoint, the read is counted in this number |
-| num_concordantfrag_bp2 | number of concordant paired-end reads covering the second breakpoint. The count is defined in the same way as num_concordantfrag_bp1 |
+- `squid`
+  - `<sample_id>.squid.fusions_sv.txt` - contains the identified fusions
+  - `<sample_id>.squid.fusions.annotated.txt`- contains the identified fusions annotatedvi
 
-For more info check the [documentation](https://github.com/Kingsford-Group/squid#output-specification).
+</details>
 
-## Star-Fusion
+### STAR-fusion
 
-**Output directory: `results/tools/StarFusion`**
+<details markdown="1">
+<summary>Output files</summary>
 
-- `star-fusion.fusion_predictions.tsv`
-  - contains all the predicted gene fusions
+- `starfusion`
+  - `<sample_id>.starfusion.fusion_predictions.tsv` - contains the identified fusions
+  - `<sample_id>.starfusion.abridged.tsv`
+  - `- contains the identified fusions.starfusion.abridged.coding_effect.tsv`
 
-|  Column | Description |
-| ------- | ----------- |
-| JunctionReadCount | Indicates the number of RNA-Seq fragments containing a read that aligns as a split read at the site of the putative fusion junction. |
-| SpanningFragCount | Indicates the number of RNA-Seq fragments that encompass the fusion junction such that one read of the pair aligns to a different gene than the other paired-end read of that fragment. |
-| SpliceType | Indicates whether the proposed breakpoint occurs at reference exon junctions as provided by the reference transcript structure annotations (ex. gencode).
-| LeftGene
-| LeftBreakpoint
-| RightGene
-| RightBreakpoint
-| LargeAnchorSupport | column indicates whether there are split reads that provide 'long' (set to length of 25 bases) alignments on both sides of the putative breakpoint. |
-| FFPM | fusion fragments per million total reads; **Default:** *0.1 (meaning at least 1 fusion-supporting rna-seq fragment per 10M total reads)*; **TL;DR:** can be adjusted by changing `--min_FFPM`
-| LeftBreakDinuc |  |
-| LeftBreakEntropy | Represents Shannon entropy |
-| RightBreakDinuc |
-| RightBreakEntropy | Represents Shannon entropy |
-| annots | Annotation generated by [FusionAnnotar](https://github.com/FusionAnnotator/FusionAnnotator/wiki) |
+</details>
 
-For more info check the [documentation](https://github.com/STAR-Fusion/STAR-Fusion/wiki#Outputs).
+### FusionCatcher
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `fusioncatcher`
+_ `<sample_id>.fusioncatcher.fusion-genes.txt`
+_ `<sample_id>.fusioncatcher.summary.txt` \* `<sample_id>.fusioncatcher.log`
+</details>
+
+### Samtools
+
+#### Samtools view
+
+Samtools view is used to convert the chimeric SAM output from STAR_FOR_SQUID to BAM
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `samtools_view_for_squid`
+  - `<sample_id>_chimeric.bam` - sorted BAM file
+
+</details>
+
+#### Samtools sort
+
+Samtools sort is used to sort BAM files from STAR_FOR_ARRIBA (for arriba visualisation) and the chimeric BAM from STAR_FOR_SQUID
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `samtools_sort_for_<arriba/squid>`
+  - `<sample_id>(_chimeric)_sorted.bam` - sorted BAM file
+
+</details>
+
+#### Samtools index
+
+Samtools index is used to index BAM files from STAR_FOR_ARRIBA (for arriba visualisation) and STAR_FOR_STARFUSION (for QC)
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `samtools_for_<arriba/qc>`
+  - `<sample_id>.(Aligned.sortedByCoord).out.bam.bai` -
+
+</details>
+
+### Fusion-report
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `fusionreport`
+  - <sample_id>
+    - `<sample_id>.fusionreport.tsv`
+    - `<sample_id>.fusionreport_filtered.tsv`
+    - `index.html` - general report for all filtered fusions
+    - `<fusion>.html` - specific report for each filtered fusion
+
+</details>
+
+### FusionInspector
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `fusioninspector`
+  - `<sample_id>.fusion_inspector_web.html` - visualisation report described in details [here](https://github.com/FusionInspector/FusionInspector/wiki/FusionInspector-Visualizations)
+  - `FusionInspector.log`
+  - `<sample_id>.FusionInspector.fusions.abridged.tsv`
+
+</details>
+
+### Qualimap
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `qualimap`
+  - `qualimapReport.html` - HTML report
+  - `rnaseq_qc_results.txt` - TXT results
+  - `css` - dir for html style
+  - `images_qualimapReport`- dir for html images
+  - `raw_data_qualimapReport` - dir for html raw data
+
+</details>
+
+### Picard
+
+Picard CollectRnaMetrics and picard MarkDuplicates share the same outpur directory.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `picard`
+  - `<sample_id>.MarkDuplicates.metrics.txt` - metrics from CollectRnaMetrics
+  - `<sample_id>_rna_metrics.txt` - metrics from MarkDuplicates
+  - `<sample_id>.bam` - BAM file with marked duplicates
+
+</details>
+
+### FastQC
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `fastqc/`
+  - `*_fastqc.html`: FastQC report containing quality metrics.
+  - `*_fastqc.zip`: Zip archive containing the FastQC report, tab-delimited data file and plot images.
+
+</details>
+
+[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your sequenced reads. It provides information about the quality score distribution across your reads, per base sequence content (%A/T/G/C), adapter contamination and overrepresented sequences. For further reading and documentation see the [FastQC help pages](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
+
+![MultiQC - FastQC sequence counts plot](images/mqc_fastqc_counts.png)
+
+![MultiQC - FastQC mean quality scores plot](images/mqc_fastqc_quality.png)
+
+![MultiQC - FastQC adapter content plot](images/mqc_fastqc_adapter.png)
+
+> **NB:** The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
+
+### MultiQC
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `multiqc/`
+  - `multiqc_report.html`: a standalone HTML file that can be viewed in your web browser.
+  - `multiqc_data/`: directory containing parsed statistics from the different tools used in the pipeline.
+  - `multiqc_plots/`: directory containing static images from the report in various formats.
+
+</details>
+
+[MultiQC](http://multiqc.info) is a visualization tool that generates a single HTML report summarising all samples in your project. Most of the pipeline QC results are visualised in the report and further statistics are available in the report data directory.
+
+Results generated by MultiQC collate pipeline QC from supported tools e.g. FastQC. The pipeline has special steps which also allow the software versions to be reported in the MultiQC output for future traceability. For more information about how to use MultiQC reports, see <http://multiqc.info>.
+
+### Pipeline information
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `pipeline_info/`
+  - Reports generated by Nextflow: `execution_report.html`, `execution_timeline.html`, `execution_trace.txt` and `pipeline_dag.dot`/`pipeline_dag.svg`.
+  - Reports generated by the pipeline: `pipeline_report.html`, `pipeline_report.txt` and `software_versions.yml`. The `pipeline_report*` files will only be present if the `--email` / `--email_on_fail` parameter's are used when running the pipeline.
+  - Reformatted samplesheet files used as input to the pipeline: `samplesheet.valid.csv`.
+
+</details>
+
+[Nextflow](https://www.nextflow.io/docs/latest/tracing.html) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.

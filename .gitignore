@@ -1,7 +1,8 @@
 .nextflow*
 work/
+data/
 results/
 .DS_Store
-test/*
+testing/
+testing*
 *.pyc
-.vscode/
