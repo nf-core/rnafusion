@@ -128,6 +128,7 @@ We thank the following people for their **extensive assistance** in the developm
 - [Maxime Garcia](https://github.com/maxulysse)
 - [Rickard Hammarén](https://github.com/Hammarn)
 - [Praveen Raj](https://github.com/praveenraj2018)
+
 ## Contributions and Support
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
