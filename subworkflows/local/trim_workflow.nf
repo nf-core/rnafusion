@@ -1,4 +1,4 @@
-include { TRIMGALORE                  } from '../modules/nf-core/modules/trimgalore/main'
+include { TRIMGALORE                  } from '../../modules/nf-core/modules/trimgalore/main'
 
 workflow TRIM_WORKFLOW {
     take:
