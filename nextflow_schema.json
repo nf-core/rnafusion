@@ -114,6 +114,16 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to arriba output"
                 },
+                "clip_r1": {
+                    "type": "integer",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Remove bp from the 5' end of read 1"
+                },
+                "clip_r2": {
+                    "type": "integer",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Remove bp from the 5' end of read 2"
+                },
                 "ensembl_ref": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
