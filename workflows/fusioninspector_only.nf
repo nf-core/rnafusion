@@ -204,7 +204,7 @@ workflow FUSIONINSPECTOR_ONLY {
     FUSIONINSPECTOR_ONLY_WORKFLOW (
         ch_cat_fastq
     )
-    ch_versions = ch_versions.mix(FUSIONINSPECTOR_WORKFLOW.out.versions.first().ifEmpty(null))
+    ch_versions = ch_versions.mix(FUSIONINSPECTOR_ONLY_WORKFLOW.out.versions.first().ifEmpty(null))
 
 
     // //QC
