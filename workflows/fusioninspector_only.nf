@@ -203,6 +203,7 @@ workflow FUSIONINSPECTOR_ONLY {
     //Run fusionInpector
     FUSIONINSPECTOR_WORKFLOW (
         ch_cat_fastq,
+        params.fusioninspector_list,
         params.fusioninspector_list
         // FUSIONREPORT_WORKFLOW.out.fusion_list_filtered
     )
