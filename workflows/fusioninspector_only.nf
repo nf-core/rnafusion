@@ -67,7 +67,7 @@ include { INPUT_CHECK                   }   from '../subworkflows/local/input_ch
 // include { SQUID_WORKFLOW                }   from '../subworkflows/local/squid_workflow'
 // include { STARFUSION_WORKFLOW           }   from '../subworkflows/local/starfusion_workflow'
 // include { FUSIONCATCHER_WORKFLOW        }   from '../subworkflows/local/fusioncatcher_workflow'
-include { FUSIONINSPECTOR_ONLY_WORKFLOW      }   from '../subworkflows/local/fusioninspector_workflow'
+include { FUSIONINSPECTOR_ONLY_WORKFLOW      }   from '../subworkflows/local/fusioninspector_only_workflow'
 // include { FUSIONREPORT_WORKFLOW         }   from '../subworkflows/local/fusionreport_workflow'
 
 /*
