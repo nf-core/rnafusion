@@ -96,7 +96,7 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/
 // // Info required for completion email and summary
 // def multiqc_report = []
 
-workflow FUSIONINSPECTOR {
+workflow FUSIONINSPECTOR_ONLY {
 
     ch_versions = Channel.empty()
 

@@ -46,7 +46,7 @@ WorkflowMain.initialise(workflow, params, log)
 
 include { BUILD_REFERENCES } from './workflows/build_references'
 include { RNAFUSION }        from './workflows/rnafusion'
-include { FUSIONINSPECTOR }  from './workflows/fusioninspector'
+include { FUSIONINSPECTOR_ONLY }  from './workflows/fusioninspector_only'
 
 
 //
@@ -58,9 +58,9 @@ workflow NFCORE_RNAFUSION {
 
         BUILD_REFERENCES ()
 
-    } else if (params.fusioninspector){
+    } else if (params.fusioninspector_only){
 
-        FUSIONINSPECTOR()
+        FUSIONINSPECTOR_ONLY()
 
     }
     else {
