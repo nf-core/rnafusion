@@ -187,17 +187,17 @@ workflow FUSIONINSPECTOR {
 //     ch_versions = ch_versions.mix(FUSIONCATCHER_WORKFLOW.out.versions.first().ifEmpty(null))
 
 
-    //Run fusion-report
-    FUSIONREPORT_WORKFLOW (
-        ch_cat_fastq,
-        params.fusionreport_ref,
-        ARRIBA_WORKFLOW.out.fusions,
-        PIZZLY_WORKFLOW.out.fusions,
-        SQUID_WORKFLOW.out.fusions,
-        STARFUSION_WORKFLOW.out.fusions,
-        FUSIONCATCHER_WORKFLOW.out.fusions
-    )
-    ch_versions = ch_versions.mix(FUSIONREPORT_WORKFLOW.out.versions.first().ifEmpty(null))
+    // //Run fusion-report
+    // FUSIONREPORT_WORKFLOW (
+    //     ch_cat_fastq,
+    //     params.fusionreport_ref,
+    //     ARRIBA_WORKFLOW.out.fusions,
+    //     PIZZLY_WORKFLOW.out.fusions,
+    //     SQUID_WORKFLOW.out.fusions,
+    //     STARFUSION_WORKFLOW.out.fusions,
+    //     FUSIONCATCHER_WORKFLOW.out.fusions
+    // )
+    // ch_versions = ch_versions.mix(FUSIONREPORT_WORKFLOW.out.versions.first().ifEmpty(null))
 
 
     //Run fusionInpector
