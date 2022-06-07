@@ -8,71 +8,75 @@
 
 The pipeline is divided into two parts:
 
-1. Downloading and building the references, using `--build_references`: done only once and after each update.
-2. Detecting fusions using (any combination of) the following tools:
-   - arriba
-   - fusioncatcher
-   - pizzly
-   - squid
-   - starfusion
-3. QC and visualisation tools
-   - Fastqc
-   - MultiQC
-   - arriba visualisation (for fusion detected by arriba only)
-   - fusion-report
-   - fusionInspector
+1. Download and build references 
+   - specified with `--build_references` parameter
+   - this is required only once before running the pipeline. 
+   - It should be rerun after pipeline updates.
+2. Detecting fusions 
+   - This uses any combination of the fusion tools: arriba, fusioncatcher, pizzly, squid, starfusion.
+   - QC is performed with: Fastqc and MultiQC.
+   - Visualisation of fusions is performed with: arriba visualisation (for fusion detected by arriba only), fusion-report, fusionInspector
 
-### Prerequisite: download and build references
+### 1. Download and build references
 
 The rnafusion pipeline needs references for the fusion detection tools, so downloading these is a **requirement**.
-It is possible to download and build each reference manually (for example in case of non-human samples that are not supported currently) feed references manually to rnafusion using the arguments `--<tool>_ref` but it is advised to download references with rnafusion:
+Whilst it is possible to download and build each reference manually, it is advised to download references with the rnafusion pipeline.
+
+First register for a free account at COSMIC at https://cancer.sanger.ac.uk/cosmic/register using your university email ending .ac.uk. The account is only activated upon clicking the link in the registation email.
+
+Then run the pipeline, ensuring to include in the command line your COSMIC registration email and password as well as the path to the desired reference output directory:
 
 ```bash
 nextflow run nf-core/rnafusion \
 --build_references --all \
---genomes_base <PATH> \
+--cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
+--outdir <PATH> -r 2.0.0
 ```
 
-References for the different tools can also be downloaded separately:
+This step can take over 24 hours to complete.
+
+References for each tools can also be downloaded separately with:
 
 ```bash
 nextflow run nf-core/rnafusion \
 --build_references --<tool> \
---genomes_base <PATH>
+--cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
+--outdir <PATH> -r 2.0.0
 ```
 
-This PATH will be the place the references will be saved.
-
-Optional: by default STAR-Fusion references are built. You can also download them from CTAT. This allows more flexibility for different organisms but be aware that **this is not fully tested -> not recommended**:
+In the case of non-human references, that are not supported currently, these can be fed manually to rnafusion using the parameter `--<tool>_ref`. By default STAR-Fusion references are built. You can also download them from [CTAT](https://github.com/NCIP/Trinity_CTAT/wiki). This allows more flexibility for different organisms but be aware that this is not fully tested:
 
 ```bash
 nextflow run nf-core/rnafusion \
 --build_references --starfusion/--all \
---starfusion_build false \
---genomes_base <PATH>
+--starfusion_build FALSE \
+--cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
+--outdir <PATH> -r 2.0.0
 ```
 
 Then use the flag `--starfusion_build` while running the detection.
 
-### Running all detection tools
+### 2. Detecting fusions
+
+This step can either be run using all fusion detection tools or specifying individual tools. Visualisation tools will be run on all fusions detected. To run all tools (arriba, fusioncatcher, pizzly, squid, starfusion) use the `--all` parameter:
 
 ```bash
 nextflow run nf-core/rnafusion \
---input '[path to samplesheet file]' --all \
+--all \
+--input '[path to samplesheet csv]' \
 --outdir <PATH> \
+--genomes_base 'path to rnafusion references' \
+-r 2.0.0
 ```
 
-Visualisation tools will be run on all fusions detected.
-
-### Running a specific detection tool
+Alternatively, to run only a specific detection tool specify with `--tool`:
 
 ```bash
 nextflow run nf-core/rnafusion \
---input '[path to samplesheet file]' --<tool> \
+--<tool> \
+--input '[path to samplesheet file]' \
 --outdir <PATH> \
 ```
-
-Visualisation tools will be run on all fusions detected.
 
 #### Optional manual feed-in of fusion files
 
@@ -80,28 +84,7 @@ It is possible to give the output of each tool manually using the argument: `--<
 
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
-
-```console
---input '[path to samplesheet file]'
-```
-
-### Multiple runs of the same sample
-
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
-
-```console
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
-```
-
-### Full samplesheet
-
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 4 columns to match those defined in the table below.
-
-A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use the `--input` parameter to specify its location. The pipeline will detect whether a sample is single- or paired-end from the samplesheet - the fastq_2 column is empty for single-end. The samplesheet has to be a comma-separated file (.csv) but can have as many columns as you desire. There is a strict requirement for the first 4 columns to match those defined in the table below with the header row included.
 
 ```console
 sample,fastq_1,fastq_2,strandedness
@@ -114,6 +97,8 @@ TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,,forward
 TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,,forward
 ```
 
+A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
+
 | Column         | Description                                                                                                                                                                            |
 | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `sample`       | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
@@ -122,6 +107,15 @@ TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,,forward
 | `strandedness` | Strandedness: forward or reverse.                                                                                                                                                      |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
+
+As you can see above for multiple runs of the same sample, the `sample` name has to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
+
+```console
+sample,fastq_1,fastq_2
+CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
+CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
+CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
+```
 
 ## Running the pipeline
 
