@@ -33,8 +33,6 @@ nextflow run nf-core/rnafusion \
 --outdir <PATH> -r 2.0.0
 ```
 
-This step can take over 24 hours to complete.
-
 References for each tools can also be downloaded separately with:
 
 ```bash
