@@ -10,7 +10,7 @@ The pipeline is divided into two parts:
 
 1. Download and build references 
    - specified with `--build_references` parameter
-   - this is required only once before running the pipeline. 
+  - required only once before running the pipeline
    - It should be rerun after pipeline updates.
 2. Detecting fusions 
    - This uses any combination of the fusion tools: arriba, fusioncatcher, pizzly, squid, starfusion.
