@@ -22,7 +22,7 @@ The pipeline is divided into two parts:
 The rnafusion pipeline needs references for the fusion detection tools, so downloading these is a **requirement**.
 Whilst it is possible to download and build each reference manually, it is advised to download references with the rnafusion pipeline.
 
-First register for a free account at COSMIC at https://cancer.sanger.ac.uk/cosmic/register using your university email ending .ac.uk. The account is only activated upon clicking the link in the registation email.
+First register for a free account at COSMIC at https://cancer.sanger.ac.uk/cosmic/register using your university email. The account is **only activated upon** clicking the link in the registration email.
 
 Then run the pipeline, ensuring to include in the command line your COSMIC registration email and password as well as the path to the desired reference output directory:
 
