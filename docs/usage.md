@@ -84,7 +84,7 @@ It is possible to give the output of each tool manually using the argument: `--<
 
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use the `--input` parameter to specify its location. The pipeline will detect whether a sample is single- or paired-end from the samplesheet - the fastq_2 column is empty for single-end. The samplesheet has to be a comma-separated file (.csv) but can have as many columns as you desire. There is a strict requirement for the first 4 columns to match those defined in the table below with the header row included.
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use the `--input` parameter to specify its location. The pipeline will detect whether a sample is single- or paired-end from the samplesheet - the `fastq_2` column is empty for single-end. The samplesheet has to be a comma-separated file (.csv) but can have as many columns as you desire. There is a strict requirement for the first 4 columns to match those defined in the table below with the header row included.
 
 ```console
 sample,fastq_1,fastq_2,strandedness
