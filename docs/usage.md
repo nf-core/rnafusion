@@ -56,7 +56,7 @@ Then use the flag `--starfusion_build` while running the detection.
 
 ### 2. Detecting fusions
 
-This step can either be run using all fusion detection tools or specifying individual tools. Visualisation tools will be run on all fusions detected. To run all tools (arriba, fusioncatcher, pizzly, squid, starfusion) use the `--all` parameter:
+This step can either be run using all fusion detection tools or specifying individual tools. Visualisation tools will be run on all fusions detected. To run all tools (`arriba`, `fusioncatcher`, `pizzly`, `squid`, `starfusion`) use the `--all` parameter:
 
 ```bash
 nextflow run nf-core/rnafusion \
