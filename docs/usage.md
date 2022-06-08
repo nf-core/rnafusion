@@ -24,7 +24,7 @@ Whilst it is possible to download and build each reference manually, it is advis
 
 First register for a free account at COSMIC at https://cancer.sanger.ac.uk/cosmic/register using your university email. The account is **only activated upon** clicking the link in the registration email.
 
-Then run the pipeline, ensuring to include in the command line your COSMIC registration email and password as well as the path to the desired reference output directory:
+Download the references as shown below including your COSMIC credentials. Note that this step can take up to 24 hours to complete.
 
 ```bash
 nextflow run nf-core/rnafusion \
