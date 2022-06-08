@@ -14,7 +14,7 @@ The pipeline is divided into two parts:
   - **Important**: rerun with each new release
 2. Detecting fusions 
   - Supported tools: `arriba`, `fusioncatcher`, `pizzly`, `squid` and `starfusion`
-   - QC is performed with: Fastqc and MultiQC.
+  - QC: `Fastqc` and `MultiQC`
    - Visualisation of fusions is performed with: arriba visualisation (for fusion detected by arriba only), fusion-report, fusionInspector
 
 ### 1. Download and build references
