@@ -11,7 +11,7 @@ The pipeline is divided into two parts:
 1. Download and build references 
    - specified with `--build_references` parameter
   - required only once before running the pipeline
-   - It should be rerun after pipeline updates.
+  - **Important**: rerun with each new release
 2. Detecting fusions 
    - This uses any combination of the fusion tools: arriba, fusioncatcher, pizzly, squid, starfusion.
    - QC is performed with: Fastqc and MultiQC.
