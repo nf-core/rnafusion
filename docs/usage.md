@@ -8,48 +8,48 @@
 
 The pipeline is divided into two parts:
 
-1. Download and build references 
+1. Download and build references
    - specified with `--build_references` parameter
-  - required only once before running the pipeline
-  - **Important**: rerun with each new release
-2. Detecting fusions 
-  - Supported tools: `arriba`, `fusioncatcher`, `pizzly`, `squid` and `starfusion`
-  - QC: `Fastqc` and `MultiQC`
-  - Fusion visualization: `arriba` (only arriba detected), `fusion-report` and `fusionInspector`
+   - required only once before running the pipeline
+   - **Important**: rerun with each new release
+2. Detecting fusions
+   - Supported tools: `arriba`, `fusioncatcher`, `pizzly`, `squid` and `starfusion`
+   - QC: `Fastqc` and `MultiQC`
+   - Fusion visualization: `arriba` (only arriba detected), `fusion-report` and `fusionInspector`
 
 ### 1. Download and build references
 
 The rnafusion pipeline needs references for the fusion detection tools, so downloading these is a **requirement**.
 Whilst it is possible to download and build each reference manually, it is advised to download references with the rnafusion pipeline.
 
-First register for a free account at COSMIC at https://cancer.sanger.ac.uk/cosmic/register using your university email. The account is **only activated upon** clicking the link in the registration email.
+First register for a free account at COSMIC at [https://cancer.sanger.ac.uk/cosmic/register](https://cancer.sanger.ac.uk/cosmic/register) using your university email. The account is **only activated upon** clicking the link in the registration email.
 
 Download the references as shown below including your COSMIC credentials. Note that this step can take up to 24 hours to complete.
 
 ```bash
 nextflow run nf-core/rnafusion \
---build_references --all \
---cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
---outdir <PATH> -r 2.0.0
+  --build_references --all \
+  --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
+  --outdir <REFERENCE_PATH>
 ```
 
 References for each tools can also be downloaded separately with:
 
 ```bash
 nextflow run nf-core/rnafusion \
---build_references --<tool> \
---cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
---outdir <PATH> -r 2.0.0
+  --build_references --<tool> \
+  --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
+  --outdir <REFERENCE_PATH>
 ```
 
 In the case of non-human references, that are not supported currently, these can be fed manually to rnafusion using the parameter `--<tool>_ref`. By default STAR-Fusion references are built. You can also download them from [CTAT](https://github.com/NCIP/Trinity_CTAT/wiki). This allows more flexibility for different organisms but be aware that this is not fully tested:
 
 ```bash
 nextflow run nf-core/rnafusion \
---build_references --starfusion/--all \
---starfusion_build FALSE \
---cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
---outdir <PATH> -r 2.0.0
+  --build_references --starfusion \
+  --starfusion_build FALSE \
+  --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
+  --outdir <REFERENCE_PATH>
 ```
 
 Then use the flag `--starfusion_build` while running the detection.
@@ -60,20 +60,19 @@ This step can either be run using all fusion detection tools or specifying indiv
 
 ```bash
 nextflow run nf-core/rnafusion \
---all \
---input '[path to samplesheet csv]' \
---outdir <PATH> \
---genomes_base 'path to rnafusion references' \
--r 2.0.0
+  --all \
+  --input <SAMPLE_SHEET.CSV> \
+  --outdir <PATH> \
+  --genomes_base <REFERENCE_PATH>
 ```
 
 Alternatively, to run only a specific detection tool specify with `--tool`:
 
 ```bash
 nextflow run nf-core/rnafusion \
---<tool> \
---input '[path to samplesheet file]' \
---outdir <PATH> \
+  --<tool> \
+  --input <SAMPLE_SHEET.CSV> \
+  --outdir <PATH>
 ```
 
 #### Optional manual feed-in of fusion files
