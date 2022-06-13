@@ -66,6 +66,8 @@ nextflow run nf-core/rnafusion \
   --genomes_base <REFERENCE_PATH>
 ```
 
+`--genomes_base` should point to the `references/` subdirectory of the path of the outdir from step 1 `build_references`.
+
 Alternatively, to run only a specific detection tool specify with `--tool`:
 
 ```bash
