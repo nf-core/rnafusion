@@ -43,6 +43,16 @@ nextflow run nf-core/rnafusion \
 
 This PATH will be the place the references will be saved.
 
+Some institutes HPCs have server restrictions that block the cosmic database download during the FUSIONREPORT_DOWNLOAD process. If FUSIONREPORT_DOWNLOAD appears to timeout on your HPC, we suggest running all the other `build_references` processes on the HPC but run the FUSIONREPORT_DOWNLOAD process on your local machine which should take ~ 30 mins using the command:
+
+```bash
+nextflow run nf-nore/rnafusion \
+--genomes_base <REFERENCE_PATH> --build_references --fusionreport --outdir <OUTDIR_PATH> /
+-profile singularity --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
+```
+
+The four fusionreport files: `cosmic.db fusiongdb.db fusiongdb2.db mitelman.db` should then be copied into the HPC `fusionreport` outdir: `<REFERENCE_PATH>/references/fusion_report_db`
+
 Optional: by default STAR-Fusion references are built. You can also download them from CTAT. This allows more flexibility for different organisms but be aware that **this is not fully tested -> not recommended**:
 
 ```bash
