@@ -22,9 +22,16 @@ The pipeline is divided into two parts:
 The rnafusion pipeline needs references for the fusion detection tools, so downloading these is a **requirement**.
 Whilst it is possible to download and build each reference manually, it is advised to download references with the rnafusion pipeline.
 
-First register for a free account at COSMIC at [https://cancer.sanger.ac.uk/cosmic/register](https://cancer.sanger.ac.uk/cosmic/register) using your university email. The account is **only activated upon** clicking the link in the registration email.
+> :warning: **Some HPCs can block some link to the references.**
+> If you experience this please consult with your IT department. Below we provide
+> some workarounds for specific cases.
 
-Download the references as shown below including your COSMIC credentials. Note that this step can take up to 24 hours to complete.
+First register for a free account at COSMIC at [https://cancer.sanger.ac.uk/cosmic/register](https://cancer.sanger.ac.uk/cosmic/register)
+using your university email. The account is **only activated upon** clicking the
+link in the registration email.
+
+Download the references as shown below including your COSMIC credentials.
+Note that this step can take up to 24 hours to complete.
 
 ```bash
 nextflow run nf-core/rnafusion \
@@ -42,13 +49,22 @@ nextflow run nf-core/rnafusion \
   --outdir <REFERENCE_PATH>
 ```
 
-Some institutes HPCs have server restrictions that block the cosmic database download during the FUSIONREPORT_DOWNLOAD process. If FUSIONREPORT_DOWNLOAD appears to timeout on your HPC, we suggest running all the other `build_references` processes on the HPC but run the FUSIONREPORT_DOWNLOAD process on your local machine which should take ~ 30 mins using the command:
+#### FUSIONREPORT_DOWNLOAD failes
+
+If `FUSIONREPORT_DOWNLOAD` appears to timeout on your HPC, we suggest running all
+the other `build_references` processes on the HPC but run the `FUSIONREPORT_DOWNLOAD`
+process on your local machine which should take ~ 30 mins using the command:
+
 ```bash
 nextflow run nf-nore/rnafusion  \
---genomes_base <REFERENCE_PATH>  --build_references --fusionreport --outdir <OUTDIR_PATH> /
--profile singularity   --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
+  --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
+  --build_references \
+  --fusionreport \
+  --outdir <REFERENCE_PATH> \
 ```
-The four fusionreport files: ```cosmic.db		fusiongdb.db		fusiongdb2.db		mitelman.db``` should then be copied into the HPC `fusionreport` outdir: `<REFERENCE_PATH>/references/fusion_report_db`
+
+The four `fusion-report` files: `cosmic.db`, `fusiongdb.db`, `fusiongdb2.db`, `mitelman.db`
+should then be copied into the HPC `<REFERENCE_PATH>/references/fusion_report_db`.
 
 In the case of non-human references, that are not supported currently, these can be fed manually to rnafusion using the parameter `--<tool>_ref`. By default STAR-Fusion references are built. You can also download them from [CTAT](https://github.com/NCIP/Trinity_CTAT/wiki). This allows more flexibility for different organisms but be aware that this is not fully tested:
 
