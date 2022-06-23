@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - `seq_platform` and `seq_center` changed from boolean to string
+- Arriba use ensembl references-built starindex independently of `starfusion_build` parameter
 
 ### Fixed
 

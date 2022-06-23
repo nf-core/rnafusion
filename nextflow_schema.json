@@ -444,14 +444,14 @@
                     "fa_icon": "fas fa-bacon"
                 },
                 "seq_center": {
-                    "type": "boolean",
+                    "type": "string",
                     "description": "Sequencing center",
                     "hidden": true,
                     "fa_icon": "fas fa-toolbox",
                     "help_text": "This will reported in the BAM header as CN"
                 },
                 "seq_platform": {
-                    "type": "boolean",
+                    "type": "string",
                     "description": "Sequencing platform",
                     "hidden": true,
                     "fa_icon": "fas fa-toolbox",
