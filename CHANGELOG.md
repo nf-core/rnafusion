@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `FusionCatcher` single_end support for single reads ABOVE 130 bp
 ### Changed
 
 - Arriba use ensembl references-built starindex independently of starfusion_build parameter
