@@ -153,7 +153,7 @@ workflow RNAFUSION {
         ch_cat_fastq,
         ch_gtf,
         ch_fasta,
-        ch_starindex_ref
+        ch_starindex_ensembl_ref
     )
     ch_versions = ch_versions.mix(ARRIBA_WORKFLOW.out.versions.first().ifEmpty(null))
 
