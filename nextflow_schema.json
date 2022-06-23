@@ -214,16 +214,6 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to starindex references"
                 },
-                "three_prime_clip_r1": {
-                    "type": "integer",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Remove <int> bp from the 3' end of read 1 AFTER adapter/quality trimming has been performed"
-                },
-                "three_prime_clip_r2": {
-                    "type": "integer",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Remove <int> bp from the 3' end of read 2 AFTER adapter/quality trimming has been performed"
-                },
                 "trim": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
