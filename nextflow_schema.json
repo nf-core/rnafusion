@@ -204,16 +204,6 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to starindex references"
                 },
-                "trim": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Trim reads or not."
-                },
-                "trim5_bp": {
-                    "type": "integer",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Trim after int reads of the 5' end"
-                },
                 "cosmic_username": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",

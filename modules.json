@@ -47,9 +47,6 @@
             },
             "star/genomegenerate": {
                 "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
-            },
-            "trimgalore": {
-                "git_sha": "85ec13ff1fc2196c5a507ea497de468101baabed"
             }
         }
     }

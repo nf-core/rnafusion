@@ -69,7 +69,6 @@ include { STARFUSION_WORKFLOW           }   from '../subworkflows/local/starfusi
 include { FUSIONCATCHER_WORKFLOW        }   from '../subworkflows/local/fusioncatcher_workflow'
 include { FUSIONINSPECTOR_WORKFLOW      }   from '../subworkflows/local/fusioninspector_workflow'
 include { FUSIONREPORT_WORKFLOW         }   from '../subworkflows/local/fusionreport_workflow'
-include { TRIM_WORKFLOW                 }   from '../subworkflows/local/trim_workflow'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -81,9 +80,10 @@ include { TRIM_WORKFLOW                 }   from '../subworkflows/local/trim_wor
 // MODULE: Installed directly from nf-core/modules
 //
 include { CAT_FASTQ                   } from '../modules/nf-core/modules/cat/fastq/main'
-include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 include { FASTQC                      } from '../modules/nf-core/modules/fastqc/main'
 include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
+include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
+
 
 
 
@@ -130,12 +130,6 @@ workflow RNAFUSION {
     .set { ch_cat_fastq }
     ch_versions = ch_versions.mix(CAT_FASTQ.out.versions.first().ifEmpty(null))
 
-    // Trim if necessary
-    TRIM_WORKFLOW (
-        ch_cat_fastq
-    )
-    ch_cat_fastq = TRIM_WORKFLOW.out.ch_trim_reads
-    ch_versions = ch_versions.mix(TRIM_WORKFLOW.out.versions.first().ifEmpty(null))
 
     //
     // MODULE: Run FastQC
