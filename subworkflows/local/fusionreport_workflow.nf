@@ -28,8 +28,8 @@ workflow FUSIONREPORT_WORKFLOW {
             ch_fusion_list_filtered = FUSIONREPORT.out.fusion_list_filtered
             ch_versions = ch_versions.mix(FUSIONREPORT.out.versions)
         } else {
-            ch_fusion_list = GET_META(reads,  params.fusioninspector_fusions)
-            ch_fusion_list_filtered  = GET_META(reads, params.fusioninspector_fusions)
+            ch_fusion_list = GET_META(reads, params.fusioninspector_fusions)
+            ch_fusion_list_filtered  = ch_fusion_list
         }
 
     emit:
