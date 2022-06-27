@@ -36,7 +36,5 @@ workflow FUSIONREPORT_WORKFLOW {
         versions                 = ch_versions.ifEmpty(null)
         fusion_list              = ch_fusion_list
         fusion_list_filtered     = ch_fusion_list_filtered
-
-
 }
 
