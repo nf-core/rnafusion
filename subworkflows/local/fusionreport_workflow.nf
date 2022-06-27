@@ -1,4 +1,5 @@
-include { FUSIONREPORT }                           from '../../modules/local/fusionreport/detect/main'
+include { FUSIONREPORT      }     from '../../modules/local/fusionreport/detect/main'
+include { GET_META          }     from '../../modules/local/getmeta/main'
 
 
 workflow FUSIONREPORT_WORKFLOW {
