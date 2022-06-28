@@ -43,8 +43,8 @@ workflow ARRIBA_WORKFLOW {
                 GET_PATH_ARRIBA_FAIL(ARRIBA.out.fusions_fail)
                 ch_arriba_fusion_fail = GET_PATH_ARRIBA_FAIL.out.file
             }
-
-            ARRIBA_VISUALISATION(bam_indexed, ch_arriba_fusions, params.arriba_ref, ch_gtf)
+            bam_indexed_arriba_fusions = bam_indexed.join(ch_arriba_fusions)
+            ARRIBA_VISUALISATION(bam_indexed_arriba_fusions, params.arriba_ref, ch_gtf)
             ch_versions = ch_versions.mix(ARRIBA_VISUALISATION.out.versions)
 
             ch_arriba_visualisation = ARRIBA_VISUALISATION.out.pdf
