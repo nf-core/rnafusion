@@ -20,7 +20,7 @@ workflow ARRIBA_WORKFLOW {
 
         if (params.arriba || params.all) {
 
-            STAR_FOR_ARRIBA( reads, ch_starindex_ref, ch_gtf, params.star_ignore_sjdbgtf, '', !params.seq_center ?: '' )
+            STAR_FOR_ARRIBA( reads, ch_starindex_ref, ch_gtf, params.star_ignore_sjdbgtf, '', params.seq_center ?: '')
             ch_versions = ch_versions.mix(STAR_FOR_ARRIBA.out.versions)
 
             SAMTOOLS_SORT_FOR_ARRIBA(STAR_FOR_ARRIBA.out.bam)
