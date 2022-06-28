@@ -80,6 +80,7 @@ nextflow run nf-core/rnafusion \
 #### Running FusionInspector only
 
 FusionInspector can be run standalone with:
+
 ```bash
 nextflow run nf-core/rnafusion \
   --fusioninspector_only \
@@ -89,6 +90,7 @@ nextflow run nf-core/rnafusion \
 ```
 
 The custom fusion file should have the following format:
+
 ```
 GENE1--GENE2
 GENE3--GENE3
