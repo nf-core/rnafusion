@@ -139,6 +139,16 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Feed filtered fusionreport fusions to fusioninspector"
                 },
+                "fusioninspector_only": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Skip fusion-report. --fusioninspector_fusions PATH needed to provide a fusion list as input"
+                },
+                "fusioninspector_fusions": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to a fusion list file built with format GENE1--GENE2"
+                },
                 "fusionreport": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
