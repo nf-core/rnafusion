@@ -96,7 +96,6 @@ Non-human references, not supported by default, can be built manually and fed to
 
 By default STAR-Fusion references are **built**. You can also download them from [CTAT](https://github.com/NCIP/Trinity_CTAT/wiki) by using the flag `--starfusion_build FALSE` for both reference building and fusion detection. This allows more flexibility for different organisms but **be aware that STAR-Fusion reference download is not recommended as not fully tested!**
 
-
 ### 2. Detecting fusions
 
 This step can either be run using all fusion detection tools or specifying individual tools. Visualisation tools will be run on all fusions detected. To run all tools (`arriba`, `fusioncatcher`, `pizzly`, `squid`, `starfusion`) use the `--all` parameter:

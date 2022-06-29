@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Arriba use ensembl references-built starindex independently of `starfusion_build` parameter
 - ftp to http protocol for STARFUSION_BUILD process `Pfam-A.hmm.gz` download as ftp causes issues on some servers
 - Updated README and usage documentation with more detailed information and metro map
+
 ### Fixed
 
 - FusionInspector does not mix sample reads with fusion lists and meta information from other samples anymore

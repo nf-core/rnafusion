@@ -41,6 +41,7 @@ In rnafusion the full-sized test includes reference building and fusion detectio
 ## Pipeline summary
 
 ![nf-core/rnafusion metro map](docs/images/nf-core-rnafusion_metro_map.png)
+
 #### Build references
 
 `--build_references` triggers a parallel workflow to build all references
