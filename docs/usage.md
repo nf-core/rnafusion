@@ -40,7 +40,7 @@ References for each tools can also be downloaded separately with:
 
 ```bash
 nextflow run nf-core/rnafusion \
-  --build_references --<tool> \
+  --build_references --<tool1> --<tool2> ... \
   --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
   --genomes_base <PATH/TO/REFERENCES> \
   --outdir <OUTPUT/PATH>
@@ -116,7 +116,7 @@ Alternatively, to run only a specific detection tool use: `--tool`:
 
 ```bash
 nextflow run nf-core/rnafusion \
-  --<tool> \
+  --<tool1> --<tool2> ... \
   --input <SAMPLE_SHEET.CSV> \
   --genomes_base <PATH/TO/REFERENCES> \
   --outdir <OUTPUT/PATH>
