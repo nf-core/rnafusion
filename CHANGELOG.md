@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Arriba use ensembl references-built starindex independently of starfusion_build parameter
+- STAR updated to 2.7.10a
+- Arriba updated to 2.3.0
+- multiQC updated to 1.13a
+- picard updated to 2.27.2
 
 ### Fixed
 
