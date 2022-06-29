@@ -4,7 +4,7 @@
     "repos": {
         "nf-core/modules": {
             "arriba": {
-                "git_sha": "bf91f9dd9b62c98175d962bd51dbe2d0b7f91d4c"
+                "git_sha": "80746895e214a4d55570f90554164b19476f4114"
             },
             "cat/fastq": {
                 "git_sha": "9aadd9a6d3f5964476582319b3a1c54a3e3fe7c9"
