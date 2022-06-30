@@ -161,7 +161,7 @@ There are two parameters to increase the `--limitSjdbInsertNsj` parameter if nec
 - `--fusioncatcher_limitSjdbInsertNsj`, default: 2000000
 - `--fusioninspector_limitSjdbInsertNsj`, default: 1000000
 
-> **IMPORTANT** Note that with any other value than default for `--fusioninsepctor_limitSjdbInsertNsj`, FusionInspector will run the development version 2.8.0dev1 and not the released version. Use at your own risk!
+> **IMPORTANT** Note that with any other value than default for `--fusioninsepctor_limitSjdbInsertNsj`, FusionInspector will run the **development version** 2.8.0dev1 and not the released version. Use at your own risk!
 
 ### Updating the pipeline
 

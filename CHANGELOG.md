@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `FusionCatcher` single_end support for single reads ABOVE 130 bp
 - `--fusioninspector_only` parameter to run FusionInspector standalone feeding gene list manually with parameter `--fusioninspector_fusions PATH`
+- `--fusioncatcher_limitSjdbInsertNsj` parameter to feed --limitSjdbInsertNsj to FusionCatcher
+- `--fusioninspector_limitSjdbInsertNsj` parameter to feed --limitSjdbInsertNsj to FusionInspector !!Any other value than default will use the dev version of FusionInspector!!
 
 ### Changed
 
