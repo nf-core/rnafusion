@@ -40,6 +40,8 @@ In rnafusion the full-sized test includes reference building and fusion detectio
 
 ## Pipeline summary
 
+![nf-core/rnafusion metro map](docs/images/nf-core-rnafusion_metro_map.png)
+
 #### Build references
 
 `--build_references` triggers a parallel workflow to build all references
@@ -70,11 +72,11 @@ In rnafusion the full-sized test includes reference building and fusion detectio
    - [STAR](https://github.com/alexdobin/STAR) alignment
    - [Samtools view](http://www.htslib.org/): convert sam output from STAR to bam
    - [Samtools sort](http://www.htslib.org/): bam output from STAR
-   - [Squid](https://github.com/Kingsford-Group/squid) fusion detection
-   - [Squid](https://github.com/Kingsford-Group/squid) annotate
+   - [SQUID](https://github.com/Kingsford-Group/squid) fusion detection
+   - [SQUID](https://github.com/Kingsford-Group/squid) annotate
 7. STAR-fusion subworkflow
    - [STAR](https://github.com/alexdobin/STAR) alignment
-   - [STAR-fusion](https://github.com/STAR-Fusion/STAR-Fusion) fusion detection
+   - [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) fusion detection
 8. Fusioncatcher subworkflow
    - [FusionCatcher](https://github.com/ndaniel/fusioncatcher) fusion detection
 9. Fusion-report subworkflow

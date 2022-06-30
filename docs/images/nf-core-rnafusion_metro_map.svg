@@ -1,0 +1,809 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="297mm"
+   height="210mm"
+   viewBox="0 0 297 210"
+   version="1.1"
+   id="svg573"
+   inkscape:version="1.1.2 (b8e25be8, 2022-02-05)"
+   sodipodi:docname="nf-core-rnafusion_metro_map.svg"
+   inkscape:export-filename="/Users/annick.renevey/Desktop/rnafusion_subway3.png"
+   inkscape:export-xdpi="200"
+   inkscape:export-ydpi="200"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview575"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="true"
+     inkscape:zoom="0.81130836"
+     inkscape:cx="595.95096"
+     inkscape:cy="317.38857"
+     inkscape:window-width="1440"
+     inkscape:window-height="847"
+     inkscape:window-x="631"
+     inkscape:window-y="1465"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1"
+     inkscape:snap-grids="false">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2" />
+  </sodipodi:namedview>
+  <defs
+     id="defs570" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       transform="matrix(0.16035018,0,0,-0.15201623,-51.395652,352.89861)"
+       id="g10541"
+       style="stroke-width:2.10014">
+      <path
+         id="path10543"
+         d="m 598.73267,1905.0888 h -2.51304 v 12.1255 c 0,0.076 -0.0119,0.1518 -0.0221,0.2284 -0.004,0.4815 -0.15713,0.9544 -0.48679,1.3291 l -20.17826,23.0502 c -0.006,0.01 -0.0118,0.01 -0.0161,0.014 -0.12027,0.1343 -0.2605,0.246 -0.4087,0.3427 -0.0439,0.029 -0.0882,0.054 -0.13415,0.08 -0.12844,0.07 -0.26468,0.1282 -0.40491,0.1702 -0.038,0.011 -0.0722,0.026 -0.1102,0.036 -0.15238,0.036 -0.31066,0.059 -0.47103,0.059 h -49.59068 c -2.26452,0 -4.10417,-1.8417 -4.10417,-4.1044 v -33.3298 h -2.51247 c -3.23944,0 -5.86611,-2.6255 -5.86611,-5.8661 v -30.5048 c 0,-3.2383 2.62667,-5.8655 5.86611,-5.8655 h 2.51266 v -20.8815 c 0,-2.2624 1.83965,-4.1043 4.10417,-4.1043 h 67.71875 c 2.26242,0 4.10417,1.8417 4.10417,4.1043 v 20.8815 h 2.51304 c 3.23849,0 5.86573,2.6272 5.86573,5.8655 v 30.5039 c -1.9e-4,3.2404 -2.62743,5.8661 -5.86592,5.8661 z m -74.33596,33.33 h 47.5386 v -20.9983 c 0,-1.1338 0.91983,-2.0521 2.05208,-2.0521 h 18.12807 v -10.2809 h -67.71875 z m 67.71894,-95.336 h -67.71894 v 19.7705 h 67.71875 v -19.7705 z"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="scsccccccccssscsssscsssscsscsccsscccccccccc"
+         style="stroke-width:2.10014" />
+      <flowRoot
+         xml:space="preserve"
+         id="flowRoot10545"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0.01%;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.10014px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         transform="matrix(1,0,0,-1,45.034643,3759.351)"><flowRegion
+           id="flowRegion10547"
+           style="stroke-width:2.10014px"><rect
+             id="rect10549"
+             width="112"
+             height="53.599998"
+             x="474.39999"
+             y="-1904.0004"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';fill:#ffffff;stroke-width:2.10014px"
+             transform="scale(1,-1)" /></flowRegion><flowPara
+           id="flowPara10551"
+           style="font-size:32px;line-height:1.25;stroke-width:2.10014px">fastq</flowPara></flowRoot>
+      <path
+         id="path10553"
+         d="m 524.39681,1938.4637 h 47.5386 v -20.9983 c 0,-1.1338 0.91983,-2.0521 2.05208,-2.0521 h 18.12807 v -10.2809 h -67.71875 z m 67.71894,-95.336 h -67.71894 v 19.7705 h 67.71875 v -19.7705 z"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccsscccccccccc"
+         style="fill:#ffffff;stroke-width:2.10014" />
+    </g>
+    <g
+       id="g6322-2"
+       transform="matrix(0.16035018,0,0,-0.15201623,-53.191575,354.60116)"
+       style="stroke-width:2.10014">
+      <path
+         sodipodi:nodetypes="scsccccccccssscsssscsssscsscsccsscccccccccc"
+         inkscape:connector-curvature="0"
+         d="m 598.73267,1905.0888 h -2.51304 v 12.1255 c 0,0.076 -0.0119,0.1518 -0.0221,0.2284 -0.004,0.4815 -0.15713,0.9544 -0.48679,1.3291 l -20.17826,23.0502 c -0.006,0.01 -0.0118,0.01 -0.0161,0.014 -0.12027,0.1343 -0.2605,0.246 -0.4087,0.3427 -0.0439,0.029 -0.0882,0.054 -0.13415,0.08 -0.12844,0.07 -0.26468,0.1282 -0.40491,0.1702 -0.038,0.011 -0.0722,0.026 -0.1102,0.036 -0.15238,0.036 -0.31066,0.059 -0.47103,0.059 h -49.59068 c -2.26452,0 -4.10417,-1.8417 -4.10417,-4.1044 v -33.3298 h -2.51247 c -3.23944,0 -5.86611,-2.6255 -5.86611,-5.8661 v -30.5048 c 0,-3.2383 2.62667,-5.8655 5.86611,-5.8655 h 2.51266 v -20.8815 c 0,-2.2624 1.83965,-4.1043 4.10417,-4.1043 h 67.71875 c 2.26242,0 4.10417,1.8417 4.10417,4.1043 v 20.8815 h 2.51304 c 3.23849,0 5.86573,2.6272 5.86573,5.8655 v 30.5039 c -1.9e-4,3.2404 -2.62743,5.8661 -5.86592,5.8661 z m -74.33596,33.33 h 47.5386 v -20.9983 c 0,-1.1338 0.91983,-2.0521 2.05208,-2.0521 h 18.12807 v -10.2809 h -67.71875 z m 67.71894,-95.336 h -67.71894 v 19.7705 h 67.71875 v -19.7705 z"
+         id="path5862-6"
+         style="stroke-width:2.10014" />
+      <flowRoot
+         transform="matrix(1,0,0,-1,45.034643,3759.351)"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0.01%;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.10014px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         id="flowRoot5864-0"
+         xml:space="preserve"><flowRegion
+           id="flowRegion5866-6"
+           style="stroke-width:2.10014px"><rect
+             transform="scale(1,-1)"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';fill:#ffffff;stroke-width:2.10014px"
+             y="-1904.0004"
+             x="474.39999"
+             height="53.599998"
+             width="112"
+             id="rect5868-9" /></flowRegion><flowPara
+           id="flowPara5870-6"
+           style="font-size:32px;line-height:1.25;stroke-width:2.10014px">fastq</flowPara></flowRoot>
+      <path
+         style="fill:#ffffff;stroke-width:2.10014"
+         sodipodi:nodetypes="ccsscccccccccc"
+         inkscape:connector-curvature="0"
+         d="m 524.39681,1938.4637 h 47.5386 v -20.9983 c 0,-1.1338 0.91983,-2.0521 2.05208,-2.0521 h 18.12807 v -10.2809 h -67.71875 z m 67.71894,-95.336 h -67.71894 v 19.7705 h 67.71875 v -19.7705 z"
+         id="path6276-4-8" />
+    </g>
+    <g
+       id="g6322-2-2-4"
+       transform="matrix(0.16035018,0,0,-0.15201623,119.44415,350.36005)"
+       style="stroke-width:2.10014">
+      <path
+         sodipodi:nodetypes="scsccccccccssscsssscsssscsscsccsscccccccccc"
+         inkscape:connector-curvature="0"
+         d="m 598.73267,1905.0888 h -2.51304 v 12.1255 c 0,0.076 -0.0119,0.1518 -0.0221,0.2284 -0.004,0.4815 -0.15713,0.9544 -0.48679,1.3291 l -20.17826,23.0502 c -0.006,0.01 -0.0118,0.01 -0.0161,0.014 -0.12027,0.1343 -0.2605,0.246 -0.4087,0.3427 -0.0439,0.029 -0.0882,0.054 -0.13415,0.08 -0.12844,0.07 -0.26468,0.1282 -0.40491,0.1702 -0.038,0.011 -0.0722,0.026 -0.1102,0.036 -0.15238,0.036 -0.31066,0.059 -0.47103,0.059 h -49.59068 c -2.26452,0 -4.10417,-1.8417 -4.10417,-4.1044 v -33.3298 h -2.51247 c -3.23944,0 -5.86611,-2.6255 -5.86611,-5.8661 v -30.5048 c 0,-3.2383 2.62667,-5.8655 5.86611,-5.8655 h 2.51266 v -20.8815 c 0,-2.2624 1.83965,-4.1043 4.10417,-4.1043 h 67.71875 c 2.26242,0 4.10417,1.8417 4.10417,4.1043 v 20.8815 h 2.51304 c 3.23849,0 5.86573,2.6272 5.86573,5.8655 v 30.5039 c -1.9e-4,3.2404 -2.62743,5.8661 -5.86592,5.8661 z m -74.33596,33.33 h 47.5386 v -20.9983 c 0,-1.1338 0.91983,-2.0521 2.05208,-2.0521 h 18.12807 v -10.2809 h -67.71875 z m 67.71894,-95.336 h -67.71894 v 19.7705 h 67.71875 v -19.7705 z"
+         id="path5862-6-3-8"
+         style="stroke-width:2.10014" />
+      <flowRoot
+         transform="matrix(1,0,0,-1,45.034643,3759.351)"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0.01%;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.10014px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         id="flowRoot5864-0-0-0"
+         xml:space="preserve"><flowRegion
+           id="flowRegion5866-6-5-6"
+           style="stroke-width:2.10014px"><rect
+             transform="scale(1,-1)"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';fill:#ffffff;stroke-width:2.10014px"
+             y="-1904.0004"
+             x="474.39999"
+             height="53.599998"
+             width="112"
+             id="rect5868-9-0-0" /></flowRegion><flowPara
+           id="flowPara5870-6-5-5"
+           style="font-size:32px;line-height:1.25;stroke-width:2.10014px" /></flowRoot>
+      <path
+         style="fill:#ffffff;stroke-width:2.10014"
+         sodipodi:nodetypes="ccsscccccccccc"
+         inkscape:connector-curvature="0"
+         d="m 524.39681,1938.4637 h 47.5386 v -20.9983 c 0,-1.1338 0.91983,-2.0521 2.05208,-2.0521 h 18.12807 v -10.2809 h -67.71875 z m 67.71894,-95.336 h -67.71894 v 19.7705 h 67.71875 v -19.7705 z"
+         id="path6276-4-8-7-9" />
+    </g>
+    <g
+       transform="matrix(0.16035018,0,0,-0.15201623,117.32145,352.13006)"
+       id="g10541-2"
+       style="stroke-width:2.10014">
+      <path
+         id="path10543-1"
+         d="m 598.73267,1905.0888 h -2.51304 v 12.1255 c 0,0.076 -0.0119,0.1518 -0.0221,0.2284 -0.004,0.4815 -0.15713,0.9544 -0.48679,1.3291 l -20.17826,23.0502 c -0.006,0.01 -0.0118,0.01 -0.0161,0.014 -0.12027,0.1343 -0.2605,0.246 -0.4087,0.3427 -0.0439,0.029 -0.0882,0.054 -0.13415,0.08 -0.12844,0.07 -0.26468,0.1282 -0.40491,0.1702 -0.038,0.011 -0.0722,0.026 -0.1102,0.036 -0.15238,0.036 -0.31066,0.059 -0.47103,0.059 h -49.59068 c -2.26452,0 -4.10417,-1.8417 -4.10417,-4.1044 v -33.3298 h -2.51247 c -3.23944,0 -5.86611,-2.6255 -5.86611,-5.8661 v -30.5048 c 0,-3.2383 2.62667,-5.8655 5.86611,-5.8655 h 2.51266 v -20.8815 c 0,-2.2624 1.83965,-4.1043 4.10417,-4.1043 h 67.71875 c 2.26242,0 4.10417,1.8417 4.10417,4.1043 v 20.8815 h 2.51304 c 3.23849,0 5.86573,2.6272 5.86573,5.8655 v 30.5039 c -1.9e-4,3.2404 -2.62743,5.8661 -5.86592,5.8661 z m -74.33596,33.33 h 47.5386 v -20.9983 c 0,-1.1338 0.91983,-2.0521 2.05208,-2.0521 h 18.12807 v -10.2809 h -67.71875 z m 67.71894,-95.336 h -67.71894 v 19.7705 h 67.71875 v -19.7705 z"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="scsccccccccssscsssscsssscsscsccsscccccccccc"
+         style="stroke-width:2.10014" />
+      <flowRoot
+         xml:space="preserve"
+         id="flowRoot10545-5"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0.01%;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.10014px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         transform="matrix(1,0,0,-1,45.034643,3759.351)"><flowRegion
+           id="flowRegion10547-1"
+           style="stroke-width:2.10014px"><rect
+             id="rect10549-6"
+             width="112"
+             height="53.599998"
+             x="474.39999"
+             y="-1904.0004"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';fill:#ffffff;stroke-width:2.10014px"
+             transform="scale(1,-1)" /></flowRegion><flowPara
+           id="flowPara10551-0"
+           style="font-size:32px;line-height:1.25;stroke-width:2.10014px" /></flowRoot>
+      <path
+         id="path10553-0"
+         d="m 524.39681,1938.4637 h 47.5386 v -20.9983 c 0,-1.1338 0.91983,-2.0521 2.05208,-2.0521 h 18.12807 v -10.2809 h -67.71875 z m 67.71894,-95.336 h -67.71894 v 19.7705 h 67.71875 v -19.7705 z"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccsscccccccccc"
+         style="fill:#ffffff;stroke-width:2.10014" />
+    </g>
+    <g
+       id="g6322-2-2"
+       transform="matrix(0.16035018,0,0,-0.15201623,115.52553,353.83261)"
+       style="stroke-width:2.10014">
+      <path
+         sodipodi:nodetypes="scsccccccccssscsssscsssscsscsccsscccccccccc"
+         inkscape:connector-curvature="0"
+         d="m 598.73267,1905.0888 h -2.51304 v 12.1255 c 0,0.076 -0.0119,0.1518 -0.0221,0.2284 -0.004,0.4815 -0.15713,0.9544 -0.48679,1.3291 l -20.17826,23.0502 c -0.006,0.01 -0.0118,0.01 -0.0161,0.014 -0.12027,0.1343 -0.2605,0.246 -0.4087,0.3427 -0.0439,0.029 -0.0882,0.054 -0.13415,0.08 -0.12844,0.07 -0.26468,0.1282 -0.40491,0.1702 -0.038,0.011 -0.0722,0.026 -0.1102,0.036 -0.15238,0.036 -0.31066,0.059 -0.47103,0.059 h -49.59068 c -2.26452,0 -4.10417,-1.8417 -4.10417,-4.1044 v -33.3298 h -2.51247 c -3.23944,0 -5.86611,-2.6255 -5.86611,-5.8661 v -30.5048 c 0,-3.2383 2.62667,-5.8655 5.86611,-5.8655 h 2.51266 v -20.8815 c 0,-2.2624 1.83965,-4.1043 4.10417,-4.1043 h 67.71875 c 2.26242,0 4.10417,1.8417 4.10417,4.1043 v 20.8815 h 2.51304 c 3.23849,0 5.86573,2.6272 5.86573,5.8655 v 30.5039 c -1.9e-4,3.2404 -2.62743,5.8661 -5.86592,5.8661 z m -74.33596,33.33 h 47.5386 v -20.9983 c 0,-1.1338 0.91983,-2.0521 2.05208,-2.0521 h 18.12807 v -10.2809 h -67.71875 z m 67.71894,-95.336 h -67.71894 v 19.7705 h 67.71875 v -19.7705 z"
+         id="path5862-6-3"
+         style="stroke-width:2.10014" />
+      <flowRoot
+         transform="matrix(1,0,0,-1,45.034643,3759.351)"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0.01%;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.10014px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         id="flowRoot5864-0-0"
+         xml:space="preserve"><flowRegion
+           id="flowRegion5866-6-5"
+           style="stroke-width:2.10014px"><rect
+             transform="scale(1,-1)"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';fill:#ffffff;stroke-width:2.10014px"
+             y="-1904.0004"
+             x="474.39999"
+             height="53.599998"
+             width="112"
+             id="rect5868-9-0" /></flowRegion><flowPara
+           id="flowPara5870-6-5"
+           style="font-size:32px;line-height:1.25;stroke-width:2.10014px">txt</flowPara></flowRoot>
+      <path
+         style="fill:#ffffff;stroke-width:2.10014"
+         sodipodi:nodetypes="ccsscccccccccc"
+         inkscape:connector-curvature="0"
+         d="m 524.39681,1938.4637 h 47.5386 v -20.9983 c 0,-1.1338 0.91983,-2.0521 2.05208,-2.0521 h 18.12807 v -10.2809 h -67.71875 z m 67.71894,-95.336 h -67.71894 v 19.7705 h 67.71875 v -19.7705 z"
+         id="path6276-4-8-7" />
+    </g>
+    <path
+       style="fill:none;stroke:#1ba1e2;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 92.21164,75.572111 h -7.951966 c -3.951364,0 -7.808586,-2.370378 -10.602633,-5.011833 l -2.650665,-2.505925"
+       id="path1232-7-2-9"
+       sodipodi:nodetypes="cssc" />
+    <path
+       style="fill:none;stroke:#1ba1e2;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 172.14852,75.573701 h 7.95197 c 3.95136,0 7.80858,-2.370378 10.60263,-5.011833 l 2.65067,-2.505925"
+       id="path1232-7-2-9-8"
+       sodipodi:nodetypes="cssc" />
+    <path
+       style="fill:none;stroke:#a20025;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 91.835686,58.440107 h -7.907022 c -3.929026,0 -7.764432,2.793925 -10.542683,5.907367 L 70.7503,67.301166"
+       id="path1232-7-2-7-3"
+       sodipodi:nodetypes="cssc" />
+    <path
+       style="fill:none;stroke:#a20025;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 171.57118,58.440107 h 7.90702 c 3.92903,0 7.76443,2.793925 10.54268,5.907367 l 2.63569,2.953692"
+       id="path1232-7-2-7-3-2"
+       sodipodi:nodetypes="cssc" />
+    <path
+       style="fill:none;stroke:#f06800;stroke-width:2.65201;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 92.389487,24.10072 h -7.956586 c -3.953654,0 -7.813102,13.711676 -10.608768,28.991397 l -2.652202,14.495709"
+       id="path1232-7-2-7-3-0"
+       sodipodi:nodetypes="cssc" />
+    <path
+       style="fill:none;stroke:#f06800;stroke-width:2.65201;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 172.19408,24.070032 h 7.95658 c 3.95366,0 7.81311,13.711676 10.60877,28.991395 l 2.6522,14.495709"
+       id="path1232-7-2-7-3-0-9"
+       sodipodi:nodetypes="cssc" />
+    <path
+       style="fill:none;stroke:#e3c832;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 92.555927,41.447053 h -8.074166 c -4.01208,0 -7.928561,8.231945 -10.765541,17.405311 l -2.691395,8.702692"
+       id="path1232-7-2-7-3-0-7"
+       sodipodi:nodetypes="cssc" />
+    <path
+       style="fill:none;stroke:#e3c832;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 171.19162,41.364183 h 8.07416 c 4.01208,0 7.92857,8.231945 10.76555,17.405311 l 2.69139,8.702692"
+       id="path1232-7-2-7-3-0-7-0"
+       sodipodi:nodetypes="cssc" />
+    <path
+       style="fill:none;stroke:#f06800;stroke-width:2.64583333;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 91.038499,24.095009 H 121.98425"
+       id="path2500-5-60-8"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="91.224304"
+       y="17.750984"
+       id="text20792"><tspan
+         sodipodi:role="line"
+         id="tspan20790"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="91.224304"
+         y="17.750984">align</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="115.95464"
+       y="18.034172"
+       id="text20792-5"><tspan
+         sodipodi:role="line"
+         id="tspan20790-8"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="115.95464"
+         y="18.034172">Arriba</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="116.64503"
+       y="35.283813"
+       id="text20792-56"><tspan
+         sodipodi:role="line"
+         id="tspan20790-7"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="116.64503"
+         y="35.283813">SQUID</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="143.65096"
+       y="52.616028"
+       id="text20792-94"><tspan
+         sodipodi:role="line"
+         id="tspan20790-16"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="143.65096"
+         y="52.616028">pizzly</tspan></text>
+    <path
+       style="fill:none;stroke:#e3c832;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 91.685279,41.447042 H 122.27371"
+       id="path2500-5-60-8-5"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#e3c832;stroke-width:2.80168;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 122.29144,41.364183 h 34.79739"
+       id="path2500-5-60-8-5-0"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="91.224304"
+       y="35.283813"
+       id="text20792-3"><tspan
+         sodipodi:role="line"
+         id="tspan20790-5"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="91.224304"
+         y="35.283813">align</tspan></text>
+    <path
+       style="fill:none;stroke:#a20025;stroke-width:2.64583333;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 89.96702,58.440107 h 42.79869"
+       id="path2500-5-60-8-3"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#a20025;stroke-width:2.64583333;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 129.4361,58.440107 h 44.27685"
+       id="path2500-5-60-8-3-0"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="88.210625"
+       y="53.130714"
+       id="text20792-6"><tspan
+         sodipodi:role="line"
+         id="tspan20790-59"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="88.210625"
+         y="53.130714">kallisto</tspan></text>
+    <path
+       style="fill:none;stroke:#1ba1e2;stroke-width:2.64583333;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 91.725753,75.573701 H 174.41584"
+       id="path2500-5-60-8-4"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="106.82859"
+       y="69.877411"
+       id="text20792-9"><tspan
+         sodipodi:role="line"
+         id="tspan20790-1"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="106.82859"
+         y="69.877411">FusionCatcher</tspan></text>
+    <path
+       style="fill:none;stroke:#a4c400;stroke-width:2.64582;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 93.118946,93.368699 H 120.3991"
+       id="path2500-5-60-8-55"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#a4c400;stroke-width:2.65858;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 119.8838,93.368709 h 53.80801"
+       id="path2500-5-60-8-55-4"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="91.224304"
+       y="87.380318"
+       id="text20792-4"><tspan
+         sodipodi:role="line"
+         id="tspan20790-18"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="91.224304"
+         y="87.380318">align</tspan></text>
+    <circle
+       style="fill:#ffffff;stroke:#000000;stroke-width:2.64583;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill;stop-color:#000000"
+       id="path3447"
+       cx="96.995522"
+       cy="24.094978"
+       r="2.6458333" />
+    <circle
+       style="fill:#ffffff;stroke:#000000;stroke-width:2.64583;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill;stop-color:#000000"
+       id="path3447-1"
+       cx="96.995522"
+       cy="41.451851"
+       r="2.6458333" />
+    <circle
+       style="fill:#ffffff;stroke:#000000;stroke-width:2.64583;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill;stop-color:#000000"
+       id="path3447-4"
+       cx="96.995522"
+       cy="58.808807"
+       r="2.6458333" />
+    <circle
+       style="fill:#ffffff;stroke:#000000;stroke-width:2.64583;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill;stop-color:#000000"
+       id="path3447-5"
+       cx="123.01674"
+       cy="75.320526"
+       r="2.6458333" />
+    <circle
+       style="fill:#ffffff;stroke:#000000;stroke-width:2.64583;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill;stop-color:#000000"
+       id="path3447-1-8"
+       cx="123.01674"
+       cy="40.757019"
+       r="2.6458333" />
+    <circle
+       style="fill:#ffffff;stroke:#000000;stroke-width:2.64583;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill;stop-color:#000000"
+       id="path3447-4-5"
+       cx="150.63037"
+       cy="58.633102"
+       r="2.6458333" />
+    <circle
+       style="fill:#ffffff;stroke:#000000;stroke-width:2.64583;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill;stop-color:#000000"
+       id="path3447-7-4"
+       cx="146.94337"
+       cy="92.902702"
+       r="2.6458333" />
+    <path
+       style="fill:none;stroke:#f06800;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 122.98153,24.070029 H 146.4749"
+       id="path2500-5-60-8-39"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+       x="152.44206"
+       y="12.732177"
+       id="text20792-5-0"><tspan
+         sodipodi:role="line"
+         id="tspan20790-8-3"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
+         x="152.44206"
+         y="12.732177">Arriba</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
+         x="152.44206"
+         y="18.023838"
+         id="tspan61753">visualisation</tspan></text>
+    <path
+       style="fill:none;stroke:#f06800;stroke-width:2.64583333;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 153.26924,24.070032 H 174.5102"
+       id="path2500-5-60-8-39-1"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0050ef;stroke-width:2.65201;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 93.282266,111.54142 H 85.32568 c -3.953654,0 -7.813102,-13.711655 -10.608768,-28.991361 L 72.06471,68.054353"
+       id="path1232-7-2-7-3-0-5"
+       sodipodi:nodetypes="cssc" />
+    <path
+       style="fill:none;stroke:#a4c400;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 172.10097,93.365439 h 8.07417 c 4.01208,0 7.92856,-8.231942 10.76554,-17.405311 l 2.69139,-8.702692"
+       id="path1232-7-2-7-3-0-7-5"
+       sodipodi:nodetypes="cssc" />
+    <path
+       style="fill:none;stroke:#a4c400;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 93.118946,93.368699 h -8.07417 c -4.01208,0 -7.92856,-8.231942 -10.765539,-17.405311 l -2.69139,-8.702692"
+       id="path1232-7-2-7-3-0-7-5-0"
+       sodipodi:nodetypes="cssc" />
+    <path
+       style="fill:none;stroke:#0050ef;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 118.85018,103.00314 h -7.95197 c -3.95137,0 -7.80859,-2.37039 -10.60264,-5.011848 l -2.650653,-2.505925"
+       id="path1232-7-2-9-3"
+       sodipodi:nodetypes="cssc" />
+    <path
+       style="fill:none;stroke:#0050ef;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 113.55848,103.00314 h 7.95197 c 3.95137,0 7.80859,2.37039 10.60264,5.01186 l 2.65065,2.50594"
+       id="path1232-7-2-9-3-0"
+       sodipodi:nodetypes="cssc" />
+    <path
+       style="fill:none;stroke:#0050ef;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 98.695019,111.54714 H 133.99789"
+       id="path2500-5-60-8-1"
+       sodipodi:nodetypes="cc" />
+    <circle
+       style="fill:#ffffff;stroke:#000000;stroke-width:2.64583;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill;stop-color:#000000"
+       id="path3447-3"
+       cx="96.995522"
+       cy="-111.54813"
+       r="2.6458333"
+       transform="scale(1,-1)" />
+    <path
+       style="fill:none;stroke:#0050ef;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 140.51133,111.35793 h 27.8064"
+       id="path2500-5-60-8-39-7"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:#28170b;stroke:#000000;stroke-width:2.78585;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 50.02914,67.598176 H 73.495474"
+       id="path2500-5-60"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="133.40106"
+       y="86.926224"
+       id="text20792-2"><tspan
+         sodipodi:role="line"
+         id="tspan20790-6"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="133.40106"
+         y="86.926224">STAR-Fusion</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="89.769096"
+       y="121.03154"
+       id="text20792-8-2"
+       inkscape:transform-center-x="-19.472275"
+       inkscape:transform-center-y="1.2094581"><tspan
+         sodipodi:role="line"
+         id="tspan20790-9-4"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="89.769096"
+         y="121.03154">FastQC</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="126.02174"
+       y="121.19946"
+       id="text20792-8-2-1"
+       inkscape:transform-center-x="-19.472275"
+       inkscape:transform-center-y="1.2094581"><tspan
+         sodipodi:role="line"
+         id="tspan20790-9-4-7"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="126.02174"
+         y="121.19946">Qualimap</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="213.41498"
+       y="120.97184"
+       id="text20792-8-2-1-6"
+       inkscape:transform-center-x="-19.472275"
+       inkscape:transform-center-y="1.2094581"><tspan
+         sodipodi:role="line"
+         id="tspan20790-9-4-7-1"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="213.41498"
+         y="120.97184">MultiQC</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="236.90211"
+       y="59.935921"
+       id="text20792-8-2-1-6-0"
+       inkscape:transform-center-x="-19.472272"
+       inkscape:transform-center-y="1.209455"><tspan
+         sodipodi:role="line"
+         id="tspan20790-9-4-7-1-3"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="236.90211"
+         y="59.935921">FusionInspector</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="207.1219"
+       y="80.599899"
+       id="text20792-8-2-1-6-8"
+       inkscape:transform-center-x="-19.472293"
+       inkscape:transform-center-y="1.2094697"><tspan
+         sodipodi:role="line"
+         id="tspan20790-9-4-7-1-1"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="207.1219"
+         y="80.599899">fusion-report</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="155.9287"
+       y="120.97495"
+       id="text20792-8-2-1-2"
+       inkscape:transform-center-x="-19.472275"
+       inkscape:transform-center-y="1.2094581"><tspan
+         sodipodi:role="line"
+         id="tspan20790-9-4-7-6"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="155.9287"
+         y="120.97495">Picard</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="155.9287"
+         y="126.26662"
+         id="tspan83313">CollectRnaSeqMetrics</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="155.9287"
+         y="131.55827"
+         id="tspan83435">+</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="155.9287"
+         y="136.84995"
+         id="tspan83437">Picard</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="155.9287"
+         y="142.1416"
+         id="tspan83439">CollectWgsMetrics</tspan></text>
+    <circle
+       style="fill:#ffffff;stroke:#000000;stroke-width:2.64583;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill;stop-color:#000000"
+       id="path3447-2-1"
+       cx="149.91095"
+       cy="23.912003"
+       r="2.6458333" />
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+       x="158.07547"
+       y="35.283813"
+       id="text20792-5-0-0"><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
+         x="158.07547"
+         y="35.283813"
+         id="tspan61753-2">SQUID annotate</tspan></text>
+    <path
+       style="fill:none;stroke:#e3c832;stroke-width:2.64583333;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 153.32513,41.364183 H 173.4415"
+       id="path2500-5-60-8-39-1-9"
+       sodipodi:nodetypes="cc" />
+    <circle
+       style="fill:#ffffff;stroke:#000000;stroke-width:2.64583;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill;stop-color:#000000"
+       id="path3447-2-1-8"
+       cx="158.08684"
+       cy="41.206177"
+       r="2.6458333" />
+    <circle
+       style="fill:#ffffff;stroke:#000000;stroke-width:2.64583;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill;stop-color:#000000"
+       id="path3447-2"
+       cx="123.01674"
+       cy="23.912003"
+       r="2.6458333" />
+    <circle
+       style="fill:#ffffff;stroke:#000000;stroke-width:2.64583;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill;stop-color:#000000"
+       id="path3447-7"
+       cx="96.995522"
+       cy="93.033783"
+       r="2.6458333" />
+    <circle
+       style="fill:#ffffff;stroke:#000000;stroke-width:2.64583;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill;stop-color:#000000"
+       id="path3447-7-4-3"
+       cx="137.00609"
+       cy="112.06921"
+       r="2.6458333" />
+    <path
+       style="fill:none;stroke:#0050ef;stroke-width:2.65765;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 167.80242,111.35792 h 58.05883"
+       id="path2500-5-60-8-39-7-0"
+       sodipodi:nodetypes="cc" />
+    <circle
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2.64583;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill;stop-color:#000000"
+       id="path3447-4-3"
+       cx="71.89312"
+       cy="67.765472"
+       r="2.6458333" />
+    <circle
+       style="fill:#ffffff;stroke:#000000;stroke-width:2.64583;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill;stop-color:#000000"
+       id="path3447-7-4-3-1"
+       cx="175.28572"
+       cy="111.43923"
+       r="2.6458333" />
+    <circle
+       style="fill:#ffffff;stroke:#000000;stroke-width:2.64583;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill;stop-color:#000000"
+       id="path3447-7-4-3-1-1"
+       cx="222.40564"
+       cy="111.77512"
+       r="2.6458333" />
+    <circle
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:2.64583;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill;stop-color:#000000"
+       id="path3447-4-9"
+       cx="192.34224"
+       cy="67.485191"
+       r="2.6458333" />
+    <path
+       style="fill:#28170b;stroke:#000000;stroke-width:2.78585;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 219.21507,67.257426 h 39.09465"
+       id="path2500-5-60-4-2"
+       sodipodi:nodetypes="cc" />
+    <circle
+       style="fill:#ffffff;stroke:#000000;stroke-width:2.64583;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill;stop-color:#000000"
+       id="path3447-4-9-9-9"
+       cx="255.28915"
+       cy="67.485191"
+       r="2.6458333" />
+    <circle
+       style="fill:#ffffff;stroke:#000000;stroke-width:2.64583;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill;stop-color:#000000"
+       id="path3447-4-9-9"
+       cx="222.29791"
+       cy="67.485191"
+       r="2.6458333" />
+    <path
+       style="fill:none;stroke:#f06800;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 22.695846,138.23911 H 36.974321"
+       id="path2500-5-60-8-58"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#e3c832;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 22.695846,146.00378 H 36.974321"
+       id="path2500-5-60-8-58-3"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#a20025;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 22.695846,153.76845 H 36.974321"
+       id="path2500-5-60-8-58-6"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#1ba1e2;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 77.774099,138.2391 H 92.052574"
+       id="path2500-5-60-8-58-5"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#a4c400;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 77.774099,146.00378 H 92.052574"
+       id="path2500-5-60-8-58-1"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0050ef;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 77.774099,153.76845 H 92.052574"
+       id="path2500-5-60-8-58-7"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="42.589123"
+       y="139.50002"
+       id="text20792-92"><tspan
+         sodipodi:role="line"
+         id="tspan20790-4"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="42.589123"
+         y="139.50002">arriba</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="42.570518"
+       y="146.47507"
+       id="text20792-92-4"><tspan
+         sodipodi:role="line"
+         id="tspan20790-4-2"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="42.570518"
+         y="146.47507">squid</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="42.415489"
+       y="154.23973"
+       id="text20792-92-3"><tspan
+         sodipodi:role="line"
+         id="tspan20790-4-1"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="42.415489"
+         y="154.23973">pizzly</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="98.983543"
+       y="139.48967"
+       id="text20792-92-2"><tspan
+         sodipodi:role="line"
+         id="tspan20790-4-12"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="98.983543"
+         y="139.48967">fusioncatcher</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="98.876053"
+       y="147.25435"
+       id="text20792-92-5"><tspan
+         sodipodi:role="line"
+         id="tspan20790-4-6"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="98.876053"
+         y="147.25435">starfusion</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="98.886391"
+       y="154.23973"
+       id="text20792-92-48"><tspan
+         sodipodi:role="line"
+         id="tspan20790-4-0"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="98.886391"
+         y="154.23973">qc</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;letter-spacing:0px;stroke-width:0.264583"
+       x="22.55942"
+       y="129.34764"
+       id="text20792-92-0"
+       inkscape:export-filename="/Users/annick.renevey/Desktop/text20792-92-0.png"
+       inkscape:export-xdpi="275.70001"
+       inkscape:export-ydpi="275.70001"><tspan
+         sodipodi:role="line"
+         id="tspan20790-4-9"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         x="22.55942"
+         y="129.34764">Workflows:</tspan></text>
+  </g>
+</svg>
