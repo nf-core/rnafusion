@@ -129,6 +129,11 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to fusioncatcher output"
                 },
+                "fusioncatcher_limitSjdbInsertNsj": {
+                    "type": "integer",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Use limitSjdbInsertNsj with int for fusioncatcher"
+                },
                 "fusioncatcher_ref": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
@@ -138,6 +143,11 @@
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
                     "description": "Feed filtered fusionreport fusions to fusioninspector"
+                },
+                "fusioninspector_limitSjdbInsertNsj": {
+                    "type": "integer",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Use limitSjdbInsertNsj with int for fusioninspector STAR process"
                 },
                 "fusionreport": {
                     "type": "boolean",
