@@ -140,10 +140,10 @@ workflow RNAFUSION {
     )
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
-TRIM_WORKFLOW (
-    ch_cat_fastq
-)
-ch_cat_trim_fastq = TRIM_WORKFLOW.reads
+    TRIM_WORKFLOW (
+        ch_cat_fastq
+    )
+    ch_cat_trim_fastq = TRIM_WORKFLOW.reads
 
     // Run STAR alignment and Arriba
     ARRIBA_WORKFLOW (
