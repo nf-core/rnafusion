@@ -29,7 +29,6 @@ process FUSIONINSPECTOR_DEV {
     FusionInspector \\
         --fusions $fusion_list \\
         --genome_lib ${reference} \\
-        --STAR_xtra_params "--limitSjdbInsertNsj ${limitSjdbInsertNsj}" \\
         $fasta \\
         --CPU ${task.cpus} \\
         -O . \\
