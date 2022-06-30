@@ -72,9 +72,28 @@ Alternatively, to run only a specific detection tool specify with `--tool`:
 
 ```bash
 nextflow run nf-core/rnafusion \
-  --<tool> \
+  --<toolA> --<toolB> \
   --input <SAMPLE_SHEET.CSV> \
   --outdir <PATH>
+```
+
+#### Running FusionInspector only
+
+FusionInspector can be run standalone with:
+
+```bash
+nextflow run nf-core/rnafusion \
+  --fusioninspector_only \
+  --fusioninspector_fusion <PATH_TO_CUSTOM_FUSION_FILE>
+  --input <SAMPLE_SHEET.CSV> \
+  --outdir <PATH>
+```
+
+The custom fusion file should have the following format:
+
+```
+GENE1--GENE2
+GENE3--GENE3
 ```
 
 #### Optional manual feed-in of fusion files
