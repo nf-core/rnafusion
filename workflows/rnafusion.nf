@@ -61,6 +61,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 
 include { INPUT_CHECK                   }   from '../subworkflows/local/input_check'
+include { TRIM_WORKFLOW                 }   from '../subworkflows/local/trim_workflow'
 include { ARRIBA_WORKFLOW               }   from '../subworkflows/local/arriba_workflow'
 include { PIZZLY_WORKFLOW               }   from '../subworkflows/local/pizzly_workflow'
 include { QC_WORKFLOW                   }   from '../subworkflows/local/qc_workflow'
