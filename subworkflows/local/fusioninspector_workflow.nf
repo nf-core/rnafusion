@@ -1,4 +1,5 @@
-include { FUSIONINSPECTOR }                           from '../../modules/local/fusioninspector/main'
+include { FUSIONINSPECTOR     }                           from '../../modules/local/fusioninspector/main'
+include { FUSIONINSPECTOR_DEV }                           from '../../modules/local/fusioninspector_dev/main'
 
 
 workflow FUSIONINSPECTOR_WORKFLOW {
@@ -12,8 +13,14 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         index ="${params.starfusion_ref}"
         ch_fusion_list = params.fusioninspector_filter ? fusion_list_filtered : fusion_list
 
-        FUSIONINSPECTOR( reads, ch_fusion_list , index )
-        ch_versions = ch_versions.mix(FUSIONINSPECTOR.out.versions)
+        if (params.fusioninspector_limitSjdbInsertNsj != 1000000) {
+            FUSIONINSPECTOR_DEV( reads, ch_fusion_list , index, params.fusioninspector_limitSjdbInsertNsj)
+            ch_versions = ch_versions.mix(FUSIONINSPECTOR_DEV.out.versions)
+        }
+        else {
+            FUSIONINSPECTOR( reads, ch_fusion_list , index)
+            ch_versions = ch_versions.mix(FUSIONINSPECTOR.out.versions)
+        }
 
     emit:
         versions        = ch_versions.ifEmpty(null)
