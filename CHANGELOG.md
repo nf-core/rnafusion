@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `--fusioninspector_only` parameter to run FusionInspector standalone feeding gene list manually with parameter `--fusioninspector_fusions PATH`
+
 ### Changed
 
 - `seq_platform` and `seq_center` changed from boolean to string
@@ -14,6 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Arriba use ensembl references-built starindex independently of `starfusion_build` parameter
 - ftp to http protocol for STARFUSION_BUILD process `Pfam-A.hmm.gz` download as ftp causes issues on some servers
 - Updated README and usage documentation with more detailed information and metro map
+- Arriba use ensembl references-built starindex independently of starfusion_build parameter
+- STAR updated to 2.7.10a
+- Arriba updated to 2.3.0
+- multiQC updated to 1.13a
+- picard updated to 2.27.2
 
 ### Fixed
 

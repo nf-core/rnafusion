@@ -17,7 +17,7 @@ workflow SQUID_WORKFLOW {
         ch_versions = Channel.empty()
         ch_dummy_file = file("$baseDir/assets/dummy_file_squid.txt", checkIfExists: true)
 
-        if (params.squid || params.all) {
+        if ((params.squid || params.all) && !params.fusioninspector_only) {
             if (params.squid_fusions){
                 ch_squid_fusions = GET_META(reads, params.squid_fusions)
             } else {

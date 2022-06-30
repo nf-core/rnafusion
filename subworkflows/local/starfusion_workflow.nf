@@ -13,7 +13,7 @@ workflow STARFUSION_WORKFLOW {
         ch_align = Channel.empty()
         ch_dummy_file = file("$baseDir/assets/dummy_file_starfusion.txt", checkIfExists: true)
 
-        if (params.starfusion || params.all){
+        if ((params.starfusion || params.all) && !params.fusioninspector_only) {
             if (params.starfusion_fusions){
                 ch_starfusion_fusions = GET_META(reads, params.starfusion_fusions)
             } else {

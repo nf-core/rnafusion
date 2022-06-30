@@ -122,6 +122,25 @@ nextflow run nf-core/rnafusion \
   --outdir <OUTPUT/PATH>
 ```
 
+#### Running FusionInspector only
+
+FusionInspector can be run standalone with:
+
+```bash
+nextflow run nf-core/rnafusion \
+  --fusioninspector_only \
+  --fusioninspector_fusion <PATH_TO_CUSTOM_FUSION_FILE>
+  --input <SAMPLE_SHEET.CSV> \
+  --outdir <PATH>
+```
+
+The custom fusion file should have the following format:
+
+```
+GENE1--GENE2
+GENE3--GENE3
+```
+
 #### Optional manual feed-in of fusion files
 
 It is possible to give the output of each tool manually using the argument: `--<tool>_fusions PATH/TO/FUSION/FILE`: this feature need more testing, don't hesitate to open an issue if you encounter problems.
