@@ -29,10 +29,11 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 | --------------------------------------------------------- | :----------------: | :------: |
 | [Arriba](https://github.com/suhrig/arriba)                |        :x:         | `2.3.0`  |
 | [FusionCatcher](https://github.com/ndaniel/fusioncatcher) | :white_check_mark: |  `1.33`  |
-| [Fusion-report](https://github.com/matq007/fusion-report) |         -          | `2.1.5`  |
 | [Pizzly](https://github.com/pmelsted/pizzly)              |        :x:         | `0.37.3` |
 | [Squid](https://github.com/Kingsford-Group/squid)         |        :x:         |  `1.5`   |
 | [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) | :white_check_mark: | `1.10.1` |
+
+> Single-end reads are to be use as last-resort. Paired-end reads are recommended. FusionCatcher cannot be used with single-end reads shorter than 130 bp.
 
 On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/rnafusion/results).
 

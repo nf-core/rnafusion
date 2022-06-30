@@ -26,6 +26,7 @@ process FUSIONCATCHER {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def reads = fasta.toString().replace(" ", ",")
+    def single_end = meta.single_end ? "--single-end" : ""
     """
     fusioncatcher.py \\
         -d $reference \\
@@ -33,6 +34,7 @@ process FUSIONCATCHER {
         -p $task.cpus \\
         -o . \\
         --skip-blat \\
+        $single_end \\
         $args
 
     mv final-list_candidate-fusion-genes.txt ${prefix}.fusioncatcher.fusion-genes.txt

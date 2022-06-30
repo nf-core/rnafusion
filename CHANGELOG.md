@@ -7,11 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `FusionCatcher` single_end support for single reads ABOVE 130 bp
 - `--fusioninspector_only` parameter to run FusionInspector standalone feeding gene list manually with parameter `--fusioninspector_fusions PATH`
 
 ### Changed
 
 - Arriba use ensembl references-built starindex independently of starfusion_build parameter
+- Update of the single-end reads support table in README, added recommendation to use single-end reads only in last resort
 - STAR updated to 2.7.10a
 - Arriba updated to 2.3.0
 - multiQC updated to 1.13a
