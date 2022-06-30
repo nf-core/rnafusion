@@ -157,10 +157,12 @@ work                # Directory containing the nextflow working files
 #### Set different `--limitSjdbInsertNsj` parameter
 
 There are two parameters to increase the `--limitSjdbInsertNsj` parameter if necessary:
-* `--fusioncatcher_limitSjdbInsertNsj`, default: 2000000
-* `--fusioninspector_limitSjdbInsertNsj`, default: 1000000
+
+- `--fusioncatcher_limitSjdbInsertNsj`, default: 2000000
+- `--fusioninspector_limitSjdbInsertNsj`, default: 1000000
 
 > **IMPORTANT** Note that with any other value than default for `--fusioninsepctor_limitSjdbInsertNsj`, FusionInspector will run the development version 2.8.0dev1 and not the released version. Use at your own risk!
+
 ### Updating the pipeline
 
 When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
