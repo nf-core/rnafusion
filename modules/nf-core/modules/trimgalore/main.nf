@@ -18,8 +18,8 @@ process TRIMGALORE {
     tuple val(meta), path("*unpaired*.fq.gz")     , emit: unpaired, optional: true
     tuple val(meta), path("*.html")               , emit: html    , optional: true
     tuple val(meta), path("*.zip")                , emit: zip     , optional: true
-    tuple val(meta), path("*bp_5prime.fq,gz")     , emit 5prime   , optional: true
-    tuple val(meta), path("*bp_3prime.fq,gz")     , emit 3prime   , optional: true
+    tuple val(meta), path("*bp_5prime.fq,gz")     , emit: 5prime  , optional: true
+    tuple val(meta), path("*bp_3prime.fq,gz")     , emit: 3prime  , optional: true
 
     when:
     task.ext.when == null || task.ext.when
