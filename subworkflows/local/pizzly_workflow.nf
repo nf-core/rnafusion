@@ -12,7 +12,7 @@ workflow PIZZLY_WORKFLOW {
         ch_versions = Channel.empty()
         ch_dummy_file = file("$baseDir/assets/dummy_file_pizzly.txt", checkIfExists: true)
 
-        if (params.pizzly || params.all) {
+        if ((params.pizzly || params.all) && !params.fusioninspector_only) {
             if (params.pizzly_fusions) {
                 ch_pizzly_fusions = GET_META(reads, params.pizzly_fusions)
             } else {

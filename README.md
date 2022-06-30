@@ -27,7 +27,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 | Tool                                                      |  Single-end reads  | Version  |
 | --------------------------------------------------------- | :----------------: | :------: |
-| [Arriba](https://github.com/suhrig/arriba)                |        :x:         | `2.2.1`  |
+| [Arriba](https://github.com/suhrig/arriba)                |        :x:         | `2.3.0`  |
 | [FusionCatcher](https://github.com/ndaniel/fusioncatcher) | :white_check_mark: |  `1.33`  |
 | [Pizzly](https://github.com/pmelsted/pizzly)              |        :x:         | `0.37.3` |
 | [Squid](https://github.com/Kingsford-Group/squid)         |        :x:         |  `1.5`   |

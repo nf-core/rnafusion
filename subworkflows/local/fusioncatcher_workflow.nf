@@ -10,7 +10,7 @@ workflow FUSIONCATCHER_WORKFLOW {
         ch_versions = Channel.empty()
         ch_dummy_file = file("$baseDir/assets/dummy_file_fusioncatcher.txt", checkIfExists: true)
 
-        if (params.fusioncatcher || params.all) {
+        if ((params.fusioncatcher || params.all) && !params.fusioninspector_only) {
             if (params.fusioncatcher_fusions){
                 ch_fusioncatcher_fusions = GET_META(reads, params.fusioncatcher_fusions)
             } else {
