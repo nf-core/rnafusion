@@ -256,6 +256,16 @@
                     "type": "integer",
                     "description": "Instructs Trim Galore to remove bp from the 3' end of read 2 AFTER adapter/quality trimming has been performed.",
                     "fa_icon": "fas fa-cut"
+                },
+                "hardtrim5": {
+                    "type": "integer",
+                    "description": "Instead of performing adapter-/quality trimming, this option will simply hard-trim sequences to INT bp from the 3'-end.",
+                    "fa_icon": "fas fa-cut"
+                },
+                "hardtrim3": {
+                    "type": "integer",
+                    "description": "Instead of performing adapter-/quality trimming, this option will simply hard-trim sequences to INT bp from the 5'-end..",
+                    "fa_icon": "fas fa-cut"
                 }
             }
         },

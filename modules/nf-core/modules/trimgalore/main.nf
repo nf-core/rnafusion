@@ -11,13 +11,15 @@ process TRIMGALORE {
     tuple val(meta), path(reads)
 
     output:
-    tuple val(meta), path("*{trimmed,val}*.fq.gz"), emit: reads
+    tuple val(meta), path("*{trimmed,val}*.fq.gz"), emit: reads   , optional: true
     tuple val(meta), path("*report.txt")          , emit: log
     path "versions.yml"                           , emit: versions
 
     tuple val(meta), path("*unpaired*.fq.gz")     , emit: unpaired, optional: true
     tuple val(meta), path("*.html")               , emit: html    , optional: true
     tuple val(meta), path("*.zip")                , emit: zip     , optional: true
+    tuple val(meta), path("*bp_5prime.fq,gz")     , emit 5prime   , optional, true
+    tuple val(meta), path("*bp_3prime.fq,gz")     , emit 3prime   , optional, true
 
     when:
     task.ext.when == null || task.ext.when
@@ -40,6 +42,8 @@ process TRIMGALORE {
     def c_r2   = params.clip_r2 > 0             ? "--clip_r2 ${params.clip_r2}"                         : ''
     def tpc_r1 = params.three_prime_clip_r1 > 0 ? "--three_prime_clip_r1 ${params.three_prime_clip_r1}" : ''
     def tpc_r2 = params.three_prime_clip_r2 > 0 ? "--three_prime_clip_r2 ${params.three_prime_clip_r2}" : ''
+    def hardtrim5 = params.hardtrim5 ? "--hardtrim5 ${params.hardtrim5}" : ''
+    def hardtrim3 = params.hardtrim3 ? "--hardtrim3 ${params.hardtrim3}" : ''
 
     // Added soft-links to original fastqs for consistent naming in MultiQC
     def prefix = task.ext.prefix ?: "${meta.id}"
@@ -73,6 +77,8 @@ process TRIMGALORE {
             $c_r2 \\
             $tpc_r1 \\
             $tpc_r2 \\
+            $hardtrim5 \\
+            $hardtrim3 \\
             ${prefix}_1.fastq.gz \\
             ${prefix}_2.fastq.gz
 
