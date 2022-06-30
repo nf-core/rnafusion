@@ -143,7 +143,7 @@ workflow RNAFUSION {
     TRIM_WORKFLOW (
         ch_cat_fastq
     )
-    ch_cat_trim_fastq = TRIM_WORKFLOW.reads
+    ch_cat_trim_fastq = TRIM_WORKFLOW.out.reads
 
     // Run STAR alignment and Arriba
     ARRIBA_WORKFLOW (
