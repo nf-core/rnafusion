@@ -18,7 +18,7 @@ workflow ARRIBA_WORKFLOW {
         ch_versions = Channel.empty()
         ch_dummy_file = file("$baseDir/assets/dummy_file_arriba.txt", checkIfExists: true)
 
-        if (params.arriba || params.all) {
+        if ((params.arriba || params.all) && !params.fusioninspector_only) {
 
             STAR_FOR_ARRIBA( reads, ch_starindex_ref, ch_gtf, params.star_ignore_sjdbgtf, '', params.seq_center ?: '')
             ch_versions = ch_versions.mix(STAR_FOR_ARRIBA.out.versions)
