@@ -9,10 +9,8 @@ process FUSIONINSPECTOR_DEV {
     }
 
     input:
-    tuple val(meta), path(reads)
-    tuple val(meta), path(fusion_list)
+    tuple val(meta), path(reads), path(fusion_list)
     path reference
-    val (limitSjdbInsertNsj)
 
     output:
     path "*"                , emit: output

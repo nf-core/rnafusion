@@ -15,11 +15,11 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         reads_fusion = reads.join(ch_fusion_list )
 
         if (params.fusioninspector_limitSjdbInsertNsj != 1000000) {
-            FUSIONINSPECTOR_DEV( reads, ch_fusion_list , index, params.fusioninspector_limitSjdbInsertNsj)
+            FUSIONINSPECTOR_DEV( reads_fusion, index)
             ch_versions = ch_versions.mix(FUSIONINSPECTOR_DEV.out.versions)
         }
         else {
-            FUSIONINSPECTOR( reads, ch_fusion_list , index)
+            FUSIONINSPECTOR( reads_fusion, index)
             ch_versions = ch_versions.mix(FUSIONINSPECTOR.out.versions)
         }
 
