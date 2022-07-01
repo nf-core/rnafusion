@@ -110,8 +110,9 @@ workflow RNAFUSION {
     .reads
     .map {
         meta, fastq ->
-            meta.id = meta.id.split('_')[0..-2].join('_')
-            [ meta, fastq ] }
+            def meta_clone = meta.clone()
+            meta_clone.id = meta_clone.id.split('_')[0..-2].join('_')
+            [ meta_clone, fastq ] }
     .groupTuple(by: [0])
     .branch {
         meta, fastq ->

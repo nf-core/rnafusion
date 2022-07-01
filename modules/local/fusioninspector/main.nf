@@ -10,8 +10,7 @@ process FUSIONINSPECTOR {
     }
 
     input:
-    tuple val(meta), path(reads)
-    tuple val(meta), path(fusion_list)
+    tuple val(meta), path(reads), path(fusion_list)
     path reference
 
     output:
