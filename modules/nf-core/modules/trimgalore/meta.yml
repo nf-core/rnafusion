@@ -37,6 +37,16 @@ output:
         List of input adapter trimmed FastQ files of size 1 and 2 for
         single-end and paired-end data, respectively.
       pattern: "*.{fq.gz}"
+  - 5prime:
+      type: file
+      description: |
+        List of input adapter trimmed FastQ files of trimed as INT bp of 3prime end
+      pattern: "*.{fq.gz}"
+  - 3prime:
+      type: file
+      description: |
+        List of input adapter trimmed FastQ files of trimed as INT bp of 5prime end
+      pattern: "*.{fq.gz}"
   - unpaired:
       type: file
       description: |
