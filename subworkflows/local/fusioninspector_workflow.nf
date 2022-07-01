@@ -12,6 +12,7 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         ch_versions = Channel.empty()
         index ="${params.starfusion_ref}"
         ch_fusion_list = params.fusioninspector_filter ? fusion_list_filtered : fusion_list
+        reads_fusion = reads.join(ch_fusion_list )
 
         if (params.fusioninspector_limitSjdbInsertNsj != 1000000) {
             FUSIONINSPECTOR_DEV( reads, ch_fusion_list , index, params.fusioninspector_limitSjdbInsertNsj)
