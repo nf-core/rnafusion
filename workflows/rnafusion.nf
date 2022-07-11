@@ -148,7 +148,7 @@ workflow RNAFUSION {
 
     // Run STAR alignment and Arriba
     ARRIBA_WORKFLOW (
-        ch_cat_trim_fastq,
+        ch_cat_fastq,
         ch_gtf,
         ch_fasta,
         ch_starindex_ensembl_ref
@@ -158,7 +158,7 @@ workflow RNAFUSION {
     // Run pizzly/kallisto
 
     PIZZLY_WORKFLOW (
-        ch_cat_trim_fastq,
+        ch_cat_fastq,
         ch_gtf,
         ch_transcript
     )
@@ -168,7 +168,7 @@ workflow RNAFUSION {
 // Run squid
 
     SQUID_WORKFLOW (
-        ch_cat_trim_fastq,
+        ch_cat_fastq,
         ch_gtf,
         ch_starindex_ensembl_ref
     )
@@ -177,7 +177,7 @@ workflow RNAFUSION {
 
 //Run STAR fusion
     STARFUSION_WORKFLOW (
-        ch_cat_trim_fastq,
+        ch_cat_fastq,
         ch_chrgtf,
         ch_starindex_ref
     )
@@ -193,7 +193,7 @@ workflow RNAFUSION {
 
     //Run fusion-report
     FUSIONREPORT_WORKFLOW (
-        ch_cat_trim_fastq,
+        ch_cat_fastq,
         params.fusionreport_ref,
         ARRIBA_WORKFLOW.out.fusions,
         PIZZLY_WORKFLOW.out.fusions,
@@ -206,7 +206,7 @@ workflow RNAFUSION {
 
     //Run fusionInpector
     FUSIONINSPECTOR_WORKFLOW (
-        ch_cat_trim_fastq,
+        ch_cat_fastq,
         FUSIONREPORT_WORKFLOW.out.fusion_list,
         FUSIONREPORT_WORKFLOW.out.fusion_list_filtered
     )
