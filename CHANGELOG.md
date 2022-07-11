@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - FusionInspector does not mix sample reads with fusion lists and meta information from other samples anymore
 - Arriba visualisation does not mix sample reads with fusion lists and meta information from other samples anymore
+- logging of STAR-fusion and fusionreport version
 
 ### Removed
 
