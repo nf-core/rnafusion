@@ -1,4 +1,5 @@
-include { REFORMAT }                 from '../../modules/local/reformat/main'
+include { REFORMAT }                    from '../../modules/local/reformat/main'
+include { FASTQC as FASTQC_FOR_TRIM }   from '../modules/nf-core/modules/fastqc/main'
 
 workflow TRIM_WORKFLOW {
     take:
@@ -6,13 +7,14 @@ workflow TRIM_WORKFLOW {
 
     main:
         ch_versions = Channel.empty()
-        // ch_dummy_file = file("$baseDir/assets/dummy_file_arriba.txt", checkIfExists: true)
 
         if (params.trim) {
 
             REFORMAT( reads )
             ch_versions = ch_versions.mix(REFORMAT.out.versions)
             ch_reads_out = REFORMAT.out.reads_out
+
+            FASTQC_FOR_TRIM (ch_reads_out)
         }
         else {
             ch_reads_out = reads
