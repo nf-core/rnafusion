@@ -1,4 +1,4 @@
-include { TRIMGALORE }                                  from '../../modules/nf-core/modules/trimgalore/main'
+include { REFORMAT }                 from '../../modules/local/reformat/main'
 
 workflow TRIM_WORKFLOW {
     take:
@@ -10,9 +10,9 @@ workflow TRIM_WORKFLOW {
 
         if (params.trim) {
 
-            TRIMGALORE( reads )
-            ch_versions = ch_versions.mix(TRIMGALORE.out.versions)
-            ch_reads_out = TRIMGALORE.out.reads
+            REFORMAT( reads )
+            ch_versions = ch_versions.mix(REFORMAT.out.versions)
+            ch_reads_out = REFORMAT.out.reads_out
         }
         else {
             ch_reads_out = reads
