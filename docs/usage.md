@@ -13,9 +13,9 @@ The pipeline is divided into two parts:
    - required only once before running the pipeline
    - **Important**: rerun with each new release
 2. Detecting fusions
-   - Supported tools: `arriba`, `fusioncatcher`, `pizzly`, `squid` and `starfusion`
+   - Supported tools: `Arriba`, `FusionCatcher`, `pizzly`, `SQUID` and `STAR-Fusion`
    - QC: `Fastqc` and `MultiQC`
-   - Fusion visualization: `arriba` (only arriba detected), `fusion-report` and `fusionInspector`
+   - Fusion visualization: `Arriba` (only fusion detected with Arriba), `fusion-report` and `FusionInspector`
 
 ### 1. Download and build references
 
@@ -24,35 +24,77 @@ Whilst it is possible to download and build each reference manually, it is advis
 
 First register for a free account at COSMIC at [https://cancer.sanger.ac.uk/cosmic/register](https://cancer.sanger.ac.uk/cosmic/register) using your university email. The account is **only activated upon** clicking the link in the registration email.
 
-Download the references as shown below including your COSMIC credentials. Note that this step can take up to 24 hours to complete.
+Download the references as shown below including your COSMIC credentials.
+
+> Note that this step takes about 24 hours to complete on.
 
 ```bash
 nextflow run nf-core/rnafusion \
   --build_references --all \
   --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
-  --outdir <REFERENCE_PATH>
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <PATH/TO/REFERENCES>
 ```
 
 References for each tools can also be downloaded separately with:
 
 ```bash
 nextflow run nf-core/rnafusion \
-  --build_references --<tool> \
+  --build_references --<tool1> --<tool2> ... \
   --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
-  --outdir <REFERENCE_PATH>
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH>
 ```
 
-In the case of non-human references, that are not supported currently, these can be fed manually to rnafusion using the parameter `--<tool>_ref`. By default STAR-Fusion references are built. You can also download them from [CTAT](https://github.com/NCIP/Trinity_CTAT/wiki). This allows more flexibility for different organisms but be aware that this is not fully tested:
+#### References directory tree
+
+```text
+references/
+|-- arriba
+|-- ensembl
+|-- fusion_report_db
+|-- fusioncatcher
+|   `-- human_v102
+|-- pizzly
+|-- star
+`-- starfusion
+```
+
+#### Issues with building references
+
+If process `FUSIONREPORT_DOWNLOAD` times out, it could be due to network restriction (e.g. if trying to run on HPC). As this process is lightweight in compute, storage and time, it is recommended to run on local machines with:
 
 ```bash
-nextflow run nf-core/rnafusion \
-  --build_references --starfusion \
-  --starfusion_build FALSE \
+nextflow run nf-nore/rnafusion  \
+  --build_references \
   --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
-  --outdir <REFERENCE_PATH>
+  --fusionreport \
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH>
 ```
 
-Then use the flag `--starfusion_build` while running the detection.
+Adjustments for compute requirements can be done by feeding a custom configuration with `-c /PATH/TO/CUSTOM/CONFIG`.
+Where the custom configuration could look like (adaptation to local machine necessary):
+
+```text
+process {
+  withName:  'NFCORE_RNAFUSION:BUILD_REFERENCES:FUSIONREPORT_DOWNLOAD' {
+    memory = '8.GB'
+    cpus = 4
+  }
+}
+```
+
+The four `fusion-report` files: `cosmic.db`, `fusiongdb.db`, `fusiongdb2.db`, `mitelman.db`
+should then be copied into the HPC `<REFERENCE_PATH>/references/fusion_report_db`.
+
+#### Non-human references
+
+Non-human references, not supported by default, can be built manually and fed to rnafusion using the parameter `--<tool>_ref`.
+
+#### STAR-Fusion references downloaded vs built
+
+By default STAR-Fusion references are **built**. You can also download them from [CTAT](https://github.com/NCIP/Trinity_CTAT/wiki) by using the flag `--starfusion_build FALSE` for both reference building and fusion detection. This allows more flexibility for different organisms but **be aware that STAR-Fusion reference download is not recommended as not fully tested!**
 
 ### 2. Detecting fusions
 
@@ -62,19 +104,22 @@ This step can either be run using all fusion detection tools or specifying indiv
 nextflow run nf-core/rnafusion \
   --all \
   --input <SAMPLE_SHEET.CSV> \
-  --outdir <PATH> \
-  --genomes_base <REFERENCE_PATH>
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH>
 ```
+
+> **IMPORTANT: Either `--all` or `--<tool>`** is necessary to run detection tools
 
 `--genomes_base` should be the path to the directory containing the folder `references/` that was built in step 1 `build_references`.
 
-Alternatively, to run only a specific detection tool specify with `--tool`:
+Alternatively, to run only a specific detection tool use: `--tool`:
 
 ```bash
 nextflow run nf-core/rnafusion \
-  --<toolA> --<toolB> \
+  --<tool1> --<tool2> ... \
   --input <SAMPLE_SHEET.CSV> \
-  --outdir <PATH>
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH>
 ```
 
 #### Running FusionInspector only
@@ -103,6 +148,7 @@ It is possible to give the output of each tool manually using the argument: `--<
 ## Samplesheet input
 
 You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use the `--input` parameter to specify its location. The pipeline will detect whether a sample is single- or paired-end from the samplesheet - the `fastq_2` column is empty for single-end. The samplesheet has to be a comma-separated file (.csv) but can have as many columns as you desire. There is a strict requirement for the first 4 columns to match those defined in the table below with the header row included.
+A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
 
 ```console
 sample,fastq_1,fastq_2,strandedness
@@ -114,8 +160,6 @@ TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,,forward
 TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,,forward
 TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,,forward
 ```
-
-A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
 
 | Column         | Description                                                                                                                                                                            |
 | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -129,10 +173,10 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 As you can see above for multiple runs of the same sample, the `sample` name has to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
 
 ```console
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
+sample,fastq_1,fastq_2,strandedness
+CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,forward
+CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz,forward
+CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz,forward
 ```
 
 ## Running the pipeline
@@ -153,6 +197,15 @@ work                # Directory containing the nextflow working files
 .nextflow_log       # Log file from Nextflow
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
 ```
+
+#### Set different `--limitSjdbInsertNsj` parameter
+
+There are two parameters to increase the `--limitSjdbInsertNsj` parameter if necessary:
+
+- `--fusioncatcher_limitSjdbInsertNsj`, default: 2000000
+- `--fusioninspector_limitSjdbInsertNsj`, default: 1000000
+
+> **IMPORTANT** Note that with any other value than default for `--fusioninsepctor_limitSjdbInsertNsj`, FusionInspector will run the **development version** 2.8.0dev1 and not the released version. Use at your own risk!
 
 ### Updating the pipeline
 

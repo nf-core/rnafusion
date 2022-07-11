@@ -129,6 +129,11 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to fusioncatcher output"
                 },
+                "fusioncatcher_limitSjdbInsertNsj": {
+                    "type": "integer",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Use limitSjdbInsertNsj with int for fusioncatcher"
+                },
                 "fusioncatcher_ref": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
@@ -138,6 +143,11 @@
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
                     "description": "Feed filtered fusionreport fusions to fusioninspector"
+                },
+                "fusioninspector_limitSjdbInsertNsj": {
+                    "type": "integer",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Use limitSjdbInsertNsj with int for fusioninspector STAR process"
                 },
                 "fusioninspector_only": {
                     "type": "boolean",
@@ -223,6 +233,19 @@
                     "type": "string",
                     "fa_icon": "far fa-file-code",
                     "description": "COSMIC password"
+                }
+            }
+        },
+        "read_trimming_options": {
+            "title": "Read trimming options",
+            "type": "object",
+            "fa_icon": "fas fa-cut",
+            "description": "Options to adjust read trimming criteria.",
+            "properties": {
+                "trim": {
+                    "type": "boolean",
+                    "description": "Preform trimming of reads, default: false",
+                    "fa_icon": "fas fa-cut"
                 }
             }
         },
@@ -483,6 +506,9 @@
         },
         {
             "$ref": "#/definitions/input_output_options"
+        },
+        {
+            "$ref": "#/definitions/read_trimming_options"
         },
         {
             "$ref": "#/definitions/reference_genome_options"

@@ -9,9 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `FusionCatcher` single_end support for single reads ABOVE 130 bp
 - `--fusioninspector_only` parameter to run FusionInspector standalone feeding gene list manually with parameter `--fusioninspector_fusions PATH`
+- `--fusioncatcher_limitSjdbInsertNsj` parameter to feed --limitSjdbInsertNsj to FusionCatcher
+- `--fusioninspector_limitSjdbInsertNsj` parameter to feed --limitSjdbInsertNsj to FusionInspector !!Any other value than default will use the dev version of FusionInspector!!
+- OPTIONAL trimming option `--trim` for hard trimming to 75 bp in case of high read-through. Only fusioncatcher uses trimmed reads as STAR-based fusion detection tools are less sensitive to read-through
 
 ### Changed
 
+- `seq_platform` and `seq_center` changed from boolean to string
+- `seq_platform` set to an empty string and `seq_center` set to an empty string if not existing
+- Arriba use ensembl references-built starindex independently of `starfusion_build` parameter
+- ftp to http protocol for STARFUSION_BUILD process `Pfam-A.hmm.gz` download as ftp causes issues on some servers
+- Updated README and usage documentation with more detailed information and metro map
 - Arriba use ensembl references-built starindex independently of starfusion_build parameter
 - Update of the single-end reads support table in README, added recommendation to use single-end reads only in last resort
 - STAR updated to 2.7.10a
@@ -21,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - dumpsoftwareversions module updated to use multiqc=1.12 containers
 
 ### Fixed
+
+- FusionInspector does not mix sample reads with fusion lists and meta information from other samples anymore
+- Arriba visualisation does not mix sample reads with fusion lists and meta information from other samples anymore
 
 ### Removed
 

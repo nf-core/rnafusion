@@ -61,6 +61,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 
 include { INPUT_CHECK                   }   from '../subworkflows/local/input_check'
+include { TRIM_WORKFLOW                 }   from '../subworkflows/local/trim_workflow'
 include { ARRIBA_WORKFLOW               }   from '../subworkflows/local/arriba_workflow'
 include { PIZZLY_WORKFLOW               }   from '../subworkflows/local/pizzly_workflow'
 include { QC_WORKFLOW                   }   from '../subworkflows/local/qc_workflow'
@@ -109,8 +110,9 @@ workflow RNAFUSION {
     .reads
     .map {
         meta, fastq ->
-            meta.id = meta.id.split('_')[0..-2].join('_')
-            [ meta, fastq ] }
+            def meta_clone = meta.clone()
+            meta_clone.id = meta_clone.id.split('_')[0..-2].join('_')
+            [ meta_clone, fastq ] }
     .groupTuple(by: [0])
     .branch {
         meta, fastq ->
@@ -139,8 +141,10 @@ workflow RNAFUSION {
     )
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
-
-
+    TRIM_WORKFLOW (
+        ch_cat_fastq
+    )
+    ch_cat_trim_fastq = TRIM_WORKFLOW.out.reads
 
     // Run STAR alignment and Arriba
     ARRIBA_WORKFLOW (
@@ -182,7 +186,7 @@ workflow RNAFUSION {
 
 //Run fusioncatcher
     FUSIONCATCHER_WORKFLOW (
-        ch_cat_fastq
+        ch_cat_trim_fastq
     )
     ch_versions = ch_versions.mix(FUSIONCATCHER_WORKFLOW.out.versions.first().ifEmpty(null))
 

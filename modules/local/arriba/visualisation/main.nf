@@ -8,8 +8,7 @@ process ARRIBA_VISUALISATION {
         'quay.io/biocontainers/arriba:2.1.0--h3198e80_1' }"
 
     input:
-    tuple val(meta), path(bam), path(bai)
-    tuple val(meta), path(fusions)
+    tuple val(meta), path(bam), path(bai), path(fusions)
     path reference
     path gtf
 
