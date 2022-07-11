@@ -16,44 +16,25 @@ input:
       description: |
         Groovy Map containing sample information
         e.g. [ id:'test', single_end:false ]
-  - reference:
-      type: path
-      description: Path to fusionreport references
-      pattern: "*"
-  - arriba_fusions:
-      type: path
-      description: File
-      pattern: "*.fusions.tsv"
-  - pizzly_fusions:
-      type: path
-      description: File containing fusions from pizzly
-      pattern: "*.pizzly.txt"
-  - squid_fusions:
-      type: path
-      description: File containing fusions from squid
-      pattern: "*.annotated.txt"
-  - starfusion_fusions:
-      type: path
-      description: File containing fusions from STARfusion
-      pattern: "*.starfusion.fusion_predictions.tsv"
-  - fusioncatcher_fusions:
-      type: path
-      description: File containing fusions from fusioncatcher
-      pattern: "*.fusions.tsv"
+  - reads:
+      type: file
+      description: FASTQ file
+      pattern: "*.{fastq}*"
 
 output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
   - versions:
       type: file
       description: File containing software versions
       pattern: "versions.yml"
-  - fusion_list:
+  - reads:
       type: file
-      description: File containing the summary of all fusions fed-in
-      pattern: "*.tsv"
-  - report:
-      type: file
-      description: HTML files
-      pattern: "*.html"
+      description: FASTQ file
+      pattern: "*.{fq.gz}"
 
 authors:
   - "@praveenraj2018, @rannick"

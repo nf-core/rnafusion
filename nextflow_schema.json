@@ -129,6 +129,11 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to fusioncatcher output"
                 },
+                "fusioncatcher_limitSjdbInsertNsj": {
+                    "type": "integer",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Use limitSjdbInsertNsj with int for fusioncatcher"
+                },
                 "fusioncatcher_ref": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
@@ -138,6 +143,11 @@
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
                     "description": "Feed filtered fusionreport fusions to fusioninspector"
+                },
+                "fusioninspector_limitSjdbInsertNsj": {
+                    "type": "integer",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Use limitSjdbInsertNsj with int for fusioninspector STAR process"
                 },
                 "fusioninspector_only": {
                     "type": "boolean",
@@ -235,36 +245,6 @@
                 "trim": {
                     "type": "boolean",
                     "description": "Preform trimming of reads, default: false",
-                    "fa_icon": "fas fa-cut"
-                },
-                "clip_r1": {
-                    "type": "integer",
-                    "description": "Instructs Trim Galore to remove bp from the 5' end of read 1 (or single-end reads).",
-                    "fa_icon": "fas fa-cut"
-                },
-                "clip_r2": {
-                    "type": "integer",
-                    "description": "Instructs Trim Galore to remove bp from the 5' end of read 2 (paired-end reads only).",
-                    "fa_icon": "fas fa-cut"
-                },
-                "three_prime_clip_r1": {
-                    "type": "integer",
-                    "description": "Instructs Trim Galore to remove bp from the 3' end of read 1 AFTER adapter/quality trimming has been performed.",
-                    "fa_icon": "fas fa-cut"
-                },
-                "three_prime_clip_r2": {
-                    "type": "integer",
-                    "description": "Instructs Trim Galore to remove bp from the 3' end of read 2 AFTER adapter/quality trimming has been performed.",
-                    "fa_icon": "fas fa-cut"
-                },
-                "hardtrim5": {
-                    "type": "integer",
-                    "description": "Instead of performing adapter-/quality trimming, this option will simply hard-trim sequences to INT bp from the 3'-end.",
-                    "fa_icon": "fas fa-cut"
-                },
-                "hardtrim3": {
-                    "type": "integer",
-                    "description": "Instead of performing adapter-/quality trimming, this option will simply hard-trim sequences to INT bp from the 5'-end..",
                     "fa_icon": "fas fa-cut"
                 }
             }
