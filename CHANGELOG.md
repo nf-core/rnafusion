@@ -25,7 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - STAR updated to 2.7.10a
 - Arriba updated to 2.3.0
 - multiQC updated to 1.13a
-- picard updated to 2.27.2
+- picard updated to 2.27.4
+- dumpsoftwareversions module updated to use multiqc=1.12 containers
 
 ### Fixed
 
