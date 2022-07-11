@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Arriba use ensembl references-built starindex independently of starfusion_build parameter
 - Update of the single-end reads support table in README, added recommendation to use single-end reads only in last resort
 - STAR updated to 2.7.10a
-- Arriba updated to 2.3.0
+- Arriba updated to 2.3.0, references for blacklist and protein domains changed to 2.3.0 from singularity/docker container -> arriba download of references not necessary any more
 - multiQC updated to 1.13a
 - picard updated to 2.27.2
 
