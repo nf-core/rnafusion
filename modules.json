@@ -10,7 +10,7 @@
                 "git_sha": "9aadd9a6d3f5964476582319b3a1c54a3e3fe7c9"
             },
             "custom/dumpsoftwareversions": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                "git_sha": "682f789f93070bd047868300dd018faf3d434e7c"
             },
             "fastqc": {
                 "git_sha": "49b18b1639f4f7104187058866a8fab33332bdfe"
@@ -19,13 +19,13 @@
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "multiqc": {
-                "git_sha": "08376da6843b14c82d84d444784c0b3635bb7fd5"
+                "git_sha": "5138acca0985ca01c38a1c4fba917d83772b1106"
             },
             "picard/collectwgsmetrics": {
-                "git_sha": "63db63757cab03cfa7a02c0d0f134b66fbfadea6"
+                "git_sha": "682f789f93070bd047868300dd018faf3d434e7c"
             },
             "picard/markduplicates": {
-                "git_sha": "63db63757cab03cfa7a02c0d0f134b66fbfadea6"
+                "git_sha": "682f789f93070bd047868300dd018faf3d434e7c"
             },
             "qualimap/rnaseq": {
                 "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
