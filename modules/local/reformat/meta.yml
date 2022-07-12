@@ -1,0 +1,40 @@
+name: fusionreport
+description: fusionreport
+keywords:
+  - sort
+tools:
+  - fusionreport:
+      description: fusionreport
+      homepage: https://github.com/matq007/fusion-report
+      documentation: https://matq007.github.io/fusion-report/#/
+      doi: "10.1101/011650"
+      licence: ["GPL v3"]
+
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - reads:
+      type: file
+      description: FASTQ file
+      pattern: "*.{fastq}*"
+
+output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+  - reads:
+      type: file
+      description: FASTQ file
+      pattern: "*.{fq.gz}"
+
+authors:
+  - "@praveenraj2018, @rannick"

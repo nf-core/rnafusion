@@ -15,11 +15,10 @@ workflow QC_WORKFLOW {
 
     main:
         ch_versions = Channel.empty()
-        ch_qualimap_qc = Channel.empty()
 
         QUALIMAP_RNASEQ(bam_sorted, ch_chrgtf)
         ch_versions = ch_versions.mix(QUALIMAP_RNASEQ.out.versions)
-        ch_qualimap_qc = QUALIMAP_RNASEQ.out.results.ifEmpty(null)
+        ch_qualimap_qc = Channel.empty().mix(QUALIMAP_RNASEQ.out.results)
 
         SAMTOOLS_INDEX_FOR_QC(bam_sorted)
         ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FOR_QC.out.versions)
@@ -28,15 +27,18 @@ workflow QC_WORKFLOW {
 
         PICARD_COLLECTRNASEQMETRICS(bam_indexed, ch_refflat, [])
         ch_versions = ch_versions.mix(PICARD_COLLECTRNASEQMETRICS.out.versions)
+        ch_rnaseq_metrics = Channel.empty().mix(PICARD_COLLECTRNASEQMETRICS.out.metrics)
 
         PICARD_MARKDUPLICATES(bam_sorted)
         ch_versions = ch_versions.mix(PICARD_MARKDUPLICATES.out.versions)
+        ch_duplicate_metrics = Channel.empty().mix(PICARD_MARKDUPLICATES.out.metrics)
+
 
     emit:
         versions            = ch_versions.ifEmpty(null)
-        qualimap_qc         = ch_qualimap_qc.ifEmpty(null)
-        rnaseq_metrics      = PICARD_COLLECTRNASEQMETRICS.out.metrics
-        duplicate_metrics   = PICARD_MARKDUPLICATES.out.metrics
+        qualimap_qc         = ch_qualimap_qc
+        rnaseq_metrics      = ch_rnaseq_metrics
+        duplicate_metrics   = ch_duplicate_metrics
 
 }
 

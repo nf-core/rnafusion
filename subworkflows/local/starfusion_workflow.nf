@@ -13,11 +13,11 @@ workflow STARFUSION_WORKFLOW {
         ch_align = Channel.empty()
         ch_dummy_file = file("$baseDir/assets/dummy_file_starfusion.txt", checkIfExists: true)
 
-        if (params.starfusion || params.all){
+        if ((params.starfusion || params.all) && !params.fusioninspector_only) {
             if (params.starfusion_fusions){
                 ch_starfusion_fusions = GET_META(reads, params.starfusion_fusions)
             } else {
-                STAR_FOR_STARFUSION( reads, ch_starindex_ref, ch_chrgtf, params.star_ignore_sjdbgtf, params.seq_platform, params.seq_center )
+                STAR_FOR_STARFUSION( reads, ch_starindex_ref, ch_chrgtf, params.star_ignore_sjdbgtf, '', params.seq_center ?: '')
                 ch_versions = ch_versions.mix(STAR_FOR_STARFUSION.out.versions)
                 ch_align = STAR_FOR_STARFUSION.out.bam_sorted
 
@@ -27,13 +27,16 @@ workflow STARFUSION_WORKFLOW {
                 ch_versions = ch_versions.mix(STARFUSION.out.versions)
 
                 ch_starfusion_fusions = STARFUSION.out.fusions
+                ch_star_stats = STAR_FOR_STARFUSION.out.log_final
             }
         }
         else {
             ch_starfusion_fusions = GET_META(reads, ch_dummy_file)
+            ch_star_stats = Channel.empty()
         }
     emit:
         fusions         = ch_starfusion_fusions
+        star_stats      = ch_star_stats
         bam_sorted      = ch_align
         versions        = ch_versions.ifEmpty(null)
 

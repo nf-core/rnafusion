@@ -8,71 +8,138 @@
 
 The pipeline is divided into two parts:
 
-1. Downloading and building the references, using `--build_references`: done only once and after each update.
-2. Detecting fusions using (any combination of) the following tools:
-   - arriba
-   - fusioncatcher
-   - pizzly
-   - squid
-   - starfusion
-3. QC and visualisation tools
-   - Fastqc
-   - MultiQC
-   - arriba visualisation (for fusion detected by arriba only)
-   - fusion-report
-   - fusionInspector
+1. Download and build references
+   - specified with `--build_references` parameter
+   - required only once before running the pipeline
+   - **Important**: rerun with each new release
+2. Detecting fusions
+   - Supported tools: `Arriba`, `FusionCatcher`, `pizzly`, `SQUID` and `STAR-Fusion`
+   - QC: `Fastqc` and `MultiQC`
+   - Fusion visualization: `Arriba` (only fusion detected with Arriba), `fusion-report` and `FusionInspector`
 
-### Prerequisite: download and build references
+### 1. Download and build references
 
 The rnafusion pipeline needs references for the fusion detection tools, so downloading these is a **requirement**.
-It is possible to download and build each reference manually (for example in case of non-human samples that are not supported currently) feed references manually to rnafusion using the arguments `--<tool>_ref` but it is advised to download references with rnafusion:
+Whilst it is possible to download and build each reference manually, it is advised to download references with the rnafusion pipeline.
+
+First register for a free account at COSMIC at [https://cancer.sanger.ac.uk/cosmic/register](https://cancer.sanger.ac.uk/cosmic/register) using your university email. The account is **only activated upon** clicking the link in the registration email.
+
+Download the references as shown below including your COSMIC credentials.
+
+> Note that this step takes about 24 hours to complete on.
 
 ```bash
 nextflow run nf-core/rnafusion \
---build_references --all \
---genomes_base <PATH> \
+  --build_references --all \
+  --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <PATH/TO/REFERENCES>
 ```
 
-References for the different tools can also be downloaded separately:
+References for each tools can also be downloaded separately with:
 
 ```bash
 nextflow run nf-core/rnafusion \
---build_references --<tool> \
---genomes_base <PATH>
+  --build_references --<tool1> --<tool2> ... \
+  --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH>
 ```
 
-This PATH will be the place the references will be saved.
+#### References directory tree
 
-Optional: by default STAR-Fusion references are built. You can also download them from CTAT. This allows more flexibility for different organisms but be aware that **this is not fully tested -> not recommended**:
+```text
+references/
+|-- arriba
+|-- ensembl
+|-- fusion_report_db
+|-- fusioncatcher
+|   `-- human_v102
+|-- pizzly
+|-- star
+`-- starfusion
+```
+
+#### Issues with building references
+
+If process `FUSIONREPORT_DOWNLOAD` times out, it could be due to network restriction (e.g. if trying to run on HPC). As this process is lightweight in compute, storage and time, it is recommended to run on local machines with:
+
+```bash
+nextflow run nf-nore/rnafusion  \
+  --build_references \
+  --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
+  --fusionreport \
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH>
+```
+
+Adjustments for compute requirements can be done by feeding a custom configuration with `-c /PATH/TO/CUSTOM/CONFIG`.
+Where the custom configuration could look like (adaptation to local machine necessary):
+
+```text
+process {
+  withName:  'NFCORE_RNAFUSION:BUILD_REFERENCES:FUSIONREPORT_DOWNLOAD' {
+    memory = '8.GB'
+    cpus = 4
+  }
+}
+```
+
+The four `fusion-report` files: `cosmic.db`, `fusiongdb.db`, `fusiongdb2.db`, `mitelman.db`
+should then be copied into the HPC `<REFERENCE_PATH>/references/fusion_report_db`.
+
+#### Non-human references
+
+Non-human references, not supported by default, can be built manually and fed to rnafusion using the parameter `--<tool>_ref`.
+
+#### STAR-Fusion references downloaded vs built
+
+By default STAR-Fusion references are **built**. You can also download them from [CTAT](https://github.com/NCIP/Trinity_CTAT/wiki) by using the flag `--starfusion_build FALSE` for both reference building and fusion detection. This allows more flexibility for different organisms but **be aware that STAR-Fusion reference download is not recommended as not fully tested!**
+
+### 2. Detecting fusions
+
+This step can either be run using all fusion detection tools or specifying individual tools. Visualisation tools will be run on all fusions detected. To run all tools (`arriba`, `fusioncatcher`, `pizzly`, `squid`, `starfusion`) use the `--all` parameter:
 
 ```bash
 nextflow run nf-core/rnafusion \
---build_references --starfusion/--all \
---starfusion_build false \
---genomes_base <PATH>
+  --all \
+  --input <SAMPLE_SHEET.CSV> \
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH>
 ```
 
-Then use the flag `--starfusion_build` while running the detection.
+> **IMPORTANT: Either `--all` or `--<tool>`** is necessary to run detection tools
 
-### Running all detection tools
+`--genomes_base` should be the path to the directory containing the folder `references/` that was built in step 1 `build_references`.
+
+Alternatively, to run only a specific detection tool use: `--tool`:
 
 ```bash
 nextflow run nf-core/rnafusion \
---input '[path to samplesheet file]' --all \
---outdir <PATH> \
+  --<tool1> --<tool2> ... \
+  --input <SAMPLE_SHEET.CSV> \
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH>
 ```
 
-Visualisation tools will be run on all fusions detected.
+#### Running FusionInspector only
 
-### Running a specific detection tool
+FusionInspector can be run standalone with:
 
 ```bash
 nextflow run nf-core/rnafusion \
---input '[path to samplesheet file]' --<tool> \
---outdir <PATH> \
+  --fusioninspector_only \
+  --fusioninspector_fusion <PATH_TO_CUSTOM_FUSION_FILE>
+  --input <SAMPLE_SHEET.CSV> \
+  --outdir <PATH>
 ```
 
-Visualisation tools will be run on all fusions detected.
+The custom fusion file should have the following format:
+
+```
+GENE1--GENE2
+GENE3--GENE3
+```
 
 #### Optional manual feed-in of fusion files
 
@@ -80,27 +147,7 @@ It is possible to give the output of each tool manually using the argument: `--<
 
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
-
-```console
---input '[path to samplesheet file]'
-```
-
-### Multiple runs of the same sample
-
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
-
-```console
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
-```
-
-### Full samplesheet
-
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 4 columns to match those defined in the table below.
-
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use the `--input` parameter to specify its location. The pipeline will detect whether a sample is single- or paired-end from the samplesheet - the `fastq_2` column is empty for single-end. The samplesheet has to be a comma-separated file (.csv) but can have as many columns as you desire. There is a strict requirement for the first 4 columns to match those defined in the table below with the header row included.
 A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
 
 ```console
@@ -123,6 +170,15 @@ TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,,forward
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
+As you can see above for multiple runs of the same sample, the `sample` name has to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
+
+```console
+sample,fastq_1,fastq_2,strandedness
+CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,forward
+CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz,forward
+CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz,forward
+```
+
 ## Running the pipeline
 
 The typical command for running the pipeline is as follows.
@@ -141,6 +197,15 @@ work                # Directory containing the nextflow working files
 .nextflow_log       # Log file from Nextflow
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
 ```
+
+#### Set different `--limitSjdbInsertNsj` parameter
+
+There are two parameters to increase the `--limitSjdbInsertNsj` parameter if necessary:
+
+- `--fusioncatcher_limitSjdbInsertNsj`, default: 2000000
+- `--fusioninspector_limitSjdbInsertNsj`, default: 1000000
+
+> **IMPORTANT** Note that with any other value than default for `--fusioninsepctor_limitSjdbInsertNsj`, FusionInspector will run the **development version** 2.8.0dev1 and not the released version. Use at your own risk!
 
 ### Updating the pipeline
 

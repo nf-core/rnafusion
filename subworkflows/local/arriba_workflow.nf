@@ -18,9 +18,9 @@ workflow ARRIBA_WORKFLOW {
         ch_versions = Channel.empty()
         ch_dummy_file = file("$baseDir/assets/dummy_file_arriba.txt", checkIfExists: true)
 
-        if (params.arriba || params.all) {
+        if ((params.arriba || params.all) && !params.fusioninspector_only) {
 
-            STAR_FOR_ARRIBA( reads, ch_starindex_ref, ch_gtf, params.star_ignore_sjdbgtf, params.seq_platform, params.seq_center )
+            STAR_FOR_ARRIBA( reads, ch_starindex_ref, ch_gtf, params.star_ignore_sjdbgtf, '', params.seq_center ?: '')
             ch_versions = ch_versions.mix(STAR_FOR_ARRIBA.out.versions)
 
             SAMTOOLS_SORT_FOR_ARRIBA(STAR_FOR_ARRIBA.out.bam)
@@ -43,8 +43,8 @@ workflow ARRIBA_WORKFLOW {
                 GET_PATH_ARRIBA_FAIL(ARRIBA.out.fusions_fail)
                 ch_arriba_fusion_fail = GET_PATH_ARRIBA_FAIL.out.file
             }
-
-            ARRIBA_VISUALISATION(bam_indexed, ch_arriba_fusions, params.arriba_ref, ch_gtf)
+            bam_indexed_arriba_fusions = bam_indexed.join(ch_arriba_fusions)
+            ARRIBA_VISUALISATION(bam_indexed_arriba_fusions, params.arriba_ref, ch_gtf)
             ch_versions = ch_versions.mix(ARRIBA_VISUALISATION.out.versions)
 
             ch_arriba_visualisation = ARRIBA_VISUALISATION.out.pdf

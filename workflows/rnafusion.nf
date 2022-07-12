@@ -12,7 +12,7 @@ WorkflowRnafusion.initialise(params, log)
 // Check mandatory parameters
 
 if (file(params.input).exists() || params.build_references) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet does not exist or was not specified!' }
-
+if (params.fusioninspector_only && !params.fusioninspector_fusions) { exit 1, 'Parameter --fusioninspector_fusions PATH_TO_FUSION_LIST expected with parameter --fusioninspector_only'}
 
 ch_chrgtf = params.starfusion_build ? file(params.chrgtf) : file("${params.starfusion_ref}/ref_annot.gtf")
 ch_starindex_ref = params.starfusion_build ? params.starindex_ref : "${params.starfusion_ref}/ref_genome.fa.star.idx"
@@ -61,6 +61,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 
 include { INPUT_CHECK                   }   from '../subworkflows/local/input_check'
+include { TRIM_WORKFLOW                 }   from '../subworkflows/local/trim_workflow'
 include { ARRIBA_WORKFLOW               }   from '../subworkflows/local/arriba_workflow'
 include { PIZZLY_WORKFLOW               }   from '../subworkflows/local/pizzly_workflow'
 include { QC_WORKFLOW                   }   from '../subworkflows/local/qc_workflow'
@@ -109,8 +110,9 @@ workflow RNAFUSION {
     .reads
     .map {
         meta, fastq ->
-            meta.id = meta.id.split('_')[0..-2].join('_')
-            [ meta, fastq ] }
+            def meta_clone = meta.clone()
+            meta_clone.id = meta_clone.id.split('_')[0..-2].join('_')
+            [ meta_clone, fastq ] }
     .groupTuple(by: [0])
     .branch {
         meta, fastq ->
@@ -139,15 +141,17 @@ workflow RNAFUSION {
     )
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
-
-
+    TRIM_WORKFLOW (
+        ch_cat_fastq
+    )
+    ch_cat_trim_fastq = TRIM_WORKFLOW.out.reads
 
     // Run STAR alignment and Arriba
     ARRIBA_WORKFLOW (
         ch_cat_fastq,
         ch_gtf,
         ch_fasta,
-        ch_starindex_ref
+        ch_starindex_ensembl_ref
     )
     ch_versions = ch_versions.mix(ARRIBA_WORKFLOW.out.versions.first().ifEmpty(null))
 
@@ -182,7 +186,7 @@ workflow RNAFUSION {
 
 //Run fusioncatcher
     FUSIONCATCHER_WORKFLOW (
-        ch_cat_fastq
+        ch_cat_trim_fastq
     )
     ch_versions = ch_versions.mix(FUSIONCATCHER_WORKFLOW.out.versions.first().ifEmpty(null))
 
@@ -234,9 +238,13 @@ workflow RNAFUSION {
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.qualimap_qc.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(STARFUSION_WORKFLOW.out.star_stats.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.rnaseq_metrics.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.duplicate_metrics.collect{it[1]}.ifEmpty([]))
 
     MULTIQC (
-        ch_multiqc_files.collect()
+        ch_multiqc_files.collect(), [[],[]]
     )
 
     multiqc_report       = MULTIQC.out.report.toList()

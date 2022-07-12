@@ -39,7 +39,7 @@ process STARFUSION {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        STAR-Fusion: \$(echo STAR-Fusion --version 2>&1 | grep -i 'version' | sed 's/STAR-Fusion version: //')
+        STAR-Fusion: \$(STAR-Fusion --version 2>&1 | grep -i 'version' | sed 's/STAR-Fusion version: //')
     END_VERSIONS
     """
 

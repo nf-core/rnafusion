@@ -129,6 +129,11 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to fusioncatcher output"
                 },
+                "fusioncatcher_limitSjdbInsertNsj": {
+                    "type": "integer",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Use limitSjdbInsertNsj with int for fusioncatcher"
+                },
                 "fusioncatcher_ref": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
@@ -138,6 +143,21 @@
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
                     "description": "Feed filtered fusionreport fusions to fusioninspector"
+                },
+                "fusioninspector_limitSjdbInsertNsj": {
+                    "type": "integer",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Use limitSjdbInsertNsj with int for fusioninspector STAR process"
+                },
+                "fusioninspector_only": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Skip fusion-report. --fusioninspector_fusions PATH needed to provide a fusion list as input"
+                },
+                "fusioninspector_fusions": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to a fusion list file built with format GENE1--GENE2"
                 },
                 "fusionreport": {
                     "type": "boolean",
@@ -213,6 +233,19 @@
                     "type": "string",
                     "fa_icon": "far fa-file-code",
                     "description": "COSMIC password"
+                }
+            }
+        },
+        "read_trimming_options": {
+            "title": "Read trimming options",
+            "type": "object",
+            "fa_icon": "fas fa-cut",
+            "description": "Options to adjust read trimming criteria.",
+            "properties": {
+                "trim": {
+                    "type": "boolean",
+                    "description": "Preform trimming of reads, default: false",
+                    "fa_icon": "fas fa-cut"
                 }
             }
         },
@@ -444,14 +477,14 @@
                     "fa_icon": "fas fa-bacon"
                 },
                 "seq_center": {
-                    "type": "boolean",
+                    "type": "string",
                     "description": "Sequencing center",
                     "hidden": true,
                     "fa_icon": "fas fa-toolbox",
                     "help_text": "This will reported in the BAM header as CN"
                 },
                 "seq_platform": {
-                    "type": "boolean",
+                    "type": "string",
                     "description": "Sequencing platform",
                     "hidden": true,
                     "fa_icon": "fas fa-toolbox",
@@ -473,6 +506,9 @@
         },
         {
             "$ref": "#/definitions/input_output_options"
+        },
+        {
+            "$ref": "#/definitions/read_trimming_options"
         },
         {
             "$ref": "#/definitions/reference_genome_options"
