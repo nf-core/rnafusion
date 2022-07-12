@@ -34,6 +34,7 @@ workflow STARFUSION_WORKFLOW {
         }
     emit:
         fusions         = ch_starfusion_fusions
+        star_stats      = STAR_FOR_STARFUSION.out.log_final
         bam_sorted      = ch_align
         versions        = ch_versions.ifEmpty(null)
 
