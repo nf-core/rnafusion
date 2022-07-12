@@ -236,6 +236,19 @@
                 }
             }
         },
+        "read_trimming_options": {
+            "title": "Read trimming options",
+            "type": "object",
+            "fa_icon": "fas fa-cut",
+            "description": "Options to adjust read trimming criteria.",
+            "properties": {
+                "trim": {
+                    "type": "boolean",
+                    "description": "Preform trimming of reads, default: false",
+                    "fa_icon": "fas fa-cut"
+                }
+            }
+        },
         "reference_genome_options": {
             "title": "Reference genome options",
             "type": "object",
@@ -493,6 +506,9 @@
         },
         {
             "$ref": "#/definitions/input_output_options"
+        },
+        {
+            "$ref": "#/definitions/read_trimming_options"
         },
         {
             "$ref": "#/definitions/reference_genome_options"

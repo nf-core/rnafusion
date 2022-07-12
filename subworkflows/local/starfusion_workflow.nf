@@ -27,13 +27,16 @@ workflow STARFUSION_WORKFLOW {
                 ch_versions = ch_versions.mix(STARFUSION.out.versions)
 
                 ch_starfusion_fusions = STARFUSION.out.fusions
+                ch_star_stats = STAR_FOR_STARFUSION.out.log_final
             }
         }
         else {
             ch_starfusion_fusions = GET_META(reads, ch_dummy_file)
+            ch_star_stats = Channel.empty()
         }
     emit:
         fusions         = ch_starfusion_fusions
+        star_stats      = ch_star_stats
         bam_sorted      = ch_align
         versions        = ch_versions.ifEmpty(null)
 

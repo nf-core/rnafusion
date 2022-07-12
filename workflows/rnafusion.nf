@@ -61,6 +61,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 
 include { INPUT_CHECK                   }   from '../subworkflows/local/input_check'
+include { TRIM_WORKFLOW                 }   from '../subworkflows/local/trim_workflow'
 include { ARRIBA_WORKFLOW               }   from '../subworkflows/local/arriba_workflow'
 include { PIZZLY_WORKFLOW               }   from '../subworkflows/local/pizzly_workflow'
 include { QC_WORKFLOW                   }   from '../subworkflows/local/qc_workflow'
@@ -140,8 +141,10 @@ workflow RNAFUSION {
     )
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
-
-
+    TRIM_WORKFLOW (
+        ch_cat_fastq
+    )
+    ch_cat_trim_fastq = TRIM_WORKFLOW.out.reads
 
     // Run STAR alignment and Arriba
     ARRIBA_WORKFLOW (
@@ -183,7 +186,7 @@ workflow RNAFUSION {
 
 //Run fusioncatcher
     FUSIONCATCHER_WORKFLOW (
-        ch_cat_fastq
+        ch_cat_trim_fastq
     )
     ch_versions = ch_versions.mix(FUSIONCATCHER_WORKFLOW.out.versions.first().ifEmpty(null))
 
@@ -235,6 +238,10 @@ workflow RNAFUSION {
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.qualimap_qc.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(STARFUSION_WORKFLOW.out.star_stats.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.rnaseq_metrics.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.duplicate_metrics.collect{it[1]}.ifEmpty([]))
 
     MULTIQC (
         ch_multiqc_files.collect(), [[],[]]

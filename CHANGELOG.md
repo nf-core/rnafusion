@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `--fusioninspector_only` parameter to run FusionInspector standalone feeding gene list manually with parameter `--fusioninspector_fusions PATH`
 - `--fusioncatcher_limitSjdbInsertNsj` parameter to feed --limitSjdbInsertNsj to FusionCatcher
 - `--fusioninspector_limitSjdbInsertNsj` parameter to feed --limitSjdbInsertNsj to FusionInspector !!Any other value than default will use the dev version of FusionInspector!!
+- OPTIONAL trimming option `--trim` for hard trimming to 75 bp in case of high read-through. Only fusioncatcher uses trimmed reads as STAR-based fusion detection tools are less sensitive to read-through
+- `picard` metrics, STAR final log, and QualiMap output included in `MultiQC` report
 
 ### Changed
 
@@ -22,14 +24,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Arriba use ensembl references-built starindex independently of starfusion_build parameter
 - Update of the single-end reads support table in README, added recommendation to use single-end reads only in last resort
 - STAR updated to 2.7.10a
-- Arriba updated to 2.3.0
+- Arriba updated to 2.3.0, references for blacklist and protein domains changed to 2.3.0 from singularity/docker container -> arriba download of references not necessary any more
 - multiQC updated to 1.13a
-- picard updated to 2.27.2
+- picard updated to 2.27.4
+- dumpsoftwareversions module updated to use multiqc=1.12 containers
 
 ### Fixed
 
 - FusionInspector does not mix sample reads with fusion lists and meta information from other samples anymore
 - Arriba visualisation does not mix sample reads with fusion lists and meta information from other samples anymore
+- logging of STAR-fusion and fusionreport version
 
 ### Removed
 
