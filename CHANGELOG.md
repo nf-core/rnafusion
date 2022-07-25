@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Instructions to run `Arriba` on S3 with manually downloaded references as with the `Arriba` now uses the references from the docker/singularity containers
+- exitStatus 140 now part of the retry strategy
+
 ### Changed
 
 ### Fixed
 
 - `Arriba` visualisation now running with `Arriba` v2.3.0
+- AWS megatest to display on nf-core website
 
 ### Removed
 
