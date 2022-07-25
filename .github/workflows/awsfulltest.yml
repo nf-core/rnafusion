@@ -47,4 +47,3 @@ jobs:
             nextflow run ${GITHUB_WORKSPACE} -profile test_full,aws_tower \
             --all \
             --genomes_base /home/runner/work/rnafusion/rnafusion/results/references
-
