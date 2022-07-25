@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update CUSTOM_DUMPSOFTWAREVERSIONS to use multiqc version 1.13
+
 ### Fixed
 
 - `Arriba` visualisation now running with `Arriba` v2.3.0
