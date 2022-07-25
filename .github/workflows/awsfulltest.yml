@@ -24,7 +24,13 @@ jobs:
             {
               "outdir": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}"
             }
-          profiles: test_full_build,aws_tower
+          run: |
+            nextflow run ${GITHUB_WORKSPACE} -profile test_full_build,aws_tower \
+            --all \
+            --build_references --genomes_base /home/runner/work/rnafusion/rnafusion/results/references \
+            --cosmic_username ${{ secrets.COSMIC_USERNAME }} --cosmic_passwd ${{ secrets.COSMIC_PASSWD }}
+
+          test_full_build,aws_tower
           nextflow_config: |
             process.errorStrategy = 'retry'
             process.maxRetries = 3
@@ -39,4 +45,8 @@ jobs:
             {
               "outdir": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}"
             }
-          profiles: test_full,aws_tower
+          run: |
+            nextflow run ${GITHUB_WORKSPACE} -profile test_full,aws_tower \
+            --all \
+            --genomes_base /home/runner/work/rnafusion/rnafusion/results/references
+
