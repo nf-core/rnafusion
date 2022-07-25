@@ -26,7 +26,7 @@ First register for a free account at COSMIC at [https://cancer.sanger.ac.uk/cosm
 
 Download the references as shown below including your COSMIC credentials.
 
-> Note that this step takes about 24 hours to complete on.
+> Note that this step takes about 24 hours to complete on HPC.
 
 ```bash
 nextflow run nf-core/rnafusion \
@@ -44,6 +44,23 @@ nextflow run nf-core/rnafusion \
   --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
   --genomes_base <PATH/TO/REFERENCES> \
   --outdir <OUTPUT/PATH>
+```
+
+> For S3 usage: references for arriba are taken from the container image, which is not in the bound path with S3. Therefore arriba references have to be manually downloaded in this case and fed to rnafusion. Follow the steps below:
+
+- Download arriba tar.gz file from https://github.com/suhrig/arriba/releases/latest
+- Extract
+- Start rnafusion pipeline with:
+
+```bash
+nextflow run nf-core/rnafusion \
+  --<arriba> (--<tool2> ... OR --all) \
+  --input <SAMPLE_SHEET.CSV> \
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH> \
+  --arriba_ref_blacklist <PATH/TO/ARRIBA/BLACKLIST/FILE> \
+  --arriba_protein_domain <PATH/TO/ARRIBA/PROTEIN/DOMAIN/FILE> \
+  --arriba_ref <PATH/TO/ARRIBA/REFERENCES/FOLDER>
 ```
 
 #### References directory tree
