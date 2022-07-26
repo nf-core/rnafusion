@@ -24,6 +24,8 @@ jobs:
             {
               "outdir": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}",
               "genomes_base": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}/references",
+              "cosmic_username": "${{ secrets.cosmic_username }}",
+              "cosmic_passwd": "${{ secrets.cosmic_passwd }}"
             }
           nextflow_config: |
             process.errorStrategy = 'retry'
