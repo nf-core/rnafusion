@@ -4,7 +4,7 @@
 ========================================================================================
 */
 
-include { ARRIBA_DOWNLOAD }                 from '../modules/local/arriba/main'
+include { ARRIBA_DOWNLOAD }                 from '../modules/local/arriba/download/main'
 include { ENSEMBL_DOWNLOAD }                from '../modules/local/ensembl/main'
 include { FUSIONCATCHER_DOWNLOAD }          from '../modules/local/fusioncatcher/download/main'
 include { FUSIONREPORT_DOWNLOAD }           from '../modules/local/fusionreport/download/main'
