@@ -26,16 +26,3 @@ jobs:
               "cosmic_passwd": "${{ secrets.cosmic_passwd }}"
             }
           profiles: test_build,aws_tower
-      - name: Launch workflow via tower
-        uses: nf-core/tower-action@v3
-        with:
-          workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
-          access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
-          compute_env: ${{ secrets.TOWER_COMPUTE_ENV }}
-          workdir: s3://${{ secrets.AWS_S3_BUCKET }}/work/rnafusion/work-${{ github.sha }}
-          parameters: |
-            {
-              "outdir": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}",
-              "genomes_base": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}/references",
-            }
-          profiles: test,aws_tower

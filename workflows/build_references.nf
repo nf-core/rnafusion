@@ -4,6 +4,7 @@
 ========================================================================================
 */
 
+include { ARRIBA_DOWNLOAD }                 from '../modules/local/arriba/main'
 include { ENSEMBL_DOWNLOAD }                from '../modules/local/ensembl/main'
 include { FUSIONCATCHER_DOWNLOAD }          from '../modules/local/fusioncatcher/download/main'
 include { FUSIONREPORT_DOWNLOAD }           from '../modules/local/fusionreport/download/main'
@@ -32,6 +33,10 @@ workflow BUILD_REFERENCES {
 
     if (params.starindex || params.all || params.starfusion || params.arriba || params.squid ) {
         STAR_GENOMEGENERATE( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.gtf )
+    }
+
+    if (params.arriba || params.all) {
+        ARRIBA_DOWNLOAD()
     }
 
     if (params.fusioncatcher || params.all) {
