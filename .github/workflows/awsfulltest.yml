@@ -26,13 +26,13 @@ jobs:
               "genomes_base": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}/references",
               "build_references": "True"
             }
-          run: |
-            nextflow run ${GITHUB_WORKSPACE} -profile test_full_build,aws_tower \
-            --all \
-            --cosmic_username ${{ secrets.COSMIC_USERNAME }} --cosmic_passwd ${{ secrets.COSMIC_PASSWD }}
           nextflow_config: |
             process.errorStrategy = 'retry'
             process.maxRetries = 3
+        run: |
+            nextflow run ${GITHUB_WORKSPACE} -profile test_full_build,aws_tower \
+            --all \
+            --cosmic_username ${{ secrets.COSMIC_USERNAME }} --cosmic_passwd ${{ secrets.COSMIC_PASSWD }}
       - name: Launch workflow via tower
         uses: nf-core/tower-action@v3
         with:
@@ -44,7 +44,7 @@ jobs:
             {
               "outdir": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}"
             }
-          run: |
+        run: |
             nextflow run ${GITHUB_WORKSPACE} -profile test_full,aws_tower \
             --all \
             --genomes_base /home/runner/work/rnafusion/rnafusion/results/references
