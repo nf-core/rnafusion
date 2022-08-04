@@ -16,4 +16,8 @@ process GET_PATH {
     script:
     """
     """
+
+    stub:
+    """
+    """
 }

@@ -24,6 +24,18 @@ process PIZZLY_DOWNLOAD {
         $args \\
         $transcript
 
-    echo \$(kallisto 2>&1) | sed 's/^kallisto //; s/Usage.*\$//' > versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        kallisto: \$(echo \$(kallisto 2>&1) | sed 's/^kallisto //; s/Usage.*\$//')
+    END_VERSIONS    """
+
+    stub:
+    """
+    touch index.idx
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        kallisto: \$(echo \$(kallisto 2>&1) | sed 's/^kallisto //; s/Usage.*\$//')
+    END_VERSIONS
     """
 }

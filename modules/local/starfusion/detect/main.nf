@@ -49,7 +49,11 @@ process STARFUSION {
     touch ${prefix}.starfusion.fusion_predictions.tsv
     touch ${prefix}.starfusion.abridged.tsv
     touch ${prefix}.starfusion.abridged.coding_effect.tsv
-    touch versions.yml
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        STAR-Fusion: \$(STAR-Fusion --version 2>&1 | grep -i 'version' | sed 's/STAR-Fusion version: //')
+    END_VERSIONS
     """
 }
 

@@ -45,7 +45,10 @@ process ENSEMBL_DOWNLOAD {
     touch "Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf"
     touch "Homo_sapiens.${params.genome}.${ensembl_version}.cdna.all.fa.gz"
 
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        wget: \$(echo wget -V 2>&1 | grep "GNU Wget" | cut -d" " -f3 > versions.yml)
+    END_VERSIONS
     """
 
 }

@@ -40,4 +40,14 @@ process FUSIONCATCHER_DOWNLOAD {
         fusioncatcher: \$(echo \$(fusioncatcher --version 2>&1))
     END_VERSIONS
     """
+
+    stub:
+    """
+    mkdir human_${human_version}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        fusioncatcher: \$(echo \$(fusioncatcher --version 2>&1))
+    END_VERSIONS
+    """
 }

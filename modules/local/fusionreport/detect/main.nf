@@ -40,4 +40,16 @@ process FUSIONREPORT {
         fusion_report: \$(fusion_report --version | sed 's/fusion-report //')
     END_VERSIONS
     """
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}.fusionreport_filtered.tsv
+    touch ${prefix}.fusionreport.tsv
+    touch index.html
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        fusion_report: \$(fusion_report --version | sed 's/fusion-report //')
+    END_VERSIONS
+    """
 }

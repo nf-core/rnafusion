@@ -37,4 +37,15 @@ process ARRIBA_VISUALISATION {
         arriba: \$(arriba -h | grep 'Version:' 2>&1 |  sed 's/Version:\s//')
     END_VERSIONS
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}.pdf
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        arriba: \$(arriba -h | grep 'Version:' 2>&1 |  sed 's/Version:\s//')
+    END_VERSIONS
+    """
 }

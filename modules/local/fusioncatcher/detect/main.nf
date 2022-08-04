@@ -46,4 +46,18 @@ process FUSIONCATCHER {
         fusioncatcher: \$(echo \$(fusioncatcher --version 2>&1)| sed 's/fusioncatcher.py //')
     END_VERSIONS
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+
+    """
+    touch ${prefix}.fusioncatcher.fusion-genes.txt
+    touch ${prefix}.fusioncatcher.summary.txt
+    touch ${prefix}.fusioncatcher.log
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        fusioncatcher: \$(echo \$(fusioncatcher --version 2>&1)| sed 's/fusioncatcher.py //')
+    END_VERSIONS
+    """
 }

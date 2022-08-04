@@ -55,4 +55,16 @@ process PICARD_COLLECTRNASEQMETRICS {
         picard: \$(picard CollectRnaMetrics --version 2>&1 | grep -o 'Version.*' | cut -f2- -d:)
     END_VERSIONS
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}_rna_metrics.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        picard: \$(picard CollectRnaMetrics --version 2>&1 | grep -o 'Version.*' | cut -f2- -d:)
+    END_VERSIONS
+    """
+
 }

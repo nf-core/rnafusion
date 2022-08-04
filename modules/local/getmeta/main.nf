@@ -17,4 +17,8 @@ process GET_META {
     script:
     """
     """
+
+    stub:
+    """
+    """
 }

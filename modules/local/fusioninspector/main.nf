@@ -42,7 +42,11 @@ process FUSIONINSPECTOR {
 
     stub:
     """
-    touch versions.yml
     touch FusionInspector.log
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        STAR-Fusion: \$(STAR-Fusion --version 2>&1 | grep -i 'version' | sed 's/STAR-Fusion version: //')
+    END_VERSIONS
     """
 }
