@@ -41,6 +41,6 @@ jobs:
           parameters: |
             {
               "outdir": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}",
-              "genomes_base": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}/references",
+              "genomes_base": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}/references"
             }
           profiles: test_full,aws_tower
