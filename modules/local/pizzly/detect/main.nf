@@ -36,6 +36,7 @@ process PIZZLY {
     """
 
     stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.pizzly.txt
     touch ${prefix}.pizzly.unfiltered.json
