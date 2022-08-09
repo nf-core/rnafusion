@@ -67,6 +67,7 @@ include { PIZZLY_WORKFLOW               }   from '../subworkflows/local/pizzly_w
 include { QC_WORKFLOW                   }   from '../subworkflows/local/qc_workflow'
 include { SQUID_WORKFLOW                }   from '../subworkflows/local/squid_workflow'
 include { STARFUSION_WORKFLOW           }   from '../subworkflows/local/starfusion_workflow'
+include { STRINGTIE_WORKFLOW            }   from '../subworkflows/local/stringtie_workflow'
 include { FUSIONCATCHER_WORKFLOW        }   from '../subworkflows/local/fusioncatcher_workflow'
 include { FUSIONINSPECTOR_WORKFLOW      }   from '../subworkflows/local/fusioninspector_workflow'
 include { FUSIONREPORT_WORKFLOW         }   from '../subworkflows/local/fusionreport_workflow'
@@ -189,6 +190,14 @@ workflow RNAFUSION {
         ch_cat_trim_fastq
     )
     ch_versions = ch_versions.mix(FUSIONCATCHER_WORKFLOW.out.versions.first().ifEmpty(null))
+
+
+//Run stringtie
+    STRINGTIE_WORKFLOW (
+        STARFUSION_WORKFLOW.out.bam_sorted,
+        ch_chrgtf
+    )
+    ch_versions = ch_versions.mix(STRINGTIE_WORKFLOW.out.versions.first().ifEmpty(null))
 
 
     //Run fusion-report
