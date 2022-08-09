@@ -47,6 +47,12 @@
             },
             "star/genomegenerate": {
                 "git_sha": "fb6c7bca3d55c19a793372513395e3a567bdd7ba"
+            },
+            "stringtie/merge": {
+                "git_sha": "6d88f2da8cc5d586456e801b535cc4213e0fa2f7"
+            },
+            "stringtie/stringtie": {
+                "git_sha": "6d88f2da8cc5d586456e801b535cc4213e0fa2f7"
             }
         }
     }
