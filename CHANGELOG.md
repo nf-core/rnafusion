@@ -3,13 +3,16 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.2.0dev]
+## [2.2.0dev] nfcore/rnafusion
 
 ### Added
 
 - `stringtie` v2.2.1 added to detect splicing events. Not included in `fusion-report` or `fusionInspector` summaries
 
 ### Changed
+
+- multiQC updated to 1.13a in process dumpsoftwareversion
+- Updated nf-core and local modules with stub options
 
 ### Fixed
 
