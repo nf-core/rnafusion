@@ -129,7 +129,7 @@ FusionInspector can be run standalone with:
 ```bash
 nextflow run nf-core/rnafusion \
   --fusioninspector_only \
-  --fusioninspector_fusion <PATH_TO_CUSTOM_FUSION_FILE>
+  --fusioninspector_fusions <PATH_TO_CUSTOM_FUSION_FILE> \
   --input <SAMPLE_SHEET.CSV> \
   --outdir <PATH>
 ```
