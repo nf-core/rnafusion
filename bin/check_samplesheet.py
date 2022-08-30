@@ -92,7 +92,10 @@ class RowChecker:
         """Assert that read pairs have the same file extension. Report pair status."""
         if row[self._first_col] and row[self._second_col]:
             row[self._single_col] = False
-            if Path(row[self._first_col]).suffixes[-2:] != Path(row[self._second_col]).suffixes[-2:]:
+            if (
+                Path(row[self._first_col]).suffixes[-2:]
+                != Path(row[self._second_col]).suffixes[-2:]
+            ):
                 raise AssertionError("FASTQ pairs must have the same file extensions.")
         else:
             row[self._single_col] = True
@@ -161,7 +164,7 @@ def check_samplesheet(file_in, file_out):
     """
 
     sample_mapping_dict = {}
-    with open(file_in, "r", encoding='utf-8-sig') as fin:
+    with open(file_in, "r", encoding="utf-8-sig") as fin:
 
         ## Check header
         MIN_COLS = 3
@@ -209,7 +212,9 @@ def check_samplesheet(file_in, file_out):
                     if fastq:
                         if fastq.find(" ") != -1:
                             print_error("FastQ file contains spaces!", "Line", line)
-                        if not fastq.endswith(".fastq.gz") and not fastq.endswith(".fq.gz"):
+                        if not fastq.endswith(".fastq.gz") and not fastq.endswith(
+                            ".fq.gz"
+                        ):
                             print_error(
                                 "FastQ file does not have extension '.fastq.gz' or '.fq.gz'!",
                                 "Line",
@@ -239,14 +244,18 @@ def check_samplesheet(file_in, file_out):
                 elif sample and fastq_1 and not fastq_2:  ## Single-end short reads
                     sample_info = ["1", fastq_1, fastq_2, strandedness]
                 else:
-                    print_error("Invalid combination of columns provided!", "Line", line)
+                    print_error(
+                        "Invalid combination of columns provided!", "Line", line
+                    )
 
                 ## Create sample mapping dictionary = {sample: [[ single_end, fastq_1, fastq_2, strandedness ]]}
                 if sample not in sample_mapping_dict:
                     sample_mapping_dict[sample] = [sample_info]
                 else:
                     if sample_info in sample_mapping_dict[sample]:
-                        print_error("Samplesheet contains duplicate rows!", "Line", line)
+                        print_error(
+                            "Samplesheet contains duplicate rows!", "Line", line
+                        )
                     else:
                         sample_mapping_dict[sample].append(sample_info)
 
