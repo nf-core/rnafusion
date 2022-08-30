@@ -38,6 +38,7 @@ process FUSIONREPORT {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         fusion_report: \$(fusion_report --version | sed 's/fusion-report //')
+        fusion_report DB retrieval: \$(cat $fusionreport_ref/DB-timestamp.txt)
     END_VERSIONS
     """
 }
