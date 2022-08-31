@@ -154,6 +154,7 @@ def read_head(handle, num_lines=10):
         lines.append(line)
     return "".join(lines)
 
+
 def sniff_format(handle):
     """
     Detect the tabular format.
@@ -173,6 +174,7 @@ def sniff_format(handle):
         sys.exit(1)
     dialect = sniffer.sniff(peek)
     return dialect
+
 
 def check_samplesheet(file_in, file_out):
     """
@@ -201,7 +203,9 @@ def check_samplesheet(file_in, file_out):
         reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))
         # Validate the existence of the expected header columns.
         if not required_columns.issubset(reader.fieldnames):
-            logger.critical(f"The sample sheet **must** contain the column headers: {', '.join(required_columns)}.")
+            logger.critical(
+                f"The sample sheet **must** contain the column headers: {', '.join(required_columns)}."
+            )
             sys.exit(1)
         # Validate each row.
         checker = RowChecker()
