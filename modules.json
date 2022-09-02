@@ -5,17 +5,50 @@
         "nf-core/modules": {
             "git_url": "https://github.com/nf-core/modules.git",
             "modules": {
-                "custom/dumpsoftwareversions": {
-                    "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d",
-                    "branch": "master"
-                },
-                "fastqc": {
-                    "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d",
-                    "branch": "master"
-                },
-                "multiqc": {
-                    "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d",
-                    "branch": "master"
+		"arriba": {
+		    "git_sha": "80746895e214a4d55570f90554164b19476f4114"
+		},
+		"cat/fastq": {
+		    "git_sha": "b034029b59b1198075da8019074bc02051a6100e"
+		},
+		"custom/dumpsoftwareversions": {
+		    "git_sha": "e5b44499efcf6f7fb24874886bac60591c5d94dd"
+		},
+		"fastqc": {
+		    "git_sha": "49b18b1639f4f7104187058866a8fab33332bdfe"
+		},
+		"kallisto/index": {
+		    "git_sha": "479e0638d14a3e9e9dd96a5b74b3b5682e8a8b43"
+		},
+		"multiqc": {
+		    "git_sha": "5138acca0985ca01c38a1c4fba917d83772b1106"
+		},
+		"picard/collectwgsmetrics": {
+		    "git_sha": "ac1c6ad7104c7863842a322a8cf74f4fee1d20b4"
+		},
+		"picard/markduplicates": {
+		    "git_sha": "682f789f93070bd047868300dd018faf3d434e7c"
+		},
+		"qualimap/rnaseq": {
+		    "git_sha": "53108b6b51d4e968e5b1cc9b07ddb6559cb6d43d"
+		},
+		"samtools/faidx": {
+		    "git_sha": "ce06694af8ca2f7453206aa974c2c9a2b99ec093"
+		},
+		"samtools/index": {
+		    "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
+		},
+		"samtools/sort": {
+		    "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
+		},
+		"samtools/view": {
+		    "git_sha": "6b64f9cb6c3dd3577931cc3cd032d6fb730000ce"
+		},
+		"star/align": {
+		    "git_sha": "cd22a76c78b09f7837a5a75642774a4bf48c92ba"
+		},
+		"star/genomegenerate": {
+		    "git_sha": "cd22a76c78b09f7837a5a75642774a4bf48c92ba"
                 }
             }
         }
