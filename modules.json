@@ -50,15 +50,15 @@
                     "branch": "master"
                 },
                 "samtools/sort": {
-                    "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
+                    "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773",
                     "branch": "master"
                 },
                 "samtools/view": {
-                    "git_sha": "6b64f9cb6c3dd3577931cc3cd032d6fb730000ce"
+                    "git_sha": "6b64f9cb6c3dd3577931cc3cd032d6fb730000ce",
                     "branch": "master"
                 },
                 "star/align": {
-                    "git_sha": "cd22a76c78b09f7837a5a75642774a4bf48c92ba"
+                    "git_sha": "cd22a76c78b09f7837a5a75642774a4bf48c92ba",
                     "branch": "master"
                 },
                 "star/genomegenerate": {
