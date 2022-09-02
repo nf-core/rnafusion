@@ -110,9 +110,10 @@ In rnafusion the full-sized test includes reference building and fusion detectio
 nextflow run nf-core/rnafusion --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 --all -profile <docker/singularity/podman/shifter/charliecloud/institute>
 ```
 
-   ```bash
-   nextflow run nf-core/rnafusion --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
-   ```
+```bash
+nextflow run nf-core/rnafusion --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
+```
+
 > Note that paths need to be absolute and that runs with conda are not supported.
 
 ## Documentation
