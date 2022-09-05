@@ -65,7 +65,7 @@ references/
 If process `FUSIONREPORT_DOWNLOAD` times out, it could be due to network restriction (e.g. if trying to run on HPC). As this process is lightweight in compute, storage and time, it is recommended to run on local machines with:
 
 ```bash
-nextflow run nf-nore/rnafusion  \
+nextflow run nf-core/rnafusion  \
   --build_references \
   --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
   --fusionreport \
