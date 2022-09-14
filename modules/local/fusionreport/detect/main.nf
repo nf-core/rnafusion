@@ -5,8 +5,8 @@ process FUSIONREPORT {
     // Note: 2.7X indices incompatible with AWS iGenomes.
     conda (params.enable_conda ? 'bioconda::star=2.7.9a' : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker.io/rannickscilifelab/fusion-report:2.1.5updated' :
-        'docker.io/rannickscilifelab/fusion-report:2.1.5updated' }"
+        'docker.io/clinicalgenomics/fusion-report:2.1.5patched' :
+        'docker.io/clinicalgenomics/fusion-report:2.1.5patched' }"
 
 
     input:
@@ -38,6 +38,7 @@ process FUSIONREPORT {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         fusion_report: \$(fusion_report --version | sed 's/fusion-report //')
+        fusion_report DB retrieval: \$(cat $fusionreport_ref/DB-timestamp.txt)
     END_VERSIONS
     """
 }
