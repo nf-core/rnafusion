@@ -4,7 +4,8 @@
     nf-core/rnafusion
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Github : https://github.com/nf-core/rnafusion
-Website: https://nf-co.re/rnafusion
+
+    Website: https://nf-co.re/rnafusion
     Slack  : https://nfcore.slack.com/channels/rnafusion
 ----------------------------------------------------------------------------------------
 */
