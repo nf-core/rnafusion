@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - multiQC updated to 1.13a in process dumpsoftwareversion
 - Updated nf-core and local modules with stub options
 - Patch fusion-report version with fixed mittelman DB and DB extraction date written into software_version.yaml
-- Swap containers for local convenience functions getMeta and getPath to the base ubuntu image 
+- Swap containers for local convenience functions getMeta and getPath to the base ubuntu image
 
 ### Fixed
 
