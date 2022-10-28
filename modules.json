@@ -19,7 +19,7 @@
                     },
                     "fastqc": {
                         "branch": "master",
-                        "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905"
+                        "git_sha": "f6a11408536fbee6cbea1f5977605011873de3ca"
                     },
                     "kallisto/index": {
                         "branch": "master",
@@ -35,7 +35,7 @@
                     },
                     "picard/markduplicates": {
                         "branch": "master",
-                        "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905"
+                        "git_sha": "eca65aa4a5e2e192ac44d6962c8f9260f314ffb8"
                     },
                     "qualimap/rnaseq": {
                         "branch": "master",
