@@ -1,5 +1,4 @@
 include { FUSIONREPORT      }     from '../../modules/local/fusionreport/detect/main'
-include { GET_META          }     from '../../modules/local/getmeta/main'
 
 
 workflow FUSIONREPORT_WORKFLOW {
@@ -28,7 +27,7 @@ workflow FUSIONREPORT_WORKFLOW {
             ch_fusion_list_filtered = FUSIONREPORT.out.fusion_list_filtered
             ch_versions = ch_versions.mix(FUSIONREPORT.out.versions)
         } else {
-            ch_fusion_list = GET_META(reads, params.fusioninspector_fusions)
+            ch_fusion_list = reads.merge(Channel.fromPath(params.fusioninspector_fusions, checkIfExists:true))
             ch_fusion_list_filtered  = ch_fusion_list
         }
 

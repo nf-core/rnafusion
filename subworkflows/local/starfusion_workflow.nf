@@ -1,6 +1,5 @@
 include { STAR_ALIGN as STAR_FOR_STARFUSION }    from '../../modules/nf-core/modules/star/align/main'
 include { STARFUSION }                           from '../../modules/local/starfusion/detect/main'
-include { GET_META }                             from '../../modules/local/getmeta/main'
 
 workflow STARFUSION_WORKFLOW {
     take:
@@ -15,7 +14,7 @@ workflow STARFUSION_WORKFLOW {
 
         if ((params.starfusion || params.all) && !params.fusioninspector_only) {
             if (params.starfusion_fusions){
-                ch_starfusion_fusions = GET_META(reads, params.starfusion_fusions)
+                ch_starfusion_fusions = reads.merge(Channel.fromPath(params.starfusion_fusions, checkIfExists:true))
             } else {
                 STAR_FOR_STARFUSION( reads, ch_starindex_ref, ch_chrgtf, params.star_ignore_sjdbgtf, '', params.seq_center ?: '')
                 ch_versions = ch_versions.mix(STAR_FOR_STARFUSION.out.versions)
@@ -31,7 +30,7 @@ workflow STARFUSION_WORKFLOW {
             }
         }
         else {
-            ch_starfusion_fusions = GET_META(reads, ch_dummy_file)
+            ch_starfusion_fusions = reads.merge(ch_dummy_file)
             ch_star_stats = Channel.empty()
         }
     emit:

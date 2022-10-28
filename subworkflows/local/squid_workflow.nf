@@ -1,4 +1,3 @@
-include { GET_META }                                    from '../../modules/local/getmeta/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_SQUID}   from '../../modules/nf-core/modules/samtools/index/main'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_SQUID }    from '../../modules/nf-core/modules/samtools/sort/main'
 include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_SQUID }    from '../../modules/nf-core/modules/samtools/view/main'
@@ -19,7 +18,7 @@ workflow SQUID_WORKFLOW {
 
         if ((params.squid || params.all) && !params.fusioninspector_only) {
             if (params.squid_fusions){
-                ch_squid_fusions = GET_META(reads, params.squid_fusions)
+                ch_squid_fusions = reads.merge(Channel.fromPath(params.squid_fusions, checkIfExists:true))
             } else {
 
             STAR_FOR_SQUID( reads, ch_starindex_ensembl_ref, ch_gtf, params.star_ignore_sjdbgtf, '', params.seq_center ?: '')
@@ -48,7 +47,7 @@ workflow SQUID_WORKFLOW {
             }
         }
         else {
-            ch_squid_fusions = GET_META(reads, ch_dummy_file)
+            ch_squid_fusions = reads.merge(ch_dummy_file)
         }
 
     emit:
