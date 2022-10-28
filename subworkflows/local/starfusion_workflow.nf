@@ -1,4 +1,4 @@
-include { STAR_ALIGN as STAR_FOR_STARFUSION }    from '../../modules/nf-core/modules/star/align/main'
+include { STAR_ALIGN as STAR_FOR_STARFUSION }    from '../../modules/nf-core/star/align/main'
 include { STARFUSION }                           from '../../modules/local/starfusion/detect/main'
 
 workflow STARFUSION_WORKFLOW {

@@ -17,8 +17,8 @@ include { GTF_TO_REFFLAT }                  from '../modules/local/uscs/custom_g
 ========================================================================================
 */
 
-include { STAR_GENOMEGENERATE }             from '../modules/nf-core/modules/star/genomegenerate/main'
-include { KALLISTO_INDEX as PIZZLY_INDEX }  from '../modules/nf-core/modules/kallisto/index/main'
+include { STAR_GENOMEGENERATE }             from '../modules/nf-core/star/genomegenerate/main'
+include { KALLISTO_INDEX as PIZZLY_INDEX }  from '../modules/nf-core/kallisto/index/main'
 
 /*
 ========================================================================================

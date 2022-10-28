@@ -1,5 +1,5 @@
 include { REFORMAT }                    from '../../modules/local/reformat/main'
-include { FASTQC as FASTQC_FOR_TRIM }   from '../../modules/nf-core/modules/fastqc/main'
+include { FASTQC as FASTQC_FOR_TRIM }   from '../../modules/nf-core/fastqc/main'
 
 workflow TRIM_WORKFLOW {
     take:

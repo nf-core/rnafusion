@@ -1,9 +1,9 @@
-include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_SQUID}   from '../../modules/nf-core/modules/samtools/index/main'
-include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_SQUID }    from '../../modules/nf-core/modules/samtools/sort/main'
-include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_SQUID }    from '../../modules/nf-core/modules/samtools/view/main'
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_SQUID}   from '../../modules/nf-core/samtools/index/main'
+include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_SQUID }    from '../../modules/nf-core/samtools/sort/main'
+include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_SQUID }    from '../../modules/nf-core/samtools/view/main'
 include { SQUID }                                       from '../../modules/local/squid/detect/main'
 include { SQUID_ANNOTATE }                              from '../../modules/local/squid/annotate/main'
-include { STAR_ALIGN as STAR_FOR_SQUID }                from '../../modules/nf-core/modules/star/align/main'
+include { STAR_ALIGN as STAR_FOR_SQUID }                from '../../modules/nf-core/star/align/main'
 
 workflow SQUID_WORKFLOW {
 
