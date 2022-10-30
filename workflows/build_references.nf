@@ -30,7 +30,9 @@ include { KALLISTO_INDEX as PIZZLY_INDEX }  from '../modules/nf-core/kallisto/in
 workflow BUILD_REFERENCES {
 
     ENSEMBL_DOWNLOAD( params.ensembl_version )
-    SAMTOOLS_FAIDX(([], ENSEMBL_DOWNLOAD.out.fasta ))
+    ch_meta_empty = Channel.empty()
+
+    SAMTOOLS_FAIDX(ch_meta_empty.merge(Channel.fromPath(ch_fasta, checkIfExists:true)))
 
 
     if (params.starindex || params.all || params.starfusion || params.arriba || params.squid ) {
