@@ -12,6 +12,8 @@ workflow QC_WORKFLOW {
         bam_sorted
         ch_chrgtf
         ch_refflat
+        ch_fasta
+        ch_fai
 
     main:
         ch_versions = Channel.empty()
@@ -29,7 +31,7 @@ workflow QC_WORKFLOW {
         ch_versions = ch_versions.mix(PICARD_COLLECTRNASEQMETRICS.out.versions)
         ch_rnaseq_metrics = Channel.empty().mix(PICARD_COLLECTRNASEQMETRICS.out.metrics)
 
-        PICARD_MARKDUPLICATES(bam_sorted)
+        PICARD_MARKDUPLICATES(bam_sorted, ch_fasta, ch_fai)
         ch_versions = ch_versions.mix(PICARD_MARKDUPLICATES.out.versions)
         ch_duplicate_metrics = Channel.empty().mix(PICARD_MARKDUPLICATES.out.metrics)
 

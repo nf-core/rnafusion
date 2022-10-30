@@ -11,6 +11,7 @@ WorkflowRnafusion.initialise(params, log)
 
 // Check mandatory parameters
 
+// TODO
 if (file(params.input).exists() || params.build_references) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet does not exist or was not specified!' }
 if (params.fusioninspector_only && !params.fusioninspector_fusions) { exit 1, 'Parameter --fusioninspector_fusions PATH_TO_FUSION_LIST expected with parameter --fusioninspector_only'}
 
@@ -19,8 +20,10 @@ ch_starindex_ref = params.starfusion_build ? params.starindex_ref : "${params.st
 ch_starindex_ensembl_ref = params.starindex_ref
 ch_refflat = params.starfusion_build ? file(params.refflat) : "${params.ensembl_ref}/ref_annot.gtf.refflat"
 
+
 def checkPathParamList = [
     params.fasta,
+    params.fai,
     params.gtf,
     ch_chrgtf,
     params.transcript,
@@ -40,6 +43,7 @@ if ((params.squid || params.all) && params.ensembl_version == 105) { exit 1, 'En
 ch_fasta = file(params.fasta)
 ch_gtf = file(params.gtf)
 ch_transcript = file(params.transcript)
+ch_fai = file(params.fai)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -218,7 +222,9 @@ workflow RNAFUSION {
     QC_WORKFLOW (
         STARFUSION_WORKFLOW.out.bam_sorted,
         ch_chrgtf,
-        ch_refflat
+        ch_refflat,
+        ch_fasta,
+        ch_fai
     )
     ch_versions = ch_versions.mix(QC_WORKFLOW.out.versions.first().ifEmpty(null))
 
