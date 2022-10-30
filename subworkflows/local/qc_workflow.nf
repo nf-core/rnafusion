@@ -2,10 +2,10 @@
 // Check input samplesheet and get read channels
 //
 
-include { QUALIMAP_RNASEQ }                            from '../../modules/nf-core/modules/qualimap/rnaseq/main'
-include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_QC }    from '../../modules/nf-core/modules/samtools/index/main'
+include { QUALIMAP_RNASEQ }                            from '../../modules/nf-core/qualimap/rnaseq/main'
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_QC }    from '../../modules/nf-core/samtools/index/main'
 include { PICARD_COLLECTRNASEQMETRICS }                 from '../../modules/local/picard/collectrnaseqmetrics/main'
-include { PICARD_MARKDUPLICATES }                      from '../../modules/nf-core/modules/picard/markduplicates/main'
+include { PICARD_MARKDUPLICATES }                      from '../../modules/nf-core/picard/markduplicates/main'
 
 workflow QC_WORKFLOW {
     take:

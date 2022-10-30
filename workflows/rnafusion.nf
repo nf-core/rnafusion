@@ -82,17 +82,10 @@ include { FUSIONREPORT_WORKFLOW         }   from '../subworkflows/local/fusionre
 //
 // MODULE: Installed directly from nf-core/modules
 //
-<<<<<<< HEAD
+include { CAT_FASTQ                   } from '../modules/nf-core/cat/fastq/main'
 include { FASTQC                      } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
-=======
-include { CAT_FASTQ                   } from '../modules/nf-core/modules/cat/fastq/main'
-include { FASTQC                      } from '../modules/nf-core/modules/fastqc/main'
-include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
-include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
->>>>>>> dev
-
 
 
 

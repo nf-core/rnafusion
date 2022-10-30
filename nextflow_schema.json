@@ -503,12 +503,6 @@
                     "hidden": true,
                     "fa_icon": "fas fa-bacon"
                 },
-                "singularity_pull_docker_container": {
-                    "type": "boolean",
-                    "description": "Use to pull docker containers to run with singularity",
-                    "hidden": true,
-                    "fa_icon": "fas fa-bacon"
-                },
                 "seq_center": {
                     "type": "string",
                     "description": "Sequencing center",
