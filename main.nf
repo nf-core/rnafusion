@@ -18,7 +18,18 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-params.fasta = WorkflowMain.getGenomeAttribute(params, 'fasta')
+params.fasta           = WorkflowMain.getGenomeAttribute(params, 'fasta')
+params.gtf             = WorkflowMain.getGenomeAttribute(params, 'gtf')
+params.chrgtf          = WorkflowMain.getGenomeAttribute(params, 'chrgtf')
+params.transcript      = WorkflowMain.getGenomeAttribute(params, 'transcript')
+params.refflat         = WorkflowMain.getGenomeAttribute(params, 'refflat')
+
+/*
+========================================================================================
+    PARAMETER VALUES
+========================================================================================
+*/
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,13 +45,25 @@ WorkflowMain.initialise(workflow, params, log)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { RNAFUSION } from './workflows/rnafusion'
+include { BUILD_REFERENCES } from './workflows/build_references'
+include { RNAFUSION }        from './workflows/rnafusion'
+
 
 //
 // WORKFLOW: Run main nf-core/rnafusion analysis pipeline
 //
 workflow NFCORE_RNAFUSION {
-    RNAFUSION ()
+
+    if (params.build_references) {
+
+        BUILD_REFERENCES ()
+
+    } else {
+
+        RNAFUSION()
+
+    }
+
 }
 
 /*

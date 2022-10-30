@@ -5,6 +5,14 @@
         "https://github.com/nf-core/modules.git": {
             "modules": {
                 "nf-core": {
+                    "arriba": {
+                        "branch": "master",
+                        "git_sha": "80746895e214a4d55570f90554164b19476f4114"
+                    },
+                    "cat/fastq": {
+                        "branch": "master",
+                        "git_sha": "b034029b59b1198075da8019074bc02051a6100e"
+                    },
                     "custom/dumpsoftwareversions": {
                         "branch": "master",
                         "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905"
@@ -13,9 +21,49 @@
                         "branch": "master",
                         "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905"
                     },
+                    "kallisto/index": {
+                        "branch": "master",
+                        "git_sha": "479e0638d14a3e9e9dd96a5b74b3b5682e8a8b43"
+                    },
                     "multiqc": {
                         "branch": "master",
                         "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905"
+                    },
+                    "picard/collectwgsmetrics": {
+                        "branch": "master",
+                        "git_sha": "ac1c6ad7104c7863842a322a8cf74f4fee1d20b4"
+                    },
+                    "picard/markduplicates": {
+                        "branch": "master",
+                        "git_sha": "682f789f93070bd047868300dd018faf3d434e7c"
+                    },
+                    "qualimap/rnaseq": {
+                        "branch": "master",
+                        "git_sha": "53108b6b51d4e968e5b1cc9b07ddb6559cb6d43d"
+                    },
+                    "samtools/faidx": {
+                        "branch": "master",
+                        "git_sha": "ce06694af8ca2f7453206aa974c2c9a2b99ec093"
+                    },
+                    "samtools/index": {
+                        "branch": "master",
+                        "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
+                    },
+                    "samtools/sort": {
+                        "branch": "master",
+                        "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
+                    },
+                    "samtools/view": {
+                        "branch": "master",
+                        "git_sha": "6b64f9cb6c3dd3577931cc3cd032d6fb730000ce"
+                    },
+                    "star/align": {
+                        "branch": "master",
+                        "git_sha": "cd22a76c78b09f7837a5a75642774a4bf48c92ba"
+                    },
+                    "star/genomegenerate": {
+                        "branch": "master",
+                        "git_sha": "cd22a76c78b09f7837a5a75642774a4bf48c92ba"
                     }
                 }
             }
