@@ -258,8 +258,7 @@
                 "genome": {
                     "type": "string",
                     "description": "Name of iGenomes reference.",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
+                    "fa_icon": "fas fa-book"
                 },
                 "fasta": {
                     "type": "string",
@@ -267,7 +266,14 @@
                     "mimetype": "text/plain",
                     "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
                     "description": "Path to FASTA genome file.",
-                    "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "fai": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.fn?ai(\\.gz)?$",
+                    "description": "Path to FASTA genome index file.",
                     "fa_icon": "far fa-file-code"
                 },
                 "igenomes_base": {
@@ -452,11 +458,29 @@
                     "fa_icon": "fas fa-palette",
                     "hidden": true
                 },
+                "hook_url": {
+                    "type": "string",
+                    "description": "Incoming hook URL for messaging service",
+                    "fa_icon": "fas fa-people-group",
+                    "help_text": "Incoming hook URL for messaging service. Currently, only MS Teams is supported.",
+                    "hidden": true
+                },
                 "multiqc_config": {
                     "type": "string",
                     "description": "Custom config file to supply to MultiQC.",
                     "fa_icon": "fas fa-cog",
                     "hidden": true
+                },
+                "multiqc_logo": {
+                    "type": "string",
+                    "description": "Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file",
+                    "fa_icon": "fas fa-image",
+                    "hidden": true
+                },
+                "multiqc_methods_description": {
+                    "type": "string",
+                    "description": "Custom MultiQC yaml file containing HTML including a methods description.",
+                    "fa_icon": "fas fa-cog"
                 },
                 "tracedir": {
                     "type": "string",
@@ -482,12 +506,6 @@
                 "enable_conda": {
                     "type": "boolean",
                     "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
-                    "hidden": true,
-                    "fa_icon": "fas fa-bacon"
-                },
-                "singularity_pull_docker_container": {
-                    "type": "boolean",
-                    "description": "Use to pull docker containers to run with singularity",
                     "hidden": true,
                     "fa_icon": "fas fa-bacon"
                 },
