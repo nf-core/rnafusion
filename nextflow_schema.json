@@ -258,7 +258,7 @@
                 "genome": {
                     "type": "string",
                     "description": "Name of iGenomes reference.",
-                    "fa_icon": "fas fa-book",
+                    "fa_icon": "fas fa-book"
                 },
                 "fasta": {
                     "type": "string",
