@@ -1,5 +1,5 @@
-include { STRINGTIE_STRINGTIE }    from '../../modules/nf-core/modules/stringtie/stringtie/main'
-include { STRINGTIE_MERGE }        from '../../modules/nf-core/modules/stringtie/merge/main'
+include { STRINGTIE_STRINGTIE }    from '../../modules/nf-core/stringtie/stringtie/main'
+include { STRINGTIE_MERGE }        from '../../modules/nf-core/stringtie/merge/main'
 
 
 workflow STRINGTIE_WORKFLOW {
