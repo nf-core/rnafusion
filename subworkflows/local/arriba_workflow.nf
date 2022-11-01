@@ -48,7 +48,7 @@ workflow ARRIBA_WORKFLOW {
 
         }
         else {
-            ch_arriba_fusions       = reads.merge(ch_dummy_file)
+            ch_arriba_fusions       = reads.merge(Channel.fromPath(ch_dummy_file, checkIfExists:true))
             ch_arriba_fusion_fail   = ch_dummy_file
             ch_arriba_visualisation = ch_dummy_file
         }
