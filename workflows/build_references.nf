@@ -17,6 +17,7 @@ include { GTF_TO_REFFLAT }                  from '../modules/local/uscs/custom_g
 ========================================================================================
 */
 
+include { SAMTOOLS_FAIDX }                  from '../modules/nf-core/samtools/faidx/main'
 include { STAR_GENOMEGENERATE }             from '../modules/nf-core/star/genomegenerate/main'
 include { KALLISTO_INDEX as PIZZLY_INDEX }  from '../modules/nf-core/kallisto/index/main'
 
@@ -29,6 +30,9 @@ include { KALLISTO_INDEX as PIZZLY_INDEX }  from '../modules/nf-core/kallisto/in
 workflow BUILD_REFERENCES {
 
     ENSEMBL_DOWNLOAD( params.ensembl_version )
+    ch_fasta_w_meta = ENSEMBL_DOWNLOAD.out.fasta.map{ it -> [[id:it[0].baseName], it] }
+    SAMTOOLS_FAIDX(ch_fasta_w_meta)
+
 
     if (params.starindex || params.all || params.starfusion || params.arriba || params.squid ) {
         STAR_GENOMEGENERATE( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.gtf )
