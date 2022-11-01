@@ -4,6 +4,7 @@
     nf-core/rnafusion
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Github : https://github.com/nf-core/rnafusion
+
     Website: https://nf-co.re/rnafusion
     Slack  : https://nfcore.slack.com/channels/rnafusion
 ----------------------------------------------------------------------------------------
@@ -18,6 +19,7 @@ nextflow.enable.dsl = 2
 */
 
 params.fasta           = WorkflowMain.getGenomeAttribute(params, 'fasta')
+params.fai             = WorkflowMain.getGenomeAttribute(params, 'fai')
 params.gtf             = WorkflowMain.getGenomeAttribute(params, 'gtf')
 params.chrgtf          = WorkflowMain.getGenomeAttribute(params, 'chrgtf')
 params.transcript      = WorkflowMain.getGenomeAttribute(params, 'transcript')

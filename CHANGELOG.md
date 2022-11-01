@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.2.0dev] nfcore/rnafusion
+## v2.2.0dev - [date]
 
 ### Added
 
@@ -11,8 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Updated to nf-core template 2.6, with all module updates
 - multiQC updated to 1.13a in process dumpsoftwareversion
 - Updated nf-core and local modules with stub options
+- Patch fusion-report version with fixed mittelman DB and DB extraction date written into software_version.yaml
 
 ### Fixed
 

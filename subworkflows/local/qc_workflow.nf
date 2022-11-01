@@ -2,16 +2,18 @@
 // Check input samplesheet and get read channels
 //
 
-include { QUALIMAP_RNASEQ }                            from '../../modules/nf-core/modules/qualimap/rnaseq/main'
-include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_QC }    from '../../modules/nf-core/modules/samtools/index/main'
+include { QUALIMAP_RNASEQ }                            from '../../modules/nf-core/qualimap/rnaseq/main'
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_QC }    from '../../modules/nf-core/samtools/index/main'
 include { PICARD_COLLECTRNASEQMETRICS }                 from '../../modules/local/picard/collectrnaseqmetrics/main'
-include { PICARD_MARKDUPLICATES }                      from '../../modules/nf-core/modules/picard/markduplicates/main'
+include { PICARD_MARKDUPLICATES }                      from '../../modules/nf-core/picard/markduplicates/main'
 
 workflow QC_WORKFLOW {
     take:
         bam_sorted
         ch_chrgtf
         ch_refflat
+        ch_fasta
+        ch_fai
 
     main:
         ch_versions = Channel.empty()
@@ -29,7 +31,7 @@ workflow QC_WORKFLOW {
         ch_versions = ch_versions.mix(PICARD_COLLECTRNASEQMETRICS.out.versions)
         ch_rnaseq_metrics = Channel.empty().mix(PICARD_COLLECTRNASEQMETRICS.out.metrics)
 
-        PICARD_MARKDUPLICATES(bam_sorted)
+        PICARD_MARKDUPLICATES(bam_sorted, ch_fasta, ch_fai)
         ch_versions = ch_versions.mix(PICARD_MARKDUPLICATES.out.versions)
         ch_duplicate_metrics = Channel.empty().mix(PICARD_MARKDUPLICATES.out.metrics)
 

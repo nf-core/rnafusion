@@ -1,10 +1,10 @@
-include { ARRIBA }                                      from '../../modules/nf-core/modules/arriba/main'
+include { ARRIBA }                                      from '../../modules/nf-core/arriba/main'
 include { ARRIBA_VISUALISATION }                        from '../../modules/local/arriba/visualisation/main'
 include { GET_META }                                    from '../../modules/local/getmeta/main'
 include { GET_PATH as GET_PATH_ARRIBA_FAIL }            from '../../modules/local/getpath/main'
-include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_ARRIBA }   from '../../modules/nf-core/modules/samtools/sort/main'
-include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_ARRIBA}  from '../../modules/nf-core/modules/samtools/index/main'
-include { STAR_ALIGN as STAR_FOR_ARRIBA }               from '../../modules/nf-core/modules/star/align/main'
+include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_ARRIBA }   from '../../modules/nf-core/samtools/sort/main'
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_ARRIBA}  from '../../modules/nf-core/samtools/index/main'
+include { STAR_ALIGN as STAR_FOR_ARRIBA }               from '../../modules/nf-core/star/align/main'
 
 
 workflow ARRIBA_WORKFLOW {
