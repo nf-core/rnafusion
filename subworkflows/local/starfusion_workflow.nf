@@ -30,7 +30,7 @@ workflow STARFUSION_WORKFLOW {
             }
         }
         else {
-            ch_starfusion_fusions = reads.merge(ch_dummy_file)
+            ch_starfusion_fusions = reads.merge(Channel.fromPath(ch_dummy_file, checkIfExists:true))
             ch_star_stats = Channel.empty()
         }
     emit:

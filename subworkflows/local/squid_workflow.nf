@@ -47,7 +47,7 @@ workflow SQUID_WORKFLOW {
             }
         }
         else {
-            ch_squid_fusions = reads.merge(ch_dummy_file)
+            ch_squid_fusions = reads.merge(Channel.fromPath(ch_dummy_file, checkIfExists:true))
         }
 
     emit:

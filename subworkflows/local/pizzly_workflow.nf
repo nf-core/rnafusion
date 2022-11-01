@@ -25,7 +25,8 @@ workflow PIZZLY_WORKFLOW {
             }
         }
         else  {
-            ch_pizzly_fusions = reads.merge(ch_dummy_file)
+            ch_pizzly_fusions = reads.merge(Channel.fromPath(ch_dummy_file, checkIfExists:true))
+
 
         }
 
