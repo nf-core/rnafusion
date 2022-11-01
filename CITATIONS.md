@@ -51,6 +51,9 @@
 - [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion)
   > Haas BJ, Dobin A, Li B, Stransky N, Pochet N, Regev A. Accuracy assessment of fusion transcript detection via read-mapping and de novo fusion transcript assembly-based methods. Genome Biology 2019 Oct;20,213. doi: 10.1186/s13059-019-1842-9
 
+- [StringTie](https://ccb.jhu.edu/software/stringtie/index.shtml)
+  > Shumate A, Wong B, Pertea G, Pertea M. Improved transcriptome assembly using a hybrid of long and short reads with StringTie. PLOS Computational Biology 18, 6 (2022), doi.org/10.1371/journal.pcbi.1009730
+
 ## Software packaging/containerisation tools
 
 - [Anaconda](https://anaconda.com)
