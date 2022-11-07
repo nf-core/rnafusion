@@ -20,15 +20,14 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 > GRCh38 is the only supported reference
 
-| Tool                                                      |  Version  |
-| --------------------------------------------------------- |  :------: |
-| [Arriba](https://github.com/suhrig/arriba)                |  `2.3.0`  |
-| [FusionCatcher](https://github.com/ndaniel/fusioncatcher) |   `1.33`  |
-| [Pizzly](https://github.com/pmelsted/pizzly)              |  `0.37.3` |
-| [Squid](https://github.com/Kingsford-Group/squid)         |   `1.5`   |
-| [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) |  `1.10.1` |
-| [StringTie](https://github.com/gpertea/stringtie)         |  `2.2.1`  |
-
+| Tool                                                      | Version  |
+| --------------------------------------------------------- | :------: |
+| [Arriba](https://github.com/suhrig/arriba)                | `2.3.0`  |
+| [FusionCatcher](https://github.com/ndaniel/fusioncatcher) |  `1.33`  |
+| [Pizzly](https://github.com/pmelsted/pizzly)              | `0.37.3` |
+| [Squid](https://github.com/Kingsford-Group/squid)         |  `1.5`   |
+| [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) | `1.10.1` |
+| [StringTie](https://github.com/gpertea/stringtie)         | `2.2.1`  |
 
 > Single-end reads are to be use as last-resort. Paired-end reads are recommended. FusionCatcher cannot be used with single-end reads shorter than 130 bp.
 

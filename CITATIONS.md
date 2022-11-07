@@ -49,6 +49,7 @@
   > Dobin A, Davis CA, Schlesinger F, Drenkow J, Zaleski C, Jha S, Batut P, Chaisson M, Gingeras TR. STAR: ultrafast universal RNA-seq aligner Bioinformatics. 2013 Jan 1;29(1):15-21. doi: 10.1093/bioinformatics/bts635. Epub 2012 Oct 25. PubMed PMID: 23104886; PubMed Central PMCID: PMC3530905.
 
 - [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion)
+
   > Haas BJ, Dobin A, Li B, Stransky N, Pochet N, Regev A. Accuracy assessment of fusion transcript detection via read-mapping and de novo fusion transcript assembly-based methods. Genome Biology 2019 Oct;20,213. doi: 10.1186/s13059-019-1842-9
 
 - [StringTie](https://ccb.jhu.edu/software/stringtie/index.shtml)
