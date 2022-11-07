@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `stringtie` v2.2.1 added to detect splicing events. Not included in `fusion-report` or `fusionInspector` summaries
+- `--stringtie` option added with StringTie v2.2.1 to detect splicing events. Not included in `fusion-report` or `fusionInspector` summaries. Included in the `--all` workflow
 
 ### Changed
 
