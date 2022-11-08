@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Update CUSTOM_DUMPSOFTWAREVERSIONS to use multiqc version 1.13
+- Updated to nf-core template 2.6, with all module updates
 - multiQC updated to 1.13a in process dumpsoftwareversion
 - Updated nf-core and local modules with stub options
 - Patch fusion-report version with fixed mittelman DB and DB extraction date written into software_version.yaml
