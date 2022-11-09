@@ -14,7 +14,8 @@ workflow STARFUSION_WORKFLOW {
 
         if ((params.starfusion || params.all) && !params.fusioninspector_only) {
             if (params.starfusion_fusions){
-                ch_starfusion_fusions = reads.merge(Channel.fromPath(params.starfusion_fusions, checkIfExists:true))
+                ch_starfusion_fusions = reads.combine(Channel.value(file(params.starfusion_fusions, checkIfExists:true)))
+                                        .map { meta, reads, fusions -> [ meta, fusions ] }
             } else {
                 STAR_FOR_STARFUSION( reads, ch_starindex_ref, ch_chrgtf, params.star_ignore_sjdbgtf, '', params.seq_center ?: '')
                 ch_versions = ch_versions.mix(STAR_FOR_STARFUSION.out.versions)
@@ -30,7 +31,8 @@ workflow STARFUSION_WORKFLOW {
             }
         }
         else {
-            ch_starfusion_fusions = reads.merge(Channel.fromPath(ch_dummy_file, checkIfExists:true))
+            ch_starfusion_fusions = reads.combine(Channel.value(file(ch_dummy_file, checkIfExists:true)))
+                                    .map { meta, reads, fusions -> [ meta, fusions ] }
             ch_star_stats = Channel.empty()
         }
     emit:

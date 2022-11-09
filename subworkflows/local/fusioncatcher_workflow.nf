@@ -11,8 +11,8 @@ workflow FUSIONCATCHER_WORKFLOW {
 
         if ((params.fusioncatcher || params.all) && !params.fusioninspector_only) {
             if (params.fusioncatcher_fusions){
-                ch_fusioncatcher_fusions = reads.merge(Channel.fromPath(params.fusioncatcher_fusions, checkIfExists:true))
-
+                ch_fusioncatcher_fusions = reads.combine(Channel.value(file(params.fusioncatcher_fusions, checkIfExists:true)))
+                                            .map { meta, reads, fusions -> [ meta, fusions ] }
             } else {
                 FUSIONCATCHER (
                     reads,
@@ -22,7 +22,8 @@ workflow FUSIONCATCHER_WORKFLOW {
             }
         }
         else {
-            ch_fusioncatcher_fusions = reads.merge(Channel.fromPath(ch_dummy_file, checkIfExists:true))
+            ch_fusioncatcher_fusions = reads.combine(Channel.value(file(ch_dummy_file, checkIfExists:true)))
+                                        .map { meta, reads, fusions -> [ meta, fusions ] }
         }
 
     emit:

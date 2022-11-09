@@ -31,7 +31,8 @@ workflow ARRIBA_WORKFLOW {
 
             if (params.arriba_fusions) {
                 // [meta, reads], fusions -> [meta, fusions]
-                ch_arriba_fusions = reads.merge(Channel.fromPath(params.arriba_fusions, checkIfExists:true))
+                ch_arriba_fusions = reads.combine( Channel.value( file( params.arriba_fusions, checkIfExists: true ) ) )
+                    .map { meta, reads, fusions -> [ meta, fusions ] }
                 ch_arriba_fusion_fail = ch_dummy_file
             } else {
                 ARRIBA ( STAR_FOR_ARRIBA.out.bam, ch_fasta, ch_gtf, params.arriba_ref_blacklist, [], [], [], params.arriba_ref_protein_domain )
@@ -48,7 +49,9 @@ workflow ARRIBA_WORKFLOW {
 
         }
         else {
-            ch_arriba_fusions       = reads.merge(Channel.fromPath(ch_dummy_file, checkIfExists:true))
+            ch_arriba_fusions       = reads.combine(Channel.value( file(ch_dummy_file, checkIfExists:true ) ) )
+                                        .map { meta, reads, fusions -> [ meta, fusions ] }
+
             ch_arriba_fusion_fail   = ch_dummy_file
             ch_arriba_visualisation = ch_dummy_file
         }

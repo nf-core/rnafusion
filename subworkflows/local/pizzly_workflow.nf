@@ -13,7 +13,8 @@ workflow PIZZLY_WORKFLOW {
 
         if ((params.pizzly || params.all) && !params.fusioninspector_only) {
             if (params.pizzly_fusions) {
-                ch_pizzly_fusions = reads.merge(Channel.fromPath(params.pizzly_fusions, checkIfExists:true))
+                ch_pizzly_fusions = reads.combine(Channel.value(file(params.pizzly_fusions, checkIfExists:true)))
+                                    .map { meta, reads, fusions -> [ meta, fusions ] }
             } else {
                 KALLISTO_QUANT(reads, params.pizzly_ref )
                 ch_versions = ch_versions.mix(KALLISTO_QUANT.out.versions)
@@ -25,9 +26,8 @@ workflow PIZZLY_WORKFLOW {
             }
         }
         else  {
-            ch_pizzly_fusions = reads.merge(Channel.fromPath(ch_dummy_file, checkIfExists:true))
-
-
+            ch_pizzly_fusions = reads.combine(Channel.value(file(ch_dummy_file, checkIfExists:true)))
+                                            .map { meta, reads, fusions -> [ meta, fusions ] }
         }
 
     emit:

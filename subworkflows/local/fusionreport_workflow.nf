@@ -27,7 +27,9 @@ workflow FUSIONREPORT_WORKFLOW {
             ch_fusion_list_filtered = FUSIONREPORT.out.fusion_list_filtered
             ch_versions = ch_versions.mix(FUSIONREPORT.out.versions)
         } else {
-            ch_fusion_list = reads.merge(Channel.fromPath(params.fusioninspector_fusions, checkIfExists:true))
+            ch_fusion_list = reads.combine(Channel.value(file(params.fusioninspector_fusions, checkIfExists:true)))
+                            .map { meta, reads, fusions -> [ meta, fusions ] }
+
             ch_fusion_list_filtered  = ch_fusion_list
         }
 
