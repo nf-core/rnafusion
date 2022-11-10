@@ -1,5 +1,4 @@
 include { FUSIONCATCHER }                       from '../../modules/local/fusioncatcher/detect/main'
-include { GET_META }                            from '../../modules/local/getmeta/main'
 
 
 workflow FUSIONCATCHER_WORKFLOW {
@@ -12,7 +11,8 @@ workflow FUSIONCATCHER_WORKFLOW {
 
         if ((params.fusioncatcher || params.all) && !params.fusioninspector_only) {
             if (params.fusioncatcher_fusions){
-                ch_fusioncatcher_fusions = GET_META(reads, params.fusioncatcher_fusions)
+                ch_fusioncatcher_fusions = reads.combine(Channel.value(file(params.fusioncatcher_fusions, checkIfExists:true)))
+                                            .map { meta, reads, fusions -> [ meta, fusions ] }
             } else {
                 FUSIONCATCHER (
                     reads,
@@ -22,7 +22,8 @@ workflow FUSIONCATCHER_WORKFLOW {
             }
         }
         else {
-            ch_fusioncatcher_fusions = GET_META(reads, ch_dummy_file)
+            ch_fusioncatcher_fusions = reads.combine(Channel.value(file(ch_dummy_file, checkIfExists:true)))
+                                        .map { meta, reads, fusions -> [ meta, fusions ] }
         }
 
     emit:
