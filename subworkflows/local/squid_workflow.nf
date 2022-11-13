@@ -11,6 +11,7 @@ workflow SQUID_WORKFLOW {
         reads
         ch_gtf
         ch_starindex_ensembl_ref
+        ch_fasta
 
     main:
         ch_versions = Channel.empty()
@@ -30,7 +31,7 @@ workflow SQUID_WORKFLOW {
             return [meta, sam, []]
             }.set { sam_indexed }
 
-            SAMTOOLS_VIEW_FOR_SQUID ( sam_indexed, [] )
+            SAMTOOLS_VIEW_FOR_SQUID ( sam_indexed, ch_fasta, [] )
             ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID.out.versions )
 
             SAMTOOLS_SORT_FOR_SQUID ( SAMTOOLS_VIEW_FOR_SQUID.out.bam )

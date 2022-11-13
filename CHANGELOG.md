@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Test profiles unified under 'test' but if the references do not all need to be downloaded, run with `-stub`
 - UPDATE IN USAGE: in order to make AWS tests work, now the analysis part of the pipeline will run after downloading the references with `build_references` if an `input` parameter is provided
 - Update CUSTOM_DUMPSOFTWAREVERSIONS to use multiqc version 1.13
 - Updated to nf-core template 2.6, with all module updates

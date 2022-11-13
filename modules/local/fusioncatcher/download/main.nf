@@ -42,6 +42,7 @@ process FUSIONCATCHER_DOWNLOAD {
     """
 
     stub:
+    def human_version = "v102"
     """
     mkdir human_${human_version}
 

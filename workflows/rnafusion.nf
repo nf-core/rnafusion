@@ -174,7 +174,8 @@ workflow RNAFUSION {
     SQUID_WORKFLOW (
         ch_cat_fastq,
         ch_gtf,
-        ch_starindex_ensembl_ref
+        ch_starindex_ensembl_ref,
+        ch_fasta
     )
     ch_versions = ch_versions.mix(SQUID_WORKFLOW.out.versions.first().ifEmpty(null))
 

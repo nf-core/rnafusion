@@ -24,5 +24,6 @@ jobs:
               "genomes_base": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}/references",
               "cosmic_username": "${{ secrets.cosmic_username }}",
               "cosmic_passwd": "${{ secrets.cosmic_passwd }}"
+              "stub": true
             }
           profiles: test_build,aws_tower
