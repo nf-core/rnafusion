@@ -28,6 +28,8 @@ Download the references as shown below including your COSMIC credentials.
 
 > Note that this step takes about 24 hours to complete on HPC.
 
+> Do not provide a samplesheet via the `input` parameter, otherwise the pipeline will run the analysis directly after downloading the references (except if that is what you want).
+
 ```bash
 nextflow run nf-core/rnafusion \
   --build_references --all \
@@ -46,23 +48,6 @@ nextflow run nf-core/rnafusion \
   --outdir <OUTPUT/PATH>
 ```
 
-> For S3 usage: references for arriba are taken from the container image, which is not in the bound path with S3. Therefore arriba references have to be manually downloaded in this case and fed to rnafusion. Follow the steps below:
-
-- Download arriba tar.gz file from https://github.com/suhrig/arriba/releases/latest
-- Extract
-- Start rnafusion pipeline with:
-
-```bash
-nextflow run nf-core/rnafusion \
-  --<arriba> (--<tool2> ... OR --all) \
-  --input <SAMPLE_SHEET.CSV> \
-  --genomes_base <PATH/TO/REFERENCES> \
-  --outdir <OUTPUT/PATH> \
-  --arriba_ref_blacklist <PATH/TO/ARRIBA/BLACKLIST/FILE> \
-  --arriba_protein_domain <PATH/TO/ARRIBA/PROTEIN/DOMAIN/FILE> \
-  --arriba_ref <PATH/TO/ARRIBA/REFERENCES/FOLDER>
-```
-
 #### References directory tree
 
 ```text
@@ -79,7 +64,7 @@ references/
 
 #### Issues with building references
 
-If process `FUSIONREPORT_DOWNLOAD` times out, it could be due to network restriction (e.g. if trying to run on HPC). As this process is lightweight in compute, storage and time, it is recommended to run on local machines with:
+If process `FUSIONREPORT_DOWNLOAD` times out, it could be due to network restriction (e.g. if trying to run on HPC). As this process is lightweight in compute, storage and time, running on local machines with the following options might solve the issue:
 
 ```bash
 nextflow run nf-core/rnafusion  \

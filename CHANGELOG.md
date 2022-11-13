@@ -7,16 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Instructions to run `Arriba` on S3 with manually downloaded references as with the `Arriba` now uses the references from the docker/singularity containers
 - exitStatus 140 now part of the retry strategy
+- stubs to all local modules
 
 ### Changed
 
+- UPDATE IN USAGE: in order to make AWS tests work, now the analysis part of the pipeline will run after downloading the references with `build_references` if an `input` parameter is provided
 - Update CUSTOM_DUMPSOFTWAREVERSIONS to use multiqc version 1.13
 - Updated to nf-core template 2.6, with all module updates
-- multiQC updated to 1.13a in process dumpsoftwareversion
+- `MultiQC` updated to 1.13a in process dumpsoftwareversion
 - Updated nf-core and local modules with stub options
 - Patch fusion-report version with fixed mittelman DB and DB extraction date written into software_version.yaml
+- `Arriba` references back to downloading with `build_references` instead of taking from container
 
 ### Fixed
 
