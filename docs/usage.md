@@ -13,7 +13,7 @@ The pipeline is divided into two parts:
    - required only once before running the pipeline
    - **Important**: rerun with each new release
 2. Detecting fusions
-   - Supported tools: `Arriba`, `FusionCatcher`, `pizzly`, `SQUID` and `STAR-Fusion`
+   - Supported tools: `Arriba`, `FusionCatcher`, `pizzly`, `SQUID`, `STAR-Fusion` and `StringTie`
    - QC: `Fastqc` and `MultiQC`
    - Fusion visualization: `Arriba` (only fusion detected with Arriba), `fusion-report` and `FusionInspector`
 
@@ -98,7 +98,7 @@ By default STAR-Fusion references are **built**. You can also download them from
 
 ### 2. Detecting fusions
 
-This step can either be run using all fusion detection tools or specifying individual tools. Visualisation tools will be run on all fusions detected. To run all tools (`arriba`, `fusioncatcher`, `pizzly`, `squid`, `starfusion`) use the `--all` parameter:
+This step can either be run using all fusion detection tools or specifying individual tools. Visualisation tools will be run on all fusions detected. To run all tools (`arriba`, `fusioncatcher`, `pizzly`, `squid`, `starfusion`, `stringtie`) use the `--all` parameter:
 
 ```bash
 nextflow run nf-core/rnafusion \

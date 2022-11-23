@@ -224,6 +224,11 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to starindex references"
                 },
+                "stringtie": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Run stringtie analysis"
+                },
                 "cosmic_username": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
