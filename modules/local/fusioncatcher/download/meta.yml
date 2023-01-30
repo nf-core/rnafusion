@@ -1,0 +1,25 @@
+name: fusioncatcher_download
+description: Build genome for fusioncatcher
+keywords:
+  - sort
+tools:
+  - fusioncatcher:
+      description: Build genome for fusioncatcher
+      homepage: https://github.com/ndaniel/fusioncatcher/
+      documentation: https://github.com/ndaniel/fusioncatcher/blob/master/doc/manual.md
+      tool_dev_url: https://github.com/ndaniel/fusioncatcher/
+      doi: "10.1101/011650"
+      licence: ["GPL v3"]
+
+output:
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+  - reference:
+      type: directory
+      description: Path to fusioncatcher references
+      pattern: "*"
+
+authors:
+  - "@praveenraj2018, @rannick"
