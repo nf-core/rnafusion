@@ -8,7 +8,7 @@ process FASTQC {
         'quay.io/biocontainers/fastqc:0.11.9--0' }"
 
     input:
-    tuple val(meta), path(reads, stageAs: "?/*")
+    tuple val(meta), path(reads)
 
     output:
     tuple val(meta), path("*.html"), emit: html
