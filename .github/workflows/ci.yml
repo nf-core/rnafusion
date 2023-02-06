@@ -47,3 +47,8 @@ jobs:
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker \
           --outdir /home/runner/work/rnafusion/rnafusion/results --pizzly --skip_vis \
           --genomes_base /home/runner/work/rnafusion/rnafusion/results/references
+
+      - name: Test with stubs
+          nextflow run ${GITHUB_WORKSPACE} -profile test,docker -stub \
+          --outdir /home/runner/work/rnafusion/rnafusion/results --all \
+          --genomes_base /home/runner/work/rnafusion/rnafusion/results/references
