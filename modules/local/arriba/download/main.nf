@@ -2,12 +2,11 @@ process ARRIBA_DOWNLOAD {
     tag "arriba"
     label 'process_low'
 
-    conda (params.enable_conda ? "bioconda::gnu-wget=1.18" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/gnu-wget:1.18--h5bf99c6_5"
-    } else {
-        container "quay.io/biocontainers/gnu-wget:1.18--h5bf99c6_5"
-    }
+    conda "bioconda::gnu-wget=1.18"
+    conda "bioconda::arriba=2.3.0"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/gnu-wget:1.18--h5bf99c6_5' :
+        'quay.io/biocontainers/gnu-wget:1.18--h5bf99c6_5' }"
 
     output:
     path "versions.yml"   , emit: versions
