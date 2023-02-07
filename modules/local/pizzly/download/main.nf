@@ -37,12 +37,4 @@ process PIZZLY_DOWNLOAD {
     END_VERSIONS
     """
 
-    stub:
-    """
-    touch index.idx
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        kallisto: \$(echo \$(kallisto 2>&1) | sed 's/^kallisto //; s/Usage.*\$//')
-    END_VERSIONS
-    """
 }

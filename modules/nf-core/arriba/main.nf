@@ -33,7 +33,6 @@ process ARRIBA {
     def structural_variants = structural_variants ? "-d $structual_variants" : ""
     def tags = tags ? "-t $tags" : ""
     def protein_domains = protein_domains ? "-p $protein_domains" : ""
-
     """
     arriba \\
         -x $bam \\

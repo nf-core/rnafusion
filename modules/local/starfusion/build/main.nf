@@ -51,13 +51,4 @@ process STARFUSION_BUILD {
     END_VERSIONS
     """
 
-    stub:
-    """
-    mkdir ctat_genome_lib_build_dir
-    touch ref_annot.cdna.fa
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        STAR-Fusion: \$(STAR-Fusion --version 2>&1 | grep -i 'version' | sed 's/STAR-Fusion version: //')
-    END_VERSIONS
-    """
 }
