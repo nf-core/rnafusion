@@ -24,7 +24,7 @@ process GTF_TO_REFFLAT {
         gtfToGenePred: 377
     END_VERSIONS
     """
-    
+
     stub:
     def refflat = gtf + '.refflat'
     """

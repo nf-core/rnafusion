@@ -65,5 +65,4 @@ process PICARD_COLLECTRNASEQMETRICS {
         picard: \$(picard CollectRnaMetrics --version 2>&1 | grep -o 'Version.*' | cut -f2- -d:)
     END_VERSIONS
     """
-    
 }
