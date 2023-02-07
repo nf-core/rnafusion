@@ -2,7 +2,7 @@ process KALLISTO_QUANT {
     tag "$meta.id"
     label 'process_medium'
 
-    conda (params.enable_conda ? "bioconda::kallisto=0.46.2" : null)
+    conda "bioconda::kallisto=0.46.2"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/kallisto:0.46.2--h4f7b962_1' :
         'quay.io/biocontainers/kallisto:0.46.2--h4f7b962_1' }"
@@ -38,7 +38,6 @@ process KALLISTO_QUANT {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.kallisto_quant.fusions.txt
-
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         kallisto: \$(echo \$(kallisto 2>&1) | sed 's/^kallisto //; s/Usage.*\$//')

@@ -2,12 +2,10 @@ process FUSIONCATCHER {
     tag "$meta.id"
     label 'process_high'
 
-    conda (params.enable_conda ? "bioconda::fusioncatcher=1.33" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "docker.io/clinicalgenomics/fusioncatcher:1.33"
-    } else {
-        container "docker.io/clinicalgenomics/fusioncatcher:1.33"
-    }
+    conda "bioconda::fusioncatcher=1.33"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'docker.io/clinicalgenomics/fusioncatcher:1.33' :
+        'docker.io/clinicalgenomics/fusioncatcher:1.33' }"
 
     input:
     tuple val(meta), path(fasta)
@@ -54,7 +52,6 @@ process FUSIONCATCHER {
     touch ${prefix}.fusioncatcher.fusion-genes.txt
     touch ${prefix}.fusioncatcher.summary.txt
     touch ${prefix}.fusioncatcher.log
-
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         fusioncatcher: \$(echo \$(fusioncatcher --version 2>&1)| sed 's/fusioncatcher.py //')

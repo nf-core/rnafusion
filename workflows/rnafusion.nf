@@ -72,6 +72,7 @@ include { PIZZLY_WORKFLOW               }   from '../subworkflows/local/pizzly_w
 include { QC_WORKFLOW                   }   from '../subworkflows/local/qc_workflow'
 include { SQUID_WORKFLOW                }   from '../subworkflows/local/squid_workflow'
 include { STARFUSION_WORKFLOW           }   from '../subworkflows/local/starfusion_workflow'
+include { STRINGTIE_WORKFLOW            }   from '../subworkflows/local/stringtie_workflow'
 include { FUSIONCATCHER_WORKFLOW        }   from '../subworkflows/local/fusioncatcher_workflow'
 include { FUSIONINSPECTOR_WORKFLOW      }   from '../subworkflows/local/fusioninspector_workflow'
 include { FUSIONREPORT_WORKFLOW         }   from '../subworkflows/local/fusionreport_workflow'
@@ -196,6 +197,14 @@ workflow RNAFUSION {
     ch_versions = ch_versions.mix(FUSIONCATCHER_WORKFLOW.out.versions.first().ifEmpty(null))
 
 
+//Run stringtie
+    STRINGTIE_WORKFLOW (
+        STARFUSION_WORKFLOW.out.bam_sorted,
+        ch_chrgtf
+    )
+    ch_versions = ch_versions.mix(STRINGTIE_WORKFLOW.out.versions.first().ifEmpty(null))
+
+
     //Run fusion-report
     FUSIONREPORT_WORKFLOW (
         ch_cat_fastq,
@@ -254,14 +263,13 @@ workflow RNAFUSION {
 
     MULTIQC (
         ch_multiqc_files.collect(),
-        ch_multiqc_config.collect().ifEmpty([]),
-        ch_multiqc_custom_config.collect().ifEmpty([]),
-        ch_multiqc_logo.collect().ifEmpty([])
+        ch_multiqc_config.toList(),
+        ch_multiqc_custom_config.toList(),
+        ch_multiqc_logo.toList()
     )
 
     multiqc_report       = MULTIQC.out.report.toList()
     ch_versions          = ch_versions.mix(MULTIQC.out.versions)
-
 }
 
 
@@ -279,7 +287,7 @@ workflow.onComplete {
     }
     NfcoreTemplate.summary(workflow, params, log)
     if (params.hook_url) {
-        NfcoreTemplate.adaptivecard(workflow, params, summary_params, projectDir, log)
+        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
     }
 }
 

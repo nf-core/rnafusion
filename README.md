@@ -2,7 +2,7 @@
 
 [![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/rnafusion/results)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
 
-[![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A521.10.3-23aa62.svg)](https://www.nextflow.io/)
+[![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A522.10.1-23aa62.svg)](https://www.nextflow.io/)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
@@ -20,13 +20,14 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 > GRCh38 is the only supported reference
 
-| Tool                                                      |  Single-end reads  | Version  |
-| --------------------------------------------------------- | :----------------: | :------: |
-| [Arriba](https://github.com/suhrig/arriba)                |        :x:         | `2.3.0`  |
-| [FusionCatcher](https://github.com/ndaniel/fusioncatcher) | :white_check_mark: |  `1.33`  |
-| [Pizzly](https://github.com/pmelsted/pizzly)              |        :x:         | `0.37.3` |
-| [Squid](https://github.com/Kingsford-Group/squid)         |        :x:         |  `1.5`   |
-| [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) | :white_check_mark: | `1.10.1` |
+| Tool                                                      | Version  |
+| --------------------------------------------------------- | :------: |
+| [Arriba](https://github.com/suhrig/arriba)                | `2.3.0`  |
+| [FusionCatcher](https://github.com/ndaniel/fusioncatcher) |  `1.33`  |
+| [Pizzly](https://github.com/pmelsted/pizzly)              | `0.37.3` |
+| [Squid](https://github.com/Kingsford-Group/squid)         |  `1.5`   |
+| [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) | `1.10.1` |
+| [StringTie](https://github.com/gpertea/stringtie)         | `2.2.1`  |
 
 > Single-end reads are to be use as last-resort. Paired-end reads are recommended. FusionCatcher cannot be used with single-end reads shorter than 130 bp.
 
@@ -80,14 +81,16 @@ In rnafusion the full-sized test includes reference building and fusion detectio
    - [Fusion-report](https://github.com/matq007/fusion-report)
 10. FusionInspector subworkflow
     - [FusionInspector](https://github.com/FusionInspector/FusionInspector)
-11. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
-12. QC for mapped reads ([`QualiMap: BAM QC`](https://kokonech.github.io/qualimap/HG00096.chr20_bamqc/qualimapReport.html))
-13. Index mapped reads ([samtools index](http://www.htslib.org/))
-14. Collect metrics ([`picard CollectRnaSeqMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037057492-CollectRnaSeqMetrics-Picard-) and ([`picard MarkDuplicates`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-))
+11. Stringtie subworkflow
+    - [StringTie](https://ccb.jhu.edu/software/stringtie/index.shtml)
+12. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+13. QC for mapped reads ([`QualiMap: BAM QC`](https://kokonech.github.io/qualimap/HG00096.chr20_bamqc/qualimapReport.html))
+14. Index mapped reads ([samtools index](http://www.htslib.org/))
+15. Collect metrics ([`picard CollectRnaSeqMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037057492-CollectRnaSeqMetrics-Picard-) and ([`picard MarkDuplicates`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-))
 
 ## Quick Start
 
-1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=21.10.3`)
+1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=22.10.1`)
 
 2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) (you can follow [this tutorial](https://singularity-tutorial.github.io/01-installation/)), [`Podman`](https://podman.io/), [`Shifter`](https://nersc.gitlab.io/development/shifter/how-to-use/) or [`Charliecloud`](https://hpc.github.io/charliecloud/) for full pipeline reproducibility _(you can use [`Conda`](https://conda.io/miniconda.html) both to install Nextflow itself and also to manage software within pipelines. Please only use it within pipelines as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_.
 

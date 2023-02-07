@@ -3,7 +3,7 @@ process SQUID {
     tag "squid"
     label 'process_medium'
 
-    conda (params.enable_conda ? "bioconda::squid=1.5" : null)
+    conda "bioconda::squid=1.5"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker.io/nfcore/rnafusion:squid_1.5-star2.7.1a' :
         'docker.io/nfcore/rnafusion:squid_1.5-star2.7.1a' }"
@@ -34,7 +34,6 @@ process SQUID {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.squid.fusions_sv.txt
-
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         squid: \$(echo \$(squid --version 2>&1) | sed 's/v//')

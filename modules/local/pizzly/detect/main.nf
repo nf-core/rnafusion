@@ -2,7 +2,7 @@ process PIZZLY {
     tag "$meta.id"
     label 'process_medium'
 
-    conda (params.enable_conda ? "bioconda::kallisto=0.46.2 bioconda::pizzly==0.37.3" : null)
+    conda "bioconda::kallisto=0.46.2 bioconda::pizzly==0.37.3"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/pizzly:0.37.3--py36_2' :
         'quay.io/biocontainers/pizzly:0.37.3--h470a237_3' }"
@@ -40,7 +40,6 @@ process PIZZLY {
     """
     touch ${prefix}.pizzly.txt
     touch ${prefix}.pizzly.unfiltered.json
-
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         pizzly: \$(pizzly --version | grep pizzly | sed -e "s/pizzly version: //g")
