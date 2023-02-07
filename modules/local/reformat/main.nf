@@ -2,7 +2,7 @@ process REFORMAT {
     tag "$meta.id"
     label 'process_medium'
 
-    conda (params.enable_conda ? "bioconda::bbmap=38.90" : null)
+    conda "bioconda::bbmap=38.90"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bbmap:38.90--he522d1c_1' :
         'quay.io/biocontainers/bbmap:38.90--he522d1c_1' }"

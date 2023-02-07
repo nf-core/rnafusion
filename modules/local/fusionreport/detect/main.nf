@@ -3,7 +3,7 @@ process FUSIONREPORT {
     label 'process_medium'
 
     // Note: 2.7X indices incompatible with AWS iGenomes.
-    conda (params.enable_conda ? 'bioconda::star=2.7.9a' : null)
+    conda "bioconda::star=2.7.9a"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker.io/clinicalgenomics/fusion-report:2.1.5patched' :
         'docker.io/clinicalgenomics/fusion-report:2.1.5patched' }"

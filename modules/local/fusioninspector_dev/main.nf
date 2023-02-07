@@ -2,11 +2,9 @@ process FUSIONINSPECTOR_DEV {
     tag "$meta.id"
     label 'process_high'
 
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "docker.io/trinityctat/fusioninspector:2.8.0-dev1"
-    } else {
-        container "docker.io/trinityctat/fusioninspector:2.8.0-dev1"
-    }
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'docker.io/trinityctat/fusioninspector:2.8.0-dev1'
+        'docker.io/trinityctat/fusioninspector:2.8.0-dev1' }"
 
     input:
     tuple val(meta), path(reads), path(fusion_list)
