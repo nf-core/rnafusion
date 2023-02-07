@@ -45,20 +45,6 @@ process REFORMAT {
     """
     touch $out1
     touch $out2
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        reformat.sh: \$(echo \$(reformat.sh --version 2>&1)| sed -e "s/BBMap version //g" )
-    END_VERSIONS
-    """
-
-    stub:
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    def out1 ="out=${prefix}_R1_trimmed.fq.gz"
-    def out2 =meta.single_end ? "" : "out=${prefix}_R2_trimmed.fq.gz"
-    """
-    touch $out1
-    touch $out2
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         reformat.sh: \$(echo \$(reformat.sh --version 2>&1)| sed -e "s/BBMap version //g" )
