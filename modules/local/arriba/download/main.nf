@@ -3,7 +3,6 @@ process ARRIBA_DOWNLOAD {
     label 'process_low'
 
     conda "bioconda::gnu-wget=1.18"
-    conda "bioconda::arriba=2.3.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/gnu-wget:1.18--h5bf99c6_5' :
         'quay.io/biocontainers/gnu-wget:1.18--h5bf99c6_5' }"
