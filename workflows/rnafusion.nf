@@ -175,7 +175,8 @@ workflow RNAFUSION {
     SQUID_WORKFLOW (
         ch_cat_fastq,
         ch_gtf,
-        ch_starindex_ensembl_ref
+        ch_starindex_ensembl_ref,
+        ch_fasta
     )
     ch_versions = ch_versions.mix(SQUID_WORKFLOW.out.versions.first().ifEmpty(null))
 
@@ -262,14 +263,13 @@ workflow RNAFUSION {
 
     MULTIQC (
         ch_multiqc_files.collect(),
-        ch_multiqc_config.collect().ifEmpty([]),
-        ch_multiqc_custom_config.collect().ifEmpty([]),
-        ch_multiqc_logo.collect().ifEmpty([])
+        ch_multiqc_config.toList(),
+        ch_multiqc_custom_config.toList(),
+        ch_multiqc_logo.toList()
     )
 
     multiqc_report       = MULTIQC.out.report.toList()
     ch_versions          = ch_versions.mix(MULTIQC.out.versions)
-
 }
 
 
@@ -287,7 +287,7 @@ workflow.onComplete {
     }
     NfcoreTemplate.summary(workflow, params, log)
     if (params.hook_url) {
-        NfcoreTemplate.adaptivecard(workflow, params, summary_params, projectDir, log)
+        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
     }
 }
 

@@ -2,7 +2,7 @@ process REFORMAT {
     tag "$meta.id"
     label 'process_medium'
 
-    conda (params.enable_conda ? "bioconda::bbmap=38.90" : null)
+    conda "bioconda::bbmap=38.90"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bbmap:38.90--he522d1c_1' :
         'quay.io/biocontainers/bbmap:38.90--he522d1c_1' }"
@@ -35,6 +35,19 @@ process REFORMAT {
 
 
 
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        reformat.sh: \$(echo \$(reformat.sh --version 2>&1)| sed -e "s/BBMap version //g" )
+    END_VERSIONS
+    """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    def out1 ="out=${prefix}_R1_trimmed.fq.gz"
+    def out2 =meta.single_end ? "" : "out=${prefix}_R2_trimmed.fq.gz"
+    """
+    touch $out1
+    touch $out2
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         reformat.sh: \$(echo \$(reformat.sh --version 2>&1)| sed -e "s/BBMap version //g" )
