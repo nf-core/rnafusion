@@ -78,7 +78,6 @@ jobs:
           --outdir /home/runner/work/rnafusion/rnafusion/results --pizzly \
           --genomes_base /home/runner/work/rnafusion/rnafusion/results/references
 
-
       - name: Dry test pizzly
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker -stub \
@@ -91,7 +90,6 @@ jobs:
           --outdir /home/runner/work/rnafusion/rnafusion/results --fusioncatcher \
           --genomes_base /home/runner/work/rnafusion/rnafusion/results/references
 
-
       - name: Dry test fusioncatcher
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker -stub \
@@ -103,7 +101,6 @@ jobs:
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker -stub build_references \
           --outdir /home/runner/work/rnafusion/rnafusion/results --starfusion \
           --genomes_base /home/runner/work/rnafusion/rnafusion/results/references
-
 
       - name: Dry test starfusion
         run: |
