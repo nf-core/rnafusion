@@ -16,10 +16,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated nf-core and local modules with stub options
 - Patch fusion-report version with fixed mittelman DB and DB extraction date written into software_version.yaml
 - arriba visualisation updated to 2.3.0
+- Updated starfusion to 1.12.0
 
 ### Fixed
 
 ### Removed
+
+- FUSIONINSPECTOR_DEV process as the option fusioninspector_limitSjdbInsertNsj is part of the main starfusion release
 
 ## [2.1.0] nfcore/rnafusion - 2022/07/12
 
