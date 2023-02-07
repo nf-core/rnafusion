@@ -34,5 +34,16 @@ process PIZZLY {
         pizzly: \$(pizzly --version | grep pizzly | sed -e "s/pizzly version: //g")
     END_VERSIONS
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}.pizzly.txt
+    touch ${prefix}.pizzly.unfiltered.json
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        pizzly: \$(pizzly --version | grep pizzly | sed -e "s/pizzly version: //g")
+    END_VERSIONS
+    """
 }
 

@@ -26,4 +26,17 @@ process FUSIONREPORT_DOWNLOAD {
         fusion_report: \$(fusion_report --version | sed 's/fusion-report //')
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch cosmic.db
+    touch fusiongdb2.db
+    touch fusiongdb.db
+    touch mitelman.db
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        fusion_report: \$(fusion_report --version | sed 's/fusion-report //')
+    END_VERSIONS
+    """
+
 }

@@ -4,7 +4,7 @@ process FUSIONCATCHER {
 
     conda "bioconda::fusioncatcher=1.33"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker.io/clinicalgenomics/fusioncatcher:1.33'
+        'docker.io/clinicalgenomics/fusioncatcher:1.33' :
         'docker.io/clinicalgenomics/fusioncatcher:1.33' }"
 
     input:
@@ -39,6 +39,19 @@ process FUSIONCATCHER {
     mv summary_candidate_fusions.txt ${prefix}.fusioncatcher.summary.txt
     mv fusioncatcher.log ${prefix}.fusioncatcher.log
 
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        fusioncatcher: \$(echo \$(fusioncatcher --version 2>&1)| sed 's/fusioncatcher.py //')
+    END_VERSIONS
+    """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+
+    """
+    touch ${prefix}.fusioncatcher.fusion-genes.txt
+    touch ${prefix}.fusioncatcher.summary.txt
+    touch ${prefix}.fusioncatcher.log
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         fusioncatcher: \$(echo \$(fusioncatcher --version 2>&1)| sed 's/fusioncatcher.py //')

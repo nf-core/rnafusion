@@ -3,13 +3,16 @@ process FUSIONCATCHER_DOWNLOAD {
     label 'process_medium'
 
     conda "bioconda::fusioncatcher=1.33"
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        'docker.io/clinicalgenomics/fusioncatcher:1.33'
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'docker.io/clinicalgenomics/fusioncatcher:1.33' :
         'docker.io/clinicalgenomics/fusioncatcher:1.33' }"
 
     output:
     path "*"                , emit: reference
     path "versions.yml"     , emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
 
@@ -32,6 +35,16 @@ process FUSIONCATCHER_DOWNLOAD {
             $args2
     fi
 
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        fusioncatcher: \$(echo \$(fusioncatcher --version 2>&1))
+    END_VERSIONS
+    """
+
+    stub:
+    def human_version = "v102"
+    """
+    mkdir human_${human_version}
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         fusioncatcher: \$(echo \$(fusioncatcher --version 2>&1))

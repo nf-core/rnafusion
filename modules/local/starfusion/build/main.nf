@@ -1,7 +1,7 @@
 process STARFUSION_BUILD {
     tag 'star-fusion'
 
-    conda "bioconda::dfam=3.3 bioconda::hmmer=3.3.2 bioconda::star-fusion=1.10.0 bioconda::trinity=date.2011_11_2 bioconda::samtools=1.9 bioconda::star=2.7.8a"
+    conda "bioconda::dfam=3.3 bioconda::hmmer=3.3.2 bioconda::star-fusion=1.10.0 bioconda::trinity bioconda::samtools=1.9 bioconda::star=2.7.8a"
     container "docker.io/trinityctat/starfusion:1.10.1"
 
     input:
@@ -36,6 +36,12 @@ process STARFUSION_BUILD {
     """
 
     stub:
-    touch
-
+    """
+    mkdir ctat_genome_lib_build_dir
+    touch ref_annot.cdna.fa
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        STAR-Fusion: \$(STAR-Fusion --version 2>&1 | grep -i 'version' | sed 's/STAR-Fusion version: //')
+    END_VERSIONS
+    """
 }

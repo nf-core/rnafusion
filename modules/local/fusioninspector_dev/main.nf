@@ -3,7 +3,7 @@ process FUSIONINSPECTOR_DEV {
     label 'process_high'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker.io/trinityctat/fusioninspector:2.8.0-dev1'
+        'docker.io/trinityctat/fusioninspector:2.8.0-dev1' :
         'docker.io/trinityctat/fusioninspector:2.8.0-dev1' }"
 
     input:

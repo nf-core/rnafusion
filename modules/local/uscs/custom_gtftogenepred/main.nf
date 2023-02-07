@@ -24,4 +24,14 @@ process GTF_TO_REFFLAT {
         gtfToGenePred: 377
     END_VERSIONS
     """
+
+    stub:
+    def refflat = gtf + '.refflat'
+    """
+    touch ${refflat}
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gtfToGenePred: 377
+    END_VERSIONS
+    """
 }

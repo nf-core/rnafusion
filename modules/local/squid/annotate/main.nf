@@ -30,4 +30,14 @@ process SQUID_ANNOTATE {
         squid: \$(echo \$(squid --version 2>&1) | sed 's/v//')
     END_VERSIONS
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}.squid.fusions.annotated.txt
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        squid: \$(echo \$(squid --version 2>&1) | sed 's/v//')
+    END_VERSIONS
+    """
 }
