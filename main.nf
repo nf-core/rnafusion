@@ -56,15 +56,10 @@ include { RNAFUSION }        from './workflows/rnafusion'
 workflow NFCORE_RNAFUSION {
 
     if (params.build_references) {
-
         BUILD_REFERENCES ()
-
     } else {
-
         RNAFUSION()
-
     }
-
 }
 
 /*

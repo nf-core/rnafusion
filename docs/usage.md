@@ -26,7 +26,9 @@ First register for a free account at COSMIC at [https://cancer.sanger.ac.uk/cosm
 
 Download the references as shown below including your COSMIC credentials.
 
-> Note that this step takes about 24 hours to complete on.
+> Note that this step takes about 24 hours to complete on HPC.
+
+> Do not provide a samplesheet via the `input` parameter, otherwise the pipeline will run the analysis directly after downloading the references (except if that is what you want).
 
 ```bash
 nextflow run nf-core/rnafusion \
@@ -62,7 +64,7 @@ references/
 
 #### Issues with building references
 
-If process `FUSIONREPORT_DOWNLOAD` times out, it could be due to network restriction (e.g. if trying to run on HPC). As this process is lightweight in compute, storage and time, it is recommended to run on local machines with:
+If process `FUSIONREPORT_DOWNLOAD` times out, it could be due to network restriction (e.g. if trying to run on HPC). As this process is lightweight in compute, storage and time, running on local machines with the following options might solve the issue:
 
 ```bash
 nextflow run nf-core/rnafusion  \
@@ -205,8 +207,6 @@ There are two parameters to increase the `--limitSjdbInsertNsj` parameter if nec
 - `--fusioncatcher_limitSjdbInsertNsj`, default: 2000000
 - `--fusioninspector_limitSjdbInsertNsj`, default: 1000000
 
-> **IMPORTANT** Note that with any other value than default for `--fusioninsepctor_limitSjdbInsertNsj`, FusionInspector will run the **development version** 2.8.0dev1 and not the released version. Use at your own risk!
-
 ### Updating the pipeline
 
 When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
@@ -257,6 +257,11 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
   - A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
 - `conda`
   - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
+- `test`
+  - A profile with a complete configuration for automated testing
+  - Includes links to test data so needs no other parameters
+  - Needs to run in two steps: with `--build_references` first and then without `--build_references` to run the analysis
+  - !!!! Run with `-stub` as all references need to be downloaded otherwise !!!!
 
 ### `-resume`
 

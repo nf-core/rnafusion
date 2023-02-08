@@ -4,9 +4,7 @@ process SQUID_ANNOTATE {
     label 'process_medium'
 
     conda "bioconda::squid=1.5"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker.io/nfcore/rnafusion:squid_1.5-star2.7.1a' :
-        'docker.io/nfcore/rnafusion:squid_1.5-star2.7.1a' }"
+    container "docker.io/nfcore/rnafusion:squid_1.5-star2.7.1a"
 
 
 
