@@ -14,19 +14,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Test profiles unified under 'test' but if the references do not all need to be downloaded, run with `-stub`
-- UPDATE IN USAGE: in order to make AWS tests work, now the analysis part of the pipeline will run after downloading the references with `build_references` if an `input` parameter is provided
 - Update CUSTOM_DUMPSOFTWAREVERSIONS to use multiqc version 1.13
-- Updated to nf-core template 2.6, with all module updates
+- Updated to nf-core template 2.7.2, with all module updates
 - `MultiQC` updated to 1.13a in process dumpsoftwareversion
-- Updated nf-core and local modules with stub options
 - Patch fusion-report version with fixed mittelman DB and DB extraction date written into software_version.yaml
 - `Arriba` references back to downloading with `build_references` instead of taking from container
-- arriba visualisation updated to 2.3.0
-- Updated starfusion to 1.12.0
+- `Arriba` visualisation now running with `Arriba` v2.3.0
+- Updated `STAR-Fusion` to 1.12.0
 
 ### Fixed
 
-- `Arriba` visualisation now running with `Arriba` v2.3.0
 - AWS megatest to display on nf-core website
 
 ### Removed
