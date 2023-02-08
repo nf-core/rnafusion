@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Launch workflow using Tower CLI tool action
-      - name: Launch build workflow via tower
+      - name: Launch build arriba workflow via tower
         uses: nf-core/tower-action@v3
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
@@ -24,13 +24,13 @@ jobs:
               "genomes_base": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}/references",
               "cosmic_username": "${{ secrets.cosmic_username }}",
               "cosmic_passwd": "${{ secrets.cosmic_passwd }}",
-              "stub": true,
               "arriba": true,
+              "stub": true,
               "build_references": true
             }
           profiles: test,aws_tower
 
-      - name: Launch workflow via tower
+      - name: Launch arriba workflow via tower
         uses: nf-core/tower-action@v3
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
@@ -43,7 +43,173 @@ jobs:
               "genomes_base": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}/references",
               "cosmic_username": "${{ secrets.cosmic_username }}",
               "cosmic_passwd": "${{ secrets.cosmic_passwd }}",
-              "stub": true,
               "arriba": true,
+              "stub": true
+            }
+          profiles: test,aws_tower
+
+      - name: Launch build squid workflow via tower
+        uses: nf-core/tower-action@v3
+        with:
+          workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
+          access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
+          compute_env: ${{ secrets.TOWER_COMPUTE_ENV }}
+          workdir: s3://${{ secrets.AWS_S3_BUCKET }}/work/rnafusion/work-${{ github.sha }}
+          parameters: |
+            {
+              "outdir": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}",
+              "genomes_base": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}/references",
+              "cosmic_username": "${{ secrets.cosmic_username }}",
+              "cosmic_passwd": "${{ secrets.cosmic_passwd }}",
+              "squid": true,
+              "stub": true,
+              "build_references": true
+            }
+          profiles: test,aws_tower
+
+      - name: Launch squid workflow via tower
+        uses: nf-core/tower-action@v3
+        with:
+          workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
+          access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
+          compute_env: ${{ secrets.TOWER_COMPUTE_ENV }}
+          workdir: s3://${{ secrets.AWS_S3_BUCKET }}/work/rnafusion/work-${{ github.sha }}
+          parameters: |
+            {
+              "outdir": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}",
+              "genomes_base": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}/references",
+              "cosmic_username": "${{ secrets.cosmic_username }}",
+              "cosmic_passwd": "${{ secrets.cosmic_passwd }}",
+              "squid": true,
+              "stub": true
+            }
+          profiles: test,aws_tower
+
+      - name: Launch build starfusion workflow via tower
+        uses: nf-core/tower-action@v3
+        with:
+          workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
+          access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
+          compute_env: ${{ secrets.TOWER_COMPUTE_ENV }}
+          workdir: s3://${{ secrets.AWS_S3_BUCKET }}/work/rnafusion/work-${{ github.sha }}
+          parameters: |
+            {
+              "outdir": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}",
+              "genomes_base": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}/references",
+              "cosmic_username": "${{ secrets.cosmic_username }}",
+              "cosmic_passwd": "${{ secrets.cosmic_passwd }}",
+              "starfusion": true,
+              "build_references": true,
+              "stub": true
+            }
+          profiles: test,aws_tower
+
+      - name: Launch starfusion workflow via tower
+        uses: nf-core/tower-action@v3
+        with:
+          workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
+          access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
+          compute_env: ${{ secrets.TOWER_COMPUTE_ENV }}
+          workdir: s3://${{ secrets.AWS_S3_BUCKET }}/work/rnafusion/work-${{ github.sha }}
+          parameters: |
+            {
+              "outdir": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}",
+              "genomes_base": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}/references",
+              "cosmic_username": "${{ secrets.cosmic_username }}",
+              "cosmic_passwd": "${{ secrets.cosmic_passwd }}",
+              "starfusion": true,
+              "stub": true
+            }
+          profiles: test,aws_tower
+
+      - name: Launch build fusioncatcher workflow via tower
+        uses: nf-core/tower-action@v3
+        with:
+          workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
+          access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
+          compute_env: ${{ secrets.TOWER_COMPUTE_ENV }}
+          workdir: s3://${{ secrets.AWS_S3_BUCKET }}/work/rnafusion/work-${{ github.sha }}
+          parameters: |
+            {
+              "outdir": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}",
+              "genomes_base": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}/references",
+              "cosmic_username": "${{ secrets.cosmic_username }}",
+              "cosmic_passwd": "${{ secrets.cosmic_passwd }}",
+              "fusioncatcher": true,
+              "build_references": true,
+              "stub": true
+            }
+          profiles: test,aws_tower
+
+      - name: Launch fusioncatcher workflow via tower
+        uses: nf-core/tower-action@v3
+        with:
+          workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
+          access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
+          compute_env: ${{ secrets.TOWER_COMPUTE_ENV }}
+          workdir: s3://${{ secrets.AWS_S3_BUCKET }}/work/rnafusion/work-${{ github.sha }}
+          parameters: |
+            {
+              "outdir": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}",
+              "genomes_base": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}/references",
+              "cosmic_username": "${{ secrets.cosmic_username }}",
+              "cosmic_passwd": "${{ secrets.cosmic_passwd }}",
+              "fusioncatcher": true,
+              "stub": true
+            }
+          profiles: test,aws_tower
+
+      - name: Launch build pizzly workflow via tower
+        uses: nf-core/tower-action@v3
+        with:
+          workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
+          access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
+          compute_env: ${{ secrets.TOWER_COMPUTE_ENV }}
+          workdir: s3://${{ secrets.AWS_S3_BUCKET }}/work/rnafusion/work-${{ github.sha }}
+          parameters: |
+            {
+              "outdir": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}",
+              "genomes_base": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}/references",
+              "cosmic_username": "${{ secrets.cosmic_username }}",
+              "cosmic_passwd": "${{ secrets.cosmic_passwd }}",
+              "pizzly": true,
+              "build_references": true,
+              "stub": true
+            }
+          profiles: test,aws_tower
+
+      - name: Launch pizzly workflow via tower
+        uses: nf-core/tower-action@v3
+        with:
+          workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
+          access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
+          compute_env: ${{ secrets.TOWER_COMPUTE_ENV }}
+          workdir: s3://${{ secrets.AWS_S3_BUCKET }}/work/rnafusion/work-${{ github.sha }}
+          parameters: |
+            {
+              "outdir": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}",
+              "genomes_base": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}/references",
+              "cosmic_username": "${{ secrets.cosmic_username }}",
+              "cosmic_passwd": "${{ secrets.cosmic_passwd }}",
+              "pizzly": true,
+              "stub": true
+            }
+          profiles: test,aws_tower
+
+      - name: Launch stringtie workflow via tower
+        uses: nf-core/tower-action@v3
+        with:
+          workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
+          access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
+          compute_env: ${{ secrets.TOWER_COMPUTE_ENV }}
+          workdir: s3://${{ secrets.AWS_S3_BUCKET }}/work/rnafusion/work-${{ github.sha }}
+          parameters: |
+            {
+              "outdir": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}",
+              "genomes_base": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}/references",
+              "cosmic_username": "${{ secrets.cosmic_username }}",
+              "cosmic_passwd": "${{ secrets.cosmic_passwd }}",
+              "stringtie": true,
+              "stub": true
             }
           profiles: test,aws_tower
