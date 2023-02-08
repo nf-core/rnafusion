@@ -1,11 +1,8 @@
 process STARFUSION_DOWNLOAD {
     tag 'star-fusion'
 
-    conda "bioconda::dfam=3.3 bioconda::hmmer=3.3.2 bioconda::star-fusion=1.10.0 bioconda::trinity bioconda::samtools=1.9 bioconda::star=2.7.8a"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker.io/trinityctat/starfusion:1.10.1' :
-        'docker.io/trinityctat/starfusion:1.10.1' }"
-
+    conda "bioconda::dfam=3.3 bioconda::hmmer=3.3.2 bioconda::star-fusion=1.12.0 bioconda::trinity bioconda::samtools=1.9 bioconda::star=2.7.8a"
+    container 'docker.io/trinityctat/starfusion:1.12.0'
 
     output:
     path "ctat_genome_lib_build_dir/*"            , emit: reference
