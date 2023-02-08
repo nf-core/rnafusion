@@ -25,5 +25,7 @@ jobs:
               "cosmic_username": "${{ secrets.cosmic_username }}",
               "cosmic_passwd": "${{ secrets.cosmic_passwd }}"
               "stub": true
+              "arriba: true"
+              "build_references: true"
             }
-          profiles: test_build,aws_tower
+          profiles: test,aws_tower
