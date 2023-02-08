@@ -207,8 +207,6 @@ There are two parameters to increase the `--limitSjdbInsertNsj` parameter if nec
 - `--fusioncatcher_limitSjdbInsertNsj`, default: 2000000
 - `--fusioninspector_limitSjdbInsertNsj`, default: 1000000
 
-> **IMPORTANT** Note that with any other value than default for `--fusioninsepctor_limitSjdbInsertNsj`, FusionInspector will run the **development version** 2.8.0dev1 and not the released version. Use at your own risk!
-
 ### Updating the pipeline
 
 When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
@@ -262,6 +260,7 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
 - `test`
   - A profile with a complete configuration for automated testing
   - Includes links to test data so needs no other parameters
+  - Needs to run in two steps: with `--build_references` first and then without `--build_references` to run the analysis
   - !!!! Run with `-stub` as all references need to be downloaded otherwise !!!!
 
 ### `-resume`
