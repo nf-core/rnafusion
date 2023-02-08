@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Patch fusion-report version with fixed mittelman DB and DB extraction date written into software_version.yaml
 - `Arriba` references back to downloading with `build_references` instead of taking from container
 - arriba visualisation updated to 2.3.0
+- Updated starfusion to 1.12.0
 
 ### Fixed
 
@@ -29,6 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AWS megatest to display on nf-core website
 
 ### Removed
+
+- FUSIONINSPECTOR_DEV process as the option fusioninspector_limitSjdbInsertNsj is part of the main starfusion release
 
 ## [2.1.0] nfcore/rnafusion - 2022/07/12
 
