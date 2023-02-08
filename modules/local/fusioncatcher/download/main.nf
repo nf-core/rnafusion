@@ -3,9 +3,7 @@ process FUSIONCATCHER_DOWNLOAD {
     label 'process_medium'
 
     conda "bioconda::fusioncatcher=1.33"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker.io/clinicalgenomics/fusioncatcher:1.33' :
-        'docker.io/clinicalgenomics/fusioncatcher:1.33' }"
+    container "docker.io/clinicalgenomics/fusioncatcher:1.33"
 
     output:
     path "*"                , emit: reference

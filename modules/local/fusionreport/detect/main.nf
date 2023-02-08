@@ -4,9 +4,7 @@ process FUSIONREPORT {
 
     // Note: 2.7X indices incompatible with AWS iGenomes.
     conda "bioconda::star=2.7.9a"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker.io/clinicalgenomics/fusion-report:2.1.5patched' :
-        'docker.io/clinicalgenomics/fusion-report:2.1.5patched' }"
+    container "docker.io/clinicalgenomics/fusion-report:2.1.5patched"
 
 
     input:
