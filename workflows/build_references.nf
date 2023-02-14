@@ -74,11 +74,11 @@ workflow BUILD_REFERENCES {
         }
     }
 
-    // if (params.starfusion_build){
-    //     GTF_TO_REFFLAT(ENSEMBL_DOWNLOAD.out.chrgtf)
-    // } else {
-    //     GTF_TO_REFFLAT(STARFUSION_DOWNLOAD.out.chrgtf)
-    // }
+    if (params.starfusion_build){
+        GTF_TO_REFFLAT(ENSEMBL_DOWNLOAD.out.chrgtf)
+    } else {
+        GTF_TO_REFFLAT(STARFUSION_DOWNLOAD.out.chrgtf)
+    }
 
     if (params.fusionreport || params.all) {
         FUSIONREPORT_DOWNLOAD( params.cosmic_username, params.cosmic_passwd )
