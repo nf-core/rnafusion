@@ -32,7 +32,7 @@ input:
   - refflat:
       type: file
       description: Gene annotations in refFlat form
-  - rrna_interval:
+  - rrna_intervals:
       type: file
       description: Location of rRNA sequences in genome, in interval_list format
 output:

@@ -14,6 +14,7 @@ workflow QC_WORKFLOW {
         ch_refflat
         ch_fasta
         ch_fai
+        ch_rrna_interval
 
     main:
         ch_versions = Channel.empty()
@@ -27,7 +28,7 @@ workflow QC_WORKFLOW {
 
         bam_indexed = bam_sorted.join(SAMTOOLS_INDEX_FOR_QC.out.bai)
 
-        PICARD_COLLECTRNASEQMETRICS(bam_indexed, ch_refflat, [])
+        PICARD_COLLECTRNASEQMETRICS(bam_indexed, ch_refflat, ch_rrna_interval)
         ch_versions = ch_versions.mix(PICARD_COLLECTRNASEQMETRICS.out.versions)
         ch_rnaseq_metrics = Channel.empty().mix(PICARD_COLLECTRNASEQMETRICS.out.metrics)
 
