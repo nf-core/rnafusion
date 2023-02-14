@@ -11,7 +11,8 @@ include { FUSIONREPORT_DOWNLOAD }           from '../modules/local/fusionreport/
 include { STARFUSION_BUILD }                from '../modules/local/starfusion/build/main'
 include { STARFUSION_DOWNLOAD }             from '../modules/local/starfusion/download/main'
 include { GTF_TO_REFFLAT }                  from '../modules/local/uscs/custom_gtftogenepred/main'
-
+include { RRNA_TRANSCRIPTS }                from '../modules/local/rrnatranscripts/main'
+include { CONVERT2BED }                     from '../modules/local/convert2bed/main'
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -21,6 +22,8 @@ include { GTF_TO_REFFLAT }                  from '../modules/local/uscs/custom_g
 include { SAMTOOLS_FAIDX }                  from '../modules/nf-core/samtools/faidx/main'
 include { STAR_GENOMEGENERATE }             from '../modules/nf-core/star/genomegenerate/main'
 include { KALLISTO_INDEX as PIZZLY_INDEX }  from '../modules/nf-core/kallisto/index/main'
+include { GATK4_CREATESEQUENCEDICTIONARY }  from '../modules/nf-core/gatk4/createsequencedictionary/main'
+include { GATK4_BEDTOINTERVALLIST }         from '../modules/nf-core/gatk4/bedtointervallist/main'
 
 /*
 ========================================================================================
@@ -31,8 +34,20 @@ include { KALLISTO_INDEX as PIZZLY_INDEX }  from '../modules/nf-core/kallisto/in
 workflow BUILD_REFERENCES {
 
     ENSEMBL_DOWNLOAD( params.ensembl_version )
-    ch_fasta_w_meta = ENSEMBL_DOWNLOAD.out.fasta.map{ it -> [[id:it[0].baseName], it] }
+    ENSEMBL_DOWNLOAD.out.fasta
+        .map { it -> tuple(id:it.baseName, it) }
+        .set { ch_fasta_w_meta }
+
     SAMTOOLS_FAIDX(ch_fasta_w_meta)
+    GATK4_CREATESEQUENCEDICTIONARY(ENSEMBL_DOWNLOAD.out.fasta)
+
+        ENSEMBL_DOWNLOAD.out.gtf
+        .map { it -> tuple(id:it.baseName, it) }
+        .set { ch_gtf_w_meta }
+    RRNA_TRANSCRIPTS(ch_gtf_w_meta)
+    CONVERT2BED(RRNA_TRANSCRIPTS.out.rrna_gtf)
+
+    GATK4_BEDTOINTERVALLIST(CONVERT2BED.out.bed, GATK4_CREATESEQUENCEDICTIONARY.out.dict)
 
 
     if (params.starindex || params.all || params.starfusion || params.arriba || params.squid ) {
@@ -59,11 +74,11 @@ workflow BUILD_REFERENCES {
         }
     }
 
-    if (params.starfusion_build){
-        GTF_TO_REFFLAT(ENSEMBL_DOWNLOAD.out.chrgtf)
-    } else {
-        GTF_TO_REFFLAT(STARFUSION_DOWNLOAD.out.chrgtf)
-    }
+    // if (params.starfusion_build){
+    //     GTF_TO_REFFLAT(ENSEMBL_DOWNLOAD.out.chrgtf)
+    // } else {
+    //     GTF_TO_REFFLAT(STARFUSION_DOWNLOAD.out.chrgtf)
+    // }
 
     if (params.fusionreport || params.all) {
         FUSIONREPORT_DOWNLOAD( params.cosmic_username, params.cosmic_passwd )
