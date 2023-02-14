@@ -5,6 +5,7 @@ import logging
 import sys
 from pathlib import Path
 
+
 def get_rrna_intervals(file_in, file_out):
     """
     Get the commented out header
@@ -17,16 +18,21 @@ def get_rrna_intervals(file_in, file_out):
             be created; always in GTF format.
     """
 
-    patterns = {"#", "transcript_biotype \"Mt_rRNA\"", "transcript_biotype \"rRNA\"", "transcript_biotype \"rRNA_pseudogene\""}
+    patterns = {
+        "#",
+        'transcript_biotype "Mt_rRNA"',
+        'transcript_biotype "rRNA"',
+        'transcript_biotype "rRNA_pseudogene"',
+    }
     line_starts = {"MT", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
     out_lines = []
     with file_in.open() as f:
         data = f.readlines()
         for line in data:
             for pattern in patterns:
-                if (pattern in line):
+                if pattern in line:
                     for line_start in line_starts:
-                        if (line.startswith(line_start)):
+                        if line.startswith(line_start):
                             out_lines.append(line)
 
     with file_out.open(mode="w") as out_file:
