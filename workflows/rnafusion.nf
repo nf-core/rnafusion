@@ -235,7 +235,8 @@ workflow RNAFUSION {
         ch_chrgtf,
         ch_refflat,
         ch_fasta,
-        ch_fai
+        ch_fai,
+        ch_rrna_interval
     )
     ch_versions = ch_versions.mix(QC_WORKFLOW.out.versions.first().ifEmpty(null))
 
