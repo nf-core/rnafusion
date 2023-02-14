@@ -45,6 +45,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
     - `Homo_sapiens.GRCh38.{ensembl_version}.gtf`
     - `Homo_sapiens.GRCh38.{ensembl_version}.chr.gtf`
     - `Homo_sapiens.GRCh38.{ensembl_version}.chr.gtf.refflat`
+    - `Homo_sapiens.GRCh38.{ensembl_version}.interval_list`
   - `fusioncatcher`
     - `human_v<version>` - dir with all references for fusioncatcher
   - `fusion_report_db`

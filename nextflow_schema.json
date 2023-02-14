@@ -327,6 +327,14 @@
                     "pattern": "^\\S+\\.refflat?$",
                     "description": "Path to GTF genome file.",
                     "fa_icon": "far fa-file-code"
+                },
+                "rrna_intervals": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.interval_list?$",
+                    "description": "Path to ribosomal interval list.",
+                    "fa_icon": "far fa-file-code"
                 }
             }
         },

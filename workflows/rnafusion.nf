@@ -18,6 +18,7 @@ ch_chrgtf = params.starfusion_build ? file(params.chrgtf) : file("${params.starf
 ch_starindex_ref = params.starfusion_build ? params.starindex_ref : "${params.starfusion_ref}/ref_genome.fa.star.idx"
 ch_starindex_ensembl_ref = params.starindex_ref
 ch_refflat = params.starfusion_build ? file(params.refflat) : "${params.ensembl_ref}/ref_annot.gtf.refflat"
+ch_rrna_interval = params.starfusion_build ? file(params.rrna_intervals) : "${params.ensembl_ref}/ref_annot.interval_list"
 
 
 def checkPathParamList = [
@@ -26,7 +27,8 @@ def checkPathParamList = [
     params.gtf,
     ch_chrgtf,
     params.transcript,
-    ch_refflat
+    ch_refflat,
+    ch_rrna_interval
 ]
 
 
@@ -233,7 +235,8 @@ workflow RNAFUSION {
         ch_chrgtf,
         ch_refflat,
         ch_fasta,
-        ch_fai
+        ch_fai,
+        ch_rrna_interval
     )
     ch_versions = ch_versions.mix(QC_WORKFLOW.out.versions.first().ifEmpty(null))
 
