@@ -251,6 +251,21 @@
                     "type": "boolean",
                     "description": "Preform trimming of reads, default: false",
                     "fa_icon": "fas fa-cut"
+                },
+                "fastp_trim": {
+                    "type": "boolean",
+                    "description": "Preform fastp trimming of reads, default: false",
+                    "fa_icon": "fas fa-cut"
+                },
+                "trim_tail": {
+                    "type": "integer",
+                    "description": "Preform tail trimming of reads, default: null",
+                    "fa_icon": "fas fa-cut"
+                },
+                "adapter_fasta": {
+                    "type": "string",
+                    "description": "Path to adapter fasta file: default: []",
+                    "fa_icon": "fas fa-cut"
                 }
             }
         },
