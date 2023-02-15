@@ -135,6 +135,13 @@ nextflow run nf-core/rnafusion \
   --whitelist <WHITELIST/PATH>
 ```
 
+The custom fusion file should have the following format:
+
+```
+GENE1--GENE2
+GENE3--GENE4
+```
+
 #### Running FusionInspector only
 
 FusionInspector can be run standalone with:
