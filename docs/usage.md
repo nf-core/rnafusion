@@ -124,6 +124,18 @@ nextflow run nf-core/rnafusion \
   --outdir <OUTPUT/PATH>
 ```
 
+#### Adding custom fusions to consider as well as the detected set: whitelist
+
+```bash
+nextflow run nf-core/rnafusion \
+  --<tool1> --<tool2> ... \
+  --input <SAMPLE_SHEET.CSV> \
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH>
+  --whitelist <WHITELIST/PATH>
+```
+
+
 #### Running FusionInspector only
 
 FusionInspector can be run standalone with:
