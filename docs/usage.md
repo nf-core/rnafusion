@@ -135,7 +135,6 @@ nextflow run nf-core/rnafusion \
   --whitelist <WHITELIST/PATH>
 ```
 
-
 #### Running FusionInspector only
 
 FusionInspector can be run standalone with:
