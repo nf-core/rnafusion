@@ -12,7 +12,7 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         index ="${params.starfusion_ref}"
         ch_fusion_list = params.fusioninspector_filter ? fusion_list_filtered : fusion_list
 
-        if (file(params.whitelist).exists())  {
+        if (params.whitelist)  {
             ch_whitelist = ch_fusion_list.combine(Channel.value(file(params.whitelist, checkIfExists:true)))
                             .map { meta, fusions, whitelist -> [ meta, [fusions, whitelist] ] }
 
