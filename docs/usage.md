@@ -129,29 +129,29 @@ nextflow run nf-core/rnafusion \
 There are 2 options to trim
 
 1. fastp
-  In this case all tools use the trimmed reads. Quality and adapter trimming by default. In addition, tail trimming and adapter_fastq specification are possible. Example usage:
+   In this case all tools use the trimmed reads. Quality and adapter trimming by default. In addition, tail trimming and adapter_fastq specification are possible. Example usage:
 
-  ```bash
+```bash
 nextflow run nf-core/rnafusion \
-  --<tool1> --<tool2> ... \
-  --input <SAMPLE_SHEET.CSV> \
-  --genomes_base <PATH/TO/REFERENCES> \
-  --outdir <OUTPUT/PATH> \
-  --fastp_trim \
-  --trim_tail <INTEGER> (optional) \
-  --adapter_fastq <PATH/TO/ADAPTER/FASTQ> (optional)
+--<tool1> --<tool2> ... \
+--input <SAMPLE_SHEET.CSV> \
+--genomes_base <PATH/TO/REFERENCES> \
+--outdir <OUTPUT/PATH> \
+--fastp_trim \
+--trim_tail <INTEGER> (optional) \
+--adapter_fastq <PATH/TO/ADAPTER/FASTQ> (optional)
 ```
 
 2. hard trimming
-  In this case, only reads fed to fusioncatcher are trimmed. This is a harsh workaround in case of high read-through. The recommended trimming is thus the fastp_trim one. The trimming is done at 75 bp from the tails. Example usage:
+   In this case, only reads fed to fusioncatcher are trimmed. This is a harsh workaround in case of high read-through. The recommended trimming is thus the fastp_trim one. The trimming is done at 75 bp from the tails. Example usage:
 
-  ```bash
+````bash
 nextflow run nf-core/rnafusion \
-  --<tool1> --<tool2> ... \
-  --input <SAMPLE_SHEET.CSV> \
-  --genomes_base <PATH/TO/REFERENCES> \
-  --outdir <OUTPUT/PATH> \
-  --trim
+--<tool1> --<tool2> ... \
+--input <SAMPLE_SHEET.CSV> \
+--genomes_base <PATH/TO/REFERENCES> \
+--outdir <OUTPUT/PATH> \
+--trim
 ``
 
 
@@ -161,11 +161,11 @@ FusionInspector can be run standalone with:
 
 ```bash
 nextflow run nf-core/rnafusion \
-  --fusioninspector_only \
-  --fusioninspector_fusions <PATH_TO_CUSTOM_FUSION_FILE> \
-  --input <SAMPLE_SHEET.CSV> \
-  --outdir <PATH>
-```
+--fusioninspector_only \
+--fusioninspector_fusions <PATH_TO_CUSTOM_FUSION_FILE> \
+--input <SAMPLE_SHEET.CSV> \
+--outdir <PATH>
+````
 
 The custom fusion file should have the following format:
 
