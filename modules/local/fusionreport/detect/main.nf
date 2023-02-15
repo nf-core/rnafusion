@@ -16,6 +16,7 @@ process FUSIONREPORT {
     tuple val(meta), path("*fusionreport.tsv")           , emit: fusion_list
     tuple val(meta), path("*fusionreport_filtered.tsv")  , emit: fusion_list_filtered
     tuple val(meta), path("*.html")                      , emit: report
+    tuple val(meta), path("*.json")                      , emit: json
 
     when:
     task.ext.when == null || task.ext.when
@@ -32,6 +33,7 @@ process FUSIONREPORT {
 
     mv fusion_list.tsv ${prefix}.fusionreport.tsv
     mv fusion_list_filtered.tsv ${prefix}.fusionreport_filtered.tsv
+    mv fusions.json ${prefix}.fusions.json
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -46,6 +48,8 @@ process FUSIONREPORT {
     touch ${prefix}.fusionreport_filtered.tsv
     touch ${prefix}.fusionreport.tsv
     touch index.html
+    touch fusions.json
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         fusion_report: \$(fusion_report --version | sed 's/fusion-report //')
