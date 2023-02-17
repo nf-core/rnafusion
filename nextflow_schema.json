@@ -229,6 +229,11 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Run stringtie analysis"
                 },
+                "whitelist": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to fusions to add to the input of fusioninspector"
+                },
                 "cosmic_username": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",

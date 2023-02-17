@@ -154,6 +154,23 @@ nextflow run nf-core/rnafusion \
 --trim
 ``
 
+#### Adding custom fusions to consider as well as the detected set: whitelist
+
+```bash
+nextflow run nf-core/rnafusion \
+  --<tool1> --<tool2> ... \
+  --input <SAMPLE_SHEET.CSV> \
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH>
+  --whitelist <WHITELIST/PATH>
+```
+
+The custom fusion file should have the following format:
+
+```
+GENE1--GENE2
+GENE3--GENE4
+```
 
 #### Running FusionInspector only
 
