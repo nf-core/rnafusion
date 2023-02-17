@@ -4,7 +4,7 @@ process CONVERT2BED {
 
     conda "bioconda::bedops=2.4.41"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'bedops:2.4.41--h9f5acd7_0' :
+        'https://depot.galaxyproject.org/singularity/bedops:2.4.41--h9f5acd7_0' :
         'quay.io/biocontainers/bedops:2.4.41--h9f5acd7_0' }"
 
     input:
