@@ -54,7 +54,6 @@ process FUSIONREPORT {
     touch ${prefix}.fusions.csv
     touch ${prefix}.fusions.json
 
->>>>>>> 3a374daf082dc20936b6d35fadb2f40072f7ae60
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         fusion_report: \$(fusion_report --version | sed 's/fusion-report //')
