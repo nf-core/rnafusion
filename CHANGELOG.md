@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - stubs to all local modules
 - `--stringtie` option added with StringTie v2.2.1 to detect splicing events. Not included in `fusion-report` or `fusionInspector` summaries. Included in the `--all` workflow
 - generation of ribosomal RNA interval list with build_references and use it in picard CollectRnaMetrics
+- add csv output to fusionreport
 - trimming workflow using `fastp`: use trimmed reads for all tools
 - `whitelist` parameter to add custom fusions to the detected ones and consider the whole for the `fusionInspector` analysis
 
