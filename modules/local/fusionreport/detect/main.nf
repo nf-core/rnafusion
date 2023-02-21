@@ -16,11 +16,13 @@ process FUSIONREPORT {
     tuple val(meta), path("*fusionreport.tsv")           , emit: fusion_list
     tuple val(meta), path("*fusionreport_filtered.tsv")  , emit: fusion_list_filtered
     tuple val(meta), path("*.html")                      , emit: report
+    tuple val(meta), path("*.csv")                       , emit: csv
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
+    def args = task.ext.args ?: ''
     def tools = params.arriba || params.all         ? "--arriba ${arriba_fusions} " : ''
     tools    += params.pizzly || params.all         ? "--pizzly ${pizzly_fusions} " : ''
     tools    += params.squid  || params.all         ? "--squid ${squid_fusions} " : ''
@@ -28,7 +30,7 @@ process FUSIONREPORT {
     tools    += params.fusioncatcher  || params.all ? "--fusioncatcher ${fusioncatcher_fusions} " : ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    fusion_report run $meta.id . $fusionreport_ref $tools --allow-multiple-gene-symbols
+    fusion_report run $meta.id . $fusionreport_ref $tools --allow-multiple-gene-symbols $args
 
     mv fusion_list.tsv ${prefix}.fusionreport.tsv
     mv fusion_list_filtered.tsv ${prefix}.fusionreport_filtered.tsv
