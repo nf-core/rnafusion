@@ -151,11 +151,13 @@ workflow RNAFUSION {
     TRIM_WORKFLOW (
         ch_cat_fastq
     )
-    ch_cat_trim_fastq = TRIM_WORKFLOW.out.reads
+    ch_reads_fusioncatcher = TRIM_WORKFLOW.out.ch_reads_fusioncatcher
+    ch_reads_all = TRIM_WORKFLOW.out.ch_reads_all
+
 
     // Run STAR alignment and Arriba
     ARRIBA_WORKFLOW (
-        ch_cat_fastq,
+        ch_reads_all,
         ch_gtf,
         ch_fasta,
         ch_starindex_ensembl_ref
@@ -165,7 +167,7 @@ workflow RNAFUSION {
     // Run pizzly/kallisto
 
     PIZZLY_WORKFLOW (
-        ch_cat_fastq,
+        ch_reads_all,
         ch_gtf,
         ch_transcript
     )
@@ -175,7 +177,7 @@ workflow RNAFUSION {
 // Run squid
 
     SQUID_WORKFLOW (
-        ch_cat_fastq,
+        ch_reads_all,
         ch_gtf,
         ch_starindex_ensembl_ref,
         ch_fasta
@@ -185,7 +187,7 @@ workflow RNAFUSION {
 
 //Run STAR fusion
     STARFUSION_WORKFLOW (
-        ch_cat_fastq,
+        ch_reads_all,
         ch_chrgtf,
         ch_starindex_ref
     )
@@ -194,7 +196,7 @@ workflow RNAFUSION {
 
 //Run fusioncatcher
     FUSIONCATCHER_WORKFLOW (
-        ch_cat_trim_fastq
+        ch_reads_fusioncatcher
     )
     ch_versions = ch_versions.mix(FUSIONCATCHER_WORKFLOW.out.versions.first().ifEmpty(null))
 
@@ -209,7 +211,7 @@ workflow RNAFUSION {
 
     //Run fusion-report
     FUSIONREPORT_WORKFLOW (
-        ch_cat_fastq,
+        ch_reads_all,
         params.fusionreport_ref,
         ARRIBA_WORKFLOW.out.fusions,
         PIZZLY_WORKFLOW.out.fusions,
@@ -222,7 +224,7 @@ workflow RNAFUSION {
 
     //Run fusionInpector
     FUSIONINSPECTOR_WORKFLOW (
-        ch_cat_fastq,
+        ch_reads_all,
         FUSIONREPORT_WORKFLOW.out.fusion_list,
         FUSIONREPORT_WORKFLOW.out.fusion_list_filtered
     )
