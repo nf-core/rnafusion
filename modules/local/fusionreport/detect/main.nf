@@ -34,6 +34,7 @@ process FUSIONREPORT {
 
     mv fusion_list.tsv ${prefix}.fusionreport.tsv
     mv fusion_list_filtered.tsv ${prefix}.fusionreport_filtered.tsv
+    mv fusions.csv ${prefix}.fusions.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -48,6 +49,7 @@ process FUSIONREPORT {
     touch ${prefix}.fusionreport_filtered.tsv
     touch ${prefix}.fusionreport.tsv
     touch index.html
+    touch ${prefix}.fusions.csv
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         fusion_report: \$(fusion_report --version | sed 's/fusion-report //')
