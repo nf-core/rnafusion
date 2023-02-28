@@ -13,8 +13,6 @@ process STARFUSION_BUILD {
 
     script:
     def binPath = (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1)  ? "prep_genome_lib.pl" : "/usr/local/src/STAR-Fusion/ctat-genome-lib-builder/prep_genome_lib.pl"
-
-
     """
     export TMPDIR=/tmp
     wget http://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam34.0/Pfam-A.hmm.gz --no-check-certificate
