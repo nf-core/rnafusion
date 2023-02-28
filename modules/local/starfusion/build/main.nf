@@ -12,7 +12,7 @@ process STARFUSION_BUILD {
     path "*"  , emit: reference
 
     script:
-    def binPath = ( workflow.conda.enabled = true ? "prep_genome_lib.pl" : "/usr/local/src/STAR-Fusion/ctat-genome-lib-builder/prep_genome_lib.pl" )
+    def binPath = "/usr/local/src/STAR-Fusion/ctat-genome-lib-builder/prep_genome_lib.pl"
     """
     export TMPDIR=/tmp
     wget http://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam34.0/Pfam-A.hmm.gz --no-check-certificate
