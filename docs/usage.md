@@ -48,6 +48,16 @@ nextflow run nf-core/rnafusion \
   --outdir <OUTPUT/PATH>
 ```
 
+#### Using QIAGEN download insead of SANGER (non-academic usage) for the COSMIC database
+
+```bash
+nextflow run nf-core/rnafusion \
+  --build_references --<tool1> --<tool2> ... \
+  --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH> --qiagen
+```
+
 #### References directory tree
 
 ```text
