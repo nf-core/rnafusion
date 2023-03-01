@@ -282,7 +282,7 @@
             "properties": {
                 "cram": {
                     "type": "string",
-                    "description": "List of tools for which to compress BAM file to CRAM,default: []",
+                    "description": "List of tools for which to compress BAM file to CRAM,default: [], options: arriba, squid, starfusion. Leave no space between options",
                     "fa_icon": "fas fa-cut"
                 }
             }

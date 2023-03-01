@@ -1,6 +1,7 @@
-include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_STARFUSION } from '../../modules/nf-core/samtools/view/main'
-include { STAR_ALIGN as STAR_FOR_STARFUSION }             from '../../modules/nf-core/star/align/main'
-include { STARFUSION }                                    from '../../modules/local/starfusion/detect/main'
+include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_STARFUSION }   from '../../modules/nf-core/samtools/view/main'
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_STARFUSION } from '../../modules/nf-core/samtools/index/main'
+include { STAR_ALIGN as STAR_FOR_STARFUSION }               from '../../modules/nf-core/star/align/main'
+include { STARFUSION }                                     from '../../modules/local/starfusion/detect/main'
 
 workflow STARFUSION_WORKFLOW {
     take:
@@ -23,9 +24,13 @@ workflow STARFUSION_WORKFLOW {
                 ch_versions = ch_versions.mix(STAR_FOR_STARFUSION.out.versions)
                 ch_align = STAR_FOR_STARFUSION.out.bam_sorted
 
-                SAMTOOLS_VIEW_FOR_STARFUSION ( ch_align, ch_fasta, [] )
-                ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_STARFUSION.out.versions)
-
+                if (params.cram.contains('starfusion')){
+                    SAMTOOLS_INDEX_FOR_STARFUSION(STAR_FOR_STARFUSION.out.bam_sorted)
+                    ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FOR_STARFUSION.out.versions)
+                    bam_sorted_indexed = STAR_FOR_STARFUSION.out.bam_sorted.join(SAMTOOLS_INDEX_FOR_STARFUSION.out.bai)
+                    SAMTOOLS_VIEW_FOR_STARFUSION (bam_sorted_indexed, ch_fasta, [] )
+                    ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_STARFUSION.out.versions)
+                }
                 reads_junction = reads.join(STAR_FOR_STARFUSION.out.junction )
 
                 STARFUSION( reads_junction, params.starfusion_ref)

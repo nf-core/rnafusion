@@ -34,9 +34,10 @@ workflow SQUID_WORKFLOW {
             SAMTOOLS_VIEW_FOR_SQUID ( sam_indexed, ch_fasta, [] )
             ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID.out.versions )
 
-            SAMTOOLS_VIEW_FOR_SQUID_CRAM ( sam_indexed, ch_fasta, [] )
-            ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID_CRAM.out.versions )
-
+            if (params.cram.contains('squid')){
+                SAMTOOLS_VIEW_FOR_SQUID_CRAM ( sam_indexed, ch_fasta, [] )
+                ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID_CRAM.out.versions )
+            }
 
             SAMTOOLS_SORT_FOR_SQUID ( SAMTOOLS_VIEW_FOR_SQUID.out.bam )
             ch_versions = ch_versions.mix(SAMTOOLS_SORT_FOR_SQUID.out.versions )

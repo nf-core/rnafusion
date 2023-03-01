@@ -47,7 +47,7 @@ workflow ARRIBA_WORKFLOW {
 
             ch_arriba_visualisation = ARRIBA_VISUALISATION.out.pdf
 
-            if ("arriba" in params.cram ){
+            if (params.cram.contains('arriba') ){
                 SAMTOOLS_VIEW_FOR_ARRIBA(bam_indexed, ch_fasta, [])
                 ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_ARRIBA.out.versions )
 
