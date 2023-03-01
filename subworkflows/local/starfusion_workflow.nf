@@ -1,11 +1,13 @@
-include { STAR_ALIGN as STAR_FOR_STARFUSION }    from '../../modules/nf-core/star/align/main'
-include { STARFUSION }                           from '../../modules/local/starfusion/detect/main'
+include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_STARFUSION } from '../../modules/nf-core/samtools/view/main'
+include { STAR_ALIGN as STAR_FOR_STARFUSION }             from '../../modules/nf-core/star/align/main'
+include { STARFUSION }                                    from '../../modules/local/starfusion/detect/main'
 
 workflow STARFUSION_WORKFLOW {
     take:
         reads
         ch_chrgtf
         ch_starindex_ref
+        ch_fasta
 
     main:
         ch_versions = Channel.empty()
@@ -20,6 +22,9 @@ workflow STARFUSION_WORKFLOW {
                 STAR_FOR_STARFUSION( reads, ch_starindex_ref, ch_chrgtf, params.star_ignore_sjdbgtf, '', params.seq_center ?: '')
                 ch_versions = ch_versions.mix(STAR_FOR_STARFUSION.out.versions)
                 ch_align = STAR_FOR_STARFUSION.out.bam_sorted
+
+                SAMTOOLS_VIEW_FOR_STARFUSION ( ch_align, ch_fasta, [] )
+                ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_STARFUSION.out.versions)
 
                 reads_junction = reads.join(STAR_FOR_STARFUSION.out.junction )
 
