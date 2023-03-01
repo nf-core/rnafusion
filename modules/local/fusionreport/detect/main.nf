@@ -24,6 +24,7 @@ process FUSIONREPORT {
 
     script:
     def args = task.ext.args ?: ''
+    def args2 = task.ext.args2 ?: ''
     def tools = params.arriba || params.all         ? "--arriba ${arriba_fusions} " : ''
     tools    += params.pizzly || params.all         ? "--pizzly ${pizzly_fusions} " : ''
     tools    += params.squid  || params.all         ? "--squid ${squid_fusions} " : ''
@@ -31,7 +32,7 @@ process FUSIONREPORT {
     tools    += params.fusioncatcher  || params.all ? "--fusioncatcher ${fusioncatcher_fusions} " : ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    fusion_report run $meta.id . $fusionreport_ref $tools --allow-multiple-gene-symbols $args
+    fusion_report run $meta.id . $fusionreport_ref $tools --allow-multiple-gene-symbols $args $args2
 
     mv fusion_list.tsv ${prefix}.fusionreport.tsv
     mv fusion_list_filtered.tsv ${prefix}.fusionreport_filtered.tsv
