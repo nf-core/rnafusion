@@ -245,7 +245,7 @@
                     "description": "COSMIC password"
                 },
                 "qiagen": {
-                    "type": "string",
+                    "type": "boolean",
                     "fa_icon": "far fa-file-code",
                     "description": "Use QIAGEN instead of SANGER to download COSMIC database"
                 }
