@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - trimming workflow using `fastp`: use trimmed reads for all tools
 - `whitelist` parameter to add custom fusions to the detected ones and consider the whole for the `fusionInspector` analysis
 - Compression to CRAM files for arriba, squid and starfusion workflows (fusioncatcher and pizzly do not produce SAM/BAM files, fusioninspector BAM files are too small to benefit from compression)
+- `--qiagen` option to download from QIAGEN instead of COSMIC (use QIAGEN user and password for `cosmic_username` and `cosmic_passwd`)
 
 ### Changed
 
