@@ -1,9 +1,9 @@
-include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_SQUID}   from '../../modules/nf-core/samtools/index/main'
-include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_SQUID }    from '../../modules/nf-core/samtools/sort/main'
-include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_SQUID }    from '../../modules/nf-core/samtools/view/main'
-include { SQUID }                                       from '../../modules/local/squid/detect/main'
-include { SQUID_ANNOTATE }                              from '../../modules/local/squid/annotate/main'
-include { STAR_ALIGN as STAR_FOR_SQUID }                from '../../modules/nf-core/star/align/main'
+include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_SQUID }      from '../../modules/nf-core/samtools/sort/main'
+include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_SQUID }      from '../../modules/nf-core/samtools/view/main'
+include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_SQUID_CRAM } from '../../modules/nf-core/samtools/view/main'
+include { SQUID }                                         from '../../modules/local/squid/detect/main'
+include { SQUID_ANNOTATE }                                from '../../modules/local/squid/annotate/main'
+include { STAR_ALIGN as STAR_FOR_SQUID }                  from '../../modules/nf-core/star/align/main'
 
 workflow SQUID_WORKFLOW {
 
@@ -33,6 +33,11 @@ workflow SQUID_WORKFLOW {
 
             SAMTOOLS_VIEW_FOR_SQUID ( sam_indexed, ch_fasta, [] )
             ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID.out.versions )
+
+            if (params.cram.contains('squid')){
+                SAMTOOLS_VIEW_FOR_SQUID_CRAM ( sam_indexed, ch_fasta, [] )
+                ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID_CRAM.out.versions )
+            }
 
             SAMTOOLS_SORT_FOR_SQUID ( SAMTOOLS_VIEW_FOR_SQUID.out.bam )
             ch_versions = ch_versions.mix(SAMTOOLS_SORT_FOR_SQUID.out.versions )

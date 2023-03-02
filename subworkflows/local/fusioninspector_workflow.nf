@@ -27,6 +27,8 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         FUSIONINSPECTOR( reads_fusion, index)
         ch_versions = ch_versions.mix(FUSIONINSPECTOR.out.versions)
 
+
+
     emit:
         versions        = ch_versions.ifEmpty(null)
 }

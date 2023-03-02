@@ -3,7 +3,7 @@ include { ARRIBA_VISUALISATION }                        from '../../modules/loca
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_ARRIBA }   from '../../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_ARRIBA}  from '../../modules/nf-core/samtools/index/main'
 include { STAR_ALIGN as STAR_FOR_ARRIBA }               from '../../modules/nf-core/star/align/main'
-
+include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_ARRIBA}    from '../../modules/nf-core/samtools/view/main'
 
 workflow ARRIBA_WORKFLOW {
     take:
@@ -46,6 +46,14 @@ workflow ARRIBA_WORKFLOW {
             ch_versions = ch_versions.mix(ARRIBA_VISUALISATION.out.versions)
 
             ch_arriba_visualisation = ARRIBA_VISUALISATION.out.pdf
+
+            if (params.cram.contains('arriba') ){
+                SAMTOOLS_VIEW_FOR_ARRIBA(bam_indexed, ch_fasta, [])
+                ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_ARRIBA.out.versions )
+
+            }
+
+
 
         }
         else {

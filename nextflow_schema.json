@@ -279,6 +279,19 @@
                 }
             }
         },
+        "compression_options": {
+            "title": "Alignment compression options",
+            "type": "object",
+            "fa_icon": "fas fa-cut",
+            "description": "Option to compress BAM files to CRAM.",
+            "properties": {
+                "cram": {
+                    "type": "string",
+                    "description": "List of tools for which to compress BAM file to CRAM,default: [], options: arriba, squid, starfusion. Leave no space between options",
+                    "fa_icon": "fas fa-cut"
+                }
+            }
+        },
         "reference_genome_options": {
             "title": "Reference genome options",
             "type": "object",
@@ -580,6 +593,9 @@
         },
         {
             "$ref": "#/definitions/read_trimming_options"
+        },
+        {
+            "$ref": "#/definitions/compression_options"
         },
         {
             "$ref": "#/definitions/reference_genome_options"
