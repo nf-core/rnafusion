@@ -4,9 +4,7 @@ process FUSIONREPORT_DOWNLOAD {
 
     // Note: 2.7X indices incompatible with AWS iGenomes.
     conda "bioconda::star=2.7.9a"
-    container "docker.io/clinicalgenomics/fusion-report:2.1.5patched"
-
-
+    container "docker.io/clinicalgenomics/fusion-report:2.1.5p2"
 
     input:
     val(username)
