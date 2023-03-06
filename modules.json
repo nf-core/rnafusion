@@ -57,12 +57,12 @@
                     },
                     "picard/collectwgsmetrics": {
                         "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "git_sha": "2f88b26e9804b99e98f7cd08e74c3f88288a3358",
                         "installed_by": ["modules"]
                     },
                     "picard/markduplicates": {
                         "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "git_sha": "2f88b26e9804b99e98f7cd08e74c3f88288a3358",
                         "installed_by": ["modules"]
                     },
                     "qualimap/rnaseq": {
