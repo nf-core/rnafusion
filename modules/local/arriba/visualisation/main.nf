@@ -11,6 +11,8 @@ process ARRIBA_VISUALISATION {
     tuple val(meta), path(bam), path(bai), path(fusions)
     path reference
     path gtf
+    path protein_domains
+    path cytobands
 
     output:
     tuple val(meta), path("*.pdf")          , emit: pdf
@@ -21,16 +23,18 @@ process ARRIBA_VISUALISATION {
 
     script:
     def args = task.ext.args ?: ''
-    def args2 = task.ext.args2 ?: ''
+    def cytobands = cytobands ? " --cytobands=$cytobands" : ""
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def protein_domains = protein_domains ? "-p $protein_domains" : ""
     """
     draw_fusions.R \\
         --fusions=$fusions \\
         --alignments=$bam \\
         --output=${prefix}.pdf \\
         --annotation=${gtf} \\
-        --cytobands=${reference}/${args} \\
-        --proteinDomains=${reference}/${args2}
+        $cytobands \\
+        $protein_domains \\
+        $args
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
