@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - AWS megatest to display on nf-core website
+- `arriba` visualisation references updated to 2.3.0
 
 ### Removed
 

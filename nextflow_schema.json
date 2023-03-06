@@ -104,6 +104,16 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to arriba reference blacklist"
                 },
+                "arriba_ref_cytobands": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to arriba reference cytobands"
+                },
+                "arriba_ref_known_fusions": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to arriba reference known fusions"
+                },
                 "arriba_ref_protein_domain": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",

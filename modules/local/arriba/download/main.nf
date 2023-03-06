@@ -29,6 +29,9 @@ process ARRIBA_DOWNLOAD {
     """
     touch blacklist_hg38_GRCh38_v2.3.0.tsv.gz
     touch protein_domains_hg38_GRCh38_v2.3.0.gff3
+    touch cytobands_hg38_GRCh38_v2.3.0.tsv
+    touch known_fusions_hg38_GRCh38_v2.3.0.tsv.gz
+    touch protein_domains_hg38_GRCh38_v2.3.0.gff3
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

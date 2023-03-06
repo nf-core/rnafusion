@@ -35,14 +35,14 @@ workflow ARRIBA_WORKFLOW {
                     .map { meta, reads, fusions -> [ meta, fusions ] }
                 ch_arriba_fusion_fail = ch_dummy_file
             } else {
-                ARRIBA ( STAR_FOR_ARRIBA.out.bam, ch_fasta, ch_gtf, params.arriba_ref_blacklist, [], [], [], params.arriba_ref_protein_domain )
+                ARRIBA ( STAR_FOR_ARRIBA.out.bam, ch_fasta, ch_gtf, params.arriba_ref_blacklist, params.arriba_ref_known_fusions, [], [], params.arriba_ref_protein_domain )
                 ch_versions = ch_versions.mix(ARRIBA.out.versions)
 
                 ch_arriba_fusions     = ARRIBA.out.fusions
                 ch_arriba_fusion_fail = ARRIBA.out.fusions_fail.map{ meta, file -> return file}
             }
             bam_indexed_arriba_fusions = bam_indexed.join(ch_arriba_fusions)
-            ARRIBA_VISUALISATION(bam_indexed_arriba_fusions, params.arriba_ref, ch_gtf)
+            ARRIBA_VISUALISATION(bam_indexed_arriba_fusions, params.arriba_ref, ch_gtf, params.arriba_ref_protein_domain, params.arriba_ref_cytobands)
             ch_versions = ch_versions.mix(ARRIBA_VISUALISATION.out.versions)
 
             ch_arriba_visualisation = ARRIBA_VISUALISATION.out.pdf
