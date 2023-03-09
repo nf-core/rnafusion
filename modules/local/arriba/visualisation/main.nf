@@ -25,7 +25,7 @@ process ARRIBA_VISUALISATION {
     def args = task.ext.args ?: ''
     def cytobands = cytobands ? " --cytobands=$cytobands" : ""
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def protein_domains = protein_domains ? "-p $protein_domains" : ""
+    def protein_domains = protein_domains ? "--proteinDomains $protein_domains" : ""
     """
     draw_fusions.R \\
         --fusions=$fusions \\
