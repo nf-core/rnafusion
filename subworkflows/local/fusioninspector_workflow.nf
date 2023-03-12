@@ -1,5 +1,6 @@
 include { FUSIONINSPECTOR     }                           from '../../modules/local/fusioninspector/main'
 include { CAT_CAT }                                       from '../../modules/nf-core/cat/cat/main'
+include { MEGAFUSION }                                    from '../../modules/local/megafusion/main'
 
 workflow FUSIONINSPECTOR_WORKFLOW {
     take:
@@ -27,6 +28,7 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         FUSIONINSPECTOR( reads_fusion, index)
         ch_versions = ch_versions.mix(FUSIONINSPECTOR.out.versions)
 
+        MEGAFUSION(FUSIONINSPECTOR.out.tsv)
 
 
     emit:
