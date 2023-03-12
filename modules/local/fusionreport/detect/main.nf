@@ -36,8 +36,8 @@ process FUSIONREPORT {
 
     mv fusion_list.tsv ${prefix}.fusionreport.tsv
     mv fusion_list_filtered.tsv ${prefix}.fusionreport_filtered.tsv
-    mv fusions.csv ${prefix}.fusions.csv
-    mv fusions.json ${prefix}.fusions.json
+    [ ! -f fusions.csv ] || mv fusions.csv ${prefix}.fusions.csv
+    [ ! -f fusions.json ] || mv fusions.json ${prefix}.fusions.json
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
