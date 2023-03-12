@@ -29,20 +29,22 @@ workflow SQUID_WORKFLOW {
             STAR_FOR_SQUID.out.sam
             .map { meta, sam ->
             return [meta, sam, []]
-            }.set { sam_indexed }
+            }.set { chimeric_sam_indexed }
 
-            SAMTOOLS_VIEW_FOR_SQUID ( sam_indexed, ch_fasta, [] )
+            SAMTOOLS_VIEW_FOR_SQUID ( chimeric_sam_indexed, ch_fasta, [] )
             ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID.out.versions )
-
-            if (params.cram.contains('squid')){
-                SAMTOOLS_VIEW_FOR_SQUID_CRAM ( sam_indexed, ch_fasta, [] )
-                ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID_CRAM.out.versions )
-            }
 
             SAMTOOLS_SORT_FOR_SQUID ( SAMTOOLS_VIEW_FOR_SQUID.out.bam )
             ch_versions = ch_versions.mix(SAMTOOLS_SORT_FOR_SQUID.out.versions )
 
             bam_sorted = STAR_FOR_SQUID.out.bam_sorted.join(SAMTOOLS_SORT_FOR_SQUID.out.bam )
+
+            if (params.cram.contains('squid')){
+                SAMTOOLS_VIEW_FOR_SQUID_CRAM ( STAR_FOR_SQUID.out.bam_sorted, ch_fasta, [] )
+                ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID_CRAM.out.versions )
+                SAMTOOLS_VIEW_FOR_SQUID_CRAM_CHIMERIC ( chimeric_sam_indexed, ch_fasta, [] )
+                ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID_CRAM.out.versions )
+            }
 
             SQUID ( bam_sorted )
             ch_versions = ch_versions.mix(SQUID.out.versions)
