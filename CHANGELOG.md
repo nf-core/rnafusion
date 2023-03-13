@@ -3,20 +3,21 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v2.2.0 - [2022/03/06]
+## v2.2.0 - [2022/03/13]
 
 ### Added
 
 - exitStatus 140 now part of the retry strategy
 - stubs to all local modules
 - `--stringtie` option added with StringTie v2.2.1 to detect splicing events. Not included in `fusion-report` or `fusionInspector` summaries. Included in the `--all` workflow
-- generation of ribosomal RNA interval list with build_references and use it in picard CollectRnaMetrics
-- add csv output to fusionreport
-- trimming workflow using `fastp`: use trimmed reads for all tools
+- Generation of ribosomal RNA interval list with build_references and use it in picard CollectRnaMetrics
+- Add csv output to fusionreport
+- Trimming workflow using `fastp`: use trimmed reads for all tools
 - `whitelist` parameter to add custom fusions to the detected ones and consider the whole for the `fusionInspector` analysis
 - Compression to CRAM files for arriba, squid and starfusion workflows (fusioncatcher and pizzly do not produce SAM/BAM files, fusioninspector BAM files are too small to benefit from compression)
 - `--qiagen` option to download from QIAGEN instead of COSMIC (use QIAGEN user and password for `cosmic_username` and `cosmic_passwd`)
 - Bumped `STAR genomegenerate` time request for building as it was always crashing for most users
+- Fixed issue with arriba visualisation parameters [#326](https://github.com/nf-core/rnafusion/issues/326)
 
 ### Changed
 
@@ -33,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - AWS megatest to display on nf-core website
 - `arriba` visualisation references updated to 2.3.0
+- Removed issue with multiple outputs in samtools view for squid
 
 ### Removed
 
