@@ -1,19 +1,14 @@
 # ![nf-core/rnafusion](docs/images/nf-core-rnafusion_logo_light.png#gh-light-mode-only) ![nf-core/rnafusion](docs/images/nf-core-rnafusion_logo_dark.png#gh-dark-mode-only)
 
-[![GitHub Actions CI Status](https://github.com/nf-core/rnafusion/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/rnafusion/actions?query=workflow%3A%22nf-core+CI%22)
-[![GitHub Actions Linting Status](https://github.com/nf-core/rnafusion/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/rnafusion/actions?query=workflow%3A%22nf-core+linting%22)
-[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?logo=Amazon%20AWS)](https://nf-co.re/rnafusion/results)
-[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8)](https://doi.org/10.5281/zenodo.XXXXXXX)
+[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/rnafusion/results)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.2565517-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.2565517)
 
-[![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A521.10.3-23aa62.svg)](https://www.nextflow.io/)
-[![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?logo=anaconda)](https://docs.conda.io/en/latest/)
-[![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?logo=docker)](https://www.docker.com/)
-[![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg)](https://sylabs.io/docs/)
+[![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A522.10.1-23aa62.svg)](https://www.nextflow.io/)
+[![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
+[![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
+[![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
 [![Launch on Nextflow Tower](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Nextflow%20Tower-%234256e7)](https://tower.nf/launch?pipeline=https://github.com/nf-core/rnafusion)
 
-[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23rnafusion-4A154B?logo=slack)](https://nfcore.slack.com/channels/rnafusion)
-[![Follow on Twitter](http://img.shields.io/badge/twitter-%40nf__core-1DA1F2?logo=twitter)](https://twitter.com/nf_core)
-[![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?logo=youtube)](https://www.youtube.com/c/nf-core)
+[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23rnafusion-4A154B?labelColor=000000&logo=slack)](https://nfcore.slack.com/channels/rnafusion)[![Follow on Twitter](http://img.shields.io/badge/twitter-%40nf__core-1DA1F2?labelColor=000000&logo=twitter)](https://twitter.com/nf_core)[![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?labelColor=000000&logo=youtube)](https://www.youtube.com/c/nf-core)
 
 ## Introduction
 
@@ -25,17 +20,18 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 > GRCh38 is the only supported reference
 
-| Tool                                                      |  Single-end reads  | Version  |
-| --------------------------------------------------------- | :----------------: | :------: |
-| [Arriba](https://github.com/suhrig/arriba)                |        :x:         | `2.3.0`  |
-| [FusionCatcher](https://github.com/ndaniel/fusioncatcher) | :white_check_mark: |  `1.33`  |
-| [Pizzly](https://github.com/pmelsted/pizzly)              |        :x:         | `0.37.3` |
-| [Squid](https://github.com/Kingsford-Group/squid)         |        :x:         |  `1.5`   |
-| [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) | :white_check_mark: | `1.10.1` |
+| Tool                                                      | Version  |
+| --------------------------------------------------------- | :------: |
+| [Arriba](https://github.com/suhrig/arriba)                | `2.3.0`  |
+| [FusionCatcher](https://github.com/ndaniel/fusioncatcher) |  `1.33`  |
+| [Pizzly](https://github.com/pmelsted/pizzly)              | `0.37.3` |
+| [Squid](https://github.com/Kingsford-Group/squid)         |  `1.5`   |
+| [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) | `1.10.1` |
+| [StringTie](https://github.com/gpertea/stringtie)         | `2.2.1`  |
 
 > Single-end reads are to be use as last-resort. Paired-end reads are recommended. FusionCatcher cannot be used with single-end reads shorter than 130 bp.
 
-On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/rnafusion/results).
+On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources.The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/rnafusion/results).
 
 In rnafusion the full-sized test includes reference building and fusion detection. The test dataset is taken from [here](https://github.com/nf-core/test-datasets/tree/rnafusion/testdata/human).
 
@@ -85,21 +81,26 @@ In rnafusion the full-sized test includes reference building and fusion detectio
    - [Fusion-report](https://github.com/matq007/fusion-report)
 10. FusionInspector subworkflow
     - [FusionInspector](https://github.com/FusionInspector/FusionInspector)
-11. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
-12. QC for mapped reads ([`QualiMap: BAM QC`](https://kokonech.github.io/qualimap/HG00096.chr20_bamqc/qualimapReport.html))
-13. Index mapped reads ([samtools index](http://www.htslib.org/))
-14. Collect metrics ([`picard CollectRnaSeqMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037057492-CollectRnaSeqMetrics-Picard-) and ([`picard MarkDuplicates`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-))
+11. Stringtie subworkflow
+    - [StringTie](https://ccb.jhu.edu/software/stringtie/index.shtml)
+12. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+13. QC for mapped reads ([`QualiMap: BAM QC`](https://kokonech.github.io/qualimap/HG00096.chr20_bamqc/qualimapReport.html))
+14. Index mapped reads ([samtools index](http://www.htslib.org/))
+15. Collect metrics ([`picard CollectRnaSeqMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037057492-CollectRnaSeqMetrics-Picard-) and ([`picard MarkDuplicates`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-))
 
 ## Quick Start
 
-1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=21.10.3`)
+1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=22.10.1`)
 
 2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) (you can follow [this tutorial](https://singularity-tutorial.github.io/01-installation/)), [`Podman`](https://podman.io/), [`Shifter`](https://nersc.gitlab.io/development/shifter/how-to-use/) or [`Charliecloud`](https://hpc.github.io/charliecloud/) for full pipeline reproducibility _(you can use [`Conda`](https://conda.io/miniconda.html) both to install Nextflow itself and also to manage software within pipelines. Please only use it within pipelines as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_.
 
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
-   ```console
-   nextflow run nf-core/rnafusion -profile test,YOURPROFILE --outdir <OUTDIR>
+   ```bash
+   nextflow run nf-core/rnafusion -profile test,YOURPROFILE --outdir <OUTDIR> -stub --all --build_references
+
+   nextflow run nf-core/rnafusion -profile test,YOURPROFILE --outdir <OUTDIR> -stub --all
+
    ```
 
    Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
@@ -113,6 +114,10 @@ In rnafusion the full-sized test includes reference building and fusion detectio
 
 ```console
 nextflow run nf-core/rnafusion --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 --all -profile <docker/singularity/podman/shifter/charliecloud/institute>
+```
+
+```bash
+nextflow run nf-core/rnafusion --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
 ```
 
 > Note that paths need to be absolute and that runs with conda are not supported.

@@ -17,6 +17,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [Pizzly](#pizzly) - Pizzly fusion detection
 - [Squid](#squid) - Squid fusion detection
 - [STAR-fusion](#starfusion) - STAR-fusion fusion detection
+- [StringTie](#stringtie) - StringTie assembly
 - [FusionCatcher](#fusioncatcher) - Fusion catcher fusion detection
 - [Samtools](#samtools) - SAM/BAM file manipulation
 - [Arriba visualisation](#arriba-visualisation) - Arriba visualisation report
@@ -44,6 +45,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
     - `Homo_sapiens.GRCh38.{ensembl_version}.gtf`
     - `Homo_sapiens.GRCh38.{ensembl_version}.chr.gtf`
     - `Homo_sapiens.GRCh38.{ensembl_version}.chr.gtf.refflat`
+    - `Homo_sapiens.GRCh38.{ensembl_version}.interval_list`
   - `fusioncatcher`
     - `human_v<version>` - dir with all references for fusioncatcher
   - `fusion_report_db`
@@ -249,6 +251,14 @@ Squid is run in two steps: i) fusion detection and ii) fusion annotation but the
   - `<sample_id>.starfusion.abridged.tsv`
   - `- contains the identified fusions.starfusion.abridged.coding_effect.tsv`
 
+</details>
+
+### StringTie
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `stringtie/<sample_id>/stringtie.merged.gtf` - merged gtf from annotation and stringtie output gtfs
 </details>
 
 ### FusionCatcher

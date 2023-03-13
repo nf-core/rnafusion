@@ -1,6 +1,5 @@
 include { FUSIONINSPECTOR     }                           from '../../modules/local/fusioninspector/main'
-include { FUSIONINSPECTOR_DEV }                           from '../../modules/local/fusioninspector_dev/main'
-
+include { CAT_CAT }                                       from '../../modules/nf-core/cat/cat/main'
 
 workflow FUSIONINSPECTOR_WORKFLOW {
     take:
@@ -12,16 +11,23 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         ch_versions = Channel.empty()
         index ="${params.starfusion_ref}"
         ch_fusion_list = params.fusioninspector_filter ? fusion_list_filtered : fusion_list
+
+        if (params.whitelist)  {
+            ch_whitelist = ch_fusion_list.combine(Channel.value(file(params.whitelist, checkIfExists:true)))
+                            .map { meta, fusions, whitelist -> [ meta, [fusions, whitelist] ] }
+
+            CAT_CAT(ch_whitelist) // fusioninspector takes care of possible duplicates
+            ch_versions = ch_versions.mix(CAT_CAT.out.versions)
+
+            ch_fusion_list = CAT_CAT.out.file_out
+        }
+
         reads_fusion = reads.join(ch_fusion_list )
 
-        if (params.fusioninspector_limitSjdbInsertNsj != 1000000) {
-            FUSIONINSPECTOR_DEV( reads_fusion, index)
-            ch_versions = ch_versions.mix(FUSIONINSPECTOR_DEV.out.versions)
-        }
-        else {
-            FUSIONINSPECTOR( reads_fusion, index)
-            ch_versions = ch_versions.mix(FUSIONINSPECTOR.out.versions)
-        }
+        FUSIONINSPECTOR( reads_fusion, index)
+        ch_versions = ch_versions.mix(FUSIONINSPECTOR.out.versions)
+
+
 
     emit:
         versions        = ch_versions.ifEmpty(null)

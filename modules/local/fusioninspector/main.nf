@@ -2,12 +2,8 @@ process FUSIONINSPECTOR {
     tag "$meta.id"
     label 'process_high'
 
-    conda (params.enable_conda ? "bioconda::dfam=3.3 bioconda::hmmer=3.3.2 bioconda::star-fusion=1.10.0 bioconda::trinity=date.2011_11_2 bioconda::samtools=1.9 bioconda::star=2.7.8a" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "docker.io/trinityctat/starfusion:1.10.1"
-    } else {
-        container "docker.io/trinityctat/starfusion:1.10.1"
-    }
+    conda "bioconda::dfam=3.3 bioconda::hmmer=3.3.2 bioconda::star-fusion=1.12.0 bioconda::trinity=2.13.2 bioconda::samtools=1.9 bioconda::star=2.7.8a"
+    container 'docker.io/trinityctat/starfusion:1.12.0'
 
     input:
     tuple val(meta), path(reads), path(fusion_list)
@@ -42,7 +38,11 @@ process FUSIONINSPECTOR {
 
     stub:
     """
-    touch versions.yml
     touch FusionInspector.log
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        STAR-Fusion: \$(STAR-Fusion --version 2>&1 | grep -i 'version' | sed 's/STAR-Fusion version: //')
+    END_VERSIONS
     """
 }

@@ -1,12 +1,8 @@
 process STARFUSION_BUILD {
     tag 'star-fusion'
 
-    conda (params.enable_conda ? "bioconda::dfam=3.3 bioconda::hmmer=3.3.2 bioconda::star-fusion=1.10.0 bioconda::trinity=date.2011_11_2 bioconda::samtools=1.9 bioconda::star=2.7.8a" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "docker.io/trinityctat/starfusion:1.10.1"
-    } else {
-        container "docker.io/trinityctat/starfusion:1.10.1"
-    }
+    conda "bioconda::dfam=3.3 bioconda::hmmer=3.3.2 bioconda::star-fusion=1.12.0 bioconda::trinity=2.13.2 bioconda::samtools=1.9 bioconda::star=2.7.8a"
+    container "docker.io/trinityctat/starfusion:1.12.0"
 
     input:
     path fasta
@@ -16,7 +12,7 @@ process STARFUSION_BUILD {
     path "*"  , emit: reference
 
     script:
-    def binPath = ( params.enable_conda ? "prep_genome_lib.pl" : "/usr/local/src/STAR-Fusion/ctat-genome-lib-builder/prep_genome_lib.pl" )
+    def binPath = (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1)  ? "prep_genome_lib.pl" : "/usr/local/src/STAR-Fusion/ctat-genome-lib-builder/prep_genome_lib.pl"
     """
     export TMPDIR=/tmp
     wget http://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam34.0/Pfam-A.hmm.gz --no-check-certificate
@@ -37,5 +33,22 @@ process STARFUSION_BUILD {
         --dfam_db homo_sapiens_dfam.hmm \\
         --max_readlength $params.read_length \\
         --CPU $task.cpus
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        STAR-Fusion: \$(STAR-Fusion --version 2>&1 | grep -i 'version' | sed 's/STAR-Fusion version: //')
+    END_VERSIONS
     """
+
+    stub:
+    """
+    mkdir ctat_genome_lib_build_dir
+    touch ref_annot.cdna.fa
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        STAR-Fusion: \$(STAR-Fusion --version 2>&1 | grep -i 'version' | sed 's/STAR-Fusion version: //')
+    END_VERSIONS
+    """
+
 }

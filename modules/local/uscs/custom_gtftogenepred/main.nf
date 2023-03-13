@@ -1,7 +1,7 @@
 process GTF_TO_REFFLAT {
     label 'process_low'
 
-    conda (params.enable_conda ? "bioconda::ucsc-gtftogenepred=377" : null)
+    conda "bioconda::ucsc-gtftogenepred=377"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/ucsc-gtftogenepred:377--ha8a8165_5' :
         'quay.io/biocontainers/ucsc-gtftogenepred:377--ha8a8165_5' }"
@@ -19,6 +19,16 @@ process GTF_TO_REFFLAT {
     gtfToGenePred -genePredExt -geneNameAsName2 ${gtf} ${genepred}
     paste ${genepred} ${genepred} | cut -f12,16-25 > ${refflat}
 
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gtfToGenePred: 377
+    END_VERSIONS
+    """
+
+    stub:
+    def refflat = gtf + '.refflat'
+    """
+    touch ${refflat}
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         gtfToGenePred: 377

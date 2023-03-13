@@ -104,6 +104,16 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to arriba reference blacklist"
                 },
+                "arriba_ref_cytobands": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to arriba reference cytobands"
+                },
+                "arriba_ref_known_fusions": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to arriba reference known fusions"
+                },
                 "arriba_ref_protein_domain": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
@@ -224,6 +234,16 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to starindex references"
                 },
+                "stringtie": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Run stringtie analysis"
+                },
+                "whitelist": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to fusions to add to the input of fusioninspector"
+                },
                 "cosmic_username": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
@@ -233,6 +253,11 @@
                     "type": "string",
                     "fa_icon": "far fa-file-code",
                     "description": "COSMIC password"
+                },
+                "qiagen": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Use QIAGEN instead of SANGER to download COSMIC database"
                 }
             }
         },
@@ -246,6 +271,34 @@
                     "type": "boolean",
                     "description": "Preform trimming of reads, default: false",
                     "fa_icon": "fas fa-cut"
+                },
+                "fastp_trim": {
+                    "type": "boolean",
+                    "description": "Preform fastp trimming of reads, default: false",
+                    "fa_icon": "fas fa-cut"
+                },
+                "trim_tail": {
+                    "type": "integer",
+                    "description": "Preform tail trimming of reads, default: null",
+                    "fa_icon": "fas fa-cut"
+                },
+                "adapter_fasta": {
+                    "type": "string",
+                    "description": "Path to adapter fasta file: default: []",
+                    "fa_icon": "fas fa-cut"
+                }
+            }
+        },
+        "compression_options": {
+            "title": "Alignment compression options",
+            "type": "object",
+            "fa_icon": "fas fa-cut",
+            "description": "Option to compress BAM files to CRAM.",
+            "properties": {
+                "cram": {
+                    "type": "string",
+                    "description": "List of tools for which to compress BAM file to CRAM,default: [], options: arriba, squid, starfusion. Leave no space between options",
+                    "fa_icon": "fas fa-cut"
                 }
             }
         },
@@ -258,8 +311,7 @@
                 "genome": {
                     "type": "string",
                     "description": "Name of iGenomes reference.",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
+                    "fa_icon": "fas fa-book"
                 },
                 "fasta": {
                     "type": "string",
@@ -267,7 +319,14 @@
                     "mimetype": "text/plain",
                     "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
                     "description": "Path to FASTA genome file.",
-                    "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "fai": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.fn?ai(\\.gz)?$",
+                    "description": "Path to FASTA genome index file.",
                     "fa_icon": "far fa-file-code"
                 },
                 "gtf": {
@@ -300,6 +359,14 @@
                     "mimetype": "text/plain",
                     "pattern": "^\\S+\\.refflat?$",
                     "description": "Path to GTF genome file.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "rrna_intervals": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.interval_list?$",
+                    "description": "Path to ribosomal interval list.",
                     "fa_icon": "far fa-file-code"
                 }
             }
@@ -400,6 +467,12 @@
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 },
+                "version": {
+                    "type": "boolean",
+                    "description": "Display version and exit.",
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true
+                },
                 "publish_dir_mode": {
                     "type": "string",
                     "default": "copy",
@@ -437,11 +510,29 @@
                     "fa_icon": "fas fa-palette",
                     "hidden": true
                 },
+                "hook_url": {
+                    "type": "string",
+                    "description": "Incoming hook URL for messaging service",
+                    "fa_icon": "fas fa-people-group",
+                    "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
+                    "hidden": true
+                },
                 "multiqc_config": {
                     "type": "string",
                     "description": "Custom config file to supply to MultiQC.",
                     "fa_icon": "fas fa-cog",
                     "hidden": true
+                },
+                "multiqc_logo": {
+                    "type": "string",
+                    "description": "Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file",
+                    "fa_icon": "fas fa-image",
+                    "hidden": true
+                },
+                "multiqc_methods_description": {
+                    "type": "string",
+                    "description": "Custom MultiQC yaml file containing HTML including a methods description.",
+                    "fa_icon": "fas fa-cog"
                 },
                 "tracedir": {
                     "type": "string",
@@ -463,18 +554,6 @@
                     "description": "Show all params when using `--help`",
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
-                },
-                "enable_conda": {
-                    "type": "boolean",
-                    "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
-                    "hidden": true,
-                    "fa_icon": "fas fa-bacon"
-                },
-                "singularity_pull_docker_container": {
-                    "type": "boolean",
-                    "description": "Use to pull docker containers to run with singularity",
-                    "hidden": true,
-                    "fa_icon": "fas fa-bacon"
                 },
                 "seq_center": {
                     "type": "string",
@@ -509,6 +588,9 @@
         },
         {
             "$ref": "#/definitions/read_trimming_options"
+        },
+        {
+            "$ref": "#/definitions/compression_options"
         },
         {
             "$ref": "#/definitions/reference_genome_options"

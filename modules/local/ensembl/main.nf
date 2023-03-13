@@ -2,12 +2,10 @@ process ENSEMBL_DOWNLOAD {
     tag "ensembl"
     label 'process_low'
 
-    conda (params.enable_conda ? "bioconda::gnu-wget=1.18" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/gnu-wget:1.18--h5bf99c6_5"
-    } else {
-        container "quay.io/biocontainers/gnu-wget:1.18--h5bf99c6_5"
-    }
+    conda "bioconda::gnu-wget=1.18"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/gnu-wget:1.18--h5bf99c6_5' :
+        'quay.io/biocontainers/gnu-wget:1.18--h5bf99c6_5' }"
 
     input:
     val ensembl_version
@@ -32,6 +30,8 @@ process ENSEMBL_DOWNLOAD {
     gunzip Homo_sapiens.${params.genome}.${ensembl_version}.gtf.gz
     gunzip Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf.gz
 
+
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         wget: \$(echo wget -V 2>&1 | grep "GNU Wget" | cut -d" " -f3 > versions.yml)
@@ -45,7 +45,10 @@ process ENSEMBL_DOWNLOAD {
     touch "Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf"
     touch "Homo_sapiens.${params.genome}.${ensembl_version}.cdna.all.fa.gz"
 
-    touch versions.yml
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        wget: \$(echo wget -V 2>&1 | grep "GNU Wget" | cut -d" " -f3 > versions.yml)
+    END_VERSIONS
     """
 
 }
