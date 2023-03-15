@@ -24,10 +24,11 @@ workflow STARFUSION_WORKFLOW {
                 ch_versions = ch_versions.mix(STAR_FOR_STARFUSION.out.versions)
                 ch_align = STAR_FOR_STARFUSION.out.bam_sorted
 
+                SAMTOOLS_INDEX_FOR_STARFUSION(STAR_FOR_STARFUSION.out.bam_sorted)
+                ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FOR_STARFUSION.out.versions)
+                bam_sorted_indexed = STAR_FOR_STARFUSION.out.bam_sorted.join(SAMTOOLS_INDEX_FOR_STARFUSION.out.bai)
+
                 if (params.cram.contains('starfusion')){
-                    SAMTOOLS_INDEX_FOR_STARFUSION(STAR_FOR_STARFUSION.out.bam_sorted)
-                    ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FOR_STARFUSION.out.versions)
-                    bam_sorted_indexed = STAR_FOR_STARFUSION.out.bam_sorted.join(SAMTOOLS_INDEX_FOR_STARFUSION.out.bai)
                     SAMTOOLS_VIEW_FOR_STARFUSION (bam_sorted_indexed, ch_fasta, [] )
                     ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_STARFUSION.out.versions)
                 }
@@ -50,6 +51,6 @@ workflow STARFUSION_WORKFLOW {
         star_stats      = ch_star_stats
         bam_sorted      = ch_align
         versions        = ch_versions.ifEmpty(null)
-
+        bam_sorted_indexed
     }
 

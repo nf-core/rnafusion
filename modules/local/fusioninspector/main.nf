@@ -10,8 +10,9 @@ process FUSIONINSPECTOR {
     path reference
 
     output:
-    path "*"                , emit: output
-    path "versions.yml"     , emit: versions
+    tuple val(meta), path("*FusionInspector.fusions.tsv"), emit: fusions
+    path "*"                                             , emit: output
+    path "versions.yml"                                  , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -39,6 +40,7 @@ process FUSIONINSPECTOR {
     stub:
     """
     touch FusionInspector.log
+    touch FusionInspector.fusions.tsv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

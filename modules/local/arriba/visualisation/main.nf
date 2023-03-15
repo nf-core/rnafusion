@@ -9,7 +9,6 @@ process ARRIBA_VISUALISATION {
 
     input:
     tuple val(meta), path(bam), path(bai), path(fusions)
-    path reference
     path gtf
     path protein_domains
     path cytobands
