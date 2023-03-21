@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `Arriba` visualisation now runs for FusionInspector (combined tools) results, not only `Arriba` results
+
 ### Fixed
 
 ### Removed

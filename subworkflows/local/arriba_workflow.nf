@@ -1,5 +1,4 @@
 include { ARRIBA }                                      from '../../modules/nf-core/arriba/main'
-include { ARRIBA_VISUALISATION }                        from '../../modules/local/arriba/visualisation/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_ARRIBA}  from '../../modules/nf-core/samtools/index/main'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_ARRIBA }   from '../../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_ARRIBA}    from '../../modules/nf-core/samtools/view/main'
