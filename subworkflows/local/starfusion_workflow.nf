@@ -13,6 +13,8 @@ workflow STARFUSION_WORKFLOW {
     main:
         ch_versions = Channel.empty()
         ch_align = Channel.empty()
+        ch_bam_sorted_indexed = Channel.empty()
+
         ch_dummy_file = file("$baseDir/assets/dummy_file_starfusion.txt", checkIfExists: true)
 
         if ((params.starfusion || params.all || params.stringtie) && !params.fusioninspector_only) {
@@ -47,10 +49,10 @@ workflow STARFUSION_WORKFLOW {
             ch_star_stats = Channel.empty()
         }
     emit:
-        fusions         = ch_starfusion_fusions
-        star_stats      = ch_star_stats
-        bam_sorted      = ch_align
-        versions        = ch_versions.ifEmpty(null)
-        bam_sorted_indexed
+        fusions               = ch_starfusion_fusions
+        star_stats            = ch_star_stats
+        bam_sorted            = ch_align
+        versions              = ch_versions.ifEmpty(null)
+        ch_bam_sorted_indexed = bam_sorted_indexed.ifEmpty(null)
     }
 
