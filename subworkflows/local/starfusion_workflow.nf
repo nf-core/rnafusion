@@ -13,7 +13,7 @@ workflow STARFUSION_WORKFLOW {
     main:
         ch_versions = Channel.empty()
         ch_align = Channel.empty()
-        ch_bam_sorted_indexed = Channel.empty()
+        bam_sorted_indexed = Channel.empty()
 
         ch_dummy_file = file("$baseDir/assets/dummy_file_starfusion.txt", checkIfExists: true)
 
