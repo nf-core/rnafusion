@@ -20,9 +20,9 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [StringTie](#stringtie) - StringTie assembly
 - [FusionCatcher](#fusioncatcher) - Fusion catcher fusion detection
 - [Samtools](#samtools) - SAM/BAM file manipulation
-- [Arriba visualisation](#arriba-visualisation) - Arriba visualisation report
 - [Fusion-report](#fusion-report) - Summary of the findings of each tool and comparison to COSMIC, Mitelman and FusionGBD databases
 - [FusionInspector](#fusionInspector) - IGV-based visualisation tool for fusions filtered by fusion-report
+- [Arriba visualisation](#arriba-visualisation) - Arriba visualisation report for FusionInspector fusions
 - [Qualimap](#qualimap) - Quality control of alignment
 - [Picard](#picard) - Collect metrics
 - [FastQC](#fastqc) - Raw read quality control
@@ -287,7 +287,7 @@ Samtools view is used to convert the chimeric SAM output from STAR_FOR_SQUID to 
 
 #### Samtools sort
 
-Samtools sort is used to sort BAM files from STAR_FOR_ARRIBA (for arriba visualisation) and the chimeric BAM from STAR_FOR_SQUID
+Samtools sort is used to sort BAM files from STAR_FOR_STARFUSION (for arriba visualisation) and the chimeric BAM from STAR_FOR_SQUID
 
 <details markdown="1">
 <summary>Output files</summary>

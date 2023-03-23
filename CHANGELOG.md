@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `Arriba` visualisation now runs for FusionInspector (combined tools) results, not only `Arriba` results
 - Updated metro map with trimming options and placed `Arriba` visualisation after `FusionInspector`
 
 ### Fixed

@@ -227,7 +227,9 @@ workflow RNAFUSION {
     FUSIONINSPECTOR_WORKFLOW (
         ch_reads_all,
         FUSIONREPORT_WORKFLOW.out.fusion_list,
-        FUSIONREPORT_WORKFLOW.out.fusion_list_filtered
+        FUSIONREPORT_WORKFLOW.out.fusion_list_filtered,
+        STARFUSION_WORKFLOW.out.ch_bam_sorted_indexed,
+        ch_chrgtf
     )
     ch_versions = ch_versions.mix(FUSIONINSPECTOR_WORKFLOW.out.versions.first().ifEmpty(null))
 
