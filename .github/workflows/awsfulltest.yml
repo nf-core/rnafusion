@@ -29,7 +29,7 @@ jobs:
               "arriba": true,
               "build_references": true
             }
-          profiles: test,aws_tower
+          profiles: test_full,aws_tower
 
       - name: Launch arriba workflow via tower
         uses: nf-core/tower-action@v3
@@ -46,7 +46,7 @@ jobs:
               "cosmic_passwd": "${{ secrets.cosmic_passwd }}",
               "arriba": true,
             }
-          profiles: test,aws_tower
+          profiles: test_full,aws_tower
 
       - name: Launch build squid workflow via tower
         uses: nf-core/tower-action@v3
@@ -64,7 +64,7 @@ jobs:
               "squid": true,
               "build_references": true
             }
-          profiles: test,aws_tower
+          profiles: test_full,aws_tower
 
       - name: Launch squid workflow via tower
         uses: nf-core/tower-action@v3
@@ -81,7 +81,7 @@ jobs:
               "cosmic_passwd": "${{ secrets.cosmic_passwd }}",
               "squid": true,
             }
-          profiles: test,aws_tower
+          profiles: test_full,aws_tower
 
       - name: Launch build starfusion workflow via tower
         uses: nf-core/tower-action@v3
@@ -99,7 +99,7 @@ jobs:
               "starfusion": true,
               "build_references": true
             }
-          profiles: test,aws_tower
+          profiles: test_full,aws_tower
 
       - name: Launch starfusion workflow via tower
         uses: nf-core/tower-action@v3
@@ -116,7 +116,7 @@ jobs:
               "cosmic_passwd": "${{ secrets.cosmic_passwd }}",
               "starfusion": true,
             }
-          profiles: test,aws_tower
+          profiles: test_full,aws_tower
 
       - name: Launch build fusioncatcher workflow via tower
         uses: nf-core/tower-action@v3
@@ -134,7 +134,7 @@ jobs:
               "fusioncatcher": true,
               "build_references": true
             }
-          profiles: test,aws_tower
+          profiles: test_full,aws_tower
 
       - name: Launch fusioncatcher workflow via tower
         uses: nf-core/tower-action@v3
@@ -151,7 +151,7 @@ jobs:
               "cosmic_passwd": "${{ secrets.cosmic_passwd }}",
               "fusioncatcher": true,
             }
-          profiles: test,aws_tower
+          profiles: test_full,aws_tower
 
       - name: Launch build pizzly workflow via tower
         uses: nf-core/tower-action@v3
@@ -169,7 +169,7 @@ jobs:
               "pizzly": true,
               "build_references": true
             }
-          profiles: test,aws_tower
+          profiles: test_full,aws_tower
 
       - name: Launch pizzly workflow via tower
         uses: nf-core/tower-action@v3
@@ -186,7 +186,7 @@ jobs:
               "cosmic_passwd": "${{ secrets.cosmic_passwd }}",
               "pizzly": true,
             }
-          profiles: test,aws_tower
+          profiles: test_full,aws_tower
 
       - name: Launch stringtie workflow via tower
         uses: nf-core/tower-action@v3
@@ -203,4 +203,4 @@ jobs:
               "cosmic_passwd": "${{ secrets.cosmic_passwd }}",
               "stringtie": true,
             }
-          profiles: test,aws_tower
+          profiles: test_full,aws_tower

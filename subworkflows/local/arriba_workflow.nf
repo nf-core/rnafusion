@@ -1,9 +1,8 @@
 include { ARRIBA }                                      from '../../modules/nf-core/arriba/main'
-include { ARRIBA_VISUALISATION }                        from '../../modules/local/arriba/visualisation/main'
-include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_ARRIBA }   from '../../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_ARRIBA}  from '../../modules/nf-core/samtools/index/main'
-include { STAR_ALIGN as STAR_FOR_ARRIBA }               from '../../modules/nf-core/star/align/main'
+include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_ARRIBA }   from '../../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_ARRIBA}    from '../../modules/nf-core/samtools/view/main'
+include { STAR_ALIGN as STAR_FOR_ARRIBA }               from '../../modules/nf-core/star/align/main'
 
 workflow ARRIBA_WORKFLOW {
     take:
@@ -41,11 +40,6 @@ workflow ARRIBA_WORKFLOW {
                 ch_arriba_fusions     = ARRIBA.out.fusions
                 ch_arriba_fusion_fail = ARRIBA.out.fusions_fail.map{ meta, file -> return file}
             }
-            bam_indexed_arriba_fusions = bam_indexed.join(ch_arriba_fusions)
-            ARRIBA_VISUALISATION(bam_indexed_arriba_fusions, params.arriba_ref, ch_gtf, params.arriba_ref_protein_domain, params.arriba_ref_cytobands)
-            ch_versions = ch_versions.mix(ARRIBA_VISUALISATION.out.versions)
-
-            ch_arriba_visualisation = ARRIBA_VISUALISATION.out.pdf
 
             if (params.cram.contains('arriba') ){
                 SAMTOOLS_VIEW_FOR_ARRIBA(bam_indexed, ch_fasta, [])
@@ -61,13 +55,11 @@ workflow ARRIBA_WORKFLOW {
                                         .map { meta, reads, fusions -> [ meta, fusions ] }
 
             ch_arriba_fusion_fail   = ch_dummy_file
-            ch_arriba_visualisation = ch_dummy_file
         }
 
     emit:
         fusions         = ch_arriba_fusions
         fusions_fail    = ch_arriba_fusion_fail
         versions        = ch_versions.ifEmpty(null)
-        pdf             = ch_arriba_visualisation
     }
 
