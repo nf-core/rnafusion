@@ -154,7 +154,20 @@ def column_manipulation(df):
 
 
 def write_vcf(df_to_print, header, out_file):
-    df_to_print[["chromosomeA", "posA", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT", "Sample",]].to_csv(
+    df_to_print[
+        [
+            "chromosomeA",
+            "posA",
+            "ID",
+            "REF",
+            "ALT",
+            "QUAL",
+            "FILTER",
+            "INFO",
+            "FORMAT",
+            "Sample",
+        ]
+    ].to_csv(
         path_or_buf=out_file,
         sep="\t",
         header=None,
