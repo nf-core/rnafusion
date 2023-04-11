@@ -324,6 +324,7 @@ Samtools index is used to index BAM files from STAR_FOR_ARRIBA (for arriba visua
 </details>
 
 The score is explained [on the original fusion-report github page](https://matq007.github.io/fusion-report/#/score).
+
 ### FusionInspector
 
 <details markdown="1">

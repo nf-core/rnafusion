@@ -280,7 +280,6 @@ Use the parameter `--cram` to compress the BAM files to CRAM for specific tools.
 - `--cram arriba,squid,starfusion`, default: []
 - `--cram arriba`
 
-
 ### Troubleshooting
 
 Here are some issues found by users:
