@@ -17,7 +17,7 @@ process FUSIONREPORT_DOWNLOAD {
     script:
     def args = task.ext.args ?: ''
     """
-    fusion_report download --cosmic_usr "$username" --cosmic_passwd "$passwd" $args ./
+    fusion_report download --cosmic_usr "${username@Q}" --cosmic_passwd "${passwd@Q}" $args ./
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
