@@ -7,6 +7,8 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         reads
         fusion_list
         fusion_list_filtered
+        report
+
 
     main:
         ch_versions = Channel.empty()
@@ -28,7 +30,9 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         FUSIONINSPECTOR( reads_fusion, index)
         ch_versions = ch_versions.mix(FUSIONINSPECTOR.out.versions)
 
-        MEGAFUSION(FUSIONINSPECTOR.out.tsv)
+
+        fusion_data = FUSIONINSPECTOR.out.tsv.join(report)
+        MEGAFUSION(fusion_data)
 
 
     emit:

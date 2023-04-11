@@ -2,12 +2,13 @@ process MEGAFUSION {
     tag "$meta.id"
     label 'process_single'
 
-    // Note: 2.7X indices incompatible with AWS iGenomes.
-    container "docker.io/clinicalgenomics/megafusion:1.0.0"
-
+    conda "conda-forge::python=3.8.3"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/python:3.9--1' :
+        'quay.io/biocontainers/python:3.9--1' }"
 
     input:
-    tuple val(meta), path(tsv)
+    tuple val(meta), path(tsv), path(report)
 
     output:
     path "versions.yml"              , emit: versions
@@ -19,11 +20,11 @@ process MEGAFUSION {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    python MegaFusion.py --json json/FusionInspector.json --fusion $tsv > ${prefix}.vcf
+    megafusion.py --fusioninspector $tsv --fusionreport $report --sample ${prefix} --out ${prefix}.vcf
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        MegaFusion: 1.0.0
+        python: \$(python --version | sed 's/Python //g')
     END_VERSIONS
     """
 
@@ -32,10 +33,9 @@ process MEGAFUSION {
     """
     touch ${prefix}.vcf
 
-
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        MegaFusion: 1.0.0
+        python: \$(python --version | sed 's/Python //g')
     END_VERSIONS
     """
 }
