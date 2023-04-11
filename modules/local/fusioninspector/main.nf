@@ -40,6 +40,7 @@ process FUSIONINSPECTOR {
     stub:
     """
     touch FusionInspector.log
+    touch FusionInspector.fusions.tsv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
