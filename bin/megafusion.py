@@ -47,9 +47,7 @@ def parse_args(argv=None):
         type=Path,
         help="Fusionreport output in TSV format.",
     )
-    parser.add_argument(
-        "--sample", metavar="SAMPLE", type=Path, help="Sample name.", default="Sample"
-    )
+    parser.add_argument("--sample", metavar="SAMPLE", type=Path, help="Sample name.", default="Sample")
     parser.add_argument(
         "--out",
         metavar="OUT",
@@ -80,16 +78,14 @@ def header_def(sample):
 ##FORMAT=<ID=DV,Number=1,Type=Integer,Description="Number of paired-ends that support the event">\n\
 ##FORMAT=<ID=RV,Number=1,Type=Integer,Description="Number of split reads that support the event">\n\
 ##FORMAT=<ID=FFPM,Number=1,Type=Integer,Description="Fusion fragments per million total RNA-seq fragments">\n\
-#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{}'.format(sample)
+#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{}'.format(
+        sample
+    )
 
 
 def read_fusioninspector(fusioninspector_file, col_num, delimiter, element):
     with open(fusioninspector_file) as fusioninspector:
-        return [
-            line.split()[col_num].split(delimiter)[element]
-            for line in fusioninspector
-            if not line.startswith("#")
-        ]
+        return [line.split()[col_num].split(delimiter)[element] for line in fusioninspector if not line.startswith("#")]
 
 
 def build_fusioninspector_dataframe(file, map):
@@ -106,11 +102,7 @@ def build_fusioninspector_dataframe(file, map):
 
 def read_build_fusionreport(fusionreport_file):
     with open(fusionreport_file) as fusionreport:
-        from_html = [
-            line.split('rows": [')[1]
-            for line in fusionreport
-            if 'name="fusion_list' in line
-        ]
+        from_html = [line.split('rows": [')[1] for line in fusionreport if 'name="fusion_list' in line]
         expression = from_html[0].split('], "tool')[0]
         return pd.DataFrame.from_dict(ast.literal_eval(expression)).set_index("fusion")
 
@@ -157,43 +149,28 @@ def column_manipulation(df):
             )
         )
         # FORMAT
-        df.loc[index, "Sample"] = "./1:{}:{}:{}".format(
-            row["split_reads"], row["discordant_pairs"], row["ffpm"]
-        )
+        df.loc[index, "Sample"] = "./1:{}:{}:{}".format(row["split_reads"], row["discordant_pairs"], row["ffpm"])
     return df
 
 
 def write_vcf(df_to_print, header, out_file):
-    df_to_print[
-        [
-            "chromosomeA",
-            "posA",
-            "ID",
-            "REF",
-            "ALT",
-            "QUAL",
-            "FILTER",
-            "INFO",
-            "FORMAT",
-            "Sample",
-        ]
-    ].to_csv(
+    df_to_print[["chromosomeA", "posA", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT", "Sample",]].to_csv(
         path_or_buf=out_file,
         sep="\t",
         header=None,
         index=False,
     )
 
-    with open(out_file, 'r+') as f:
+    with open(out_file, "r+") as f:
         content = f.read()
         f.seek(0, 0)
-        f.write(header.rstrip('\r\n') + '\n' + content)
+        f.write(header.rstrip("\r\n") + "\n" + content)
 
 
 def megafusion(fusioninspector_in_file, fusionreport_in_file, sample, out):
-    merged_df = build_fusioninspector_dataframe(
-        fusioninspector_in_file, FUSIONINSPECTOR_MAP
-    ).join(read_build_fusionreport(fusionreport_in_file), how="left")
+    merged_df = build_fusioninspector_dataframe(fusioninspector_in_file, FUSIONINSPECTOR_MAP).join(
+        read_build_fusionreport(fusionreport_in_file), how="left"
+    )
     write_vcf(column_manipulation(merged_df), header_def(sample), out)
 
 
