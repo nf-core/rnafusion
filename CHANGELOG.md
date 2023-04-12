@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-Shell specification to bash
-COSMIC password put into quotes
+- Shell specification to bash
+- COSMIC password put into quotes
 
 ### Changed
 
