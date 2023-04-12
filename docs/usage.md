@@ -280,23 +280,6 @@ Use the parameter `--cram` to compress the BAM files to CRAM for specific tools.
 - `--cram arriba,squid,starfusion`, default: []
 - `--cram arriba`
 
-### Troubleshooting
-
-Here are some issues found by users:
-
-#### Using FISH shell
-
-Seems to be solved using `SHELL=$(which bash)` before the nextflow command:
-
-```bash
-SHELL=$(which bash) \
-nextflow run nf-core/rnafusion \
---fusioninspector_only \
---fusioninspector_fusions <PATH_TO_CUSTOM_FUSION_FILE> \
---input <SAMPLE_SHEET.CSV> \
---outdir <PATH>
-```
-
 ### Reproducibility
 
 It is a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
