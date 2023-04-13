@@ -10,7 +10,7 @@ process FUSIONINSPECTOR {
     path reference
 
     output:
-    tuple val(meta), path("*.FusionInspector.fusions.tsv")   , emit: tsv
+    tuple val(meta), path("*FusionInspector.fusions.tsv")    , emit: tsv
     path "*"                                                 , emit: output
     path "versions.yml"                                      , emit: versions
 
