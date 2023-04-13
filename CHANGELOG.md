@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Shell specification to bash
+- COSMIC password put into quotes
+
 ### Changed
 
 - `Arriba` visualisation now runs for FusionInspector (combined tools) results, not only `Arriba` results
