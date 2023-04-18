@@ -51,7 +51,7 @@ workflow SQUID_WORKFLOW {
                 ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FOR_SQUID_CHIMERIC.out.versions)
 
                 bam_sorted_indexed = STAR_FOR_SQUID.out.bam_sorted.join(SAMTOOLS_INDEX_FOR_SQUID.out.bai)
-                chimeric_sorted_indexed = SAMTOOLS_SORT_FOR_SQUID_CHIMERIC.out.bam.join(SAMTOOLS_INDEX_FOR_SQUID_CHIMERIC)
+                chimeric_sorted_indexed = SAMTOOLS_SORT_FOR_SQUID_CHIMERIC.out.bam.join(SAMTOOLS_INDEX_FOR_SQUID_CHIMERIC.out.bai)
 
                 SAMTOOLS_VIEW_FOR_SQUID_CRAM (bam_sorted_indexed, ch_fasta, [])
                 ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID_CRAM.out.versions)
