@@ -269,15 +269,9 @@ workflow RNAFUSION {
     ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.rnaseq_metrics.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.duplicate_metrics.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(TRIM_WORKFLOW.out.ch_reports.collect().ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(TRIM_WORKFLOW.ch_reports.ifEmpty([]))
 
-    if (params.trim) {
-        ch_multiqc_files = ch_multiqc_files.mix(TRIM_WORKFLOW.FASTQC_FOR_TRIM.out.zip.collect{it[1]}.ifEmpty([]))
-    }
 
-    if (params.fastp_trim) {
-        ch_multiqc_files = ch_multiqc_files.mix(FASTQC_FOR_FASTP.out.zip.collect{it[1]}.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(FASTP.out.zip.collect{it[1]}.ifEmpty([]))
-    }
 
     MULTIQC (
         ch_multiqc_files.collect(),
