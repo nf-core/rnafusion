@@ -39,7 +39,7 @@ if (params.fasta[0,1] == "s3") {
 else {
     for (param in checkPathParamList) if ((param.toString())!= file(param).toString() && !params.build_references) { exit 1, "Problem with ${param}: ABSOLUTE PATHS are required! Check for trailing '/' at the end of paths too." }
 }
-if ((params.squid || params.all) && params.ensembl_version == 105) { exit 1, 'Ensembl version 105 is not supported by squid' }
+if ((params.squid || params.all) && params.ensembl_version != 102) { exit 1, 'Ensembl version is not supported by squid' }
 
 ch_fasta = file(params.fasta)
 ch_gtf = file(params.gtf)
