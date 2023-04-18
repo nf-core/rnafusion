@@ -37,7 +37,7 @@ workflow SQUID_WORKFLOW {
 
 
             SAMTOOLS_VIEW_FOR_SQUID_CHIMERIC (chimeric_sam, ch_fasta, [])
-            ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID.out.versions)
+            ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID_CHIMERIC.out.versions)
 
             SAMTOOLS_SORT_FOR_SQUID_CHIMERIC (SAMTOOLS_VIEW_FOR_SQUID_CHIMERIC.out.bam)
             ch_versions = ch_versions.mix(SAMTOOLS_SORT_FOR_SQUID.out.versions)
