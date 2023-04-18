@@ -201,6 +201,32 @@ GENE1--GENE2
 GENE3--GENE4
 ```
 
+#### Skipping QC
+
+```bash
+nextflow run nf-core/rnafusion \
+--skip_qc \
+--all OR <--tool>
+--input <SAMPLE_SHEET.CSV> \
+--genomes_base <PATH/TO/REFERENCES> \
+--outdir <PATH>
+```
+
+This will skip all QC-related processes.
+
+#### Skipping visualisation
+
+```bash
+nextflow run nf-core/rnafusion \
+--skip_vis \
+--all OR <--tool>
+--input <SAMPLE_SHEET.CSV> \
+--genomes_base <PATH/TO/REFERENCES> \
+--outdir <PATH>
+```
+
+This will skip all visualisation processes, including `fusion-report`, `FusionInspector` and `Arriba` visualisation.
+
 #### Optional manual feed-in of fusion files
 
 It is possible to give the output of each tool manually using the argument: `--<tool>_fusions PATH/TO/FUSION/FILE`: this feature need more testing, don't hesitate to open an issue if you encounter problems.
