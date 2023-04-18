@@ -10,6 +10,7 @@ workflow TRIM_WORKFLOW {
 
     main:
         ch_versions = Channel.empty()
+        ch_reports = Channel.empty()
 
         if (params.trim) {
 
@@ -30,6 +31,10 @@ workflow TRIM_WORKFLOW {
 
             ch_reads_all = FASTP.out.reads
             ch_reads_fusioncatcher = ch_reads_all
+            ch_reports = ch_reports.mix(
+                FASTP.out.json.collect{meta, json -> json},
+                FASTP.out.html.collect{meta, html -> html}
+            )
         }
         else {
             ch_reads_all = reads
@@ -39,6 +44,7 @@ workflow TRIM_WORKFLOW {
     emit:
         ch_reads_all
         ch_reads_fusioncatcher
+        ch_reports
         versions      = ch_versions.ifEmpty(null)
     }
 

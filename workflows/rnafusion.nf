@@ -259,6 +259,8 @@ workflow RNAFUSION {
     methods_description    = WorkflowRnafusion.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description)
     ch_methods_description = Channel.value(methods_description)
 
+
+
     ch_multiqc_files = Channel.empty()
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
@@ -268,6 +270,16 @@ workflow RNAFUSION {
     ch_multiqc_files = ch_multiqc_files.mix(STARFUSION_WORKFLOW.out.star_stats.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.rnaseq_metrics.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.duplicate_metrics.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(TRIM_WORKFLOW.out.ch_reports.collect().ifEmpty([]))
+
+    if (params.trim) {
+        ch_multiqc_files = ch_multiqc_files.mix(FASTQC_FOR_TRIM.out.zip.collect{it[1]}.ifEmpty([]))
+    }
+
+    if (params.fastp_trim) {
+        ch_multiqc_files = ch_multiqc_files.mix(FASTQC_FOR_FASTP.out.zip.collect{it[1]}.ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(FASTP.out.zip.collect{it[1]}.ifEmpty([]))
+    }
 
     MULTIQC (
         ch_multiqc_files.collect(),
