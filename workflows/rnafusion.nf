@@ -268,8 +268,7 @@ workflow RNAFUSION {
     ch_multiqc_files = ch_multiqc_files.mix(STARFUSION_WORKFLOW.out.star_stats.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.rnaseq_metrics.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.duplicate_metrics.collect{it[1]}.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(TRIM_WORKFLOW.out.ch_reports.collect().ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(TRIM_WORKFLOW.ch_reports.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(TRIM_WORKFLOW.out.ch_reports.ifEmpty([]))
 
 
 
