@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Channel issue with indexing of files with using `--cram squid`
+
 ### Removed
 
 ## v2.2.0 - [2022/03/13]
