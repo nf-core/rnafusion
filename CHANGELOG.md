@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Shell specification to bash
 - COSMIC password put into quotes
+- Trimmed reads QC in MultiQC
 - Add `ARRIBA_VISUALISATION` to processed affected by `--skip_vis`
 
 ### Changed
