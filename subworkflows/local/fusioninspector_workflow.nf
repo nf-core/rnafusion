@@ -30,7 +30,7 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         FUSIONINSPECTOR( reads_fusion, index)
         ch_versions = ch_versions.mix(FUSIONINSPECTOR.out.versions)
 
-        if ((params.starfusion || params.all || params.stringtie) && !params.fusioninspector_only) {
+        if ((params.starfusion || params.all || params.stringtie) && !params.fusioninspector_only && !params.skip_vis) {
             bam_sorted_indexed_fusions = bam_sorted_indexed.join(FUSIONINSPECTOR.out.fusions)
             ARRIBA_VISUALISATION(bam_sorted_indexed_fusions, ch_gtf, params.arriba_ref_protein_domain, params.arriba_ref_cytobands)
             ch_versions = ch_versions.mix(ARRIBA_VISUALISATION.out.versions)
