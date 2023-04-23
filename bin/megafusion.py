@@ -1,15 +1,11 @@
 #!/usr/bin/env python
 
 import argparse
-import csv
 import logging
-import os
 import sys
-from collections import Counter
 from pathlib import Path
 import pandas as pd
 import ast
-import re
 
 logger = logging.getLogger()
 
