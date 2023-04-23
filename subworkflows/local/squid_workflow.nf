@@ -1,5 +1,7 @@
-include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_SQUID }               from '../../modules/nf-core/samtools/sort/main'
-include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_SQUID }               from '../../modules/nf-core/samtools/view/main'
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_SQUID }             from '../../modules/nf-core/samtools/index/main'
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_SQUID_CHIMERIC }    from '../../modules/nf-core/samtools/index/main'
+include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_SQUID_CHIMERIC }      from '../../modules/nf-core/samtools/sort/main'
+include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_SQUID_CHIMERIC }      from '../../modules/nf-core/samtools/view/main'
 include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_SQUID_CRAM }          from '../../modules/nf-core/samtools/view/main'
 include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_SQUID_CRAM_CHIMERIC } from '../../modules/nf-core/samtools/view/main'
 include { SQUID }                                                  from '../../modules/local/squid/detect/main'
@@ -24,33 +26,43 @@ workflow SQUID_WORKFLOW {
                                     .map { meta, reads, fusions -> [ meta, fusions ] }
             } else {
 
-            STAR_FOR_SQUID( reads, ch_starindex_ensembl_ref, ch_gtf, params.star_ignore_sjdbgtf, '', params.seq_center ?: '')
-            ch_versions = ch_versions.mix(STAR_FOR_SQUID.out.versions )
+            STAR_FOR_SQUID(reads, ch_starindex_ensembl_ref, ch_gtf, params.star_ignore_sjdbgtf, '', params.seq_center ?: '')
+            ch_versions = ch_versions.mix(STAR_FOR_SQUID.out.versions)
 
             STAR_FOR_SQUID.out.sam
             .map { meta, sam ->
             return [meta, sam, []]
-            }.set { chimeric_sam_indexed }
+            }.set { chimeric_sam }
 
-            SAMTOOLS_VIEW_FOR_SQUID ( chimeric_sam_indexed, ch_fasta, [] )
-            ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID.out.versions )
 
-            SAMTOOLS_SORT_FOR_SQUID ( SAMTOOLS_VIEW_FOR_SQUID.out.bam )
-            ch_versions = ch_versions.mix(SAMTOOLS_SORT_FOR_SQUID.out.versions )
 
-            bam_sorted = STAR_FOR_SQUID.out.bam_sorted.join(SAMTOOLS_SORT_FOR_SQUID.out.bam )
+            SAMTOOLS_VIEW_FOR_SQUID_CHIMERIC (chimeric_sam, ch_fasta, [])
+            ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID_CHIMERIC.out.versions)
+
+            SAMTOOLS_SORT_FOR_SQUID_CHIMERIC (SAMTOOLS_VIEW_FOR_SQUID_CHIMERIC.out.bam)
+            ch_versions = ch_versions.mix(SAMTOOLS_SORT_FOR_SQUID_CHIMERIC.out.versions)
+
+            bam_chimeric = STAR_FOR_SQUID.out.bam_sorted.join(SAMTOOLS_SORT_FOR_SQUID_CHIMERIC.out.bam)
 
             if (params.cram.contains('squid')){
-                SAMTOOLS_VIEW_FOR_SQUID_CRAM ( STAR_FOR_SQUID.out.bam_sorted, ch_fasta, [] )
-                ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID_CRAM.out.versions )
-                SAMTOOLS_VIEW_FOR_SQUID_CRAM_CHIMERIC ( chimeric_sam_indexed, ch_fasta, [] )
-                ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID_CRAM.out.versions )
+                SAMTOOLS_INDEX_FOR_SQUID(STAR_FOR_SQUID.out.bam_sorted)
+                ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FOR_SQUID.out.versions)
+                SAMTOOLS_INDEX_FOR_SQUID_CHIMERIC(SAMTOOLS_SORT_FOR_SQUID_CHIMERIC.out.bam)
+                ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FOR_SQUID_CHIMERIC.out.versions)
+
+                bam_sorted_indexed = STAR_FOR_SQUID.out.bam_sorted.join(SAMTOOLS_INDEX_FOR_SQUID.out.bai)
+                chimeric_sorted_indexed = SAMTOOLS_SORT_FOR_SQUID_CHIMERIC.out.bam.join(SAMTOOLS_INDEX_FOR_SQUID_CHIMERIC.out.bai)
+
+                SAMTOOLS_VIEW_FOR_SQUID_CRAM (bam_sorted_indexed, ch_fasta, [])
+                ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID_CRAM.out.versions)
+                SAMTOOLS_VIEW_FOR_SQUID_CRAM_CHIMERIC (chimeric_sorted_indexed, ch_fasta, [])
+                ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_SQUID_CRAM.out.versions)
             }
 
-            SQUID ( bam_sorted )
+            SQUID (bam_chimeric)
             ch_versions = ch_versions.mix(SQUID.out.versions)
 
-            SQUID_ANNOTATE ( SQUID.out.fusions, ch_gtf )
+            SQUID_ANNOTATE (SQUID.out.fusions, ch_gtf)
             ch_versions = ch_versions.mix(SQUID_ANNOTATE.out.versions)
 
             ch_squid_fusions = SQUID_ANNOTATE.out.fusions_annotated

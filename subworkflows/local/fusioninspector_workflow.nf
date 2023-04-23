@@ -34,8 +34,9 @@ workflow FUSIONINSPECTOR_WORKFLOW {
 
         fusion_data = FUSIONINSPECTOR.out.tsv.join(report)
         MEGAFUSION(fusion_data)
+        ch_versions = ch_versions.mix(MEGAFUSION.out.versions)
 
-        if ((params.starfusion || params.all || params.stringtie) && !params.fusioninspector_only) {
+        if ((params.starfusion || params.all || params.stringtie) && !params.fusioninspector_only && !params.skip_vis) {
             bam_sorted_indexed_fusions = bam_sorted_indexed.join(FUSIONINSPECTOR.out.tsv)
             ARRIBA_VISUALISATION(bam_sorted_indexed_fusions, ch_gtf, params.arriba_ref_protein_domain, params.arriba_ref_cytobands)
             ch_versions = ch_versions.mix(ARRIBA_VISUALISATION.out.versions)
