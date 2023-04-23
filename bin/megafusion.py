@@ -72,8 +72,8 @@ def header_def(sample):
 ##INFO=<ID=PIZZLY,Number=.,Type=String,Description="Found by pizzly">\n\
 ##INFO=<ID=SQUID,Number=.,Type=String,Description="Found by squid">\n\
 ##INFO=<ID=STARFUSION,Number=.,Type=String,Description="Found by starfusion">\n\
-##INFO=<ID=TOOL_HITS,Number=.,Type=String,Description="Number of tools that found the fusion">\n\
-##INFO=<ID=SCORE,Number=.,Type=String,Description="Score from fusionreport">\n\
+##INFO=<ID=TOOL_HITS,Number=.,Type=Integer,Description="Number of tools that found the fusion">\n\
+##INFO=<ID=SCORE,Number=.,Type=Float,Description="Score from fusionreport">\n\
 ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">\n\
 ##FORMAT=<ID=DV,Number=1,Type=Integer,Description="Number of paired-ends that support the event">\n\
 ##FORMAT=<ID=RV,Number=1,Type=Integer,Description="Number of split reads that support the event">\n\
