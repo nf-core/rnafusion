@@ -1,5 +1,6 @@
 include { ARRIBA_VISUALISATION     }                      from '../../modules/local/arriba/visualisation/main'
 include { CAT_CAT }                                       from '../../modules/nf-core/cat/cat/main'
+include { MEGAFUSION }                                    from '../../modules/local/megafusion/main'
 include { FUSIONINSPECTOR     }                           from '../../modules/local/fusioninspector/main'
 
 workflow FUSIONINSPECTOR_WORKFLOW {
@@ -7,6 +8,7 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         reads
         fusion_list
         fusion_list_filtered
+        report
         bam_sorted_indexed
         ch_gtf
 
@@ -30,8 +32,12 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         FUSIONINSPECTOR( reads_fusion, index)
         ch_versions = ch_versions.mix(FUSIONINSPECTOR.out.versions)
 
+        fusion_data = FUSIONINSPECTOR.out.tsv.join(report)
+        MEGAFUSION(fusion_data)
+        ch_versions = ch_versions.mix(MEGAFUSION.out.versions)
+
         if ((params.starfusion || params.all || params.stringtie) && !params.fusioninspector_only && !params.skip_vis) {
-            bam_sorted_indexed_fusions = bam_sorted_indexed.join(FUSIONINSPECTOR.out.fusions)
+            bam_sorted_indexed_fusions = bam_sorted_indexed.join(FUSIONINSPECTOR.out.tsv)
             ARRIBA_VISUALISATION(bam_sorted_indexed_fusions, ch_gtf, params.arriba_ref_protein_domain, params.arriba_ref_cytobands)
             ch_versions = ch_versions.mix(ARRIBA_VISUALISATION.out.versions)
         }
