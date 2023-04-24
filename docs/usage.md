@@ -207,7 +207,7 @@ nextflow run nf-core/rnafusion \
 --fusioninspector_fusions <PATH_TO_CUSTOM_FUSION_FILE> \
 --input <SAMPLE_SHEET.CSV> \
 --outdir <PATH>
-````
+```
 
 The custom fusion file should have the following format:
 
