@@ -177,6 +177,7 @@ def write_vcf(df_to_print, header, out_file):
 
 
 def megafusion(fusioninspector_in_file, fusionreport_in_file, sample, out):
+    """Convert fusion information from FusionInspector and fusion-report into a vcf file. Adapted from https://github.com/J35P312/MegaFusion"""
     merged_df = build_fusioninspector_dataframe(fusioninspector_in_file, FUSIONINSPECTOR_MAP).join(
         read_build_fusionreport(fusionreport_in_file), how="left"
     )
