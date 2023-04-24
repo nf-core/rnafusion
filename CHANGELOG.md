@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - COSMIC password put into quotes
 - Trimmed reads QC in MultiQC
 - Add `ARRIBA_VISUALISATION` to processed affected by `--skip_vis`
+- Option `fusionreport_filter` to in/activate fusionreport displaying of fusions detected by 2 or more tools
 
 ### Changed
 

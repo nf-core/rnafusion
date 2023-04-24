@@ -179,6 +179,12 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to fusionreport references"
                 },
+                "fusionreport_filter": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "default": true,
+                    "description": "Display fusions identified with 2 tools or more"
+                },
                 "pizzly": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
