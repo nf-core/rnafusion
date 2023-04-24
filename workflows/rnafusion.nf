@@ -39,7 +39,7 @@ if (params.fasta[0,1] == "s3") {
 else {
     for (param in checkPathParamList) if ((param.toString())!= file(param).toString() && !params.build_references) { exit 1, "Problem with ${param}: ABSOLUTE PATHS are required! Check for trailing '/' at the end of paths too." }
 }
-if ((params.squid || params.all) && params.ensembl_version == 105) { exit 1, 'Ensembl version 105 is not supported by squid' }
+if ((params.squid || params.all) && params.ensembl_version != 102) { exit 1, 'Ensembl version is not supported by squid' }
 
 ch_fasta = file(params.fasta)
 ch_gtf = file(params.gtf)
@@ -227,7 +227,10 @@ workflow RNAFUSION {
     FUSIONINSPECTOR_WORKFLOW (
         ch_reads_all,
         FUSIONREPORT_WORKFLOW.out.fusion_list,
-        FUSIONREPORT_WORKFLOW.out.fusion_list_filtered
+        FUSIONREPORT_WORKFLOW.out.fusion_list_filtered,
+        FUSIONREPORT_WORKFLOW.out.report,
+        STARFUSION_WORKFLOW.out.ch_bam_sorted_indexed,
+        ch_chrgtf
     )
     ch_versions = ch_versions.mix(FUSIONINSPECTOR_WORKFLOW.out.versions.first().ifEmpty(null))
 
@@ -266,6 +269,9 @@ workflow RNAFUSION {
     ch_multiqc_files = ch_multiqc_files.mix(STARFUSION_WORKFLOW.out.star_stats.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.rnaseq_metrics.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.duplicate_metrics.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(TRIM_WORKFLOW.out.ch_reports.ifEmpty([]))
+
+
 
     MULTIQC (
         ch_multiqc_files.collect(),

@@ -3,6 +3,29 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v2.3.0 = [2022/04/24]
+
+### Added
+
+- Shell specification to bash
+- COSMIC password put into quotes
+- Trimmed reads QC in MultiQC
+- Add `ARRIBA_VISUALISATION` to processed affected by `--skip_vis`
+- Option `fusionreport_filter` to in/activate fusionreport displaying of fusions detected by 2 or more tools
+
+### Changed
+
+- `Arriba` visualisation now runs for FusionInspector (combined tools) results, not only `Arriba` results
+- Updated metro map with trimming options and placed `Arriba` visualisation after `FusionInspector`
+- Exit with error when using squid in combination with any ensembl version different from 102
+
+### Fixed
+
+- Channel issue with indexing of files with using `--cram squid`
+- `Arriba` references published in the correct folder
+
+### Removed
+
 ## v2.2.0 - [2022/03/13]
 
 ### Added

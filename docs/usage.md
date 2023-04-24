@@ -155,14 +155,29 @@ nextflow run nf-core/rnafusion \
 2. hard trimming
    In this case, only reads fed to fusioncatcher are trimmed. This is a harsh workaround in case of high read-through. The recommended trimming is thus the fastp_trim one. The trimming is done at 75 bp from the tails. Example usage:
 
-````bash
+```bash
 nextflow run nf-core/rnafusion \
 --<tool1> --<tool2> ... \
 --input <SAMPLE_SHEET.CSV> \
 --genomes_base <PATH/TO/REFERENCES> \
 --outdir <OUTPUT/PATH> \
 --trim
-``
+```
+
+#### Filter fusions detected by 2 or more tools
+
+```bash
+nextflow run nf-core/rnafusion \
+  --<tool1> --<tool2> ... \
+  --input <SAMPLE_SHEET.CSV> \
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH>
+  --fusioninspector_filter
+  --fusionreport_filter
+```
+
+`--fusioninspector_filter` feed only fusions detected by 2 or more tools to fusioninspector for closer analysis (false by default).
+`--fusionreport_filter` displays only fusions detected by 2 or more tools in fusionreport html index (true by default).
 
 #### Adding custom fusions to consider as well as the detected set: whitelist
 
@@ -192,7 +207,7 @@ nextflow run nf-core/rnafusion \
 --fusioninspector_fusions <PATH_TO_CUSTOM_FUSION_FILE> \
 --input <SAMPLE_SHEET.CSV> \
 --outdir <PATH>
-````
+```
 
 The custom fusion file should have the following format:
 
@@ -200,6 +215,32 @@ The custom fusion file should have the following format:
 GENE1--GENE2
 GENE3--GENE4
 ```
+
+#### Skipping QC
+
+```bash
+nextflow run nf-core/rnafusion \
+--skip_qc \
+--all OR <--tool>
+--input <SAMPLE_SHEET.CSV> \
+--genomes_base <PATH/TO/REFERENCES> \
+--outdir <PATH>
+```
+
+This will skip all QC-related processes.
+
+#### Skipping visualisation
+
+```bash
+nextflow run nf-core/rnafusion \
+--skip_vis \
+--all OR <--tool>
+--input <SAMPLE_SHEET.CSV> \
+--genomes_base <PATH/TO/REFERENCES> \
+--outdir <PATH>
+```
+
+This will skip all visualisation processes, including `fusion-report`, `FusionInspector` and `Arriba` visualisation.
 
 #### Optional manual feed-in of fusion files
 

@@ -61,7 +61,6 @@ In rnafusion the full-sized test includes reference building and fusion detectio
    - [Samtool](https://github.com/samtools/samtools) sort
    - [Samtool](https://github.com/samtools/samtools) index
    - [Arriba](https://github.com/suhrig/arriba) fusion detection
-   - [Arriba](https://github.com/suhrig/arriba) visualisation
 5. Pizzly subworkflow
    - [Kallisto](https://pachterlab.github.io/kallisto/) quantification
    - [Pizzly](https://github.com/pmelsted/pizzly) fusion detection
@@ -81,6 +80,7 @@ In rnafusion the full-sized test includes reference building and fusion detectio
    - [Fusion-report](https://github.com/matq007/fusion-report)
 10. FusionInspector subworkflow
     - [FusionInspector](https://github.com/FusionInspector/FusionInspector)
+    - [Arriba](https://github.com/suhrig/arriba) visualisation
 11. Stringtie subworkflow
     - [StringTie](https://ccb.jhu.edu/software/stringtie/index.shtml)
 12. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))

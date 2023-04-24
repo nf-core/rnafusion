@@ -2,7 +2,7 @@ process FUSIONINSPECTOR {
     tag "$meta.id"
     label 'process_high'
 
-    conda "bioconda::dfam=3.3 bioconda::hmmer=3.3.2 bioconda::star-fusion=1.12.0 bioconda::trinity=2.13.2 bioconda::samtools=1.9 bioconda::star=2.7.8a"
+    conda "bioconda::dfam=3.3 bioconda::hmmer=3.3.2 bioconda::star-fusion=1.12.0 bioconda::samtools=1.9 bioconda::star=2.7.8a"
     container 'docker.io/trinityctat/starfusion:1.12.0'
 
     input:
@@ -10,8 +10,9 @@ process FUSIONINSPECTOR {
     path reference
 
     output:
-    path "*"                , emit: output
-    path "versions.yml"     , emit: versions
+    tuple val(meta), path("*FusionInspector.fusions.tsv")    , emit: tsv
+    path "*"                                                 , emit: output
+    path "versions.yml"                                      , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -39,6 +40,7 @@ process FUSIONINSPECTOR {
     stub:
     """
     touch FusionInspector.log
+    touch FusionInspector.fusions.tsv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
