@@ -228,6 +228,7 @@ workflow RNAFUSION {
         ch_reads_all,
         FUSIONREPORT_WORKFLOW.out.fusion_list,
         FUSIONREPORT_WORKFLOW.out.fusion_list_filtered,
+        FUSIONREPORT_WORKFLOW.out.report,
         STARFUSION_WORKFLOW.out.ch_bam_sorted_indexed,
         ch_chrgtf
     )
