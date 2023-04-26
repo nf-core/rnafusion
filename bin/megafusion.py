@@ -101,17 +101,18 @@ def read_build_fusionreport(fusionreport_file):
         from_html = [line.split('rows": [')[1] for line in f if 'name="fusion_list' in line]
         expression = from_html[0].split('], "tool')[0]
     fusion_report = pd.DataFrame.from_dict(ast.literal_eval(expression)).set_index("fusion")
-    if not 'arriba' in fusion_report.columns:
-        fusion_report['arriba'] = ''
-    if not 'fusioncatcher' in fusion_report.columns:
-        fusion_report['fusioncatcher'] = ''
-    if not 'pizzly' in fusion_report.columns:
-        fusion_report['pizzly'] = ''
-    if not 'squid' in fusion_report.columns:
-        fusion_report['squid'] = ''
-    if not 'starfusion' in fusion_report.columns:
-        fusion_report['starfusion'] = ''
+    if not "arriba" in fusion_report.columns:
+        fusion_report["arriba"] = ""
+    if not "fusioncatcher" in fusion_report.columns:
+        fusion_report["fusioncatcher"] = ""
+    if not "pizzly" in fusion_report.columns:
+        fusion_report["pizzly"] = ""
+    if not "squid" in fusion_report.columns:
+        fusion_report["squid"] = ""
+    if not "starfusion" in fusion_report.columns:
+        fusion_report["starfusion"] = ""
     return fusion_report
+
 
 def column_manipulation(df):
     df["ALT"] = ""
