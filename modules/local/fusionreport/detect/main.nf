@@ -15,7 +15,7 @@ process FUSIONREPORT {
     path "versions.yml"                                                 , emit: versions
     tuple val(meta), path("*fusionreport.tsv")                          , emit: fusion_list
     tuple val(meta), path("*fusionreport_filtered.tsv")                 , emit: fusion_list_filtered
-    tuple val(meta), path("*.html")                                     , emit: report
+    tuple val(meta), path("index.html")                                 , emit: report
     tuple val(meta), path("*.csv")                       , optional:true, emit: csv
     tuple val(meta), path("*.json")                      , optional:true, emit: json
 
