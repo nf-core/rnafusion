@@ -111,6 +111,7 @@ def read_build_fusionreport(fusionreport_file):
             fusion_report['squid'] = ''
         if not 'starfusion' in fusion_report.columns:
             fusion_report['starfusion'] = ''
+        return fusionreport
 
 def column_manipulation(df):
     df["ALT"] = ""
