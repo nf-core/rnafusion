@@ -22,13 +22,8 @@ class WorkflowMain {
     //
     // Generate help string
     //
-<<<<<<< HEAD
-    public static String help(workflow, params, log) {
-        def command = "nextflow run ${workflow.manifest.name} --input samplesheet.csv --genome GRCh38 -profile docker"
-=======
     public static String help(workflow, params) {
         def command = "nextflow run ${workflow.manifest.name} --input samplesheet.csv --genome GRCh37 -profile docker"
->>>>>>> origin/nf-core-template-merge-2.8
         def help_string = ''
         help_string += NfcoreTemplate.logo(workflow, params.monochrome_logs)
         help_string += NfcoreSchema.paramsHelp(workflow, params, command)

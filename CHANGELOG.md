@@ -5,7 +5,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## v2.3.4 - [date]
->>>>>>> origin/nf-core-template-merge-2.8
 
 Initial release of nf-core/rnafusion, created with the [nf-core](https://nf-co.re/) template.
 
@@ -13,6 +12,9 @@ Initial release of nf-core/rnafusion, created with the [nf-core](https://nf-co.r
 
 ### Changed
 
+- `fastp` updated to 0.23.3
+- `gatk4` updated to 4.4.0.0
+- `samtools` update to 1.17
 ### Fixed
 
 ### Removed
