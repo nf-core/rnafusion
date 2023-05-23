@@ -14,7 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Launch build arriba workflow via tower
-        uses: nf-core/tower-action@v3
+        uses: seqeralabs/action-tower-launch@v1
+        # TODO nf-core: You can customise AWS full pipeline tests as required
+        # Add full size test data (but still relatively small datasets for few samples)
+        # on the `test_full.config` test runs with only one set of parameters
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
@@ -32,7 +35,7 @@ jobs:
           profiles: test_full,aws_tower
 
       - name: Launch arriba workflow via tower
-        uses: nf-core/tower-action@v3
+        uses: seqeralabs/action-tower-launch@v1
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
@@ -49,7 +52,8 @@ jobs:
           profiles: test_full,aws_tower
 
       - name: Launch build squid workflow via tower
-        uses: nf-core/tower-action@v3
+        uses: seqeralabs/action-tower-launch@v1
+
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
@@ -67,7 +71,8 @@ jobs:
           profiles: test_full,aws_tower
 
       - name: Launch squid workflow via tower
-        uses: nf-core/tower-action@v3
+        uses: seqeralabs/action-tower-launch@v1
+
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
@@ -84,7 +89,8 @@ jobs:
           profiles: test_full,aws_tower
 
       - name: Launch build starfusion workflow via tower
-        uses: nf-core/tower-action@v3
+        uses: seqeralabs/action-tower-launch@v1
+
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
@@ -102,7 +108,8 @@ jobs:
           profiles: test_full,aws_tower
 
       - name: Launch starfusion workflow via tower
-        uses: nf-core/tower-action@v3
+        uses: seqeralabs/action-tower-launch@v1
+
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
@@ -119,7 +126,8 @@ jobs:
           profiles: test_full,aws_tower
 
       - name: Launch build fusioncatcher workflow via tower
-        uses: nf-core/tower-action@v3
+        uses: seqeralabs/action-tower-launch@v1
+
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
@@ -137,7 +145,8 @@ jobs:
           profiles: test_full,aws_tower
 
       - name: Launch fusioncatcher workflow via tower
-        uses: nf-core/tower-action@v3
+        uses: seqeralabs/action-tower-launch@v1
+
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
@@ -154,7 +163,8 @@ jobs:
           profiles: test_full,aws_tower
 
       - name: Launch build pizzly workflow via tower
-        uses: nf-core/tower-action@v3
+        uses: seqeralabs/action-tower-launch@v1
+
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
@@ -172,7 +182,8 @@ jobs:
           profiles: test_full,aws_tower
 
       - name: Launch pizzly workflow via tower
-        uses: nf-core/tower-action@v3
+        uses: seqeralabs/action-tower-launch@v1
+
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
@@ -189,7 +200,8 @@ jobs:
           profiles: test_full,aws_tower
 
       - name: Launch stringtie workflow via tower
-        uses: nf-core/tower-action@v3
+        uses: seqeralabs/action-tower-launch@v1
+
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}

@@ -3,6 +3,20 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## v2.3.4 - [date]
+>>>>>>> origin/nf-core-template-merge-2.8
+
+Initial release of nf-core/rnafusion, created with the [nf-core](https://nf-co.re/) template.
+
+### Added
+
+### Changed
+
+### Fixed
+
+### Removed
+
 ## v2.3.0 = [2022/04/24]
 
 ### Added
@@ -364,13 +378,3 @@ to
 
 Version 1.0 marks the first production release of this pipeline under the nf-core flag.
 The pipeline includes additional help scripts to download references for fusion tools and Singularity images.
-
-Initial release of nf-core/rnafusion, created with the [nf-core](https://nf-co.re/) template.
-
-### `Added`
-
-### `Fixed`
-
-### `Dependencies`
-
-### `Deprecated`
