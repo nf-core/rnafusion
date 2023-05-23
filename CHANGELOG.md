@@ -3,7 +3,6 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
 ## v2.3.4 - [date]
 
 Initial release of nf-core/rnafusion, created with the [nf-core](https://nf-co.re/) template.
@@ -15,6 +14,7 @@ Initial release of nf-core/rnafusion, created with the [nf-core](https://nf-co.r
 - `fastp` updated to 0.23.3
 - `gatk4` updated to 4.4.0.0
 - `samtools` update to 1.17
+
 ### Fixed
 
 ### Removed

@@ -94,15 +94,15 @@ In rnafusion the full-sized test includes reference building and fusion detectio
 > to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
 > with `-profile test` before running the workflow on actual data.
 
-   ```bash
-   nextflow run nf-core/rnafusion -profile test,YOURPROFILE --outdir <OUTDIR> -stub --all --build_references
+```bash
+nextflow run nf-core/rnafusion -profile test,YOURPROFILE --outdir <OUTDIR> -stub --all --build_references
 
-   nextflow run nf-core/rnafusion -profile test,YOURPROFILE --outdir <OUTDIR> -stub --all
+nextflow run nf-core/rnafusion -profile test,YOURPROFILE --outdir <OUTDIR> -stub --all
 
-   ```
+```
 
 > Note that paths need to be absolute and that runs with conda are not supported.
-Now, you can run the pipeline following the instructions in usage.
+> Now, you can run the pipeline following the instructions in usage.
 
 > **Warning:**
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
