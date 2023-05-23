@@ -5,7 +5,7 @@ process REFORMAT {
     conda "bioconda::bbmap=38.90"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bbmap:38.90--he522d1c_1' :
-        'quay.io/biocontainers/bbmap:38.90--he522d1c_1' }"
+        'biocontainers/bbmap:38.90--he522d1c_1' }"
 
 
     input:

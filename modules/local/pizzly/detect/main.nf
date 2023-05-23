@@ -5,7 +5,7 @@ process PIZZLY {
     conda "bioconda::kallisto=0.46.2 bioconda::pizzly==0.37.3"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/pizzly:0.37.3--py36_2' :
-        'quay.io/biocontainers/pizzly:0.37.3--h470a237_3' }"
+        'biocontainers/pizzly:0.37.3--h470a237_3' }"
 
     input:
     tuple val(meta), path(txt)
