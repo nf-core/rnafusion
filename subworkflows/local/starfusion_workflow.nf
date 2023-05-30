@@ -31,7 +31,11 @@ workflow STARFUSION_WORKFLOW {
                 bam_sorted_indexed = STAR_FOR_STARFUSION.out.bam_sorted.join(SAMTOOLS_INDEX_FOR_STARFUSION.out.bai)
 
                 if (params.cram.contains('starfusion')){
-                    SAMTOOLS_VIEW_FOR_STARFUSION (bam_sorted_indexed, ch_fasta, [] )
+                    ch_fasta
+                    .map { it -> tuple(id:it.baseName, it) }
+                    .set { ch_fasta_w_meta }
+
+                    SAMTOOLS_VIEW_FOR_STARFUSION (bam_sorted_indexed, ch_fasta_w_meta, [] )
                     ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_STARFUSION.out.versions)
                 }
                 reads_junction = reads.join(STAR_FOR_STARFUSION.out.junction )

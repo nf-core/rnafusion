@@ -42,7 +42,12 @@ workflow ARRIBA_WORKFLOW {
             }
 
             if (params.cram.contains('arriba') ){
-                SAMTOOLS_VIEW_FOR_ARRIBA(bam_indexed, ch_fasta, [])
+
+                ch_fasta_w_meta
+                .map { it -> tuple(id:it.baseName, it) }
+                .set { ch_fasta_w_meta }
+
+                SAMTOOLS_VIEW_FOR_ARRIBA(bam_indexed, ch_fasta_w_meta, [])
                 ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_ARRIBA.out.versions )
 
             }
