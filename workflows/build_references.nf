@@ -39,7 +39,7 @@ workflow BUILD_REFERENCES {
         .set { ch_fasta_w_meta }
 
     SAMTOOLS_FAIDX(ch_fasta_w_meta)
-    GATK4_CREATESEQUENCEDICTIONARY(ENSEMBL_DOWNLOAD.out.fasta)
+    GATK4_CREATESEQUENCEDICTIONARY(ch_fasta_w_meta)
 
         ENSEMBL_DOWNLOAD.out.gtf
         .map { it -> tuple(id:it.baseName, it) }
