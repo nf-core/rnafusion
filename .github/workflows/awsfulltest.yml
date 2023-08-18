@@ -272,4 +272,3 @@ jobs:
           path: |
             tower_action_*.log
             tower_action_*.json
-
