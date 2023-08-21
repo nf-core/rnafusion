@@ -10,7 +10,7 @@ process SQUID_ANNOTATE {
 
     input:
     tuple val(meta), path(txt)
-    path gtf
+    tuple val(meta2), path(gtf)
 
     output:
     tuple val(meta), path("*annotated.txt")    , emit: fusions_annotated
