@@ -10,9 +10,9 @@ process FUSIONINSPECTOR {
     path reference
 
     output:
-    tuple val(meta), path("*FusionInspector.fusions.tsv")    , emit: tsv
-    path "*"                                                 , emit: output
-    path "versions.yml"                                      , emit: versions
+    tuple val(meta), path("*FusionInspector.fusions.tsv")    , optional:true, emit: tsv
+    path "*"                                                                , emit: output
+    path "versions.yml"                                                     , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
