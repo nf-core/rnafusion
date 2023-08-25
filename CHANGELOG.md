@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Use institutional configs by default [#381](https://github.com/nf-core/rnafusion/pull/381)
+
 ### Fixed
 
 - Tail trimming for reverse reads [#379](https://github.com/nf-core/rnafusion/pull/379)
