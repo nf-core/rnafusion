@@ -114,7 +114,7 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to arriba reference known fusions"
                 },
-                "arriba_ref_protein_domain": {
+                "arriba_ref_protein_domains": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
                     "description": "Path to arriba reference protein domain"
