@@ -122,6 +122,8 @@ def column_manipulation(df):
     df["QUAL"] = "."
     df["FILTER"] = "PASS"
     df["REF"] = "N"
+    df["INFO"] = ""
+    df["Sample"] = ""
 
     for index, row in df.iterrows():
         # ALT
