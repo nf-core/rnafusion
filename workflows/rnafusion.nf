@@ -26,6 +26,11 @@ ch_starindex_ensembl_ref = Channel.fromPath(params.starindex_ref).map { it -> [[
 ch_refflat = params.starfusion_build ? Channel.fromPath(params.refflat).map { it -> [[id:it.Name], it] }.collect() : Channel.fromPath("${params.ensembl_ref}/ref_annot.gtf.refflat").map { it -> [[id:it.Name], it] }.collect()
 ch_rrna_interval = params.starfusion_build ?  Channel.fromPath(params.rrna_intervals).map { it -> [[id:it.Name], it] }.collect() : Channel.fromPath("${params.ensembl_ref}/ref_annot.interval_list").map { it -> [[id:it.Name], it] }.collect()
 ch_fusionreport_ref = Channel.fromPath(params.fusionreport_ref).map { it -> [[id:it.Name], it] }.collect()
+ch_arriba_ref_blacklist = Channel.fromPath(params.arriba_ref_blacklist).map { it -> [[id:it.Name], it] }.collect()
+ch_arriba_ref_known_fusions = Channel.fromPath(params.arriba_ref_known_fusions).map { it -> [[id:it.Name], it] }.collect()
+ch_arriba_ref_protein_domains = Channel.fromPath(params.arriba_ref_protein_domains).map { it -> [[id:it.Name], it] }.collect()
+ch_arriba_ref_cytobands = Channel.fromPath(params.arriba_ref_cytobands).map { it -> [[id:it.Name], it] }.collect()
+
 
 ch_fasta = Channel.fromPath(params.fasta).map { it -> [[id:it.Name], it] }.collect()
 ch_gtf = Channel.fromPath(params.gtf).map { it -> [[id:it.Name], it] }.collect()
@@ -164,7 +169,10 @@ workflow RNAFUSION {
         ch_reads_all,
         ch_gtf,
         ch_fasta,
-        ch_starindex_ensembl_ref
+        ch_starindex_ensembl_ref,
+        ch_arriba_ref_blacklist,
+        ch_arriba_ref_known_fusions,
+        ch_arriba_ref_protein_domains
     )
     ch_versions = ch_versions.mix(ARRIBA_WORKFLOW.out.versions.first().ifEmpty(null))
 
@@ -234,7 +242,9 @@ workflow RNAFUSION {
         FUSIONREPORT_WORKFLOW.out.fusion_list_filtered,
         FUSIONREPORT_WORKFLOW.out.report,
         STARFUSION_WORKFLOW.out.ch_bam_sorted_indexed,
-        ch_chrgtf
+        ch_chrgtf,
+        ch_arriba_ref_protein_domains,
+        ch_arriba_ref_cytobands
     )
     ch_versions = ch_versions.mix(FUSIONINSPECTOR_WORKFLOW.out.versions.first().ifEmpty(null))
 
