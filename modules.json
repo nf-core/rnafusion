@@ -7,7 +7,7 @@
                 "nf-core": {
                     "arriba": {
                         "branch": "master",
-                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "git_sha": "ea9e2892a9d12e8769402f12096219942bcf6536",
                         "installed_by": ["modules"]
                     },
                     "cat/cat": {
@@ -22,7 +22,7 @@
                     },
                     "custom/dumpsoftwareversions": {
                         "branch": "master",
-                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "git_sha": "05c280924b6c768d484c7c443dad5e605c4ff4b4",
                         "installed_by": ["modules"]
                     },
                     "fastp": {
@@ -47,7 +47,7 @@
                     },
                     "kallisto/index": {
                         "branch": "master",
-                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "git_sha": "699fa6f3002d922380615f3847198aeb57d8b6a9",
                         "installed_by": ["modules"]
                     },
                     "multiqc": {
@@ -67,7 +67,7 @@
                     },
                     "qualimap/rnaseq": {
                         "branch": "master",
-                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "git_sha": "4657d98bc9f565e067c4d924126ce107056f5e2f",
                         "installed_by": ["modules"]
                     },
                     "samtools/faidx": {
@@ -92,12 +92,12 @@
                     },
                     "star/align": {
                         "branch": "master",
-                        "git_sha": "57d75dbac06812c59798a48585032f6e50bb1914",
+                        "git_sha": "cc08a888069f67cab8120259bddab8032d4c0fe3",
                         "installed_by": ["modules"]
                     },
                     "star/genomegenerate": {
                         "branch": "master",
-                        "git_sha": "603ecbd9f45300c9788f197d2a15a005685b4220",
+                        "git_sha": "cc08a888069f67cab8120259bddab8032d4c0fe3",
                         "installed_by": ["modules"]
                     },
                     "stringtie/merge": {
