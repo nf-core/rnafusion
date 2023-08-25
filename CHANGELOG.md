@@ -3,6 +3,21 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v2.3.4dev - [2023/08/21]
+
+### Added
+
+### Changed
+
+- Use institutional configs by default [#381](https://github.com/nf-core/rnafusion/pull/381)
+
+### Fixed
+
+- Tail trimming for reverse reads [#379](https://github.com/nf-core/rnafusion/pull/379)
+- Set html files as optional in fusionreport [#380](https://github.com/nf-core/rnafusion/pull/380)
+
+### Removed
+
 ## v2.3.0 = [2022/04/24]
 
 ### Added
