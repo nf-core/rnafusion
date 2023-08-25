@@ -20,38 +20,32 @@ WorkflowRnafusion.initialise(params, log)
 if (file(params.input).exists() || params.build_references) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet does not exist or was not specified!' }
 if (params.fusioninspector_only && !params.fusioninspector_fusions) { exit 1, 'Parameter --fusioninspector_fusions PATH_TO_FUSION_LIST expected with parameter --fusioninspector_only'}
 
-ch_chrgtf = params.starfusion_build ? file(params.chrgtf) : file("${params.starfusion_ref}/ref_annot.gtf")
-ch_starindex_ref = params.starfusion_build ? params.starindex_ref : "${params.starfusion_ref}/ref_genome.fa.star.idx"
-ch_starindex_ensembl_ref = params.starindex_ref
-ch_refflat = params.starfusion_build ? file(params.refflat) : "${params.ensembl_ref}/ref_annot.gtf.refflat"
-ch_rrna_interval = params.starfusion_build ? file(params.rrna_intervals) : "${params.ensembl_ref}/ref_annot.interval_list"
+ch_chrgtf = params.starfusion_build ? Channel.fromPath(params.chrgtf).map { it -> [[id:it.Name], it] }.collect() : Channel.fromPath("${params.starfusion_ref}/ref_annot.gtf").map { it -> [[id:it.Name], it] }.collect()
+ch_starindex_ref = params.starfusion_build ? Channel.fromPath(params.starindex_ref).map { it -> [[id:it.Name], it] }.collect() : Channel.fromPath("${params.starfusion_ref}/ref_genome.fa.star.idx").map { it -> [[id:it.Name], it] }.collect()
+ch_starindex_ensembl_ref = Channel.fromPath(params.starindex_ref).map { it -> [[id:it.Name], it] }.collect()
+ch_refflat = params.starfusion_build ? Channel.fromPath(params.refflat).map { it -> [[id:it.Name], it] }.collect() : Channel.fromPath("${params.ensembl_ref}/ref_annot.gtf.refflat").map { it -> [[id:it.Name], it] }.collect()
+ch_rrna_interval = params.starfusion_build ?  Channel.fromPath(params.rrna_intervals).map { it -> [[id:it.Name], it] }.collect() : Channel.fromPath("${params.ensembl_ref}/ref_annot.interval_list").map { it -> [[id:it.Name], it] }.collect()
+ch_fusionreport_ref = Channel.fromPath(params.fusionreport_ref).map { it -> [[id:it.Name], it] }.collect()
 
+ch_fasta = Channel.fromPath(params.fasta).map { it -> [[id:it.Name], it] }.collect()
+ch_gtf = Channel.fromPath(params.gtf).map { it -> [[id:it.Name], it] }.collect()
+ch_transcript = Channel.fromPath(params.transcript).map { it -> [[id:it.Name], it] }.collect()
+ch_fai = Channel.fromPath(params.fai).map { it -> [[id:it.Name], it] }.collect()
 
 def checkPathParamList = [
     params.fasta,
     params.fai,
     params.gtf,
-    ch_chrgtf,
     params.transcript,
-    ch_refflat,
-    ch_rrna_interval
 ]
 
-
-for (param in checkPathParamList) if ((param) && !params.build_references) file(param, checkIfExists: true)
-if (params.fasta[0,1] == "s3") {
+if (params.fasta == "s3") {
     log.info "INFO: s3 path detected, check for absolute path and trailing '/' not performed"
 }
 else {
     for (param in checkPathParamList) if ((param.toString())!= file(param).toString() && !params.build_references) { exit 1, "Problem with ${param}: ABSOLUTE PATHS are required! Check for trailing '/' at the end of paths too." }
 }
 if ((params.squid || params.all) && params.ensembl_version != 102) { exit 1, 'Ensembl version is not supported by squid' }
-
-ch_fasta = file(params.fasta)
-ch_gtf = file(params.gtf)
-ch_transcript = file(params.transcript)
-ch_fai = file(params.fai)
-
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -115,6 +109,9 @@ workflow RNAFUSION {
 
     ch_versions = Channel.empty()
 
+
+
+
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
@@ -137,9 +134,6 @@ workflow RNAFUSION {
     }
     .set { ch_fastq }
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-    // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")
-    // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
-    // ! There is currently no tooling to help you write a sample sheet schema
 
     CAT_FASTQ (
         ch_fastq.multiple
@@ -223,7 +217,7 @@ workflow RNAFUSION {
     //Run fusion-report
     FUSIONREPORT_WORKFLOW (
         ch_reads_all,
-        params.fusionreport_ref,
+        ch_fusionreport_ref,
         ARRIBA_WORKFLOW.out.fusions,
         PIZZLY_WORKFLOW.out.fusions,
         SQUID_WORKFLOW.out.fusions,
