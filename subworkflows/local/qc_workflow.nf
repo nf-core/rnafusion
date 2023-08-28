@@ -3,13 +3,12 @@
 //
 
 include { QUALIMAP_RNASEQ }                            from '../../modules/nf-core/qualimap/rnaseq/main'
-include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_QC }    from '../../modules/nf-core/samtools/index/main'
 include { PICARD_COLLECTRNASEQMETRICS }                from '../../modules/local/picard/collectrnaseqmetrics/main'
 include { PICARD_MARKDUPLICATES }                      from '../../modules/nf-core/picard/markduplicates/main'
 
 workflow QC_WORKFLOW {
     take:
-        bam_sorted
+        ch_bam_sorted_indexed
         ch_chrgtf
         ch_refflat
         ch_fasta
@@ -23,12 +22,7 @@ workflow QC_WORKFLOW {
         ch_versions = ch_versions.mix(QUALIMAP_RNASEQ.out.versions)
         ch_qualimap_qc = Channel.empty().mix(QUALIMAP_RNASEQ.out.results)
 
-        SAMTOOLS_INDEX_FOR_QC(bam_sorted)
-        ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FOR_QC.out.versions)
-
-        bam_indexed = bam_sorted.join(SAMTOOLS_INDEX_FOR_QC.out.bai)
-
-        PICARD_COLLECTRNASEQMETRICS(bam_indexed, ch_refflat, ch_rrna_interval)
+        PICARD_COLLECTRNASEQMETRICS(ch_bam_sorted_indexed, ch_refflat, ch_rrna_interval)
         ch_versions = ch_versions.mix(PICARD_COLLECTRNASEQMETRICS.out.versions)
         ch_rnaseq_metrics = Channel.empty().mix(PICARD_COLLECTRNASEQMETRICS.out.metrics)
 
