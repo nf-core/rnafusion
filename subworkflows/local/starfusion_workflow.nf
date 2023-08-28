@@ -51,8 +51,8 @@ workflow STARFUSION_WORKFLOW {
     emit:
         fusions               = ch_starfusion_fusions
         star_stats            = ch_star_stats
-        ch_bam_sorted         = ch_align
-        ch_bam_sorted_indexed = bam_sorted_indexed.ifEmpty(null)
+        ch_bam_sorted         = ch_align.ifEmpty([[],[]])
+        ch_bam_sorted_indexed = bam_sorted_indexed.ifEmpty([[],[],[]])
         versions              = ch_versions.ifEmpty(null)
 
     }
