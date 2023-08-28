@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use institutional configs by default [#381](https://github.com/nf-core/rnafusion/pull/381)
 - Remove redundant indexing in starfusion and qc workflows
 - Output bai files in same directory as bam files [#373](https://github.com/nf-core/rnafusion/issues/373)
+
 ### Fixed
 
 - Tail trimming for reverse reads [#379](https://github.com/nf-core/rnafusion/pull/379)
