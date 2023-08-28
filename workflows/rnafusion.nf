@@ -44,8 +44,12 @@ def checkPathParamList = [
     params.transcript,
 ]
 
-if (params.fasta == "s3") {
-    log.info "INFO: s3 path detected, check for absolute path and trailing '/' not performed"
+for (param in checkPathParamList) if ((param) && !params.build_references) file(param, checkIfExists: true)
+def params_fasta_path_uri = params.fasta =~ /^([a-zA-Z0-9]*):\/\/(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/
+// check if params.fasta is a remote uri such as s3://, gs:// or dx://
+if (params_fasta_path_uri){
+    log.info "INFO: a remote uri path detected, check for absolute path and trailing '/' not performed"
+    // log.info "INFO:  remote uri path detected (e.g. s3), check for absolute path and trailing '/' not performed"
 }
 else {
     for (param in checkPathParamList) if ((param.toString())!= file(param).toString() && !params.build_references) { exit 1, "Problem with ${param}: ABSOLUTE PATHS are required! Check for trailing '/' at the end of paths too." }
