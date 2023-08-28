@@ -8,6 +8,7 @@ include { PICARD_MARKDUPLICATES }                      from '../../modules/nf-co
 
 workflow QC_WORKFLOW {
     take:
+        ch_bam_sorted
         ch_bam_sorted_indexed
         ch_chrgtf
         ch_refflat
@@ -17,7 +18,7 @@ workflow QC_WORKFLOW {
 
     main:
         ch_versions = Channel.empty()
-
+        bam_sorted
         QUALIMAP_RNASEQ(ch_bam_sorted_indexed, ch_chrgtf)
         ch_versions = ch_versions.mix(QUALIMAP_RNASEQ.out.versions)
         ch_qualimap_qc = Channel.empty().mix(QUALIMAP_RNASEQ.out.results)
@@ -26,7 +27,7 @@ workflow QC_WORKFLOW {
         ch_versions = ch_versions.mix(PICARD_COLLECTRNASEQMETRICS.out.versions)
         ch_rnaseq_metrics = Channel.empty().mix(PICARD_COLLECTRNASEQMETRICS.out.metrics)
 
-        PICARD_MARKDUPLICATES(ch_bam_sorted_indexed, ch_fasta, ch_fai)
+        PICARD_MARKDUPLICATES(bam_sorted, ch_fasta, ch_fai)
         ch_versions = ch_versions.mix(PICARD_MARKDUPLICATES.out.versions)
         ch_duplicate_metrics = Channel.empty().mix(PICARD_MARKDUPLICATES.out.metrics)
 
