@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Tail trimming for reverse reads [#379](https://github.com/nf-core/rnafusion/pull/379)
 - Set html files as optional in fusionreport [#380](https://github.com/nf-core/rnafusion/pull/380)
+- Provide gene count file by default when running STAR_FOR_STARFUSION [#370](https://github.com/nf-core/rnafusion/issues/370)
+- Fix fusion-report issue with MACOXS directories [#377](https://github.com/nf-core/rnafusion/issues/377)
 
 ### Removed
 
