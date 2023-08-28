@@ -207,7 +207,7 @@ workflow RNAFUSION {
 
 //Run stringtie
     STRINGTIE_WORKFLOW (
-        STARFUSION_WORKFLOW.out.bam_sorted,
+        STARFUSION_WORKFLOW.out.ch_bam_sorted,
         ch_chrgtf
     )
     ch_versions = ch_versions.mix(STRINGTIE_WORKFLOW.out.versions.first().ifEmpty(null))
