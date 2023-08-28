@@ -19,7 +19,7 @@ workflow QC_WORKFLOW {
     main:
         ch_versions = Channel.empty()
 
-        QUALIMAP_RNASEQ(ch_bam_sorted_indexed, ch_chrgtf)
+        QUALIMAP_RNASEQ(ch_bam_sorted, ch_chrgtf)
         ch_versions = ch_versions.mix(QUALIMAP_RNASEQ.out.versions)
         ch_qualimap_qc = Channel.empty().mix(QUALIMAP_RNASEQ.out.results)
 
