@@ -8,7 +8,7 @@ process PIZZLY_DOWNLOAD {
         'quay.io/biocontainers/kallisto:0.46.2--h4f7b962_1' }"
 
     input:
-    path transcript
+    tuple val(meta), path(transcript)
 
     output:
     path "versions.yml" , emit: versions

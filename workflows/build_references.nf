@@ -33,18 +33,15 @@ include { GATK4_BEDTOINTERVALLIST }         from '../modules/nf-core/gatk4/bedto
 
 workflow BUILD_REFERENCES {
 
-    ENSEMBL_DOWNLOAD( params.ensembl_version )
-    ENSEMBL_DOWNLOAD.out.fasta
-        .map { it -> tuple(id:it.baseName, it) }
-        .set { ch_fasta_w_meta }
+    def fake_meta = [:]
+    fake_meta.id = "Homo_sapiens.${params.genome}.${params.ensembl_version}"
+    ENSEMBL_DOWNLOAD( params.ensembl_version, params.genome, fake_meta )
 
-    SAMTOOLS_FAIDX(ch_fasta_w_meta)
+
+    SAMTOOLS_FAIDX(ENSEMBL_DOWNLOAD.out.fasta, [[],[]])
     GATK4_CREATESEQUENCEDICTIONARY(ENSEMBL_DOWNLOAD.out.fasta)
 
-        ENSEMBL_DOWNLOAD.out.gtf
-        .map { it -> tuple(id:it.baseName, it) }
-        .set { ch_gtf_w_meta }
-    RRNA_TRANSCRIPTS(ch_gtf_w_meta)
+    RRNA_TRANSCRIPTS(ENSEMBL_DOWNLOAD.out.gtf)
     CONVERT2BED(RRNA_TRANSCRIPTS.out.rrna_gtf)
 
     GATK4_BEDTOINTERVALLIST(CONVERT2BED.out.bed, GATK4_CREATESEQUENCEDICTIONARY.out.dict)

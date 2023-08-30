@@ -1,12 +1,18 @@
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    VALIDATE INPUTS
+    PRINT PARAMS SUMMARY
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
+include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
 
-// Validate input parameters
+def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
+def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
+def summary_params = paramsSummaryMap(workflow)
+
+// Print parameter summary log to screen
+log.info logo + paramsSummaryLog(workflow) + citation
+
 WorkflowRnafusion.initialise(params, log)
 
 // Check mandatory parameters
@@ -14,23 +20,29 @@ WorkflowRnafusion.initialise(params, log)
 if (file(params.input).exists() || params.build_references) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet does not exist or was not specified!' }
 if (params.fusioninspector_only && !params.fusioninspector_fusions) { exit 1, 'Parameter --fusioninspector_fusions PATH_TO_FUSION_LIST expected with parameter --fusioninspector_only'}
 
-ch_chrgtf = params.starfusion_build ? file(params.chrgtf) : file("${params.starfusion_ref}/ref_annot.gtf")
-ch_starindex_ref = params.starfusion_build ? params.starindex_ref : "${params.starfusion_ref}/ref_genome.fa.star.idx"
-ch_starindex_ensembl_ref = params.starindex_ref
-ch_refflat = params.starfusion_build ? file(params.refflat) : "${params.ensembl_ref}/ref_annot.gtf.refflat"
-ch_rrna_interval = params.starfusion_build ? file(params.rrna_intervals) : "${params.ensembl_ref}/ref_annot.interval_list"
+ch_chrgtf = params.starfusion_build ? Channel.fromPath(params.chrgtf).map { it -> [[id:it.Name], it] }.collect() : Channel.fromPath("${params.starfusion_ref}/ref_annot.gtf").map { it -> [[id:it.Name], it] }.collect()
+ch_starindex_ref = params.starfusion_build ? Channel.fromPath(params.starindex_ref).map { it -> [[id:it.Name], it] }.collect() : Channel.fromPath("${params.starfusion_ref}/ref_genome.fa.star.idx").map { it -> [[id:it.Name], it] }.collect()
+ch_starindex_ensembl_ref = Channel.fromPath(params.starindex_ref).map { it -> [[id:it.Name], it] }.collect()
+ch_refflat = params.starfusion_build ? Channel.fromPath(params.refflat).map { it -> [[id:it.Name], it] }.collect() : Channel.fromPath("${params.ensembl_ref}/ref_annot.gtf.refflat").map { it -> [[id:it.Name], it] }.collect()
+ch_rrna_interval = params.starfusion_build ?  Channel.fromPath(params.rrna_intervals).map { it -> [[id:it.Name], it] }.collect() : Channel.fromPath("${params.ensembl_ref}/ref_annot.interval_list").map { it -> [[id:it.Name], it] }.collect()
+ch_fusionreport_ref = Channel.fromPath(params.fusionreport_ref).map { it -> [[id:it.Name], it] }.collect()
+ch_arriba_ref_blacklist = Channel.fromPath(params.arriba_ref_blacklist).map { it -> [[id:it.Name], it] }.collect()
+ch_arriba_ref_known_fusions = Channel.fromPath(params.arriba_ref_known_fusions).map { it -> [[id:it.Name], it] }.collect()
+ch_arriba_ref_protein_domains = Channel.fromPath(params.arriba_ref_protein_domains).map { it -> [[id:it.Name], it] }.collect()
+ch_arriba_ref_cytobands = Channel.fromPath(params.arriba_ref_cytobands).map { it -> [[id:it.Name], it] }.collect()
 
+
+ch_fasta = Channel.fromPath(params.fasta).map { it -> [[id:it.Name], it] }.collect()
+ch_gtf = Channel.fromPath(params.gtf).map { it -> [[id:it.Name], it] }.collect()
+ch_transcript = Channel.fromPath(params.transcript).map { it -> [[id:it.Name], it] }.collect()
+ch_fai = Channel.fromPath(params.fai).map { it -> [[id:it.Name], it] }.collect()
 
 def checkPathParamList = [
     params.fasta,
     params.fai,
     params.gtf,
-    ch_chrgtf,
     params.transcript,
-    ch_refflat,
-    ch_rrna_interval
 ]
-
 
 for (param in checkPathParamList) if ((param) && !params.build_references) file(param, checkIfExists: true)
 def params_fasta_path_uri = params.fasta =~ /^([a-zA-Z0-9]*):\/\/(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/
@@ -43,11 +55,6 @@ else {
     for (param in checkPathParamList) if ((param.toString())!= file(param).toString() && !params.build_references) { exit 1, "Problem with ${param}: ABSOLUTE PATHS are required! Check for trailing '/' at the end of paths too." }
 }
 if ((params.squid || params.all) && params.ensembl_version != 102) { exit 1, 'Ensembl version is not supported by squid' }
-
-ch_fasta = file(params.fasta)
-ch_gtf = file(params.gtf)
-ch_transcript = file(params.transcript)
-ch_fai = file(params.fai)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -111,11 +118,14 @@ workflow RNAFUSION {
 
     ch_versions = Channel.empty()
 
+
+
+
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
     INPUT_CHECK (
-        ch_input
+        file(params.input)
     )
     .reads
     .map {
@@ -163,7 +173,10 @@ workflow RNAFUSION {
         ch_reads_all,
         ch_gtf,
         ch_fasta,
-        ch_starindex_ensembl_ref
+        ch_starindex_ensembl_ref,
+        ch_arriba_ref_blacklist,
+        ch_arriba_ref_known_fusions,
+        ch_arriba_ref_protein_domains
     )
     ch_versions = ch_versions.mix(ARRIBA_WORKFLOW.out.versions.first().ifEmpty(null))
 
@@ -216,7 +229,7 @@ workflow RNAFUSION {
     //Run fusion-report
     FUSIONREPORT_WORKFLOW (
         ch_reads_all,
-        params.fusionreport_ref,
+        ch_fusionreport_ref,
         ARRIBA_WORKFLOW.out.fusions,
         PIZZLY_WORKFLOW.out.fusions,
         SQUID_WORKFLOW.out.fusions,
@@ -233,7 +246,9 @@ workflow RNAFUSION {
         FUSIONREPORT_WORKFLOW.out.fusion_list_filtered,
         FUSIONREPORT_WORKFLOW.out.report,
         STARFUSION_WORKFLOW.out.ch_bam_sorted_indexed,
-        ch_chrgtf
+        ch_chrgtf,
+        ch_arriba_ref_protein_domains,
+        ch_arriba_ref_cytobands
     )
     ch_versions = ch_versions.mix(FUSIONINSPECTOR_WORKFLOW.out.versions.first().ifEmpty(null))
 
@@ -260,7 +275,7 @@ workflow RNAFUSION {
     workflow_summary    = WorkflowRnafusion.paramsSummaryMultiqc(workflow, summary_params)
     ch_workflow_summary = Channel.value(workflow_summary)
 
-    methods_description    = WorkflowRnafusion.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description)
+    methods_description    = WorkflowRnafusion.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
     ch_methods_description = Channel.value(methods_description)
 
     ch_multiqc_files = Channel.empty()
