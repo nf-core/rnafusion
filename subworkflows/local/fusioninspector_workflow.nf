@@ -11,6 +11,8 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         report
         bam_sorted_indexed
         ch_gtf
+        ch_arriba_ref_protein_domains
+        ch_arriba_ref_cytobands
 
     main:
         ch_versions = Channel.empty()
@@ -42,7 +44,7 @@ workflow FUSIONINSPECTOR_WORKFLOW {
 
         if ((params.starfusion || params.all || params.stringtie) && !params.fusioninspector_only && !params.skip_vis) {
             bam_sorted_indexed_fusions = bam_sorted_indexed.join(FUSIONINSPECTOR.out.tsv)
-            ARRIBA_VISUALISATION(bam_sorted_indexed_fusions, ch_gtf, params.arriba_ref_protein_domain, params.arriba_ref_cytobands)
+            ARRIBA_VISUALISATION(bam_sorted_indexed_fusions, ch_gtf, ch_arriba_ref_protein_domains, ch_arriba_ref_cytobands)
             ch_versions = ch_versions.mix(ARRIBA_VISUALISATION.out.versions)
         }
 

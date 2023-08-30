@@ -3,13 +3,15 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v2.3.4dev - [2023/08/21]
+## v2.4.0dev
 
 ### Added
 
 ### Changed
 
 - Use institutional configs by default [#381](https://github.com/nf-core/rnafusion/pull/381)
+- Remove redundant indexing in starfusion and qc workflows [#387](https://github.com/nf-core/rnafusion/pull/387)
+- Output bai files in same directory as bam files [#387](https://github.com/nf-core/rnafusion/pull/387)
 
 ### Fixed
 
