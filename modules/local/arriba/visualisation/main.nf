@@ -9,9 +9,9 @@ process ARRIBA_VISUALISATION {
 
     input:
     tuple val(meta), path(bam), path(bai), path(fusions)
-    path gtf
-    path protein_domains
-    path cytobands
+    tuple val(meta2), path(gtf)
+    tuple val(meta3), path(protein_domains)
+    tuple val(meta4), path(cytobands)
 
     output:
     tuple val(meta), path("*.pdf")          , emit: pdf

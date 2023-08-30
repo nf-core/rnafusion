@@ -9,8 +9,8 @@ process PICARD_COLLECTRNASEQMETRICS {
 
     input:
     tuple val(meta), path(bam), path(bai)
-    path(refflat)
-    path(rrna_intervals)
+    tuple val(meta2), path(refflat)
+    tuple val(meta3), path(rrna_intervals)
 
     output:
     tuple val(meta), path("*rna_metrics.txt")    , emit: metrics

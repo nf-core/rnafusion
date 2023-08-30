@@ -9,8 +9,8 @@ process PIZZLY {
 
     input:
     tuple val(meta), path(txt)
-    path transcript
-    path gtf
+    tuple val(meta2), path(transcript)
+    tuple val(meta3), path(gtf)
 
     output:
     path "versions.yml"                         , emit: versions
