@@ -9,13 +9,16 @@ process ENSEMBL_DOWNLOAD {
 
     input:
     val ensembl_version
+    val genome
+    val meta
 
     output:
-    path "versions.yml"                                                   , emit: versions
-    path "Homo_sapiens.${params.genome}.${ensembl_version}.all.fa"        , emit: fasta
-    path "Homo_sapiens.${params.genome}.${ensembl_version}.gtf"           , emit: gtf
-    path "Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf"       , emit: chrgtf
-    path "Homo_sapiens.${params.genome}.${ensembl_version}.cdna.all.fa.gz", emit: transcript
+    tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.all.fa")        , emit: fasta
+    tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.gtf")           , emit: gtf
+    tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.chr.gtf")       , emit: chrgtf
+    tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.cdna.all.fa.gz"), emit: transcript
+    path "versions.yml"                                                                                                                       , emit: versions
+
 
     script:
     """
@@ -40,10 +43,10 @@ process ENSEMBL_DOWNLOAD {
 
     stub:
     """
-    touch "Homo_sapiens.${params.genome}.${ensembl_version}.all.fa"
-    touch "Homo_sapiens.${params.genome}.${ensembl_version}.gtf"
-    touch "Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf"
-    touch "Homo_sapiens.${params.genome}.${ensembl_version}.cdna.all.fa.gz"
+    touch "Homo_sapiens.${genome}.${ensembl_version}.all.fa"
+    touch "Homo_sapiens.${genome}.${ensembl_version}.gtf"
+    touch "Homo_sapiens.${genome}.${ensembl_version}.chr.gtf"
+    touch "Homo_sapiens.${genome}.${ensembl_version}.cdna.all.fa.gz"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

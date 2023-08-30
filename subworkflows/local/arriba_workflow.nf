@@ -10,6 +10,9 @@ workflow ARRIBA_WORKFLOW {
         ch_gtf
         ch_fasta
         ch_starindex_ref
+        ch_arriba_ref_blacklist
+        ch_arriba_ref_known_fusions
+        ch_arriba_ref_protein_domains
 
     main:
         ch_versions = Channel.empty()
@@ -34,7 +37,7 @@ workflow ARRIBA_WORKFLOW {
                     .map { meta, reads, fusions -> [ meta, fusions ] }
                 ch_arriba_fusion_fail = ch_dummy_file
             } else {
-                ARRIBA ( STAR_FOR_ARRIBA.out.bam, ch_fasta, ch_gtf, params.arriba_ref_blacklist, params.arriba_ref_known_fusions, [], [], params.arriba_ref_protein_domain )
+                ARRIBA ( STAR_FOR_ARRIBA.out.bam, ch_fasta, ch_gtf, ch_arriba_ref_blacklist, ch_arriba_ref_known_fusions, [[],[]], [[],[]], ch_arriba_ref_protein_domains )
                 ch_versions = ch_versions.mix(ARRIBA.out.versions)
 
                 ch_arriba_fusions     = ARRIBA.out.fusions
