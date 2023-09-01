@@ -164,7 +164,7 @@ nextflow run nf-core/rnafusion \
 --trim
 ```
 
-#### Filter fusions detected by 2 or more tools
+#### Filter out fusions detected by less than INT tools
 
 ```bash
 nextflow run nf-core/rnafusion \
@@ -172,12 +172,10 @@ nextflow run nf-core/rnafusion \
   --input <SAMPLE_SHEET.CSV> \
   --genomes_base <PATH/TO/REFERENCES> \
   --outdir <OUTPUT/PATH>
-  --fusioninspector_filter
-  --fusionreport_filter
+  --tools_cutoff <INT>
 ```
 
-`--fusioninspector_filter` feed only fusions detected by 2 or more tools to fusioninspector for closer analysis (false by default).
-`--fusionreport_filter` displays only fusions detected by 2 or more tools in fusionreport html index (true by default).
+`--tools_cutoff INT` will discard fusions detected by less than INT tools both for display in fusionreport html index and to consider in fusioninspector.
 
 #### Adding custom fusions to consider as well as the detected set: whitelist
 
