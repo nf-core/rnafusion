@@ -34,7 +34,7 @@ process FUSIONREPORT {
     tools    += params.fusioncatcher  || params.all ? "--fusioncatcher ${fusioncatcher_fusions} " : ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    fusion_report run $meta.id . $fusionreport_ref $tools --allow-multiple-gene-symbols $tools_cutoff $args $args2
+    fusion_report run $meta.id . $fusionreport_ref $tools --allow-multiple-gene-symbols --tool-cutoff $tools_cutoff $args $args2
 
     mv fusion_list.tsv ${prefix}.fusionreport.tsv
     mv fusion_list_filtered.tsv ${prefix}.fusionreport_filtered.tsv
