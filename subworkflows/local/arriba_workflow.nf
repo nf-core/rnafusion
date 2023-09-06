@@ -36,15 +36,8 @@ workflow ARRIBA_WORKFLOW {
             }
 
             if (params.cram.contains('arriba') ){
-                // SAMTOOLS_SORT_FOR_ARRIBA(STAR_FOR_ARRIBA.out.bam)
-                // ch_versions = ch_versions.mix(SAMTOOLS_SORT_FOR_ARRIBA.out.versions)
 
-                // SAMTOOLS_INDEX_FOR_ARRIBA(SAMTOOLS_SORT_FOR_ARRIBA.out.bam)
-                // ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FOR_ARRIBA.out.versions)
-
-                bam_indexed = SAMTOOLS_SORT_FOR_ARRIBA.out.bam.map { meta, bam -> [ meta, bam, [] ] }
-
-                SAMTOOLS_VIEW_FOR_ARRIBA(bam_indexed, ch_fasta, [])
+                SAMTOOLS_VIEW_FOR_ARRIBA(SAMTOOLS_SORT_FOR_ARRIBA.out.bam.map { meta, bam -> [ meta, bam, [] ] }, ch_fasta, [])
                 ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_ARRIBA.out.versions )
             }
 
