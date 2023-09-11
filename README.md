@@ -41,22 +41,22 @@ In rnafusion the full-sized test includes reference building and fusion detectio
 3. Reads quality control ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 4. Optional trimming with [fastp](https://github.com/OpenGene/fastp)
 5. Arriba subworkflow
-    - [STAR](https://github.com/alexdobin/STAR) alignment
-    - [Arriba](https://github.com/suhrig/arriba) fusion detection
+   - [STAR](https://github.com/alexdobin/STAR) alignment
+   - [Arriba](https://github.com/suhrig/arriba) fusion detection
 6. Pizzly subworkflow
-    - [Kallisto](https://pachterlab.github.io/kallisto/) quantification
-    - [Pizzly](https://github.com/pmelsted/pizzly) fusion detection
+   - [Kallisto](https://pachterlab.github.io/kallisto/) quantification
+   - [Pizzly](https://github.com/pmelsted/pizzly) fusion detection
 7. Squid subworkflow
-    - [STAR](https://github.com/alexdobin/STAR) alignment
-    - [Samtools view](http://www.htslib.org/): convert sam output from STAR to bam
-    - [Samtools sort](http://www.htslib.org/): bam output from STAR
-    - [SQUID](https://github.com/Kingsford-Group/squid) fusion detection
-    - [SQUID](https://github.com/Kingsford-Group/squid) annotate
+   - [STAR](https://github.com/alexdobin/STAR) alignment
+   - [Samtools view](http://www.htslib.org/): convert sam output from STAR to bam
+   - [Samtools sort](http://www.htslib.org/): bam output from STAR
+   - [SQUID](https://github.com/Kingsford-Group/squid) fusion detection
+   - [SQUID](https://github.com/Kingsford-Group/squid) annotate
 8. STAR-fusion subworkflow
-    - [STAR](https://github.com/alexdobin/STAR) alignment
-    - [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) fusion detection
+   - [STAR](https://github.com/alexdobin/STAR) alignment
+   - [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) fusion detection
 9. Fusioncatcher subworkflow
-    - [FusionCatcher](https://github.com/ndaniel/fusioncatcher) fusion detection
+   - [FusionCatcher](https://github.com/ndaniel/fusioncatcher) fusion detection
 10. StringTie subworkflow
     - [StringTie](https://ccb.jhu.edu/software/stringtie/)
 11. Fusion-report
