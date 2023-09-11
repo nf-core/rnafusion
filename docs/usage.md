@@ -4,31 +4,27 @@
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
-## Introduction
+## Pipeline summary
 
 The pipeline is divided into two parts:
 
 1. Download and build references
    - specified with `--build_references` parameter
    - required only once before running the pipeline
-   - **Important**: rerun with each new release
+   - **Important**: has to be run with each new release
 2. Detecting fusions
-   - Supported tools: `Arriba`, `FusionCatcher`, `pizzly`, `SQUID`, `STAR-Fusion` and `StringTie`
-   - QC: `Fastqc` and `MultiQC`
-   - Fusion visualization: `Arriba` (only fusion detected with Arriba), `fusion-report` and `FusionInspector`
+   - Supported tools: `Arriba`, `FusionCatcher`, `pizzly`, `SQUID`, `STAR-Fusion`, and `StringTie`
+   - QC: `Fastqc`, `MultiQC`, and `Qualimap rnaseq`
+   - Fusions visualization: `Arriba`, `fusion-report` and `FusionInspector`, VCF file creation based on `MegaFusion`
 
-### 1. Download and build references
+## Download and build references
 
 The rnafusion pipeline needs references for the fusion detection tools, so downloading these is a **requirement**.
-Whilst it is possible to download and build each reference manually, it is advised to download references with the rnafusion pipeline.
 
-First register for a free account at COSMIC at [https://cancer.sanger.ac.uk/cosmic/register](https://cancer.sanger.ac.uk/cosmic/register) using your university email. The account is **only activated upon** clicking the link in the registration email.
-
-Download the references as shown below including your COSMIC credentials.
-
-> Note that this step takes about 24 hours to complete on HPC.
-
-> Do not provide a samplesheet via the `input` parameter, otherwise the pipeline will run the analysis directly after downloading the references (except if that is what you want).
+> **IMPORTANT**
+>
+> - Note that this step takes about 24 hours to complete on HPC.
+> - Do not provide a samplesheet via the `input` parameter, otherwise the pipeline will run the analysis directly after downloading the references (except if that is what you want).
 
 ```bash
 nextflow run nf-core/rnafusion \
@@ -48,7 +44,15 @@ nextflow run nf-core/rnafusion \
   --outdir <OUTPUT/PATH>
 ```
 
-#### Using QIAGEN download insead of SANGER (non-academic usage) for the COSMIC database
+### Downloading the cosmic database with SANGER or QUIAGEN
+
+#### For academic users
+
+First register for a free account at COSMIC at [https://cancer.sanger.ac.uk/cosmic/register](https://cancer.sanger.ac.uk/cosmic/register) using a university email. The account is **only activated upon** clicking the link in the registration email.
+
+#### For non-academic users
+
+Use credentials from QIAGEN and add `--qiagen`
 
 ```bash
 nextflow run nf-core/rnafusion \
@@ -58,23 +62,13 @@ nextflow run nf-core/rnafusion \
   --outdir <OUTPUT/PATH> --qiagen
 ```
 
-#### References directory tree
+#### STAR-Fusion references downloaded vs built
 
-```text
-references/
-|-- arriba
-|-- ensembl
-|-- fusion_report_db
-|-- fusioncatcher
-|   `-- human_v102
-|-- pizzly
-|-- star
-`-- starfusion
-```
+By default STAR-Fusion references are **built**. You can also download them from [CTAT](https://github.com/NCIP/Trinity_CTAT/wiki) by using the flag `--starfusion_build FALSE` for both reference building and fusion detection. This allows more flexibility for different organisms but **be aware that STAR-Fusion reference download is not recommended as not fully tested!**
 
 #### Issues with building references
 
-If process `FUSIONREPORT_DOWNLOAD` times out, it could be due to network restriction (e.g. if trying to run on HPC). As this process is lightweight in compute, storage and time, running on local machines with the following options might solve the issue:
+If process `FUSIONREPORT_DOWNLOAD` times out, it could be due to network restriction (for example if trying to run on HPC). As this process is lightweight in cpu, memory and time, running on local machines with the following options might solve the issue:
 
 ```bash
 nextflow run nf-core/rnafusion  \
@@ -85,7 +79,7 @@ nextflow run nf-core/rnafusion  \
   --outdir <OUTPUT/PATH>
 ```
 
-Adjustments for compute requirements can be done by feeding a custom configuration with `-c /PATH/TO/CUSTOM/CONFIG`.
+Adjustments for cpu and memory requirements can be done by feeding a custom configuration with `-c /PATH/TO/CUSTOM/CONFIG`.
 Where the custom configuration could look like (adaptation to local machine necessary):
 
 ```text
@@ -100,17 +94,36 @@ process {
 The four `fusion-report` files: `cosmic.db`, `fusiongdb.db`, `fusiongdb2.db`, `mitelman.db`
 should then be copied into the HPC `<REFERENCE_PATH>/references/fusion_report_db`.
 
-#### Non-human references
+## Running the pipeline
 
-Non-human references, not supported by default, can be built manually and fed to rnafusion using the parameter `--<tool>_ref`.
+### Samplesheet input
 
-#### STAR-Fusion references downloaded vs built
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. The pipeline will detect whether a sample is single- or paired-end from the samplesheet - the `fastq_2` column is empty for single-end. The samplesheet has to be a comma-separated file (.csv) but can have as many columns as you desire. There is a strict requirement for the first 4 columns to match those defined in the table below with the header row included.
+A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
 
-By default STAR-Fusion references are **built**. You can also download them from [CTAT](https://github.com/NCIP/Trinity_CTAT/wiki) by using the flag `--starfusion_build FALSE` for both reference building and fusion detection. This allows more flexibility for different organisms but **be aware that STAR-Fusion reference download is not recommended as not fully tested!**
+```console
+sample,fastq_1,fastq_2,strandedness
+CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,forward
+CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz,forward
+CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz,forward
+TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,,forward
+TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,,forward
+TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,,forward
+TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,,forward
+```
 
-### 2. Detecting fusions
+As you can see above for multiple runs of the same sample, the `sample` name has to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis.
 
-This step can either be run using all fusion detection tools or specifying individual tools. Visualisation tools will be run on all fusions detected. To run all tools (`arriba`, `fusioncatcher`, `pizzly`, `squid`, `starfusion`, `stringtie`) use the `--all` parameter:
+| Column         | Description                                                                                                                                                                            |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`       | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
+| `fastq_1`      | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+| `fastq_2`      | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+| `strandedness` | Strandedness: forward or reverse.                                                                                                                                                      |
+
+### Starting commands
+
+The pipeline can either be run using all fusion detection tools or specifying individual tools. Visualisation tools will be run on all fusions detected. To run all tools (`arriba`, `fusioncatcher`, `pizzly`, `squid`, `starfusion`, `stringtie`) use the `--all` parameter:
 
 ```bash
 nextflow run nf-core/rnafusion \
@@ -120,11 +133,7 @@ nextflow run nf-core/rnafusion \
   --outdir <OUTPUT/PATH>
 ```
 
-> **IMPORTANT: Either `--all` or `--<tool>`** is necessary to run detection tools
-
-`--genomes_base` should be the path to the directory containing the folder `references/` that was built in step 1 `build_references`.
-
-Alternatively, to run only a specific detection tool use: `--tool`:
+To run only a specific detection tool use: `--tool`:
 
 ```bash
 nextflow run nf-core/rnafusion \
@@ -134,11 +143,48 @@ nextflow run nf-core/rnafusion \
   --outdir <OUTPUT/PATH>
 ```
 
+> **IMPORTANT: Either `--all` or `--<tool>`** is necessary to run detection tools
+
+`--genomes_base` should be the path to the directory containing the folder `references/` that was built with `--build_references`.
+
+Note that the pipeline will create the following files in your working directory:
+
+```bash
+work                # Directory containing the nextflow working files
+<OUTDIR>            # Finished results in specified location (defined with --outdir)
+.nextflow_log       # Log file from Nextflow
+# Other nextflow hidden files, eg. history of pipeline runs and old logs.
+```
+
+If you wish to repeatedly use the same parameters for multiple runs, rather than specifying each flag in the command, you can specify these in a params file.
+
+Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`.
+
+> ⚠️ Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
+
+The above pipeline run specified with a params file in yaml format:
+
+```bash
+nextflow run nf-core/rnafusion -profile docker -params-file params.yaml
+```
+
+with `params.yaml` containing:
+
+```yaml
+input: './samplesheet.csv'
+outdir: './results/'
+<...>
+```
+
+You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
+
+### Options
+
 #### Trimming
 
 There are 2 options to trim
 
-1. fastp
+1. Fastp
    In this case all tools use the trimmed reads. Quality and adapter trimming by default. In addition, tail trimming and adapter_fastq specification are possible. Example usage:
 
 ```bash
@@ -152,7 +198,7 @@ nextflow run nf-core/rnafusion \
 --adapter_fastq <PATH/TO/ADAPTER/FASTQ> (optional)
 ```
 
-2. hard trimming
+2. Hard trimming
    In this case, only reads fed to fusioncatcher are trimmed. This is a harsh workaround in case of high read-through. The recommended trimming is thus the fastp_trim one. The trimming is done at 75 bp from the tails. Example usage:
 
 ```bash
@@ -199,7 +245,7 @@ GENE3--GENE4
 
 #### Running FusionInspector only
 
-FusionInspector can be run standalone with:
+FusionInspector can be run as a standalone with:
 
 ```bash
 nextflow run nf-core/rnafusion \
@@ -227,7 +273,7 @@ nextflow run nf-core/rnafusion \
 --outdir <PATH>
 ```
 
-This will skip all QC-related processes.
+This will skip all QC-related processes (metrics collection, `Qualimap`)
 
 #### Skipping visualisation
 
@@ -246,89 +292,17 @@ This will skip all visualisation processes, including `fusion-report`, `FusionIn
 
 It is possible to give the output of each tool manually using the argument: `--<tool>_fusions PATH/TO/FUSION/FILE`: this feature need more testing, don't hesitate to open an issue if you encounter problems.
 
-## Samplesheet input
-
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use the `--input` parameter to specify its location. The pipeline will detect whether a sample is single- or paired-end from the samplesheet - the `fastq_2` column is empty for single-end. The samplesheet has to be a comma-separated file (.csv) but can have as many columns as you desire. There is a strict requirement for the first 4 columns to match those defined in the table below with the header row included.
-A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
-
-```console
-sample,fastq_1,fastq_2,strandedness
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,forward
-CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz,forward
-CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz,forward
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,,forward
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,,forward
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,,forward
-TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,,forward
-```
-
-| Column         | Description                                                                                                                                                                            |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`       | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1`      | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2`      | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `strandedness` | Strandedness: forward or reverse.                                                                                                                                                      |
-
-An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
-
-As you can see above for multiple runs of the same sample, the `sample` name has to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
-
-```bash
-sample,fastq_1,fastq_2,strandedness
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,forward
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz,forward
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz,forward
-```
-
-## Running the pipeline
-
-The typical command for running the pipeline is as follows.
-
-```bash
-nextflow run nf-core/rnafusion --input ./samplesheet.csv --outdir ./results -profile docker
-```
-
-This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
-
-Note that the pipeline will create the following files in your working directory:
-
-```bash
-work                # Directory containing the nextflow working files
-<OUTDIR>            # Finished results in specified location (defined with --outdir)
-.nextflow_log       # Log file from Nextflow
-# Other nextflow hidden files, eg. history of pipeline runs and old logs.
-```
-
-If you wish to repeatedly use the same parameters for multiple runs, rather than specifying each flag in the command, you can specify these in a params file.
-
-Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`.
-
-> ⚠️ Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
-
-The above pipeline run specified with a params file in yaml format:
-
-```bash
-nextflow run nf-core/rnafusion -profile docker -params-file params.yaml
-```
-
-with `params.yaml` containing:
-
-```yaml
-input: './samplesheet.csv'
-outdir: './results/'
-<...>
-```
-
-You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
-
-### Options
-
 #### Set different `--limitSjdbInsertNsj` parameter
 
 There are two parameters to increase the `--limitSjdbInsertNsj` parameter if necessary:
 
 - `--fusioncatcher_limitSjdbInsertNsj`, default: 2000000
 - `--fusioninspector_limitSjdbInsertNsj`, default: 1000000
+
+Use the parameter `--cram` to compress the BAM files to CRAM for specific tools. Options: arriba, squid, starfusion. Leave no space between options:
+
+- `--cram arriba,squid,starfusion`, default: []
+- `--cram arriba`
 
 ### Updating the pipeline
 
@@ -337,13 +311,6 @@ When you run the above command, Nextflow automatically pulls the pipeline code f
 ```bash
 nextflow pull nf-core/rnafusion
 ```
-
-#### Compress to CRAM file
-
-Use the parameter `--cram` to compress the BAM files to CRAM for specific tools. Options: arriba, squid, starfusion. Leave no space between options:
-
-- `--cram arriba,squid,starfusion`, default: []
-- `--cram arriba`
 
 ### Reproducibility
 

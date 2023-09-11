@@ -8,7 +8,6 @@ from pathlib import Path
 
 def get_rrna_intervals(file_in, file_out):
     """
-    Get the commented out header
     Get lines containing ``#`` or ``gene_type rRNA`` or ```` or ``gene_type rRNA_pseudogene`` or ``gene_type MT_rRNA``
     Create output file
 
