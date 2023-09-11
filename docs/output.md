@@ -12,7 +12,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 - [Download and build references](#references) - Build references needed to run the rest of the pipeline
 - [STAR](#star) - Alignment for arriba, squid and STAR-fusion
-- [Cat](#cat) - Concatenated fastq files per sample ID
+- [Cat](#cat) - Concatenate fastq files per sample ID
 - [Arriba](#arriba) - Arriba fusion detection
 - [Pizzly](#pizzly) - Pizzly fusion detection
 - [Squid](#squid) - Squid fusion detection
@@ -20,21 +20,23 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [StringTie](#stringtie) - StringTie assembly
 - [FusionCatcher](#fusioncatcher) - Fusion catcher fusion detection
 - [Samtools](#samtools) - SAM/BAM file manipulation
-- [Fusion-report](#fusion-report) - Summary of the findings of each tool and comparison to COSMIC, Mitelman and FusionGBD databases
-- [FusionInspector](#fusionInspector) - IGV-based visualisation tool for fusions filtered by fusion-report
+- [Fusion-report](#fusion-report) - Summary of the findings of each tool and comparison to COSMIC, Mitelman, FusionGBD and FusionGDB2 databases
+- [FusionInspector](#fusionInspector) - Supervised analysis of fusion predictions from fusion-report, recover and re-score evidence for such predictions
 - [Arriba visualisation](#arriba-visualisation) - Arriba visualisation report for FusionInspector fusions
-- [Qualimap](#qualimap) - Quality control of alignment
-- [Picard](#picard) - Collect metrics
+- [Qualimap](#qualimap) - Quality control of alignments
+- [Picard](#picard) - Collect QC metrics
 - [FastQC](#fastqc) - Raw read quality control
-- [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
+- [MultiQC](#multiqc) - Aggregate reports describing QC results from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
-### Download and build references
+## Download and build references
 
 <details markdown="1">
-<summary>Output files</summary>
+<summary>Output reference files and folder structure</summary>
 
-- `genomes_base/`
+### References directory structure
+
+- `references/`
   - `arriba`
     - `blacklist_hg38_GRCh38_v2.1.0.tsv.gz`
     - `protein_domains_hg38_GRCh38_v2.1.0.gff3`
@@ -64,13 +66,132 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 </details>
 
+## Main pipeline workflow
+
+> If no argument is specified here, the tool was used with default parameters.
+
+### Directory structure
+
+```text
+{outdir}
+├── arriba
+├── arriba_visualisation
+├── cram_arriba
+├── cram_starfusion
+├── cram_squid
+├── fastp
+├── fastqc
+├── fusioncatcher
+├── fusioninspector
+├── fusionreport
+├── kallisto_quant
+├── megafusion
+├── multiqc
+├── picard
+├── pizzly
+├── pipeline_info
+├── pizzly
+├── qualimap
+├── samtools_sort_for_arriba
+├── squid
+├── star_for_arriba
+├── star_for_starfusion
+├── star_for_squid
+├── starfusion
+└── work
+.nextflow.log
+```
+
+### Arriba
+
+[Arriba](https://arriba.readthedocs.io/en/latest/) is used for i) detect gene fusions and ii) create a PDF report for the fusions found (visualisation):
+
+#### Detection
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `arriba/`
+  - `<sample_id>.arriba.fusions.tsv` - contains the identified fusions
+  - `<sample_id>.arriba.fusions.discarded.tsv`
+
+</details>
+
+#### Visualisation
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `arriba_visualisation/`
+  - `<sample_id>.pdf`
+
+</details>
+
+### Cat
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `cat/`
+  - `<sample_id>_1.merged.fastq.gz`
+  - `<sample_id>_2.merged.fastq.gz`
+
+</details>
+
+If multiple libraries or runs have been provided for the same sample in the input samplesheet (e.g. to increase sequencing depth) then these will be merged at the very beginning of the pipeline in order to have consistent sample naming throughout the pipeline. Please refer to the [usage](https://nf-co.re/rnafusion/usage#samplesheet-input) documentation to see how to specify these samples in the input samplesheet.
+
+### FastP
+
+### Kallisto
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `kallisto`
+  - `<sample_id>.kallisto_quant.fusions.txt`
+
+</details>
+
+### Pizzly
+
+Pizzly uses the following arguments:
+
+```bash
+-k 31 \
+--align-score 2 \
+--insert-size 400 \
+--cache index.cache.txt
+```
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `pizzly`
+  - `<sample_id>.pizzly.txt` - contains the identified fusions
+  - `<sample_id>.pizzly.unfiltered.json`
+
+</details>
+
+### Squid
+
+Squid is run in two steps: i) fusion detection and ii) fusion annotation but the output is in a common `squid` directory
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `squid`
+  - `<sample_id>.squid.fusions_sv.txt` - contains the identified fusions
+  - `<sample_id>.squid.fusions.annotated.txt`- contains the identified fusions annotated
+
+</details>
+
 ### STAR
 
 STAR is used to align to genome reference
 
-STAR is run 3 times:
+STAR is run for 3 tools:
 
-For arriba with the parameters:
+For `arriba` with the parameters:
 
 ```bash
 --readFilesCommand zcat \
@@ -91,7 +212,7 @@ For arriba with the parameters:
 --chimMultimapNmax 50
 ```
 
-For squid with the parameters:
+For `squid` with the parameters:
 
 ```bash
 --twopassMode Basic \
@@ -105,7 +226,7 @@ For squid with the parameters:
 --readFilesCommand zcat
 ```
 
-For STAR-fusion with the parameters:
+For `STAR-fusion` with the parameters:
 
 ```bash
 --twopassMode Basic \
@@ -132,112 +253,33 @@ For STAR-fusion with the parameters:
 --chimOutType Junctions
 ```
 
-> STAR_FOR_STARFUSION uses `${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.chr.gtf` whereas STAR_FOR_ARRIBA and STAR_FOR_SQUID use `${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf`
+> STAR_FOR_STARFUSION uses `${params.ensembl}/Homo_sapiens.GRCh38.${params.ensembl_version}.chr.gtf` whereas STAR_FOR_ARRIBA and STAR_FOR_SQUID use `${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf`
 
 <details markdown="1">
 <summary>Output files</summary>
+
+**Common**
 
 - `star_for_<tool>`
-_ **Common**
-_ `<sample_id>.Log.final.out`
-_ `<sample_id>.Log.progress.out`
-_ `<sample_id>.SJ.out.tab`
-_ **For arriba:**
-_ `<sample_id>.Aligned.out.bam`
-_ **For squid:**
-_ `<sample_id>.Aligned.sortedByCoord.out.bam`
-_ `<sample_id>.Chimeric.out.sam`
-_ `<sample_id>.unmapped_1.fastq.gz`
-_ `<sample_id>.unmapped_2.fastq.gz`
-_ **For starfusion:**
-_ `<sample_id>.Aligned.sortedByCoord.out.bam`
-_ `<sample_id>.Chimeric.out.junction`
-</details>
+- `<sample_id>.Log.final.out`
+- `<sample_id>.Log.progress.out`
+- `<sample_id>.SJ.out.tab`
 
-### Cat
+**For arriba:**
 
-Cat is used to concatenate fastq files belonging to the same sample.
+- `<sample_id>.Aligned.out.bam`
 
-<details markdown="1">
-<summary>Output files</summary>
+**For squid:**
 
-- `cat`
-  - `<sample_id>_1.merged.fastq.gz`
-  - `<sample_id>_2.merged.fastq.gz`
+- `<sample_id>.Aligned.sortedByCoord.out.bam`
+- `<sample_id>.Chimeric.out.sam`
+- `<sample_id>.unmapped_1.fastq.gz`
+- `<sample_id>.unmapped_2.fastq.gz`
 
-</details>
+  **For starfusion:**
 
-### Arriba
-
-Arriba is used for i) detect fusion and ii) output a PDF report for the fusions found (visualisation):
-
-#### Detection
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `arriba`
-  - `<sample_id>.arriba.fusions.tsv` - contains the identified fusions
-  - `<sample_id>.arriba.fusions.discarded.tsv`
-
-</details>
-
-#### Visualisation
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `arriba_visualisation`
-  - `<sample_id>.pdf`
-
-</details>
-
-### Pizzly
-
-The first step of the pizzly workflow is to run `kallisto quant`:
-
-#### Kallisto
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `kallisto`
-  - `<sample_id>.kallisto_quant.fusions.txt`
-
-</details>
-
-Pizzly refines kallisto output.
-
-#### Pizzly
-
-Pizzly uses the following arguments:
-
-```bash
--k 31 \
---align-score 2 \
---insert-size 400 \
---cache index.cache.txt
-```
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `pizzly`
-  - `<sample_id>.pizzly.txt` - contains the identified fusions
-  - `<sample_id>.pizzly.unfiltered.json`
-
-</details>
-
-### Squid
-
-Squid is run in two steps: i) fusion detection and ii) fusion annotation but the output is in a common `squid` directory.
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `squid`
-  - `<sample_id>.squid.fusions_sv.txt` - contains the identified fusions
-  - `<sample_id>.squid.fusions.annotated.txt`- contains the identified fusions annotatedvi
+- `<sample_id>.Aligned.sortedByCoord.out.bam`
+- `<sample_id>.Chimeric.out.junction`
 
 </details>
 
