@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - `samtools sort` and `samtools index` for `arriba` workflow were dispensable and were removed [#395](https://github.com/nf-core/rnafusion/pull/395)
+- Removed trimmed fastqc report from multiqc [#394](https://github.com/nf-core/rnafusion/pull/394)
 
 ## v2.3.0 = [2022/04/24]
 
