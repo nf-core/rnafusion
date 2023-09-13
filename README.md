@@ -12,26 +12,9 @@
 
 ## Introduction
 
-**nf-core/rnafusion** is a bioinformatics best-practice analysis pipeline for RNA sequencing analysis pipeline with curated list of tools for detecting and visualizing fusion genes.
+**nf-core/rnafusion** is a bioinformatics best-practice analysis pipeline for RNA sequencing consisting of several tools designed for detecting and visualizing fusion genes. Results from up to 5 fusion callers tools are created, and are also aggregated, most notably in a pdf visualiation document, a vcf data collection file, and html and tsv reports.
 
-The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
-
-> **IMPORTANT: conda is not supported currently.** Run with singularity or docker.
-
-> GRCh38 is the only supported reference
-
-| Tool                                                      | Version  |
-| --------------------------------------------------------- | :------: |
-| [Arriba](https://github.com/suhrig/arriba)                | `2.3.0`  |
-| [FusionCatcher](https://github.com/ndaniel/fusioncatcher) |  `1.33`  |
-| [Pizzly](https://github.com/pmelsted/pizzly)              | `0.37.3` |
-| [Squid](https://github.com/Kingsford-Group/squid)         |  `1.5`   |
-| [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) | `1.10.1` |
-| [StringTie](https://github.com/gpertea/stringtie)         | `2.2.1`  |
-
-> Single-end reads are to be use as last-resort. Paired-end reads are recommended. FusionCatcher cannot be used with single-end reads shorter than 130 bp.
-
-On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources.The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/rnafusion/results).
+On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/rnafusion/results).
 
 In rnafusion the full-sized test includes reference building and fusion detection. The test dataset is taken from [here](https://github.com/nf-core/test-datasets/tree/rnafusion/testdata/human).
 
@@ -39,54 +22,52 @@ In rnafusion the full-sized test includes reference building and fusion detectio
 
 ![nf-core/rnafusion metro map](docs/images/nf-core-rnafusion_metro_map.png)
 
-#### Build references
+### Build references
 
-`--build_references` triggers a parallel workflow to build all references
+`--build_references` triggers a parallel workflow to build references, which is a prerequisite to running the pipeline:
 
 1. Download ensembl fasta and gtf files
-2. Create STAR index
-3. Download arriba references
-4. Download fusioncatcher references
-5. Download pizzly references (kallisto index)
-6. Download and build STAR-fusion references
-7. Download fusion-report DBs
+2. Create [STAR](https://github.com/alexdobin/STAR) index
+3. Download [Arriba](https://github.com/suhrig/arriba) references
+4. Download [FusionCatcher](https://github.com/ndaniel/fusioncatcher) references
+5. Download [Pizzly](https://github.com/pmelsted/pizzly) references ([kallisto](https://pachterlab.github.io/kallisto/manual) index)
+6. Download and build [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) references
+7. Download [Fusion-report](https://github.com/Clinical-Genomics/fusion-report) DBs
 
 #### Main workflow
 
 1. Input samplesheet check
-2. Concatenate fastq files per sample
-3. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-4. Arriba subworkflow
+2. Concatenate fastq files per sample ([cat](http://www.linfo.org/cat.html))
+3. Reads quality control ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
+4. Optional trimming with [fastp](https://github.com/OpenGene/fastp)
+5. Arriba subworkflow
    - [STAR](https://github.com/alexdobin/STAR) alignment
-   - [Samtool](https://github.com/samtools/samtools) sort
-   - [Samtool](https://github.com/samtools/samtools) index
    - [Arriba](https://github.com/suhrig/arriba) fusion detection
-5. Pizzly subworkflow
+6. Pizzly subworkflow
    - [Kallisto](https://pachterlab.github.io/kallisto/) quantification
    - [Pizzly](https://github.com/pmelsted/pizzly) fusion detection
-6. Squid subworkflow
+7. Squid subworkflow
    - [STAR](https://github.com/alexdobin/STAR) alignment
    - [Samtools view](http://www.htslib.org/): convert sam output from STAR to bam
    - [Samtools sort](http://www.htslib.org/): bam output from STAR
    - [SQUID](https://github.com/Kingsford-Group/squid) fusion detection
    - [SQUID](https://github.com/Kingsford-Group/squid) annotate
-7. STAR-fusion subworkflow
+8. STAR-fusion subworkflow
    - [STAR](https://github.com/alexdobin/STAR) alignment
    - [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) fusion detection
-8. Fusioncatcher subworkflow
+9. Fusioncatcher subworkflow
    - [FusionCatcher](https://github.com/ndaniel/fusioncatcher) fusion detection
-9. Fusion-report subworkflow
-   - Merge all fusions detected by the different tools
-   - [Fusion-report](https://github.com/matq007/fusion-report)
-10. FusionInspector subworkflow
+10. StringTie subworkflow
+    - [StringTie](https://ccb.jhu.edu/software/stringtie/)
+11. Fusion-report
+    - Merge all fusions detected by the selected tools with [Fusion-report](https://github.com/Clinical-Genomics/fusion-report)
+12. Post-processing and analysis of data
     - [FusionInspector](https://github.com/FusionInspector/FusionInspector)
     - [Arriba](https://github.com/suhrig/arriba) visualisation
-11. Stringtie subworkflow
-    - [StringTie](https://ccb.jhu.edu/software/stringtie/index.shtml)
-12. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
-13. QC for mapped reads ([`QualiMap: BAM QC`](https://kokonech.github.io/qualimap/HG00096.chr20_bamqc/qualimapReport.html))
-14. Index mapped reads ([samtools index](http://www.htslib.org/))
-15. Collect metrics ([`picard CollectRnaSeqMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037057492-CollectRnaSeqMetrics-Picard-) and ([`picard MarkDuplicates`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-))
+    - QC for mapped reads ([`QualiMap: BAM QC`](https://kokonech.github.io/qualimap/HG00096.chr20_bamqc/qualimapReport.html))
+    - Collect metrics ([`picard CollectRnaSeqMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037057492-CollectRnaSeqMetrics-Picard-) and ([`picard MarkDuplicates`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-))
+13. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+14. Compress bam files to cram with [samtools view](http://www.htslib.org/)
 
 ## Usage
 
@@ -95,22 +76,35 @@ In rnafusion the full-sized test includes reference building and fusion detectio
 > to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
 > with `-profile test` before running the workflow on actual data.
 
-```console
-nextflow run nf-core/rnafusion --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 --all -profile <docker/singularity/podman/shifter/charliecloud/institute>
-```
+As the reference building is computationally heavy (> 24h on HPC), it is recommended to test the pipeline with the `-stub` parameter (creation of empty files):
 
-```bash
-nextflow run nf-core/rnafusion --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
-```
-
-> Note that paths need to be absolute and that runs with conda are not supported.
+First, build the references:
 
 ```bash
 nextflow run nf-core/rnafusion \
    -profile <docker/singularity/.../institute> \
-   --input samplesheet.csv \
-   --outdir <OUTDIR>
+   -profile test \
+   --outdir <OUTDIR>\
+   --build_references \
+   -stub
 ```
+
+Then perform the analysis:
+
+```bash
+nextflow run nf-core/rnafusion \
+   -profile <docker/singularity/.../institute> \
+   -profile test \
+   --outdir <OUTDIR>\
+   -stub
+```
+
+> **Notes:**
+>
+> - Conda is not currently supported; run with singularity or docker.
+> - Paths need to be absolute.
+> - GRCh38 is the only supported reference.
+> - Single-end reads are to be used as last-resort. Paired-end reads are recommended. FusionCatcher cannot be used with single-end reads shorter than 130 bp.
 
 > **Warning:**
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
