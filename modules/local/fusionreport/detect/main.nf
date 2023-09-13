@@ -53,7 +53,7 @@ process FUSIONREPORT {
     """
     touch ${prefix}.fusionreport_filtered.tsv
     touch ${prefix}.fusionreport.tsv
-    touch index.html
+    touch ${prefix}_fusionreport_index.html
     touch AAA_BBB.html
     touch ${prefix}.fusions.csv
     touch ${prefix}.fusions.json
