@@ -102,7 +102,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 .nextflow.log
 ```
 
-If no parameter are specified, the default is applied.
+If no parameters are specified, the default is applied.
 
 ### Arriba
 
