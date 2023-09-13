@@ -355,7 +355,7 @@ Samtools index is used to index BAM files from STAR_FOR_ARRIBA (for arriba visua
 
 ### Squid
 
-Squid is run in two steps: i) fusion detection and ii) fusion annotation but the output is in a common `squid` directory
+Squid is run in two steps: i) fusion detection and ii) fusion annotation, but the output is in a shared `squid` directory
 
 <details markdown="1">
 <summary>Output files</summary>
