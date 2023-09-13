@@ -78,7 +78,7 @@ In rnafusion the full-sized test includes reference building and fusion detectio
 
 As the reference building is computationally heavy (> 24h on HPC), it is recommended to test the pipeline with the `-stub` parameter (creation of empty files):
 
-First build the references:
+First, build the references:
 
 ```bash
 nextflow run nf-core/rnafusion \
@@ -101,10 +101,10 @@ nextflow run nf-core/rnafusion \
 
 > **Notes:**
 >
-> - conda is not supported currently, run with singularity or docker
-> - Paths need to be absolute
-> - GRCh38 is the only supported reference
-> - Single-end reads are to be use as last-resort. Paired-end reads are recommended. FusionCatcher cannot be used with single-end reads shorter than 130 bp.
+> - Conda is not currently supported; run with singularity or docker.
+> - Paths need to be absolute.
+> - GRCh38 is the only supported reference.
+> - Single-end reads are to be used as last-resort. Paired-end reads are recommended. FusionCatcher cannot be used with single-end reads shorter than 130 bp.
 
 > **Warning:**
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
