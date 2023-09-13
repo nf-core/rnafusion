@@ -78,7 +78,7 @@ In rnafusion the full-sized test includes reference building and fusion detectio
 
 As the reference building is computationally heavy (> 24h on HPC), it is recommended to test the pipeline with the `-stub` parameter (creation of empty files):
 
-First build the references:
+First, build the references:
 
 ```bash
 nextflow run nf-core/rnafusion \
