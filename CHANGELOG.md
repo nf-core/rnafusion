@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove redundant indexing in starfusion and qc workflows [#387](https://github.com/nf-core/rnafusion/pull/387)
 - Output bai files in same directory as bam files [#387](https://github.com/nf-core/rnafusion/pull/387)
 - Update and review documentation [#396](https://github.com/nf-core/rnafusion/pull/396)
+- Update picard container for `PICARD_COLLECTRNASEQMETRICS` to 3.0.0 [#395](https://github.com/nf-core/rnafusion/pull/395)
 
 ### Fixed
 
