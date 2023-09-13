@@ -487,10 +487,6 @@ The STAR index is generated with `--sjdbOverhang ${params.read_length - 1}`, par
 - `stringtie/<sample>/stringtie.merged.gtf` - merged gtf from annotation and stringtie output gtfs
 </details>
 
-
-
-
-
 ### Pipeline information
 
 <details markdown="1">
