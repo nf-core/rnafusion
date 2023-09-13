@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use institutional configs by default [#381](https://github.com/nf-core/rnafusion/pull/381)
 - Remove redundant indexing in starfusion and qc workflows [#387](https://github.com/nf-core/rnafusion/pull/387)
 - Output bai files in same directory as bam files [#387](https://github.com/nf-core/rnafusion/pull/387)
+- Update and review documentation [#396](https://github.com/nf-core/rnafusion/pull/396)
+- Update picard container for `PICARD_COLLECTRNASEQMETRICS` to 3.0.0 [#395](https://github.com/nf-core/rnafusion/pull/395)
 
 ### Fixed
 
@@ -23,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- `samtools sort` and `samtools index` for `arriba` workflow were dispensable and were removed [#395](https://github.com/nf-core/rnafusion/pull/395)
 - Removed trimmed fastqc report from multiqc [#394](https://github.com/nf-core/rnafusion/pull/394)
 
 ## v2.3.0 = [2022/04/24]
@@ -40,6 +43,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Arriba` visualisation now runs for FusionInspector (combined tools) results, not only `Arriba` results
 - Updated metro map with trimming options and placed `Arriba` visualisation after `FusionInspector`
 - Exit with error when using squid in combination with any ensembl version different from 102
+- Renamed output files [#395](https://github.com/nf-core/rnafusion/pull/395)
+  - `Arriba` visualisation pdf from meta.id to meta.id_combined_fusions_arriba_visualisation
+  - cram file from output bam of `STAR_FOR_ARRIBA`: meta.id to meta.id_star_for_arriba
+  - cram file from output bam of `STAR_FOR_STARFUSION`: meta.id to meta.id.star_for_starfusion.Aligned.sortedByCoord.out
+  - `fusion-report` index.html file to meta.id_fusionreport_index.html
+  - meta.id.vcf output from `MEGAFUSION` to meta.id_fusion_data.vcf
 
 ### Fixed
 
