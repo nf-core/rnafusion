@@ -101,7 +101,7 @@ nextflow run nf-core/rnafusion \
 
 > **Notes:**
 >
-> - conda is not supported currently, run with singularity or docker
+> - Conda is not currently supported; run with singularity or docker.
 > - Paths need to be absolute.
 > - GRCh38 is the only supported reference
 > - Single-end reads are to be use as last-resort. Paired-end reads are recommended. FusionCatcher cannot be used with single-end reads shorter than 130 bp.
