@@ -4,7 +4,7 @@ keywords:
   - sort
 tools:
   - fusionreport:
-      description: fusionreport
+      description: Tool for parsing outputs from fusion detection tools
       homepage: https://github.com/matq007/fusion-report
       documentation: https://matq007.github.io/fusion-report/#/
       doi: "10.1101/011650"

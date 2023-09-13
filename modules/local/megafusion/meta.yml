@@ -4,7 +4,7 @@ keywords:
   - sort
 tools:
   - fusionreport:
-      description: megafusion
+      description: Converts RNA fusion files to SV VCF and collects statistics and metrics in a VCF file.
       homepage: Adapted from https://github.com/J35P312/MegaFusion
       documentation: https://github.com/J35P312/MegaFusion
       doi: ""
