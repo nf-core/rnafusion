@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v2.4.0dev
+## v2.4.0 - [2023/09/18]
 
 ### Added
 
@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `samtools sort` and `samtools index` for `arriba` workflow were dispensable and were removed [#395](https://github.com/nf-core/rnafusion/pull/395)
 - Removed trimmed fastqc report from multiqc [#394](https://github.com/nf-core/rnafusion/pull/394)
 
-## v2.3.0 = [2022/04/24]
+## v2.3.0 - [2023/04/24]
 
 ### Added
 
@@ -57,7 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-## v2.2.0 - [2022/03/13]
+## v2.2.0 - [2023/03/13]
 
 ### Added
 
@@ -94,7 +94,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - FUSIONINSPECTOR_DEV process as the option fusioninspector_limitSjdbInsertNsj is part of the main starfusion release
 
-## [2.1.0] nfcore/rnafusion - 2022/07/12
+## v2.1.0 - [2022/07/12]
 
 ### Added
 
@@ -128,7 +128,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-## [2.0.0] nfcore/rnafusion - 2022/05/19
+## v2.0.0 - [2022/05/19]
 
 Update to DSL2 and newer software/reference versions
 
@@ -270,7 +270,7 @@ to
 - GRCh37 support. Subdirectory with params.genome are removed
 - Running with conda
 
-## v1.3.0dev nfcore/rnafusion - 2020/07/15
+## v1.3.0 - [2020/07/15]
 
 - Using official STAR-Fusion container [#160](https://github.com/nf-core/rnafusion/issues/160)
 
@@ -301,7 +301,7 @@ to
 
 ---
 
-## [1.1.0] nfcore/rnafusion - 2020/02/10
+## v1.1.0 - [2020/02/10]
 
 - Fusion gene detection tools:
   - `Arriba v1.1.0`
@@ -349,7 +349,7 @@ to
 
 ---
 
-## [1.0.2] nfcore/rnafusion - 2019/05/13
+## v1.0.2 - [2019/05/13]
 
 ### Changed
 
@@ -363,7 +363,7 @@ to
 
 ---
 
-## [1.0.1] nfcore/rnafusion - 2019/04/06
+## v1.0.1 - [2019/04/06]
 
 ### Added
 
@@ -391,7 +391,7 @@ to
 
 ---
 
-## [1.0] nfcore/rnafusion - 2018/02/14
+## v1.0 - [2018/02/14]
 
 Version 1.0 marks the first production release of this pipeline under the nf-core flag.
 The pipeline includes additional help scripts to download references for fusion tools and Singularity images.
