@@ -47,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - cram file from output bam of `STAR_FOR_ARRIBA`: meta.id to meta.id_star_for_arriba
   - cram file from output bam of `STAR_FOR_STARFUSION`: meta.id to meta.id.star_for_starfusion.Aligned.sortedByCoord.out
   - `fusion-report` index.html file to meta.id_fusionreport_index.html
+  - meta.id.vcf output from  `MEGAFUSION` to meta.id_fusion_data.vcf
 
 ### Fixed
 
