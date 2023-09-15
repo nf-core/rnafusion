@@ -475,7 +475,8 @@ The STAR index is generated with `--sjdbOverhang ${params.read_length - 1}`, par
 
 - `starfusion`
   - `<sample>.starfusion.fusion_predictions.tsv` - contains the identified fusions
-  - `<sample>.starfusion.abridged.tsv`- contains the identified fusions.- `starfusion.abridged.coding_effect.tsv`
+  - `<sample>.starfusion.abridged.tsv`- contains the identified fusions
+  - `starfusion.abridged.coding_effect.tsv`
 
 </details>
 
