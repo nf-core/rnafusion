@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Provide gene count file by default when running STAR_FOR_STARFUSION [#385](https://github.com/nf-core/rnafusion/pull/385)
 - Fix fusion-report issue with MACOXS directories [#386](https://github.com/nf-core/rnafusion/pull/386)
 - The fusion lists is updated to contain two branches, one in case no fusions are detected and one for if fusions are detected, that will be used to feed to fusioninspector, megafusion, arriba visualisation [#388](https://github.com/nf-core/rnafusion/pull/388)
-- Update fusionreport to 2.1.5p4 to fix 403 error in downloading databases
+- Update fusionreport to 2.1.5p4 to fix 403 error in downloading databases [#403](https://github.com/nf-core/rnafusion/pull/403)
 
 ### Removed
 
