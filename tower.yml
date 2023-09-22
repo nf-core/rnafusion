@@ -15,7 +15,7 @@ reports:
     display: "Fusion-report HTML report"
   "**/megafusion/*_fusion_data.vcf":
     display: "Collected statistics on each fusion fed to FusionInspector in VCF format"
-  "**/picard/*.MarkDuplicates.metrics.txt":
+  "**/gatk4/*.MarkDuplicates.metrics.txt":
     display: "Picard: Metrics from CollectRnaMetrics"
   "**/picard/*_rna_metrics.txt":
     display: "Picard: Metrics from MarkDuplicates"

@@ -4,7 +4,7 @@
 
 include { QUALIMAP_RNASEQ }                            from '../../modules/nf-core/qualimap/rnaseq/main'
 include { PICARD_COLLECTRNASEQMETRICS }                from '../../modules/local/picard/collectrnaseqmetrics/main'
-include { PICARD_MARKDUPLICATES }                      from '../../modules/nf-core/picard/markduplicates/main'
+include { GATK4_MARKDUPLICATES }                      from '../../modules/nf-core/gatk4/markduplicates/main'
 
 workflow QC_WORKFLOW {
     take:
@@ -27,9 +27,9 @@ workflow QC_WORKFLOW {
         ch_versions = ch_versions.mix(PICARD_COLLECTRNASEQMETRICS.out.versions)
         ch_rnaseq_metrics = Channel.empty().mix(PICARD_COLLECTRNASEQMETRICS.out.metrics)
 
-        PICARD_MARKDUPLICATES(ch_bam_sorted, ch_fasta, ch_fai)
-        ch_versions = ch_versions.mix(PICARD_MARKDUPLICATES.out.versions)
-        ch_duplicate_metrics = Channel.empty().mix(PICARD_MARKDUPLICATES.out.metrics)
+        GATK4_MARKDUPLICATES(ch_bam_sorted, ch_fasta, ch_fai)
+        ch_versions = ch_versions.mix(GATK4_MARKDUPLICATES.out.versions)
+        ch_duplicate_metrics = Channel.empty().mix(GATK4_MARKDUPLICATES.out.metrics)
 
 
     emit:
