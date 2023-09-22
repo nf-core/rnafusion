@@ -15,6 +15,8 @@ reports:
     display: "Fusion-report HTML report"
   "**/megafusion/*_fusion_data.vcf":
     display: "Collected statistics on each fusion fed to FusionInspector in VCF format"
+  "**/mosdepth/*.mosdepth.summary.txt":
+    display: "All samples summary of mean depths per chromosome and within specified regions per chromosome"
   "**/picard/*.MarkDuplicates.metrics.txt":
     display: "Picard: Metrics from CollectRnaMetrics"
   "**/picard/*_rna_metrics.txt":

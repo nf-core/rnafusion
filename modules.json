@@ -50,6 +50,11 @@
                         "git_sha": "699fa6f3002d922380615f3847198aeb57d8b6a9",
                         "installed_by": ["modules"]
                     },
+                    "mosdepth": {
+                        "branch": "master",
+                        "git_sha": "ebb27711cd5f4de921244bfa81c676504072d31c",
+                        "installed_by": ["modules"]
+                    },
                     "multiqc": {
                         "branch": "master",
                         "git_sha": "a6e11ac655e744f7ebc724be669dd568ffdc0e80",
@@ -63,11 +68,6 @@
                     "picard/markduplicates": {
                         "branch": "master",
                         "git_sha": "2ee934606f1fdf7fc1cb05d6e8abc13bec8ab448",
-                        "installed_by": ["modules"]
-                    },
-                    "qualimap/rnaseq": {
-                        "branch": "master",
-                        "git_sha": "4657d98bc9f565e067c4d924126ce107056f5e2f",
                         "installed_by": ["modules"]
                     },
                     "samtools/faidx": {
