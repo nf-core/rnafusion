@@ -48,9 +48,9 @@ In rnafusion the full-sized test includes reference building and fusion detectio
 7. Fusioncatcher subworkflow
    - [FusionCatcher](https://github.com/ndaniel/fusioncatcher) fusion detection
 8. StringTie subworkflow
-    - [StringTie](https://ccb.jhu.edu/software/stringtie/)
+   - [StringTie](https://ccb.jhu.edu/software/stringtie/)
 9. Fusion-report
-    - Merge all fusions detected by the selected tools with [Fusion-report](https://github.com/Clinical-Genomics/fusion-report)
+   - Merge all fusions detected by the selected tools with [Fusion-report](https://github.com/Clinical-Genomics/fusion-report)
 10. Post-processing and analysis of data
     - [FusionInspector](https://github.com/FusionInspector/FusionInspector)
     - [Arriba](https://github.com/suhrig/arriba) visualisation
