@@ -21,7 +21,6 @@ include { CONVERT2BED }                     from '../modules/local/convert2bed/m
 
 include { SAMTOOLS_FAIDX }                  from '../modules/nf-core/samtools/faidx/main'
 include { STAR_GENOMEGENERATE }             from '../modules/nf-core/star/genomegenerate/main'
-include { KALLISTO_INDEX as PIZZLY_INDEX }  from '../modules/nf-core/kallisto/index/main'
 include { GATK4_CREATESEQUENCEDICTIONARY }  from '../modules/nf-core/gatk4/createsequencedictionary/main'
 include { GATK4_BEDTOINTERVALLIST }         from '../modules/nf-core/gatk4/bedtointervallist/main'
 
@@ -47,7 +46,7 @@ workflow BUILD_REFERENCES {
     GATK4_BEDTOINTERVALLIST(CONVERT2BED.out.bed, GATK4_CREATESEQUENCEDICTIONARY.out.dict)
 
 
-    if (params.starindex || params.all || params.starfusion || params.arriba || params.squid ) {
+    if (params.starindex || params.all || params.starfusion || params.arriba) {
         STAR_GENOMEGENERATE( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.gtf )
     }
 
@@ -57,10 +56,6 @@ workflow BUILD_REFERENCES {
 
     if (params.fusioncatcher || params.all) {
         FUSIONCATCHER_DOWNLOAD()
-    }
-
-    if (params.pizzly || params.all) {
-        PIZZLY_INDEX( ENSEMBL_DOWNLOAD.out.transcript )
     }
 
     if (params.starfusion || params.all) {

@@ -11,11 +11,9 @@ The directories listed below will be created in the results directory after the 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
 - [Download and build references](#references) - Build references needed to run the rest of the pipeline
-- [STAR](#star) - Alignment for arriba, squid and STAR-fusion
+- [STAR](#star) - Alignment for arriba, and STAR-fusion
 - [Cat](#cat) - Concatenate fastq files per sample ID
 - [Arriba](#arriba) - Arriba fusion detection
-- [Pizzly](#pizzly) - Pizzly fusion detection
-- [Squid](#squid) - Squid fusion detection
 - [STAR-fusion](#starfusion) - STAR-fusion fusion detection
 - [StringTie](#stringtie) - StringTie assembly
 - [FusionCatcher](#fusioncatcher) - Fusion catcher fusion detection
@@ -55,8 +53,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
     - `fusiongdb.db`
     - `fusiongdb2.db`
     - `mitelman.db`
-  - `pizzly`
-    - `kallisto` - file containing the kallisto index
   - `star` - dir with STAR index
   - `starfusion`
     - files and dirs used to build the index
@@ -78,7 +74,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 ├── arriba_visualisation
 ├── cram_arriba
 ├── cram_starfusion
-├── cram_squid
 ├── fastp
 ├── fastqc
 ├── fusioncatcher
@@ -88,15 +83,11 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 ├── megafusion
 ├── multiqc
 ├── picard
-├── pizzly
 ├── pipeline_info
-├── pizzly
 ├── qualimap
 ├── samtools_sort_for_arriba
-├── squid
 ├── star_for_arriba
 ├── star_for_starfusion
-├── star_for_squid
 ├── starfusion
 └── work
 .nextflow.log
@@ -281,26 +272,6 @@ Picard CollectRnaMetrics and picard MarkDuplicates share the same output directo
 
 </details>
 
-#### Pizzly
-
-Pizzly uses the following arguments:
-
-```bash
--k 31 \
---align-score 2 \
---insert-size 400 \
---cache index.cache.txt
-```
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `pizzly`
-  - `<sample_id>.pizzly.txt` - contains the identified fusions
-  - `<sample_id>.pizzly.unfiltered.json`
-
-</details>
-
 ### Qualimap
 
 <details markdown="1">
@@ -317,26 +288,14 @@ Pizzly uses the following arguments:
 
 ### Samtools
 
-#### Samtools view
-
-Samtools view is used to convert the chimeric SAM output from STAR_FOR_SQUID to BAM
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `samtools_view_for_squid`
-  - `<sample>_chimeric.bam` - sorted BAM file
-
-</details>
-
 #### Samtools sort
 
-Samtools sort is used to sort BAM files from STAR_FOR_STARFUSION (for arriba visualisation) and the chimeric BAM from STAR_FOR_SQUID
+Samtools sort is used to sort BAM files from STAR_FOR_STARFUSION (for arriba visualisation)
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `samtools_sort_for_<arriba/squid>`
+- `samtools_sort_for_<arriba>`
   - `<sample>(_chimeric)_sorted.bam` - sorted BAM file
 
 </details>
@@ -350,19 +309,6 @@ Samtools index is used to index BAM files from STAR_FOR_ARRIBA (for arriba visua
 
 - `samtools_for_<arriba/qc>`
   - `<sample>.(Aligned.sortedByCoord).out.bam.bai` -
-
-</details>
-
-### Squid
-
-Squid is run in two steps: i) fusion detection and ii) fusion annotation, but the output is in a shared `squid` directory
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `squid`
-  - `<sample>.squid.fusions_sv.txt` - contains the identified fusions
-  - `<sample>.squid.fusions.annotated.txt`- contains the identified fusions annotated
 
 </details>
 
@@ -393,20 +339,6 @@ For `arriba` with the parameters:
 --chimMultimapNmax 50
 ```
 
-For `squid` with the parameters:
-
-```bash
---twopassMode Basic \
---chimOutType SeparateSAMold \
---chimSegmentMin 20 \
---chimJunctionOverhangMin 12 \
---alignSJDBoverhangMin 10 \
---outReadsUnmapped Fastx \
---outSAMstrandField intronMotif \
---outSAMtype BAM SortedByCoordinate \
---readFilesCommand zcat
-```
-
 For `STAR-fusion` with the parameters:
 
 ```bash
@@ -435,7 +367,7 @@ For `STAR-fusion` with the parameters:
 --quantMode GeneCounts
 ```
 
-> STAR_FOR_STARFUSION uses `${params.ensembl}/Homo_sapiens.GRCh38.${params.ensembl_version}.chr.gtf` whereas STAR_FOR_ARRIBA and STAR_FOR_SQUID use `${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf`
+> STAR_FOR_STARFUSION uses `${params.ensembl}/Homo_sapiens.GRCh38.${params.ensembl_version}.chr.gtf` whereas STAR_FOR_ARRIBA uses `${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf`
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -450,13 +382,6 @@ For `STAR-fusion` with the parameters:
 **For arriba:**
 
 - `<sample>.Aligned.out.bam`
-
-**For squid:**
-
-- `<sample>.Aligned.sortedByCoord.out.bam`
-- `<sample>.Chimeric.out.sam`
-- `<sample>.unmapped_1.fastq.gz`
-- `<sample>.unmapped_2.fastq.gz`
 
   **For starfusion:**
 

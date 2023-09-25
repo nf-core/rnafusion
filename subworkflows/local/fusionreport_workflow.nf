@@ -6,8 +6,6 @@ workflow FUSIONREPORT_WORKFLOW {
         reads
         fusionreport_ref
         arriba_fusions
-        pizzly_fusions
-        squid_fusions
         starfusion_fusions
         fusioncatcher_fusions
 
@@ -18,8 +16,6 @@ workflow FUSIONREPORT_WORKFLOW {
         if (!params.fusioninspector_only) {
             reads_fusions = reads
             .join(arriba_fusions, remainder: true)
-            .join(pizzly_fusions, remainder: true)
-            .join(squid_fusions, remainder: true)
             .join(starfusion_fusions, remainder: true)
             .join(fusioncatcher_fusions, remainder: true)
 

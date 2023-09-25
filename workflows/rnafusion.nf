@@ -54,7 +54,6 @@ if (params_fasta_path_uri){
 else {
     for (param in checkPathParamList) if ((param.toString())!= file(param).toString() && !params.build_references) { exit 1, "Problem with ${param}: ABSOLUTE PATHS are required! Check for trailing '/' at the end of paths too." }
 }
-if ((params.squid || params.all) && params.ensembl_version != 102) { exit 1, 'Ensembl version is not supported by squid' }
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,9 +79,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 include { INPUT_CHECK                   }   from '../subworkflows/local/input_check'
 include { TRIM_WORKFLOW                 }   from '../subworkflows/local/trim_workflow'
 include { ARRIBA_WORKFLOW               }   from '../subworkflows/local/arriba_workflow'
-include { PIZZLY_WORKFLOW               }   from '../subworkflows/local/pizzly_workflow'
 include { QC_WORKFLOW                   }   from '../subworkflows/local/qc_workflow'
-include { SQUID_WORKFLOW                }   from '../subworkflows/local/squid_workflow'
 include { STARFUSION_WORKFLOW           }   from '../subworkflows/local/starfusion_workflow'
 include { STRINGTIE_WORKFLOW            }   from '../subworkflows/local/stringtie_workflow'
 include { FUSIONCATCHER_WORKFLOW        }   from '../subworkflows/local/fusioncatcher_workflow'
@@ -180,26 +177,6 @@ workflow RNAFUSION {
     )
     ch_versions = ch_versions.mix(ARRIBA_WORKFLOW.out.versions.first().ifEmpty(null))
 
-    // Run pizzly/kallisto
-
-    PIZZLY_WORKFLOW (
-        ch_reads_all,
-        ch_gtf,
-        ch_transcript
-    )
-    ch_versions = ch_versions.mix(PIZZLY_WORKFLOW.out.versions.first().ifEmpty(null))
-
-
-// Run squid
-
-    SQUID_WORKFLOW (
-        ch_reads_all,
-        ch_gtf,
-        ch_starindex_ensembl_ref,
-        ch_fasta
-    )
-    ch_versions = ch_versions.mix(SQUID_WORKFLOW.out.versions.first().ifEmpty(null))
-
 
 //Run STAR fusion
     STARFUSION_WORKFLOW (
@@ -231,8 +208,6 @@ workflow RNAFUSION {
         ch_reads_all,
         ch_fusionreport_ref,
         ARRIBA_WORKFLOW.out.fusions,
-        PIZZLY_WORKFLOW.out.fusions,
-        SQUID_WORKFLOW.out.fusions,
         STARFUSION_WORKFLOW.out.fusions,
         FUSIONCATCHER_WORKFLOW.out.fusions
     )
