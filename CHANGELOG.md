@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v2.4.0dev
+## v2.4.0 - [2023/09/22]
 
 ### Added
 
@@ -12,7 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use institutional configs by default [#381](https://github.com/nf-core/rnafusion/pull/381)
 - Remove redundant indexing in starfusion and qc workflows [#387](https://github.com/nf-core/rnafusion/pull/387)
 - Output bai files in same directory as bam files [#387](https://github.com/nf-core/rnafusion/pull/387)
-- Removed `--fusioninspector_filter` and `--fusionreport_filter` in favor of `--tools_cutoff` (default = 1, no filters applied) [#389](https://github.com/nf-core/rnafusion/pull/389)
+- Update and review documentation [#396](https://github.com/nf-core/rnafusion/pull/396)
+- Update picard container for `PICARD_COLLECTRNASEQMETRICS` to 3.0.0 [#395](https://github.com/nf-core/rnafusion/pull/395)
+- Renamed output files [#395](https://github.com/nf-core/rnafusion/pull/395)
+  - `Arriba` visualisation pdf from meta.id to meta.id_combined_fusions_arriba_visualisation
+  - cram file from output bam of `STAR_FOR_ARRIBA`: meta.id to meta.id_star_for_arriba
+  - cram file from output bam of `STAR_FOR_STARFUSION`: meta.id to meta.id.star_for_starfusion.Aligned.sortedByCoord.out
+  - `fusion-report` index.html file to meta.id_fusionreport_index.html
+  - meta.id.vcf output from `MEGAFUSION` to meta.id_fusion_data.vcf
 
 ### Fixed
 
@@ -21,10 +28,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Provide gene count file by default when running STAR_FOR_STARFUSION [#385](https://github.com/nf-core/rnafusion/pull/385)
 - Fix fusion-report issue with MACOXS directories [#386](https://github.com/nf-core/rnafusion/pull/386)
 - The fusion lists is updated to contain two branches, one in case no fusions are detected and one for if fusions are detected, that will be used to feed to fusioninspector, megafusion, arriba visualisation [#388](https://github.com/nf-core/rnafusion/pull/388)
+- Update fusionreport to 2.1.5p4 to fix 403 error in downloading databases [#403](https://github.com/nf-core/rnafusion/pull/403)
 
 ### Removed
 
-## v2.3.0 = [2022/04/24]
+- `samtools sort` and `samtools index` for `arriba` workflow were dispensable and were removed [#395](https://github.com/nf-core/rnafusion/pull/395)
+- Removed trimmed fastqc report from multiqc [#394](https://github.com/nf-core/rnafusion/pull/394)
+
+## v2.3.0 - [2023/04/24]
 
 ### Added
 
@@ -47,7 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-## v2.2.0 - [2022/03/13]
+## v2.2.0 - [2023/03/13]
 
 ### Added
 
@@ -84,7 +95,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - FUSIONINSPECTOR_DEV process as the option fusioninspector_limitSjdbInsertNsj is part of the main starfusion release
 
-## [2.1.0] nfcore/rnafusion - 2022/07/12
+## v2.1.0 - [2022/07/12]
 
 ### Added
 
@@ -118,7 +129,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-## [2.0.0] nfcore/rnafusion - 2022/05/19
+## v2.0.0 - [2022/05/19]
 
 Update to DSL2 and newer software/reference versions
 
@@ -260,7 +271,7 @@ to
 - GRCh37 support. Subdirectory with params.genome are removed
 - Running with conda
 
-## v1.3.0dev nfcore/rnafusion - 2020/07/15
+## v1.3.0 - [2020/07/15]
 
 - Using official STAR-Fusion container [#160](https://github.com/nf-core/rnafusion/issues/160)
 
@@ -291,7 +302,7 @@ to
 
 ---
 
-## [1.1.0] nfcore/rnafusion - 2020/02/10
+## v1.1.0 - [2020/02/10]
 
 - Fusion gene detection tools:
   - `Arriba v1.1.0`
@@ -339,7 +350,7 @@ to
 
 ---
 
-## [1.0.2] nfcore/rnafusion - 2019/05/13
+## v1.0.2 - [2019/05/13]
 
 ### Changed
 
@@ -353,7 +364,7 @@ to
 
 ---
 
-## [1.0.1] nfcore/rnafusion - 2019/04/06
+## v1.0.1 - [2019/04/06]
 
 ### Added
 
@@ -381,7 +392,7 @@ to
 
 ---
 
-## [1.0] nfcore/rnafusion - 2018/02/14
+## v1.0 - [2018/02/14]
 
 Version 1.0 marks the first production release of this pipeline under the nf-core flag.
 The pipeline includes additional help scripts to download references for fusion tools and Singularity images.
