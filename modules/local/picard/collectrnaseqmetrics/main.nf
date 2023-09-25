@@ -2,15 +2,15 @@ process PICARD_COLLECTRNASEQMETRICS {
     tag "$meta.id"
     label 'process_medium'
 
-    conda "bioconda::picard=2.27.4"
+    conda "bioconda::picard=3.0.0 r::r-base"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/picard:2.27.4--hdfd78af_0' :
-        'quay.io/biocontainers/picard:2.27.4--hdfd78af_0' }"
+        'https://depot.galaxyproject.org/singularity/picard:3.0.0--hdfd78af_1' :
+        'biocontainers/picard:3.0.0--hdfd78af_1' }"
 
     input:
     tuple val(meta), path(bam), path(bai)
-    path(refflat)
-    path(rrna_intervals)
+    tuple val(meta2), path(refflat)
+    tuple val(meta3), path(rrna_intervals)
 
     output:
     tuple val(meta), path("*rna_metrics.txt")    , emit: metrics

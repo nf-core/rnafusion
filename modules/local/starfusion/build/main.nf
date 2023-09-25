@@ -5,8 +5,8 @@ process STARFUSION_BUILD {
     container "docker.io/trinityctat/starfusion:1.12.0"
 
     input:
-    path fasta
-    path gtf
+    tuple val(meta), path(fasta)
+    tuple val(meta2), path(gtf)
 
     output:
     path "*"  , emit: reference

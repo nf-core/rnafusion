@@ -10,31 +10,56 @@
 
 ## Pipeline tools
 
-- [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
-
-- [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
-
-  > Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.
-
 - [Arriba](https://github.com/suhrig/arriba)
 
-  > Uhrig S, Ellermann J, Walther T, Burkhardt P, Fröhlich M, Hutter B, Toprak UH, Neumann O, Stenzinger A, Scholl C, Fröhling S, Brors B. Accurate and efficient detection of gene fusions from RNA sequencing data.
-  > Genome Research. 2021 Mar 31;448-460. doi: 10.1101/gr.257246.119. Epub 2021 Jan 13. PubMed PMID: 33441414; PubMed Central PMCID: PMC7919457.
+  > Uhrig S, Ellermann J, Walther T, Burkhardt P, Fröhlich M, Hutter B, Toprak UH, Neumann O, Stenzinger A, Scholl C, Fröhling S, Brors B. Accurate and efficient detection of gene fusions from RNA sequencing data. Genome Research. 2021 Mar 31;448-460. doi: 10.1101/gr.257246.119. Epub 2021 Jan 13. PubMed PMID: 33441414.
+
+- [BEDOPS](https://bedops.readthedocs.io/en/latest/index.html) - convert2bed
+
+  > Neph S, Scott Kuehn M, Reynolds AP, Haugen E, Thurman RE, Johnson AK, Rynes E, Maurano MT, Vierstra J, Thomas S, Sandstrom R, Humbert R, Stamatoyannopoulos JA. BEDOPS: high-performance genomic feature operations. Bioinformatics. 2012 May, 28 (14): 1919-1920. doi: 10.1093/bioinformatics/bts277, PubMed PMID: PMID: 22576172.
+
+- [FastP](https://academic.oup.com/bioinformatics/article/34/17/i884/5093234)
+
+  > Shifu Chen, Yanqing Zhou, Yaru Chen, Jia Gu. fastp: an ultra-fast all-in-one FASTQ preprocessor. Bioinformatics. 2018 Sept 34:17 (i884–i890), doi: 10.1093/bioinformatics/bty560. PubMed PMID: 30423086. PubMed Central PMCID: PMC6129281
+
+- [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+
+  > Andrews, S. (2010). FastQC: A Quality Control Tool for High Throughput Sequence Data [Online]. Available online https://www.bioinformatics.babraham.ac.uk/projects/fastqc/.
 
 - [FusionCatcher](https://github.com/ndaniel/fusioncatcher)
 
   > Nicorici D, Satalan M, Edgren H, Kangaspeska S, Murumagi A, Kallioniemi O, Virtanen S, Kilkku O. FusionCatcher – a tool for finding somatic fusion genes in paired-end RNA-sequencing data. BioRxiv, 2014 Nov. doi: 10.1101/011650.
 
+- [FusionInspector](https://github.com/FusionInspector/FusionInspector)
+
+  > Haas BJ, Dobin A, Ghandi M, Van Arsdale A, Tickle T, Robinson JT, Gillani R, Kasif S, Regev A. Targeted in silico characterization of fusion transcripts in tumor and normal tissues via FusionInspector. Cell Reports Methods. 2023 May 3:5, doi: 10.1016/j.crmeth.2023.100467, PMID: 37323575
+
 - [Fusion-report](https://github.com/matq007/fusion-report)
 
   > Proks M, Genomic Profiling of a Comprehensive Nation-wide Collection of Childhood Solid Tumors, Master Thesis, Supervisors: Grøntved L, Díaz de Ståhl T, Nistér M, Ewels P, Garcia MU, Juhos S, University of Southern Denmark, 2019, unpublished.
+
+- [GATK4](https://gatk.broadinstitute.org/hc/en-us)
+
+  > Van der Auwera GA. Somatic variation discovery with GATK4. Proceedings of the American Association for Cancer Research Annual Meeting 2017. 2017 Apr 1-5. Cancer Res 2017;77(13 Suppl) doi:10.1158/1538-7445.AM2017-3590
 
 - [Kallisto](https://pachterlab.github.io/kallisto/)
 
   > Bray NL, Pimentel H, Melsted P, Pachter L. Near-optimal probabilistic RNA-seq quantification. Nature Biotechnology 2016 Apr. 34, 525–527. doi:10.1038/nbt.3519. PMID: 27043002.
 
+- [MegaFusion](https://github.com/J35P312/MegaFusion)
+
+- [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
+
+  > Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.
+
+- [picard-tools](http://broadinstitute.github.io/picard)
+
 - [Pizzly](https://github.com/pmelsted/pizzly)
   Melsted P, Hateley S, Joseph IC, Pimentel H, Bray N, Pachter L. Fusion detection and quantification by pseudoalignment. BioRxiv, 2017 Jul. doi: 10.1101/166322.
+
+- [Qualimap 2](https://pubmed.ncbi.nlm.nih.gov/26428292/)
+
+  > Okonechnikov K, Conesa A, García-Alcalde F. Qualimap 2: advanced multi-sample quality control for high-throughput sequencing data Bioinformatics. 2016 Jan 15;32(2):292-4. doi: 10.1093/bioinformatics/btv566. Epub 2015 Oct 1. PubMed PMID: 26428292; PubMed Central PMCID: PMC4708105.
 
 - [SAMtools](https://pubmed.ncbi.nlm.nih.gov/19505943/)
 
@@ -71,5 +96,8 @@
 
 - [Docker](https://dl.acm.org/doi/10.5555/2600239.2600241)
 
+  > Merkel, D. (2014). Docker: lightweight linux containers for consistent development and deployment. Linux Journal, 2014(239), 2. doi: 10.5555/2600239.2600241.
+
 - [Singularity](https://pubmed.ncbi.nlm.nih.gov/28494014/)
+
   > Kurtzer GM, Sochat V, Bauer MW. Singularity: Scientific containers for mobility of compute. PLoS One. 2017 May 11;12(5):e0177459. doi: 10.1371/journal.pone.0177459. eCollection 2017. PubMed PMID: 28494014; PubMed Central PMCID: PMC5426675.
