@@ -15,7 +15,7 @@ The pipeline is divided into two parts:
 2. Detecting fusions
    - Supported tools: `Arriba`, `FusionCatcher`, `pizzly`, `SQUID`, `STAR-Fusion`, and `StringTie`
    - QC: `Fastqc`, `MultiQC`, and `Qualimap rnaseq`
-   - Fusions visualization: `Arriba`, `fusion-report` and `FusionInspector`, VCF file creation based on `MegaFusion`
+   - Fusions visualization: `Arriba`, `fusion-report` and `FusionInspector`, `vcf_collect` (VCF file creation based on `MegaFusion`)
 
 ## Download and build references
 

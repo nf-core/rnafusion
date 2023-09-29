@@ -1,4 +1,4 @@
-process MEGAFUSION {
+process VCF_COLLECT {
     tag "$meta.id"
     label 'process_single'
 
@@ -20,7 +20,7 @@ process MEGAFUSION {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    megafusion.py --fusioninspector $tsv --fusionreport $report --sample ${prefix} --out ${prefix}.vcf
+    vcf_collect.py --fusioninspector $tsv --fusionreport $report --sample ${prefix} --out ${prefix}.vcf
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

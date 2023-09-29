@@ -1,5 +1,5 @@
-name: megafusion
-description: megafusion
+name: vcf_collect
+description: vcf_collect
 keywords:
   - sort
 tools:

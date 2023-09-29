@@ -189,7 +189,7 @@ def write_vcf(df_to_print, header, out_file):
         f.write(header.rstrip("\r\n") + "\n" + content)
 
 
-def megafusion(fusioninspector_in_file, fusionreport_in_file, sample, out):
+def vcf_collect(fusioninspector_in_file, fusionreport_in_file, sample, out):
     """Convert fusion information from FusionInspector and fusion-report into a vcf file. Adapted from https://github.com/J35P312/MegaFusion"""
     merged_df = build_fusioninspector_dataframe(fusioninspector_in_file, FUSIONINSPECTOR_MAP).join(
         read_build_fusionreport(fusionreport_in_file), how="left"
@@ -203,7 +203,7 @@ def main(argv=None):
     if not args.fusioninspector.is_file() or not args.fusionreport.is_file():
         logger.error(f"The given input file {args.fusioninspector} or {args.fusionreport} was not found!")
         sys.exit(2)
-    megafusion(args.fusioninspector, args.fusionreport, args.sample, args.out)
+    vcf_collect(args.fusioninspector, args.fusionreport, args.sample, args.out)
 
 
 if __name__ == "__main__":
