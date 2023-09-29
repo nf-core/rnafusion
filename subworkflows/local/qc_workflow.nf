@@ -5,6 +5,8 @@
 include { QUALIMAP_RNASEQ }                            from '../../modules/nf-core/qualimap/rnaseq/main'
 include { PICARD_COLLECTRNASEQMETRICS }                from '../../modules/local/picard/collectrnaseqmetrics/main'
 include { PICARD_MARKDUPLICATES }                      from '../../modules/nf-core/picard/markduplicates/main'
+include { PICARD_COLLECTINSERTSIZEMETRICS }            from '../../modules/nf-core/picard/collectinsertsizemetrics/main'
+
 
 workflow QC_WORKFLOW {
     take:
