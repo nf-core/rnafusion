@@ -1,12 +1,10 @@
-#!/usr/bin/env python
-
-
-"""Provide a command line tool to validate and transform tabular samplesheets."""
+#!/usr/bin/env python3
 
 
 import argparse
 import csv
 import logging
+import os
 import sys
 from collections import Counter
 from pathlib import Path
@@ -29,12 +27,19 @@ class RowChecker:
         ".fastq.gz",
     )
 
+    VALID_STRANDEDNESSES = (
+        "reverse",
+        "forward",
+        "unstranded",
+    )
+
     def __init__(
         self,
         sample_col="sample",
         first_col="fastq_1",
         second_col="fastq_2",
         single_col="single_end",
+        strandedness="strandedness",
         **kwargs,
     ):
         """
@@ -57,6 +62,7 @@ class RowChecker:
         self._first_col = first_col
         self._second_col = second_col
         self._single_col = single_col
+        self._strandedness = strandedness
         self._seen = set()
         self.modified = []
 
@@ -73,6 +79,7 @@ class RowChecker:
         self._validate_first(row)
         self._validate_second(row)
         self._validate_pair(row)
+        self._validate_strandedness(row)
         self._seen.add((row[self._sample_col], row[self._first_col]))
         self.modified.append(row)
 
@@ -113,6 +120,11 @@ class RowChecker:
                 f"It should be one of: {', '.join(self.VALID_FORMATS)}"
             )
 
+    def _validate_strandedness(self, row):
+        """Assert that the strandedness given is one of unstranded/forward/reverse"""
+        if row[self._strandedness] not in self.VALID_STRANDEDNESSES:
+            raise AssertionError(f"Strandedness must be one of {', '.join(self.VALID_STRANDEDNESSES)}")
+
     def validate_unique_samples(self):
         """
         Assert that the combination of sample name and FASTQ filename is unique.
@@ -143,17 +155,13 @@ def read_head(handle, num_lines=10):
 def sniff_format(handle):
     """
     Detect the tabular format.
-
     Args:
         handle (text file): A handle to a `text file`_ object. The read position is
         expected to be at the beginning (index 0).
-
     Returns:
         csv.Dialect: The detected tabular format.
-
     .. _text file:
         https://docs.python.org/3/glossary.html#term-text-file
-
     """
     peek = read_head(handle)
     handle.seek(0)
@@ -174,21 +182,16 @@ def check_samplesheet(file_in, file_out):
             CSV, TSV, or any other format automatically recognized by ``csv.Sniffer``.
         file_out (pathlib.Path): Where the validated and transformed samplesheet should
             be created; always in CSV format.
-
     Example:
-        This function checks that the samplesheet follows the following structure,
-        see also the `viral recon samplesheet`_::
-
-            sample,fastq_1,fastq_2
-            SAMPLE_PE,SAMPLE_PE_RUN1_1.fastq.gz,SAMPLE_PE_RUN1_2.fastq.gz
-            SAMPLE_PE,SAMPLE_PE_RUN2_1.fastq.gz,SAMPLE_PE_RUN2_2.fastq.gz
-            SAMPLE_SE,SAMPLE_SE_RUN1_1.fastq.gz,
-
-    .. _viral recon samplesheet:
+        This function checks that the samplesheet follows the following structure:
+        sample,fastq_1,fastq_2,strandedness
+        SAMPLE_PE,SAMPLE_PE_RUN1_1.fastq.gz,SAMPLE_PE_RUN1_2.fastq.gz,forward
+        SAMPLE_PE,SAMPLE_PE_RUN2_1.fastq.gz,SAMPLE_PE_RUN2_2.fastq.gz,forward
+        SAMPLE_SE,SAMPLE_SE_RUN1_1.fastq.gz,,forward
         https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/samplesheet/samplesheet_test_illumina_amplicon.csv
-
     """
-    required_columns = {"sample", "fastq_1", "fastq_2"}
+
+    required_columns = {"sample", "fastq_1", "fastq_2", "strandedness"}
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:
         reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))
