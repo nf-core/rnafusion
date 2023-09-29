@@ -182,10 +182,7 @@ You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-c
 
 #### Trimming
 
-There are 2 options to trim
-
-1. Fastp
-   In this case all tools use the trimmed reads. Quality and adapter trimming by default. In addition, tail trimming and adapter_fastq specification are possible. Example usage:
+When the flag `--fastp_trim` is used, `fastp` is used to provide all tools with trimmed reads. Quality and adapter trimming by default. In addition, tail trimming and adapter_fastq specification are possible. Example usage:
 
 ```bash
 nextflow run nf-core/rnafusion \
@@ -196,18 +193,6 @@ nextflow run nf-core/rnafusion \
 --fastp_trim \
 --trim_tail <INTEGER> (optional) \
 --adapter_fastq <PATH/TO/ADAPTER/FASTQ> (optional)
-```
-
-2. Hard trimming
-   In this case, only reads fed to fusioncatcher are trimmed. This is a harsh workaround in case of high read-through. The recommended trimming is thus the fastp_trim one. The trimming is done at 75 bp from the tails. Example usage:
-
-```bash
-nextflow run nf-core/rnafusion \
---<tool1> --<tool2> ... \
---input <SAMPLE_SHEET.CSV> \
---genomes_base <PATH/TO/REFERENCES> \
---outdir <OUTPUT/PATH> \
---trim
 ```
 
 #### Filter fusions detected by 2 or more tools

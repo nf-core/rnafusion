@@ -273,11 +273,6 @@
             "fa_icon": "fas fa-cut",
             "description": "Options to adjust read trimming criteria.",
             "properties": {
-                "trim": {
-                    "type": "boolean",
-                    "description": "Preform trimming of reads, default: false",
-                    "fa_icon": "fas fa-cut"
-                },
                 "fastp_trim": {
                     "type": "boolean",
                     "description": "Preform fastp trimming of reads, default: false",
