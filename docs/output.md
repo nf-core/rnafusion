@@ -23,7 +23,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [Fusion-report](#fusion-report) - Summary of the findings of each tool and comparison to COSMIC, Mitelman, FusionGBD and FusionGDB2 databases
 - [FusionInspector](#fusionInspector) - Supervised analysis of fusion predictions from fusion-report, recover and re-score evidence for such predictions
 - [Arriba visualisation](#arriba-visualisation) - Arriba visualisation report for FusionInspector fusions
-- [Qualimap](#qualimap) - Quality control of alignments
+- [Mosdepth](#mosdepth) - Quality control of alignments
 - [Picard](#picard) - Collect QC metrics
 - [FastQC](#fastqc) - Raw read quality control
 - [MultiQC](#multiqc) - Aggregate reports describing QC results from the whole pipeline
@@ -91,7 +91,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 ├── pizzly
 ├── pipeline_info
 ├── pizzly
-├── qualimap
+├── mosdepth
 ├── samtools_sort_for_arriba
 ├── squid
 ├── star_for_arriba
@@ -251,6 +251,15 @@ Quantifying abundances of transcripts from bulk and single-cell RNA-Seq data, or
 
 [Megafusion](https://github.com/J35P312/MegaFusion) converts RNA fusion files to SV VCF and collects statistics and metrics in a VCF file.
 
+### Mosdepth
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `mosdepth`
+  - `*.global.dist.txt` - Text file with global cumulative coverage distribution
+  - `*.summary.txt` - Text file with region cumulative coverage distribution
+
 ### MultiQC
 
 <details markdown="1">
@@ -300,18 +309,6 @@ Pizzly uses the following arguments:
   - `<sample_id>.pizzly.unfiltered.json`
 
 </details>
-
-### Qualimap
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `qualimap`
-  - `qualimapReport.html` - HTML report
-  - `rnaseq_qc_results.txt` - TXT results
-  - `css` - dir for html style
-  - `images_qualimapReport`- dir for html images
-  - `raw_data_qualimapReport` - dir for html raw data
 
 </details>
 

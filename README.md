@@ -64,7 +64,7 @@ In rnafusion the full-sized test includes reference building and fusion detectio
 12. Post-processing and analysis of data
     - [FusionInspector](https://github.com/FusionInspector/FusionInspector)
     - [Arriba](https://github.com/suhrig/arriba) visualisation
-    - QC for mapped reads ([`QualiMap: BAM QC`](https://kokonech.github.io/qualimap/HG00096.chr20_bamqc/qualimapReport.html))
+    - QC for mapped reads ([`Mosdepth`](https://github.com/brentp/mosdepth))
     - Collect metrics ([`picard CollectRnaSeqMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037057492-CollectRnaSeqMetrics-Picard-) and ([`picard MarkDuplicates`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-))
 13. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 14. Compress bam files to cram with [samtools view](http://www.htslib.org/)

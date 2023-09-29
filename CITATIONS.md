@@ -48,6 +48,10 @@
 
 - [MegaFusion](https://github.com/J35P312/MegaFusion)
 
+- [Mosdepth](https://academic.oup.com/bioinformatics/article/34/5/867/4583630)
+
+  > Pedersen BS, Quinlan AR, Mosdepth: quick coverage calculation for genomes and exomes, Bioinformatics, 34,5,867–868, 2018 Mar, doi: 10.1093/bioinformatics/btx699. PubMed PMID: 29096012. PubMed Central PMCID: PMC6030888.
+
 - [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
 
   > Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.
@@ -56,10 +60,6 @@
 
 - [Pizzly](https://github.com/pmelsted/pizzly)
   Melsted P, Hateley S, Joseph IC, Pimentel H, Bray N, Pachter L. Fusion detection and quantification by pseudoalignment. BioRxiv, 2017 Jul. doi: 10.1101/166322.
-
-- [Qualimap 2](https://pubmed.ncbi.nlm.nih.gov/26428292/)
-
-  > Okonechnikov K, Conesa A, García-Alcalde F. Qualimap 2: advanced multi-sample quality control for high-throughput sequencing data Bioinformatics. 2016 Jan 15;32(2):292-4. doi: 10.1093/bioinformatics/btv566. Epub 2015 Oct 1. PubMed PMID: 26428292; PubMed Central PMCID: PMC4708105.
 
 - [SAMtools](https://pubmed.ncbi.nlm.nih.gov/19505943/)
 

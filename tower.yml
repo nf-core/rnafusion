@@ -23,10 +23,10 @@ reports:
     display: "Picard: Metrics from MarkDuplicates"
   "**/pizzly/*.pizzly.txt":
     display: "Pizzly identified fusion TXT report"
-  "**/qualimap/qualimapReport.html":
-    display: "Qualimap HTML report from STAR_FOR_STARFUSION alignment"
-  "**/qualimap/rnaseq_qc_results.txt":
-    display: "Qualimap QC results from STAR_FOR_STARFUSION alignment in TXT format"
+  "**/mosdepth/*.global.dist.txt":
+    display: "Global cumulative coverage distribution from STAR_FOR_STARFUSION alignment"
+  "**/mosdepth/*.summary.txt":
+    display: "Summary mean depths per chromosome and regions from STAR_FOR_STARFUSION alignment"
   "**/squid/*.squid.fusions.annotated.txt":
     display: "Squid identified fusion TXT report"
   "**/star_for_starfusion/*ReadsPerGene.out.tab":
