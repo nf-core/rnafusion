@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Removed `--fusioninspector_filter` and `--fusionreport_filter` in favor of `--tools_cutoff` (default = 1, no filters applied) [#389](https://github.com/nf-core/rnafusion/pull/389)
+
 ### Fixed
 
 ### Removed
