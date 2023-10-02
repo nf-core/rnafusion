@@ -31,7 +31,6 @@ params.rrna_intervals   = WorkflowMain.getGenomeAttribute(params, 'rrna_interval
 ========================================================================================
 */
 
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     VALIDATE & PRINT PARAMETER SUMMARY
