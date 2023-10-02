@@ -47,7 +47,7 @@
                     },
                     "gatk4/markduplicates": {
                         "branch": "master",
-                        "git_sha": "cf8f9ace77aac01caa5c7cb92af5bbda7adb77bd",
+                        "git_sha": "2aa9c2981930687792ed861b0a5f9ff7bb568a7d",
                         "installed_by": ["modules"]
                     },
                     "kallisto/index": {
