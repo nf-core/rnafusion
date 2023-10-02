@@ -22,6 +22,10 @@ FUSIONINSPECTOR_MAP = {
     "split_reads": {"column": 1, "delimiter": "\t", "element": 0},
     "discordant_pairs": {"column": 2, "delimiter": "\t", "element": 0},
     "ffpm": {"column": 25, "delimiter": "\t", "element": 0},
+    "LeftGene": {"column": 5, "delimiter": "\t", "element": 0},
+    "LeftBreakpoint": {"column": 7, "delimiter": ":", "element": 1},
+    "RightGene": {"column": 8, "delimiter": "\t", "element": 0},
+    "RightBreakpoint": {"column": 10, "delimiter": ":", "element": 1},
 }
 
 
