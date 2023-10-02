@@ -12,7 +12,7 @@ workflow STRINGTIE_WORKFLOW {
         ch_stringtie_gtf = Channel.empty()
 
         if ((params.stringtie || params.all) && !params.fusioninspector_only) {
-            STRINGTIE_STRINGTIE(bam_sorted, ch_chrgtf.map { meta, gtf -> [ gtf ]}
+            STRINGTIE_STRINGTIE(bam_sorted, ch_chrgtf.map { meta, gtf -> [ gtf ])
             ch_versions = ch_versions.mix(STRINGTIE_STRINGTIE.out.versions)
 
             STRINGTIE_STRINGTIE
