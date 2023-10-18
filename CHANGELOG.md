@@ -11,9 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Removed `--fusioninspector_filter` and `--fusionreport_filter` in favor of `--tools_cutoff` (default = 1, no filters applied) [#389](https://github.com/nf-core/rnafusion/pull/389)
+
 ### Fixed
 
+- Fix channel i/o issue in StringTie workflow and add StringTie in github CI tests [#416](https://github.com/nf-core/rnafusion/pull/416)
+
 ### Removed
+
+- Remove harsh trimming option `--trim` [#413](https://github.com/nf-core/rnafusion/pull/413)
 
 ## v2.4.0 - [2023/09/22]
 

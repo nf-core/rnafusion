@@ -19,6 +19,8 @@ WorkflowRnafusion.initialise(params, log)
 
 if (file(params.input).exists() || params.build_references) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet does not exist or was not specified!' }
 if (params.fusioninspector_only && !params.fusioninspector_fusions) { exit 1, 'Parameter --fusioninspector_fusions PATH_TO_FUSION_LIST expected with parameter --fusioninspector_only'}
+if (params.tools_cutoff < 1) { exit 1, 'Parameter: --tools_cutoff should be >= 1'}
+
 
 ch_chrgtf = params.starfusion_build ? Channel.fromPath(params.chrgtf).map { it -> [[id:it.Name], it] }.collect() : Channel.fromPath("${params.starfusion_ref}/ref_annot.gtf").map { it -> [[id:it.Name], it] }.collect()
 ch_starindex_ref = params.starfusion_build ? Channel.fromPath(params.starindex_ref).map { it -> [[id:it.Name], it] }.collect() : Channel.fromPath("${params.starfusion_ref}/ref_genome.fa.star.idx").map { it -> [[id:it.Name], it] }.collect()

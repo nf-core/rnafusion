@@ -23,7 +23,7 @@ workflow FUSIONREPORT_WORKFLOW {
             .join(starfusion_fusions, remainder: true)
             .join(fusioncatcher_fusions, remainder: true)
 
-            FUSIONREPORT(reads_fusions, fusionreport_ref)
+            FUSIONREPORT(reads_fusions, fusionreport_ref, params.tools_cutoff)
             ch_fusion_list = FUSIONREPORT.out.fusion_list
             ch_fusion_list_filtered = FUSIONREPORT.out.fusion_list_filtered
             ch_versions = ch_versions.mix(FUSIONREPORT.out.versions)
