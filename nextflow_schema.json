@@ -364,7 +364,7 @@
                     "pattern": "^\\S+\\.interval_list?$",
                     "description": "Path to ribosomal interval list.",
                     "fa_icon": "far fa-file-code"
-                }
+                },
                 "rrna_intervals_bed": {
                     "type": "string",
                     "format": "file-path",
