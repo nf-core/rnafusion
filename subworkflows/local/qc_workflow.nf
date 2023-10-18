@@ -15,11 +15,12 @@ workflow QC_WORKFLOW {
         ch_fasta
         ch_fai
         ch_rrna_interval
+        ch_rrna_intervals_bed
 
     main:
         ch_versions = Channel.empty()
 
-        MOSDEPTH(ch_bam_sorted_indexed.combine(intervals.map{ meta, bed -> [ bed?:[] ] }), ch_fasta)
+        MOSDEPTH(ch_bam_sorted_indexed.combine(ch_rrna_intervals_bed.map{ meta, bed -> [ bed?:[] ] }), ch_fasta)
         ch_versions = ch_versions.mix(MOSDEPTH.out.versions)
         ch_mosdepth_summary = Channel.empty().mix(MOSDEPTH.out.summary_txt)
         ch_mosdepth_global = Channel.empty().mix(MOSDEPTH.out.global_txt)

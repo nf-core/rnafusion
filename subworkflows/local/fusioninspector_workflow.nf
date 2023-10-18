@@ -18,7 +18,7 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         ch_versions = Channel.empty()
         index ="${params.starfusion_ref}"
 
-        ch_fusion_list = ( params.fusioninspector_filter ? fusion_list_filtered : fusion_list )
+        ch_fusion_list = ( params.tools_cutoff > 1 ? fusion_list_filtered : fusion_list )
         .branch{
             no_fusions: it[1].size() == 0
             fusions: it[1].size() > 0
