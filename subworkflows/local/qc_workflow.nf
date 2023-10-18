@@ -19,12 +19,7 @@ workflow QC_WORKFLOW {
     main:
         ch_versions = Channel.empty()
 
-        ch_bam_sorted_indexed
-            .map { meta, bam, bai ->
-            return [meta, bam, bai, []]
-            }.set { ch_bam_sorted_indexed_bed }
-
-        MOSDEPTH(ch_bam_sorted_indexed_bed, ch_fasta)
+        MOSDEPTH(ch_bam_sorted_indexed.combine(intervals.map{ meta, bed -> [ bed?:[] ] }), ch_fasta)
         ch_versions = ch_versions.mix(MOSDEPTH.out.versions)
         ch_mosdepth_summary = Channel.empty().mix(MOSDEPTH.out.summary_txt)
         ch_mosdepth_global = Channel.empty().mix(MOSDEPTH.out.global_txt)
