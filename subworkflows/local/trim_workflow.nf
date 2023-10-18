@@ -1,4 +1,3 @@
-include { REFORMAT }                    from '../../modules/local/reformat/main'
 include { FASTQC as FASTQC_FOR_TRIM }   from '../../modules/nf-core/fastqc/main'
 include { FASTP }                       from '../../modules/nf-core/fastp/main'
 include { FASTQC as FASTQC_FOR_FASTP }  from '../../modules/nf-core/fastqc/main'
@@ -11,17 +10,7 @@ workflow TRIM_WORKFLOW {
     main:
         ch_versions = Channel.empty()
 
-        if (params.trim) {
-
-            REFORMAT( reads )
-            ch_versions = ch_versions.mix(REFORMAT.out.versions)
-            FASTQC_FOR_TRIM (REFORMAT.out.reads_out)
-            ch_versions = ch_versions.mix(FASTQC_FOR_TRIM.out.versions)
-
-            ch_reads_all = reads
-            ch_reads_fusioncatcher = REFORMAT.out.reads_out
-        }
-        else if (params.fastp_trim) {
+        if (params.fastp_trim) {
             FASTP(reads, params.adapter_fasta, false, false)
             ch_versions = ch_versions.mix(FASTP.out.versions)
 
