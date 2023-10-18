@@ -369,7 +369,7 @@
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/plain",
-                    "pattern": "^\\S+\\.interval_list_bed?$",
+                    "pattern": "^\\S+\\.bed?$",
                     "description": "Path to ribosomal interval list BED file.",
                     "fa_icon": "far fa-file-code"
                 }
