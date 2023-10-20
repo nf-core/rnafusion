@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed `--fusioninspector_filter` and `--fusionreport_filter` in favor of `--tools_cutoff` (default = 1, no filters applied) [#389](https://github.com/nf-core/rnafusion/pull/389)
 - Now publishing convert2bed output to convert2bed to keep the output file for mosdepth [#420](https://github.com/nf-core/rnafusion/pull/420)
 - No more checks for existence of samplesheet, which made building references fail (building references uses a fake sample sheet if none is provided) [#420](https://github.com/nf-core/rnafusion/pull/420)
+- `--extreme_sensitivity` used for fusioninspector to minimize fusioninspector filtering
 
 ### Fixed
 
