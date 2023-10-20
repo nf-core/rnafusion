@@ -2,7 +2,6 @@
 // Check input samplesheet and get read channels
 //
 
-include { MOSDEPTH }                                   from '../../modules/nf-core/mosdepth/main'
 include { PICARD_COLLECTRNASEQMETRICS }                from '../../modules/local/picard/collectrnaseqmetrics/main'
 include { PICARD_MARKDUPLICATES }                      from '../../modules/nf-core/picard/markduplicates/main'
 
@@ -20,11 +19,6 @@ workflow QC_WORKFLOW {
     main:
         ch_versions = Channel.empty()
 
-        MOSDEPTH(ch_bam_sorted_indexed.combine(ch_rrna_intervals_bed.map{ meta, bed -> [ bed?:[] ] }), ch_fasta)
-        ch_versions = ch_versions.mix(MOSDEPTH.out.versions)
-        ch_mosdepth_summary = Channel.empty().mix(MOSDEPTH.out.summary_txt)
-        ch_mosdepth_global = Channel.empty().mix(MOSDEPTH.out.global_txt)
-
         PICARD_COLLECTRNASEQMETRICS(ch_bam_sorted_indexed, ch_refflat, ch_rrna_interval)
         ch_versions = ch_versions.mix(PICARD_COLLECTRNASEQMETRICS.out.versions)
         ch_rnaseq_metrics = Channel.empty().mix(PICARD_COLLECTRNASEQMETRICS.out.metrics)
@@ -36,8 +30,6 @@ workflow QC_WORKFLOW {
 
     emit:
         versions            = ch_versions.ifEmpty(null)
-        mosdepth_summary    = ch_mosdepth_summary
-        mosdepth_gobal      = ch_mosdepth_global
         rnaseq_metrics      = ch_rnaseq_metrics
         duplicate_metrics   = ch_duplicate_metrics
 

@@ -15,18 +15,12 @@ reports:
     display: "Fusion-report HTML report"
   "**/megafusion/*_fusion_data.vcf":
     display: "Collected statistics on each fusion fed to FusionInspector in VCF format"
-  "**/mosdepth/*.mosdepth.summary.txt":
-    display: "All samples summary of mean depths per chromosome and within specified regions per chromosome"
   "**/picard/*.MarkDuplicates.metrics.txt":
     display: "Picard: Metrics from CollectRnaMetrics"
   "**/picard/*_rna_metrics.txt":
     display: "Picard: Metrics from MarkDuplicates"
   "**/pizzly/*.pizzly.txt":
     display: "Pizzly identified fusion TXT report"
-  "**/mosdepth/*.global.dist.txt":
-    display: "Global cumulative coverage distribution from STAR_FOR_STARFUSION alignment"
-  "**/mosdepth/*.summary.txt":
-    display: "Summary mean depths per chromosome and regions from STAR_FOR_STARFUSION alignment"
   "**/squid/*.squid.fusions.annotated.txt":
     display: "Squid identified fusion TXT report"
   "**/star_for_starfusion/*ReadsPerGene.out.tab":

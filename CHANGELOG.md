@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Replace qualimap rna_seq with mosdepth [#407](https://github.com/nf-core/rnafusion/pull/407)
 - Removed `--fusioninspector_filter` and `--fusionreport_filter` in favor of `--tools_cutoff` (default = 1, no filters applied) [#389](https://github.com/nf-core/rnafusion/pull/389)
 
 ### Fixed
@@ -19,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Remove harsh trimming option `--trim` [#413](https://github.com/nf-core/rnafusion/pull/413)
+- Replace qualimap rna_seq [#407](https://github.com/nf-core/rnafusion/pull/407)
 
 ## v2.4.0 - [2023/09/22]
 
