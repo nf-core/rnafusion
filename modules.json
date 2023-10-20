@@ -60,6 +60,11 @@
                         "git_sha": "a6e11ac655e744f7ebc724be669dd568ffdc0e80",
                         "installed_by": ["modules"]
                     },
+                    "picard/collectinsertsizemetrics": {
+                        "branch": "master",
+                        "git_sha": "240937a2a9c30298110753292be041188891f2cb",
+                        "installed_by": ["modules"]
+                    },
                     "picard/collectwgsmetrics": {
                         "branch": "master",
                         "git_sha": "735e1e04e7e01751d2d6e97055bbdb6f70683cc1",
