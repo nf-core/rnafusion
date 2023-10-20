@@ -5,6 +5,8 @@
 include { QUALIMAP_RNASEQ }                            from '../../modules/nf-core/qualimap/rnaseq/main'
 include { PICARD_COLLECTRNASEQMETRICS }                from '../../modules/local/picard/collectrnaseqmetrics/main'
 include { PICARD_MARKDUPLICATES }                      from '../../modules/nf-core/picard/markduplicates/main'
+include { PICARD_COLLECTINSERTSIZEMETRICS }            from '../../modules/nf-core/picard/collectinsertsizemetrics/main'
+
 
 workflow QC_WORKFLOW {
     take:
@@ -31,12 +33,17 @@ workflow QC_WORKFLOW {
         ch_versions = ch_versions.mix(PICARD_MARKDUPLICATES.out.versions)
         ch_duplicate_metrics = Channel.empty().mix(PICARD_MARKDUPLICATES.out.metrics)
 
+        PICARD_COLLECTINSERTSIZEMETRICS(ch_bam_sorted)
+        ch_versions = ch_versions.mix(PICARD_COLLECTINSERTSIZEMETRICS.out.versions)
+        ch_insertsize_metrics = Channel.empty().mix(PICARD_COLLECTINSERTSIZEMETRICS.out.metrics)
+
 
     emit:
         versions            = ch_versions.ifEmpty(null)
         qualimap_qc         = ch_qualimap_qc
         rnaseq_metrics      = ch_rnaseq_metrics
         duplicate_metrics   = ch_duplicate_metrics
+        insertsize_metrics  = ch_insertsize_metrics
 
 }
 
