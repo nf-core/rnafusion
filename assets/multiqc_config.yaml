@@ -15,6 +15,7 @@ run_modules:
   - picard
   - fastp
   - gatk
+  - star
 
 module_order:
   - fastqc:
