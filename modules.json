@@ -45,6 +45,11 @@
                         "git_sha": "cf8f9ace77aac01caa5c7cb92af5bbda7adb77bd",
                         "installed_by": ["modules"]
                     },
+                    "gatk4/markduplicates": {
+                        "branch": "master",
+                        "git_sha": "2aa9c2981930687792ed861b0a5f9ff7bb568a7d",
+                        "installed_by": ["modules"]
+                    },
                     "kallisto/index": {
                         "branch": "master",
                         "git_sha": "699fa6f3002d922380615f3847198aeb57d8b6a9",
@@ -55,14 +60,14 @@
                         "git_sha": "a6e11ac655e744f7ebc724be669dd568ffdc0e80",
                         "installed_by": ["modules"]
                     },
+                    "picard/collectinsertsizemetrics": {
+                        "branch": "master",
+                        "git_sha": "240937a2a9c30298110753292be041188891f2cb",
+                        "installed_by": ["modules"]
+                    },
                     "picard/collectwgsmetrics": {
                         "branch": "master",
                         "git_sha": "735e1e04e7e01751d2d6e97055bbdb6f70683cc1",
-                        "installed_by": ["modules"]
-                    },
-                    "picard/markduplicates": {
-                        "branch": "master",
-                        "git_sha": "2ee934606f1fdf7fc1cb05d6e8abc13bec8ab448",
                         "installed_by": ["modules"]
                     },
                     "qualimap/rnaseq": {
