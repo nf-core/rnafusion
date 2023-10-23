@@ -13,6 +13,8 @@ export_plots: true
 run_modules:
   - fastqc
   - picard
+  - fastp
+  - gatk
 
 module_order:
   - fastqc:
