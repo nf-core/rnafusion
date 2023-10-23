@@ -8,7 +8,7 @@ process FUSIONREPORT {
 
 
     input:
-    tuple val(meta), path(reads), path(arriba_fusions), path(pizzly_fusions), path(squid_fusions), path(starfusion_fusions),  path(fusioncatcher_fusions)
+    tuple val(meta), path(reads), path(arriba_fusions), path(starfusion_fusions),  path(fusioncatcher_fusions)
     tuple val(meta2), path(fusionreport_ref)
     val(tools_cutoff)
 
@@ -28,8 +28,6 @@ process FUSIONREPORT {
     def args = task.ext.args ?: ''
     def args2 = task.ext.args2 ?: ''
     def tools = params.arriba || params.all         ? "--arriba ${arriba_fusions} " : ''
-    tools    += params.pizzly || params.all         ? "--pizzly ${pizzly_fusions} " : ''
-    tools    += params.squid  || params.all         ? "--squid ${squid_fusions} " : ''
     tools    += params.starfusion  || params.all    ? "--starfusion ${starfusion_fusions} " : ''
     tools    += params.fusioncatcher  || params.all ? "--fusioncatcher ${fusioncatcher_fusions} " : ''
     def prefix = task.ext.prefix ?: "${meta.id}"

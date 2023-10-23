@@ -13,7 +13,7 @@ The pipeline is divided into two parts:
    - required only once before running the pipeline
    - **Important**: has to be run with each new release
 2. Detecting fusions
-   - Supported tools: `Arriba`, `FusionCatcher`, `pizzly`, `SQUID`, `STAR-Fusion`, and `StringTie`
+   - Supported tools: `Arriba`, `FusionCatcher`, `STAR-Fusion`, and `StringTie`
    - QC: `Fastqc`, `MultiQC`, and `Picard CollectInsertSize`, `Picard CollectWgsMetrics`, `Picard Markduplicates`
    - Fusions visualization: `Arriba`, `fusion-report` and `FusionInspector`, VCF file creation based on `MegaFusion`
 
@@ -123,7 +123,7 @@ As you can see above for multiple runs of the same sample, the `sample` name has
 
 ### Starting commands
 
-The pipeline can either be run using all fusion detection tools or specifying individual tools. Visualisation tools will be run on all fusions detected. To run all tools (`arriba`, `fusioncatcher`, `pizzly`, `squid`, `starfusion`, `stringtie`) use the `--all` parameter:
+The pipeline can either be run using all fusion detection tools or specifying individual tools. Visualisation tools will be run on all fusions detected. To run all tools (`arriba`, `fusioncatcher`, `starfusion`, `stringtie`) use the `--all` parameter:
 
 ```bash
 nextflow run nf-core/rnafusion \
@@ -284,9 +284,9 @@ There are two parameters to increase the `--limitSjdbInsertNsj` parameter if nec
 - `--fusioncatcher_limitSjdbInsertNsj`, default: 2000000
 - `--fusioninspector_limitSjdbInsertNsj`, default: 1000000
 
-Use the parameter `--cram` to compress the BAM files to CRAM for specific tools. Options: arriba, squid, starfusion. Leave no space between options:
+Use the parameter `--cram` to compress the BAM files to CRAM for specific tools. Options: arriba, starfusion. Leave no space between options:
 
-- `--cram arriba,squid,starfusion`, default: []
+- `--cram arriba,starfusion`, default: []
 - `--cram arriba`
 
 ### Updating the pipeline
