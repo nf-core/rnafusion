@@ -14,7 +14,7 @@ The pipeline is divided into two parts:
    - **Important**: has to be run with each new release
 2. Detecting fusions
    - Supported tools: `Arriba`, `FusionCatcher`, `pizzly`, `SQUID`, `STAR-Fusion`, and `StringTie`
-   - QC: `Fastqc`, `MultiQC`, and `Qualimap rnaseq`
+   - QC: `Fastqc`, `MultiQC`, and `Picard CollectInsertSize`, `Picard CollectWgsMetrics`, `Picard Markduplicates`
    - Fusions visualization: `Arriba`, `fusion-report` and `FusionInspector`, VCF file creation based on `MegaFusion`
 
 ## Download and build references
@@ -258,7 +258,7 @@ nextflow run nf-core/rnafusion \
 --outdir <PATH>
 ```
 
-This will skip all QC-related processes (metrics collection, `Qualimap`)
+This will skip all QC-related processes (picard metrics collection)
 
 #### Skipping visualisation
 

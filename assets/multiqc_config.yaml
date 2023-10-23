@@ -9,3 +9,16 @@ report_section_order:
     order: -1001
 
 export_plots: true
+
+run_modules:
+  - fastqc
+  - picard
+  - fastp
+  - gatk
+  - star
+
+module_order:
+  - fastqc:
+      name: "FastQC"
+      path_filters:
+        - "*.zip"
