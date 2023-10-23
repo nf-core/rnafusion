@@ -65,7 +65,7 @@ In rnafusion the full-sized test includes reference building and fusion detectio
 12. Post-processing and analysis of data
     - [FusionInspector](https://github.com/FusionInspector/FusionInspector)
     - [Arriba](https://github.com/suhrig/arriba) visualisation
-    - Collect metrics ([`picard CollectRnaSeqMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037057492-CollectRnaSeqMetrics-Picard-) and ([`picard MarkDuplicates`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-))
+    - Collect metrics ([`picard CollectRnaSeqMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037057492-CollectRnaSeqMetrics-Picard-), [`picard CollectInsertSizeMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037055772-CollectInsertSizeMetrics-Picard-) and ([`picard MarkDuplicates`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-))
 13. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 14. Compress bam files to cram with [samtools view](http://www.htslib.org/)
 
