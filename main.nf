@@ -24,7 +24,6 @@ params.chrgtf          = WorkflowMain.getGenomeAttribute(params, 'chrgtf')
 params.transcript      = WorkflowMain.getGenomeAttribute(params, 'transcript')
 params.refflat         = WorkflowMain.getGenomeAttribute(params, 'refflat')
 params.rrna_intervals     = WorkflowMain.getGenomeAttribute(params, 'rrna_intervals')
-params.rrna_intervals_bed = WorkflowMain.getGenomeAttribute(params, 'rrna_intervals_bed')
 
 /*
 ========================================================================================
