@@ -21,4 +21,3 @@ module_order:
       name: "FastQC"
       path_filters:
         - "*.zip"
-
