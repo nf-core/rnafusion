@@ -76,3 +76,10 @@ jobs:
           --outdir /home/runner/work/rnafusion/rnafusion/results --starfusion \
           --genomes_base /home/runner/work/rnafusion/rnafusion/results/references \
           --cosmic_username ${{ secrets.COSMIC_USERNAME }} --cosmic_passwd ${{ secrets.COSMIC_PASSWD }}
+
+      - name: Dry test stingtie
+        run: |
+          nextflow run ${GITHUB_WORKSPACE} -profile test,docker -stub \
+          --outdir /home/runner/work/rnafusion/rnafusion/results --stringtie \
+          --genomes_base /home/runner/work/rnafusion/rnafusion/results/references \
+          --cosmic_username ${{ secrets.COSMIC_USERNAME }} --cosmic_passwd ${{ secrets.COSMIC_PASSWD }}

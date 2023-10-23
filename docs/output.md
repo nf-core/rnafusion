@@ -270,6 +270,7 @@ Picard CollectRnaMetrics and picard MarkDuplicates share the same output directo
 - `picard`
   - `<sample>.MarkDuplicates.metrics.txt` - metrics from MarkDuplicates
   - `<sample>_rna_metrics.txt` - metrics from CollectRnaMetrics
+  - `<sample>_insert_size_metrics.txt.txt` - metrics from CollectInsertSizeMetrics
   - `<sample>.bam` - BAM file with marked duplicates
 
 </details>

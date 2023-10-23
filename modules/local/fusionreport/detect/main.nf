@@ -4,12 +4,13 @@ process FUSIONREPORT {
 
     // Note: 2.7X indices incompatible with AWS iGenomes.
     conda "bioconda::star=2.7.9a"
-    container "docker.io/clinicalgenomics/fusion-report:2.1.5p4"
+    container "docker.io/clinicalgenomics/fusion-report:2.1.5p5"
 
 
     input:
     tuple val(meta), path(reads), path(arriba_fusions), path(starfusion_fusions),  path(fusioncatcher_fusions)
     tuple val(meta2), path(fusionreport_ref)
+    val(tools_cutoff)
 
     output:
     path "versions.yml"                                                 , emit: versions
@@ -31,7 +32,7 @@ process FUSIONREPORT {
     tools    += params.fusioncatcher  || params.all ? "--fusioncatcher ${fusioncatcher_fusions} " : ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    fusion_report run $meta.id . $fusionreport_ref $tools --allow-multiple-gene-symbols $args $args2
+    fusion_report run $meta.id . $fusionreport_ref $tools --allow-multiple-gene-symbols --tool-cutoff $tools_cutoff $args $args2
 
     mv fusion_list.tsv ${prefix}.fusionreport.tsv
     mv fusion_list_filtered.tsv ${prefix}.fusionreport_filtered.tsv

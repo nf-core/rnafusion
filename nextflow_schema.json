@@ -32,7 +32,6 @@
                 "input": {
                     "type": "string",
                     "format": "file-path",
-                    "exists": true,
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
@@ -61,6 +60,16 @@
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
                     "description": "Specifies which analysis type for the pipeline - either build references or analyse data"
+                },
+                "cosmic_username": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "COSMIC username"
+                },
+                "cosmic_passwd": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "COSMIC password"
                 },
                 "genomes_base": {
                     "type": "string",
@@ -149,11 +158,6 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to fusioncatcher references"
                 },
-                "fusioninspector_filter": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Feed filtered fusionreport fusions to fusioninspector"
-                },
                 "fusioninspector_limitSjdbInsertNsj": {
                     "type": "integer",
                     "fa_icon": "far fa-file-code",
@@ -179,11 +183,10 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to fusionreport references"
                 },
-                "fusionreport_filter": {
+                "qiagen": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
-                    "default": true,
-                    "description": "Display fusions identified with 2 tools or more"
+                    "description": "Use QIAGEN instead of SANGER to download COSMIC database"
                 },
                 "starfusion": {
                     "type": "boolean",
@@ -215,25 +218,15 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Run stringtie analysis"
                 },
+                "tools_cutoff": {
+                    "type": "integer",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Discard fusions identified by less than INT tools"
+                },
                 "whitelist": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
                     "description": "Path to fusions to add to the input of fusioninspector"
-                },
-                "cosmic_username": {
-                    "type": "string",
-                    "fa_icon": "far fa-file-code",
-                    "description": "COSMIC username"
-                },
-                "cosmic_passwd": {
-                    "type": "string",
-                    "fa_icon": "far fa-file-code",
-                    "description": "COSMIC password"
-                },
-                "qiagen": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Use QIAGEN instead of SANGER to download COSMIC database"
                 }
             }
         },
@@ -243,11 +236,6 @@
             "fa_icon": "fas fa-cut",
             "description": "Options to adjust read trimming criteria.",
             "properties": {
-                "trim": {
-                    "type": "boolean",
-                    "description": "Preform trimming of reads, default: false",
-                    "fa_icon": "fas fa-cut"
-                },
                 "fastp_trim": {
                     "type": "boolean",
                     "description": "Preform fastp trimming of reads, default: false",
