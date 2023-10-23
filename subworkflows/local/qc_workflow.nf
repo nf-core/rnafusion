@@ -14,7 +14,6 @@ workflow QC_WORKFLOW {
         ch_fasta
         ch_fai
         ch_rrna_interval
-        ch_rrna_intervals_bed
 
     main:
         ch_versions = Channel.empty()
