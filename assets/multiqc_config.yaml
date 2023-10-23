@@ -18,23 +18,13 @@ export_plots: true
 
 run_modules:
   - fastqc
-  - qualimap
   - picard
-  - mosdepth
+  - fastp
+  - gatk
+  - star
 
 module_order:
   - fastqc:
       name: "FastQC"
       path_filters:
         - "*.zip"
-  - picard:
-      name: "Picard"
-  - qualimap:
-      name: "Qualimap"
-  - mosdepth:
-      name: "Mosdepth"
-
-extra_fn_clean_exts:
-  - "_sorted_md"
-  - type: regex
-    pattern: "_T[0-9]"

@@ -65,9 +65,9 @@
                         "git_sha": "735e1e04e7e01751d2d6e97055bbdb6f70683cc1",
                         "installed_by": ["modules"]
                     },
-                    "qualimap/rnaseq": {
+                    "picard/markduplicates": {
                         "branch": "master",
-                        "git_sha": "4657d98bc9f565e067c4d924126ce107056f5e2f",
+                        "git_sha": "2ee934606f1fdf7fc1cb05d6e8abc13bec8ab448",
                         "installed_by": ["modules"]
                     },
                     "samtools/faidx": {
