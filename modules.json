@@ -50,11 +50,6 @@
                         "git_sha": "2aa9c2981930687792ed861b0a5f9ff7bb568a7d",
                         "installed_by": ["modules"]
                     },
-                    "kallisto/index": {
-                        "branch": "master",
-                        "git_sha": "699fa6f3002d922380615f3847198aeb57d8b6a9",
-                        "installed_by": ["modules"]
-                    },
                     "multiqc": {
                         "branch": "master",
                         "git_sha": "a6e11ac655e744f7ebc724be669dd568ffdc0e80",
