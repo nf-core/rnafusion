@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Remove harsh trimming option `--trim` [#413](https://github.com/nf-core/rnafusion/pull/413)
+- Remove qualimap rna_seq [#407](https://github.com/nf-core/rnafusion/pull/407)
 
 ## v2.4.0 - [2023/09/22]
 
