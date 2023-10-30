@@ -35,6 +35,7 @@ workflow BUILD_REFERENCES {
     def fake_meta = [:]
     fake_meta.id = "Homo_sapiens.${params.genome}.${params.ensembl_version}"
     ENSEMBL_DOWNLOAD( params.ensembl_version, params.genome, fake_meta )
+    HGNC_DOWNLOAD( )
 
 
     SAMTOOLS_FAIDX(ENSEMBL_DOWNLOAD.out.fasta, [[],[]])
