@@ -8,6 +8,7 @@ include { ARRIBA_DOWNLOAD }                 from '../modules/local/arriba/downlo
 include { ENSEMBL_DOWNLOAD }                from '../modules/local/ensembl/main'
 include { FUSIONCATCHER_DOWNLOAD }          from '../modules/local/fusioncatcher/download/main'
 include { FUSIONREPORT_DOWNLOAD }           from '../modules/local/fusionreport/download/main'
+include { HGNC_DOWNLOAD }                   from '../modules/local/hgnc/main'
 include { STARFUSION_BUILD }                from '../modules/local/starfusion/build/main'
 include { STARFUSION_DOWNLOAD }             from '../modules/local/starfusion/download/main'
 include { GTF_TO_REFFLAT }                  from '../modules/local/uscs/custom_gtftogenepred/main'
