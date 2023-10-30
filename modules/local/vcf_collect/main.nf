@@ -7,8 +7,8 @@ process VCF_COLLECT {
 
     input:
     tuple val(meta), path(tsv), path(out_gtf), path(report)
-    path hgnc_ref
-    path hgnc_date
+    tuple val(meta2),  path(hgnc_ref)
+    tuple val(meta3),  path(hgnc_date)
 
     output:
     path "versions.yml"              , emit: versions
