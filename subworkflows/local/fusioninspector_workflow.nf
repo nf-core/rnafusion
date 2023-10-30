@@ -42,7 +42,7 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         ch_versions = ch_versions.mix(FUSIONINSPECTOR.out.versions)
         fusion_data = FUSIONINSPECTOR.out.tsv.join(FUSIONINSPECTOR.out.out_gtf).join(fusionreport_out)
 
-        VCF_COLLECT(fusion_data, hgnc_ref, hgnc_date)
+        VCF_COLLECT(fusion_data, ch_hgnc_ref, ch_hgnc_date)
         ch_versions = ch_versions.mix(VCF_COLLECT.out.versions)
 
         if ((params.starfusion || params.all || params.stringtie) && !params.fusioninspector_only && !params.skip_vis) {
