@@ -6,27 +6,56 @@ import sys
 from pathlib import Path
 import pandas as pd
 import ast
+from gtfparse import read_gtf
 
 logger = logging.getLogger()
 
-FUSIONINSPECTOR_MAP = {
-    "fusion": {"column": 0, "delimiter": "\t", "element": 0},
-    "chromosomeA": {"column": 7, "delimiter": ":", "element": 0},
-    "chromosomeB": {"column": 10, "delimiter": ":", "element": 0},
-    "posA": {"column": 7, "delimiter": ":", "element": 1},
-    "posB": {"column": 10, "delimiter": ":", "element": 1},
-    "strand1": {"column": 7, "delimiter": ":", "element": 2},
-    "strand2": {"column": 10, "delimiter": ":", "element": 2},
-    "geneA": {"column": 0, "delimiter": "--", "element": 0},
-    "geneB": {"column": 0, "delimiter": "--", "element": 1},
-    "split_reads": {"column": 1, "delimiter": "\t", "element": 0},
-    "discordant_pairs": {"column": 2, "delimiter": "\t", "element": 0},
-    "ffpm": {"column": 25, "delimiter": "\t", "element": 0},
-    "LeftGene": {"column": 5, "delimiter": "\t", "element": 0},
-    "LeftBreakpoint": {"column": 7, "delimiter": ":", "element": 1},
-    "RightGene": {"column": 8, "delimiter": "\t", "element": 0},
-    "RightBreakpoint": {"column": 10, "delimiter": ":", "element": 1},
-}
+
+def vcf_collect(fusioninspector_in_file, fusionreport_in_file, gtf, hgnc, sample, out):
+    """
+    Process FusionInspector and FusionReport data,
+    merge with GTF from FusionInspector and HGNC database,
+    and write a VCF file.
+
+    Args:
+        fusioninspector_in_file (str): Path to FusionInspector input file.
+        fusionreport_in_file (str): Path to FusionReport input file.
+        sample (str): Sample name for the header.
+        hgnc (str): Path to HGNC file.
+        gtf (str): Path to GTF file.
+        out (str): Output VCF file path.
+
+    Adapted from: https://github.com/J35P312/MegaFusion
+    """
+    merged_df = build_fusioninspector_dataframe(fusioninspector_in_file).join(
+        read_build_fusionreport(fusionreport_in_file), how="outer", on='FUSION').reset_index()
+
+    df = build_hgnc_dataframe(hgnc).merge(merged_df, how='right', left_on='ensembl_gene_id',
+                                          right_on='Left_ensembl_gene_id')
+    df = df.rename(columns={"hgnc_id": "Left_hgnc_id"})
+    df = build_hgnc_dataframe(hgnc).merge(df, how='right', left_on='ensembl_gene_id', right_on='Right_ensembl_gene_id')
+    df = df.rename(columns={"hgnc_id": "Right_hgnc_id"})
+    gtf_df = build_gtf_dataframe(gtf)
+    all_df = df.merge(gtf_df, how='left', left_on='CDS_LEFT_ID', right_on='Transcript_id')
+    all_df = all_df[(all_df['PosA'] >= all_df['orig_start']) & (all_df['PosA'] <= all_df['orig_end'])]
+    all_df = all_df.rename(columns={"transcript_version": "Left_transcript_version"})
+    all_df = all_df.rename(columns={"exon_number": "Left_exon_number"})
+    all_df = all_df[
+        ['FUSION', 'GeneA', 'GeneB', 'PosA', 'PosB', 'ChromosomeA', 'ChromosomeB', 'TOOLS_HITS', 'SCORE', 'FOUND_DB',
+         'FOUND_IN', 'JunctionReadCount', 'SpanningFragCount', 'FFPM', 'PROT_FUSION_TYPE', 'CDS_LEFT_ID',
+         'CDS_RIGHT_ID', 'Left_transcript_version', 'Left_exon_number', 'Left_hgnc_id', 'Right_hgnc_id', 'Strand1',
+         'Strand2', 'annots']].drop_duplicates()
+    all_df = all_df.merge(gtf_df, how='left', left_on='CDS_RIGHT_ID', right_on='Transcript_id')
+    all_df = all_df[(all_df['PosB'] >= all_df['orig_start']) & (all_df['PosB'] <= all_df['orig_end'])]
+    all_df = all_df.rename(columns={"transcript_version": "Right_transcript_version"})
+    all_df = all_df.rename(columns={"exon_number": "Right_exon_number"})
+    all_df = all_df[
+        ['FUSION', 'GeneA', 'GeneB', 'PosA', 'PosB', 'ChromosomeA', 'ChromosomeB', 'TOOLS_HITS', 'SCORE', 'FOUND_DB',
+         'FOUND_IN', 'JunctionReadCount', 'SpanningFragCount', 'FFPM', 'PROT_FUSION_TYPE', 'CDS_LEFT_ID',
+         'CDS_RIGHT_ID', 'Left_transcript_version', 'Left_exon_number', 'Left_hgnc_id', 'Right_transcript_version',
+         'Right_exon_number', 'Right_hgnc_id', 'Strand1', 'Strand2', 'annots']].drop_duplicates()
+
+    return write_vcf(column_manipulation(all_df), header_def(sample), out)
 
 
 def parse_args(argv=None):
@@ -47,17 +76,32 @@ def parse_args(argv=None):
         type=Path,
         help="Fusionreport output in TSV format.",
     )
+    parser.add_argument(
+        "--fusioninspector_gtf",
+        metavar="GTF",
+        type=Path,
+        help="FusionInspector GTF output.",
+    )
+    parser.add_argument(
+        "--hgnc",
+        metavar="HGNC",
+        type=Path,
+        help="HGNC database.",
+    )
     parser.add_argument("--sample", metavar="SAMPLE", type=Path, help="Sample name.", default="Sample")
     parser.add_argument(
         "--out",
         metavar="OUT",
         type=Path,
-        help="Output path.",
+        help="VCF output path.",
     )
     return parser.parse_args(argv)
 
 
 def header_def(sample):
+    """
+    Define the header of the VCF file
+    """
     return '##fileformat=VCFv4.1\n\
 ##ALT=<ID=BND,Description="Break end">\n\
 ##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structural variant">\n\
@@ -65,15 +109,23 @@ def header_def(sample):
 ##INFO=<ID=CHRB,Number=1,Type=String,Description="Chromosome B">\n\
 ##INFO=<ID=GENEA,Number=.,Type=String,Description="Gene A">\n\
 ##INFO=<ID=GENEB,Number=.,Type=String,Description="Gene B">\n\
+##INFO=<ID=POSA,Number=.,Type=String,Description="Breakpoint position A">\n\
+##INFO=<ID=POSB,Number=.,Type=String,Description="Breakpoint position B">\n\
 ##INFO=<ID=ORIENTATION,Number=.,Type=String,Description="Strand1 and strand2 directions">\n\
 ##INFO=<ID=FOUND_DB,Number=.,Type=String,Description="Databases in which the fusion has been found">\n\
-##INFO=<ID=ARRIBA,Number=.,Type=String,Description="Found by arriba">\n\
-##INFO=<ID=FUSIONCATCHER,Number=.,Type=String,Description="Found by fusioncatcher">\n\
-##INFO=<ID=PIZZLY,Number=.,Type=String,Description="Found by pizzly">\n\
-##INFO=<ID=SQUID,Number=.,Type=String,Description="Found by squid">\n\
-##INFO=<ID=STARFUSION,Number=.,Type=String,Description="Found by starfusion">\n\
+##INFO=<ID=FOUND_IN,Number=.,Type=String,Description="Callers that have found the fusion">\n\
 ##INFO=<ID=TOOL_HITS,Number=.,Type=Integer,Description="Number of tools that found the fusion">\n\
 ##INFO=<ID=SCORE,Number=.,Type=Float,Description="Score from fusionreport">\n\
+##INFO=<ID=FRAME_STATUS,Number=.,Type=Float,Description="Frame status of the fusion">\n\
+##INFO=<ID=TRANSCRIPT_ID_A,Number=.,Type=Float,Description="Transcript id A ">\n\
+##INFO=<ID=TRANSCRIPT_ID_B,Number=.,Type=Float,Description="Transcript id B">\n\
+##INFO=<ID=TRANSCRIPT_VERSION_A,Number=.,Type=Float,Description="Transcript version A">\n\
+##INFO=<ID=TRANSCRIPT_VERSION_B,Number=.,Type=Float,Description="Transcript version B">\n\
+##INFO=<ID=HGNC_ID_A,Number=.,Type=Float,Description="HGNC id A">\n\
+##INFO=<ID=HGNC_ID_B,Number=.,Type=Float,Description="HGNC id A">\n\
+##INFO=<ID=EXON_NUMBER_A,Number=.,Type=Float,Description="Exon number A">\n\
+##INFO=<ID=EXON_NUMBER_B,Number=.,Type=Float,Description="Exon number B">\n\
+##INFO=<ID=ANNOTATIONS,Number=.,Type=Float,Description="Annotations from FusionInspector">\n\
 ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">\n\
 ##FORMAT=<ID=DV,Number=1,Type=Integer,Description="Number of paired-ends that support the event">\n\
 ##FORMAT=<ID=RV,Number=1,Type=Integer,Description="Number of split reads that support the event">\n\
@@ -83,42 +135,76 @@ def header_def(sample):
     )
 
 
-def read_fusioninspector(fusioninspector_file, col_num, delimiter, element):
-    with open(fusioninspector_file) as fusioninspector:
-        return [line.split()[col_num].split(delimiter)[element] for line in fusioninspector if not line.startswith("#")]
+def build_fusioninspector_dataframe(file):
+    """
+    Read FusionInspector output from a CSV file, preprocess the data, and set 'FUSION' as the index.
+    """
+    df = pd.read_csv(file, sep="\t")
+    df = df.rename(columns={"#FusionName": "FUSION"})
+    df[['ChromosomeA', 'PosA', 'Strand1']] = df['LeftBreakpoint'].str.split(':', expand=True)
+    df[['ChromosomeB', 'PosB', 'Strand2']] = df['RightBreakpoint'].str.split(':', expand=True)
+    df[['GeneA', 'GeneB']] = df['FUSION'].str.split('--', expand=True)
+    df[['LeftGeneName', 'Left_ensembl_gene_id']] = df['LeftGene'].str.split('^', expand=True)
+    df[['RightGeneName', 'Right_ensembl_gene_id']] = df['RightGene'].str.split('^', expand=True)
+    return df.set_index(['FUSION'])
 
 
-def build_fusioninspector_dataframe(file, map):
-    new_dict = {}
-    for key in FUSIONINSPECTOR_MAP:
-        new_dict[key] = read_fusioninspector(
-            file,
-            map[key]["column"],
-            map[key]["delimiter"],
-            map[key]["element"],
-        )
-    return pd.DataFrame.from_dict(new_dict).set_index("fusion")
+def replace_value_with_column_name(row, value_to_replace, column_name):
+    """
+    Replace a specific value in a row with the corresponding column name.
+    """
+    new_values = ''
+    for col_name, value in row.items():
+        if col_name == column_name:
+            if value == value_to_replace:
+                new_values = col_name
+            else:
+                new_values = ''
+    return new_values
+
+
+def concatenate_columns(row):
+    """
+    Concatenate non-empty values in a row into a single string separated by commas.
+    """
+    non_empty_values = [str(value) for value in row if value != '']
+    return ','.join(non_empty_values)
 
 
 def read_build_fusionreport(fusionreport_file):
+    """
+    Read and preprocess fusion-report data from a file, including handling missing tool columns,
+    getting the columns with each tool and create a new FOUND_IN column with all the tool hits.
+    Convert the list of databases in FOUND_DB into a joined string with a comma separator.
+    Make all column headers uppercase.
+    """
     with open(fusionreport_file) as f:
         from_html = [line.split('rows": [')[1] for line in f if 'name="fusion_list' in line]
         expression = from_html[0].split('], "tool')[0]
-    fusion_report = pd.DataFrame.from_dict(ast.literal_eval(expression)).set_index("fusion")
-    if not "arriba" in fusion_report.columns:
+    fusion_report = pd.DataFrame.from_dict(ast.literal_eval(expression))
+    if "arriba" not in fusion_report.columns:
         fusion_report["arriba"] = ""
-    if not "fusioncatcher" in fusion_report.columns:
+    if "fusioncatcher" not in fusion_report.columns:
         fusion_report["fusioncatcher"] = ""
-    if not "pizzly" in fusion_report.columns:
-        fusion_report["pizzly"] = ""
-    if not "squid" in fusion_report.columns:
-        fusion_report["squid"] = ""
-    if not "starfusion" in fusion_report.columns:
+    if "starfusion" not in fusion_report.columns:
         fusion_report["starfusion"] = ""
-    return fusion_report
+    fusion_report['arriba'] = fusion_report[['arriba']].apply(replace_value_with_column_name,
+                                                              args=('true', 'arriba'), axis=1)
+    fusion_report['fusioncatcher'] = fusion_report[['fusioncatcher']].apply(replace_value_with_column_name,
+                                                                            args=('true', 'fusioncatcher'), axis=1)
+    fusion_report['starfusion'] = fusion_report[['starfusion']].apply(replace_value_with_column_name,
+                                                                      args=('true', 'starfusion'), axis=1)
+    fusion_report['FOUND_IN'] = fusion_report[['arriba', 'starfusion',
+                                               'fusioncatcher']].apply(concatenate_columns, axis=1)
+    fusion_report.columns = fusion_report.columns.str.upper()
+    fusion_report['FOUND_DB'] = fusion_report['FOUND_DB'].apply(lambda x: ', '.join(x))
+    return fusion_report[['FUSION', 'TOOLS_HITS', 'SCORE', 'FOUND_DB', 'FOUND_IN']].set_index(['FUSION'])
 
 
 def column_manipulation(df):
+    """
+    Manipulate and prepare DataFrame for VCF file creation.
+    """
     df["ALT"] = ""
     df = df.reset_index()
     df["FORMAT"] = "GT:DV:RV:FFPM"
@@ -131,46 +217,58 @@ def column_manipulation(df):
 
     for index, row in df.iterrows():
         # ALT
-        if not row["strand1"] in ["+", "-"] or not row["strand2"] in ["+", "-"]:
-            df.loc[index, "ALT"] = "N[{}:{}[".format(df["chromosomeB"], row["posB"])
-        elif row["strand1"] == "-" and row["strand2"] == "-":
-            df.loc[index, "ALT"] = "[{}:{}[N".format(row["chromosomeB"], row["posB"])
-        elif row["strand1"] == "+" and row["strand2"] == "-":
-            df.loc[index, "ALT"] = "N]{}:{}]".format(row["chromosomeB"], row["posB"])
-        elif row["strand1"] == "-" and row["strand2"] == "+":
-            df.loc[index, "ALT"] = "N]{}:{}]".format(row["chromosomeB"], row["posB"])
+        if not row["Strand1"] in ["+", "-"] or not row["Strand2"] in ["+", "-"]:
+            df.loc[index, "ALT"] = "N[{}:{}[".format(df["ChromosomeB"], row["PosB"])
+        elif row["Strand1"] == "-" and row["Strand2"] == "-":
+            df.loc[index, "ALT"] = "[{}:{}[N".format(row["ChromosomeB"], row["PosB"])
+        elif row["Strand1"] == "+" and row["Strand2"] == "-":
+            df.loc[index, "ALT"] = "N]{}:{}]".format(row["ChromosomeB"], row["PosB"])
+        elif row["Strand1"] == "-" and row["Strand2"] == "+":
+            df.loc[index, "ALT"] = "N]{}:{}]".format(row["ChromosomeB"], row["PosB"])
         else:
-            df.loc[index, "ALT"] = "N[{}:{}[".format(row["chromosomeB"], row["posB"])
+            df.loc[index, "ALT"] = "N[{}:{}[".format(row["ChromosomeB"], row["PosB"])
         # INFO
         df.loc[index, "INFO"] = (
-            "SVTYPE=BND;CHRA={};CHRB={};GENEA={};GENEB={};ORIENTATION={},{};FOUND_DB={};"
-            "ARRIBA={};FUSIONCATCHER={};PIZZLY={};SQUID={};STARFUSION={};TOOL_HITS={};SCORE={}".format(
-                row["chromosomeA"],
-                row["chromosomeB"],
-                row["geneA"],
-                row["geneB"],
-                row["strand1"],
-                row["strand2"],
-                row["found_db"],
-                row["arriba"],
-                row["fusioncatcher"],
-                row["pizzly"],
-                row["squid"],
-                row["starfusion"],
-                row["tools_hits"],
-                row["score"],
+            "SVTYPE=BND;CHRA={};CHRB={};GENEA={};GENEB={};POSA={};POSB={};ORIENTATION={},{};FOUND_DB={};"
+            "FOUND_IN={};;TOOL_HITS={};SCORE={};FRAME_STATUS={};TRANSCRIPT_ID_A={};TRANSCRIPT_ID_B={};"
+            "TRANSCRIPT_VERSION_A={};TRANSCRIPT_VERSION_B={};HGNC_ID_A={};HGNC_ID_B={};EXON_NUMBER_A={};"
+            "EXON_NUMBER_B={};ANNOTATIONS={}".format(
+                row["ChromosomeA"],
+                row["ChromosomeB"],
+                row["GeneA"],
+                row["GeneB"],
+                row['PosA'],
+                row['PosB'],
+                row["Strand1"],
+                row["Strand2"],
+                row["FOUND_DB"],
+                row["FOUND_IN"],
+                row["TOOLS_HITS"],
+                row["SCORE"],
+                row["PROT_FUSION_TYPE"],
+                row["CDS_LEFT_ID"],
+                row["CDS_RIGHT_ID"],
+                row["Left_transcript_version"],
+                row["Right_transcript_version"],
+                row["Left_hgnc_id"],
+                row["Right_hgnc_id"],
+                row["Left_exon_number"],
+                row["Right_exon_number"],
+                row["annots"],
             )
         )
-        # FORMAT
-        df.loc[index, "Sample"] = "./1:{}:{}:{}".format(row["split_reads"], row["discordant_pairs"], row["ffpm"])
+        df.loc[index, "Sample"] = "./1:{}:{}:{}".format(row["JunctionReadCount"], row["SpanningFragCount"], row["FFPM"])
     return df
 
 
 def write_vcf(df_to_print, header, out_file):
+    """
+    Write a VCF file with a specified DataFrame, header, and output file path.
+    """
     df_to_print[
         [
-            "chromosomeA",
-            "posA",
+            "ChromosomeA",
+            "PosA",
             "ID",
             "REF",
             "ALT",
@@ -193,12 +291,23 @@ def write_vcf(df_to_print, header, out_file):
         f.write(header.rstrip("\r\n") + "\n" + content)
 
 
-def vcf_collect(fusioninspector_in_file, fusionreport_in_file, sample, out):
-    """Convert fusion information from FusionInspector and fusion-report into a vcf file. Adapted from https://github.com/J35P312/MegaFusion"""
-    merged_df = build_fusioninspector_dataframe(fusioninspector_in_file, FUSIONINSPECTOR_MAP).join(
-        read_build_fusionreport(fusionreport_in_file), how="left"
-    )
-    write_vcf(column_manipulation(merged_df), header_def(sample), out)
+def build_hgnc_dataframe(file):
+    """
+    Build a DataFrame from HGNC input file, extracting 'hgnc_id' and 'ensembl_gene_id' columns.
+    """
+    df = pd.read_csv(file, sep="\t", low_memory=False)
+    return df[['hgnc_id', 'ensembl_gene_id']].dropna()
+
+
+def build_gtf_dataframe(file):
+    """
+    Build a DataFrame from GTF file, extracting relevant columns.
+    """
+    df = read_gtf(file)
+    df[['fusion_dump', 'Transcript_id']] = df['transcript_id'].str.split('^', expand=True)
+    df[['orig_chromosome', 'orig_start', 'orig_end', 'orig_dir']] = df['orig_coord_info'].str.split(',', expand=True)
+#     return df
+    return df[['Transcript_id', 'transcript_version', 'exon_number', 'exon_id', 'orig_start', 'orig_end']]
 
 
 def main(argv=None):
@@ -207,7 +316,7 @@ def main(argv=None):
     if not args.fusioninspector.is_file() or not args.fusionreport.is_file():
         logger.error(f"The given input file {args.fusioninspector} or {args.fusionreport} was not found!")
         sys.exit(2)
-    vcf_collect(args.fusioninspector, args.fusionreport, args.sample, args.out)
+    vcf_collect(args.fusioninspector, args.fusionreport, args.fusioninspector_gtf, args.hgnc, args.sample, args.out)
 
 
 if __name__ == "__main__":

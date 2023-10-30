@@ -183,6 +183,16 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to fusionreport references"
                 },
+                "hgnc_ref": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to HGNC database file"
+                },
+                "hgnc_date": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to HGNC timestamp file for database retrieval"
+                },
                 "pizzly": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
