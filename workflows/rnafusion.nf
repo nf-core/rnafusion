@@ -32,8 +32,8 @@ ch_arriba_ref_blacklist = Channel.fromPath(params.arriba_ref_blacklist).map { it
 ch_arriba_ref_known_fusions = Channel.fromPath(params.arriba_ref_known_fusions).map { it -> [[id:it.Name], it] }.collect()
 ch_arriba_ref_protein_domains = Channel.fromPath(params.arriba_ref_protein_domains).map { it -> [[id:it.Name], it] }.collect()
 ch_arriba_ref_cytobands = Channel.fromPath(params.arriba_ref_cytobands).map { it -> [[id:it.Name], it] }.collect()
-
-
+ch_hgnc_ref = Channel.fromPath(params.hgnc_ref).map { it -> [[id:it.Name], it] }.collect()
+ch_hgnc_date = Channel.fromPath(params.hgnc_date).map { it -> [[id:it.Name], it] }.collect()
 ch_fasta = Channel.fromPath(params.fasta).map { it -> [[id:it.Name], it] }.collect()
 ch_gtf = Channel.fromPath(params.gtf).map { it -> [[id:it.Name], it] }.collect()
 ch_transcript = Channel.fromPath(params.transcript).map { it -> [[id:it.Name], it] }.collect()
@@ -225,7 +225,9 @@ workflow RNAFUSION {
         STARFUSION_WORKFLOW.out.ch_bam_sorted_indexed,
         ch_chrgtf,
         ch_arriba_ref_protein_domains,
-        ch_arriba_ref_cytobands
+        ch_arriba_ref_cytobands,
+        ch_hgnc_ref,
+        ch_hgnc_date
     )
     ch_versions = ch_versions.mix(FUSIONINSPECTOR_WORKFLOW.out.versions.first().ifEmpty(null))
 

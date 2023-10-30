@@ -8,11 +8,13 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         reads
         fusion_list
         fusion_list_filtered
-        report
+        fusionreport_out
         bam_sorted_indexed
         ch_gtf
         ch_arriba_ref_protein_domains
         ch_arriba_ref_cytobands
+        ch_hgnc_ref
+        ch_hgnc_date
 
     main:
         ch_versions = Channel.empty()
@@ -38,9 +40,9 @@ workflow FUSIONINSPECTOR_WORKFLOW {
 
         FUSIONINSPECTOR( ch_reads_fusion, index)
         ch_versions = ch_versions.mix(FUSIONINSPECTOR.out.versions)
+        fusion_data = FUSIONINSPECTOR.out.tsv.join(FUSIONINSPECTOR.out.ch_out_gtf).join(fusionreport_out)
 
-        fusion_data = FUSIONINSPECTOR.out.tsv.join(report)
-        VCF_COLLECT(fusion_data)
+        VCF_COLLECT(fusion_data, hgnc_ref, hgnc_date)
         ch_versions = ch_versions.mix(VCF_COLLECT.out.versions)
 
         if ((params.starfusion || params.all || params.stringtie) && !params.fusioninspector_only && !params.skip_vis) {
