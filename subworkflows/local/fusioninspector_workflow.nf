@@ -40,7 +40,7 @@ workflow FUSIONINSPECTOR_WORKFLOW {
 
         FUSIONINSPECTOR( ch_reads_fusion, index)
         ch_versions = ch_versions.mix(FUSIONINSPECTOR.out.versions)
-        fusion_data = FUSIONINSPECTOR.out.tsv.join(FUSIONINSPECTOR.out.ch_out_gtf).join(fusionreport_out)
+        fusion_data = FUSIONINSPECTOR.out.tsv.join(FUSIONINSPECTOR.out.out_gtf).join(fusionreport_out)
 
         VCF_COLLECT(fusion_data, hgnc_ref, hgnc_date)
         ch_versions = ch_versions.mix(VCF_COLLECT.out.versions)
