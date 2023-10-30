@@ -193,40 +193,10 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to HGNC timestamp file for database retrieval"
                 },
-                "pizzly": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Build or run pizzly references/analyses"
-                },
-                "pizzly_fusions": {
-                    "type": "string",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Path to pizzly output"
-                },
-                "pizzly_ref": {
-                    "type": "string",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Path to pizzly references"
-                },
                 "qiagen": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
                     "description": "Use QIAGEN instead of SANGER to download COSMIC database"
-                },
-                "squid": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Build or run squid references/analyses"
-                },
-                "squid_fusions": {
-                    "type": "string",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Path to squid output"
-                },
-                "squid_ref": {
-                    "type": "string",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Path to squid references"
                 },
                 "starfusion": {
                     "type": "boolean",
@@ -301,7 +271,7 @@
             "properties": {
                 "cram": {
                     "type": "string",
-                    "description": "List of tools for which to compress BAM file to CRAM,default: [], options: arriba, squid, starfusion. Leave no space between options",
+                    "description": "List of tools for which to compress BAM file to CRAM,default: [], options: arriba, starfusion. Leave no space between options",
                     "fa_icon": "fas fa-cut"
                 }
             }

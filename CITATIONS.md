@@ -42,10 +42,6 @@
 
   > Van der Auwera GA. Somatic variation discovery with GATK4. Proceedings of the American Association for Cancer Research Annual Meeting 2017. 2017 Apr 1-5. Cancer Res 2017;77(13 Suppl) doi:10.1158/1538-7445.AM2017-3590
 
-- [Kallisto](https://pachterlab.github.io/kallisto/)
-
-  > Bray NL, Pimentel H, Melsted P, Pachter L. Near-optimal probabilistic RNA-seq quantification. Nature Biotechnology 2016 Apr. 34, 525–527. doi:10.1038/nbt.3519. PMID: 27043002.
-
 - [MegaFusion](https://github.com/J35P312/MegaFusion)
 
 - [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
@@ -54,20 +50,9 @@
 
 - [picard-tools](http://broadinstitute.github.io/picard)
 
-- [Pizzly](https://github.com/pmelsted/pizzly)
-  Melsted P, Hateley S, Joseph IC, Pimentel H, Bray N, Pachter L. Fusion detection and quantification by pseudoalignment. BioRxiv, 2017 Jul. doi: 10.1101/166322.
-
-- [Qualimap 2](https://pubmed.ncbi.nlm.nih.gov/26428292/)
-
-  > Okonechnikov K, Conesa A, García-Alcalde F. Qualimap 2: advanced multi-sample quality control for high-throughput sequencing data Bioinformatics. 2016 Jan 15;32(2):292-4. doi: 10.1093/bioinformatics/btv566. Epub 2015 Oct 1. PubMed PMID: 26428292; PubMed Central PMCID: PMC4708105.
-
 - [SAMtools](https://pubmed.ncbi.nlm.nih.gov/19505943/)
 
   > Li H, Handsaker B, Wysoker A, Fennell T, Ruan J, Homer N, Marth G, Abecasis G, Durbin R; 1000 Genome Project Data Processing Subgroup. The Sequence Alignment/Map format and SAMtools. Bioinformatics. 2009 Aug 15;25(16):2078-9. doi: 10.1093/bioinformatics/btp352. Epub 2009 Jun 8. PubMed PMID: 19505943; PubMed Central PMCID: PMC2723002.
-
-- [Squid](https://github.com/Kingsford-Group/squid)
-
-  > Ma C, Shao M, Kingsford C. SQUID: transcriptomic structural variation detection from RNA-seq. Genome Biol 2028 Apr. 19, 52. doi: 10.1186/s13059-018-1421-5. PubMed PMID: 29650026. PubMed Central PMCID: PMC5896115.
 
 - [STAR](https://pubmed.ncbi.nlm.nih.gov/23104886/)
 

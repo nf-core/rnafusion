@@ -31,9 +31,8 @@ In rnafusion the full-sized test includes reference building and fusion detectio
 2. Create [STAR](https://github.com/alexdobin/STAR) index
 3. Download [Arriba](https://github.com/suhrig/arriba) references
 4. Download [FusionCatcher](https://github.com/ndaniel/fusioncatcher) references
-5. Download [Pizzly](https://github.com/pmelsted/pizzly) references ([kallisto](https://pachterlab.github.io/kallisto/manual) index)
-6. Download and build [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) references
-7. Download [Fusion-report](https://github.com/Clinical-Genomics/fusion-report) DBs
+5. Download and build [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) references
+6. Download [Fusion-report](https://github.com/Clinical-Genomics/fusion-report) DBs
 
 #### Main workflow
 
@@ -44,31 +43,21 @@ In rnafusion the full-sized test includes reference building and fusion detectio
 5. Arriba subworkflow
    - [STAR](https://github.com/alexdobin/STAR) alignment
    - [Arriba](https://github.com/suhrig/arriba) fusion detection
-6. Pizzly subworkflow
-   - [Kallisto](https://pachterlab.github.io/kallisto/) quantification
-   - [Pizzly](https://github.com/pmelsted/pizzly) fusion detection
-7. Squid subworkflow
-   - [STAR](https://github.com/alexdobin/STAR) alignment
-   - [Samtools view](http://www.htslib.org/): convert sam output from STAR to bam
-   - [Samtools sort](http://www.htslib.org/): bam output from STAR
-   - [SQUID](https://github.com/Kingsford-Group/squid) fusion detection
-   - [SQUID](https://github.com/Kingsford-Group/squid) annotate
-8. STAR-fusion subworkflow
+6. STAR-fusion subworkflow
    - [STAR](https://github.com/alexdobin/STAR) alignment
    - [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) fusion detection
-9. Fusioncatcher subworkflow
+7. Fusioncatcher subworkflow
    - [FusionCatcher](https://github.com/ndaniel/fusioncatcher) fusion detection
-10. StringTie subworkflow
-    - [StringTie](https://ccb.jhu.edu/software/stringtie/)
-11. Fusion-report
-    - Merge all fusions detected by the selected tools with [Fusion-report](https://github.com/Clinical-Genomics/fusion-report)
-12. Post-processing and analysis of data
+8. StringTie subworkflow
+   - [StringTie](https://ccb.jhu.edu/software/stringtie/)
+9. Fusion-report
+   - Merge all fusions detected by the selected tools with [Fusion-report](https://github.com/Clinical-Genomics/fusion-report)
+10. Post-processing and analysis of data
     - [FusionInspector](https://github.com/FusionInspector/FusionInspector)
     - [Arriba](https://github.com/suhrig/arriba) visualisation
-    - QC for mapped reads ([`QualiMap: BAM QC`](https://kokonech.github.io/qualimap/HG00096.chr20_bamqc/qualimapReport.html))
     - Collect metrics ([`picard CollectRnaSeqMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037057492-CollectRnaSeqMetrics-Picard-), [`picard CollectInsertSizeMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037055772-CollectInsertSizeMetrics-Picard-) and ([`picard MarkDuplicates`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-))
-13. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
-14. Compress bam files to cram with [samtools view](http://www.htslib.org/)
+11. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+12. Compress bam files to cram with [samtools view](http://www.htslib.org/)
 
 ## Usage
 

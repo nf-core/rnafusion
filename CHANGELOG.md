@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Now publishing convert2bed output to convert2bed to keep the output file for mosdepth [#420](https://github.com/nf-core/rnafusion/pull/420)
 - No more checks for existence of samplesheet, which made building references fail (building references uses a fake sample sheet if none is provided) [#420](https://github.com/nf-core/rnafusion/pull/420)
 - `--extreme_sensitivity` used for fusioninspector to minimize fusioninspector filtering [#424](https://github.com/nf-core/rnafusion/pull/424)
+- `--extreme_sensitivity` removed in favor of `--max_sensitivity --max_mate_dist 10000000 --annotate --examine_coding_effect` to collect more data from fusioninspector [#426](https://github.com/nf-core/rnafusion/pull/426)
 
 ### Fixed
 
@@ -24,7 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Remove `squid` and `pizzly` fusion detection tools [#406](https://github.com/nf-core/rnafusion/pull/406)
 - Remove harsh trimming option `--trim` [#413](https://github.com/nf-core/rnafusion/pull/413)
+- Remove qualimap rna_seq [#407](https://github.com/nf-core/rnafusion/pull/407)
 
 ## v2.4.0 - [2023/09/22]
 

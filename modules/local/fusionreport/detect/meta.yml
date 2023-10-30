@@ -24,14 +24,6 @@ input:
       type: path
       description: File
       pattern: "*.fusions.tsv"
-  - pizzly_fusions:
-      type: path
-      description: File containing fusions from pizzly
-      pattern: "*.pizzly.txt"
-  - squid_fusions:
-      type: path
-      description: File containing fusions from squid
-      pattern: "*.annotated.txt"
   - starfusion_fusions:
       type: path
       description: File containing fusions from STARfusion
