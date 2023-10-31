@@ -2,8 +2,8 @@ process VCF_COLLECT {
     tag "$meta.id"
     label 'process_single'
 
-    conda "bioconda:: gtfparse =2.0.1"
-    container "quay.io/biocontainers/gtfparse:2.0.1--pyh7cba7a3_0"
+    conda "bioconda::gtfparse=2.0.1"
+    container "quay.io/biocontainers/gtfparse:2.0.1--pyh7cba7a3_1"
 
     input:
     tuple val(meta), path(tsv), path(out_gtf), path(report)
