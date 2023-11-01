@@ -18,15 +18,11 @@ reports:
   "**/picard/*.MarkDuplicates.metrics.txt":
     display: "Picard: Metrics from CollectRnaMetrics"
   "**/picard/*_rna_metrics.txt":
-    display: "Picard: Metrics from MarkDuplicates"
-  "**/pizzly/*.pizzly.txt":
-    display: "Pizzly identified fusion TXT report"
-  "**/qualimap/qualimapReport.html":
-    display: "Qualimap HTML report from STAR_FOR_STARFUSION alignment"
-  "**/qualimap/rnaseq_qc_results.txt":
-    display: "Qualimap QC results from STAR_FOR_STARFUSION alignment in TXT format"
-  "**/squid/*.squid.fusions.annotated.txt":
-    display: "Squid identified fusion TXT report"
+    display: "GATK4: Metrics from MarkDuplicates"
+  "**/picard/*insert*size*metrics.txt":
+    display: "GATK4: Metrics from InsertSizeMetrics"
+  "**/picard/*pdf":
+    display: "GATK4: InsertSizeMetrics histogram"
   "**/star_for_starfusion/*ReadsPerGene.out.tab":
     display: "Number of reads per gene"
   "**/starfusion/*.starfusion.fusion_predictions.tsv":

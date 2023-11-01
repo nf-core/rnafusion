@@ -13,8 +13,8 @@ The pipeline is divided into two parts:
    - required only once before running the pipeline
    - **Important**: has to be run with each new release
 2. Detecting fusions
-   - Supported tools: `Arriba`, `FusionCatcher`, `pizzly`, `SQUID`, `STAR-Fusion`, and `StringTie`
-   - QC: `Fastqc`, `MultiQC`, and `Qualimap rnaseq`
+   - Supported tools: `Arriba`, `FusionCatcher`, `STAR-Fusion`, and `StringTie`
+   - QC: `Fastqc`, `MultiQC`, and `Picard CollectInsertSize`, `Picard CollectWgsMetrics`, `Picard Markduplicates`
    - Fusions visualization: `Arriba`, `fusion-report` and `FusionInspector`, VCF file creation based on `MegaFusion`
 
 ## Download and build references
@@ -123,7 +123,7 @@ As you can see above for multiple runs of the same sample, the `sample` name has
 
 ### Starting commands
 
-The pipeline can either be run using all fusion detection tools or specifying individual tools. Visualisation tools will be run on all fusions detected. To run all tools (`arriba`, `fusioncatcher`, `pizzly`, `squid`, `starfusion`, `stringtie`) use the `--all` parameter:
+The pipeline can either be run using all fusion detection tools or specifying individual tools. Visualisation tools will be run on all fusions detected. To run all tools (`arriba`, `fusioncatcher`, `starfusion`, `stringtie`) use the `--all` parameter:
 
 ```bash
 nextflow run nf-core/rnafusion \
@@ -160,7 +160,9 @@ If you wish to repeatedly use the same parameters for multiple runs, rather than
 
 Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`.
 
-> ⚠️ Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
+:::warning
+Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
+:::
 
 The above pipeline run specified with a params file in yaml format:
 
@@ -182,10 +184,7 @@ You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-c
 
 #### Trimming
 
-There are 2 options to trim
-
-1. Fastp
-   In this case all tools use the trimmed reads. Quality and adapter trimming by default. In addition, tail trimming and adapter_fastq specification are possible. Example usage:
+When the flag `--fastp_trim` is used, `fastp` is used to provide all tools with trimmed reads. Quality and adapter trimming by default. In addition, tail trimming and adapter_fastq specification are possible. Example usage:
 
 ```bash
 nextflow run nf-core/rnafusion \
@@ -198,18 +197,6 @@ nextflow run nf-core/rnafusion \
 --adapter_fastq <PATH/TO/ADAPTER/FASTQ> (optional)
 ```
 
-2. Hard trimming
-   In this case, only reads fed to fusioncatcher are trimmed. This is a harsh workaround in case of high read-through. The recommended trimming is thus the fastp_trim one. The trimming is done at 75 bp from the tails. Example usage:
-
-```bash
-nextflow run nf-core/rnafusion \
---<tool1> --<tool2> ... \
---input <SAMPLE_SHEET.CSV> \
---genomes_base <PATH/TO/REFERENCES> \
---outdir <OUTPUT/PATH> \
---trim
-```
-
 #### Filter fusions detected by 2 or more tools
 
 ```bash
@@ -218,12 +205,10 @@ nextflow run nf-core/rnafusion \
   --input <SAMPLE_SHEET.CSV> \
   --genomes_base <PATH/TO/REFERENCES> \
   --outdir <OUTPUT/PATH>
-  --fusioninspector_filter
-  --fusionreport_filter
+  --tools_cutoff <INT>
 ```
 
-`--fusioninspector_filter` feed only fusions detected by 2 or more tools to fusioninspector for closer analysis (false by default).
-`--fusionreport_filter` displays only fusions detected by 2 or more tools in fusionreport html index (true by default).
+`--tools_cutoff INT` will discard fusions detected by less than INT tools both for display in fusionreport html index and to consider in fusioninspector.
 
 #### Adding custom fusions to consider as well as the detected set: whitelist
 
@@ -273,7 +258,7 @@ nextflow run nf-core/rnafusion \
 --outdir <PATH>
 ```
 
-This will skip all QC-related processes (metrics collection, `Qualimap`)
+This will skip all QC-related processes (picard metrics collection)
 
 #### Skipping visualisation
 
@@ -299,9 +284,9 @@ There are two parameters to increase the `--limitSjdbInsertNsj` parameter if nec
 - `--fusioncatcher_limitSjdbInsertNsj`, default: 2000000
 - `--fusioninspector_limitSjdbInsertNsj`, default: 1000000
 
-Use the parameter `--cram` to compress the BAM files to CRAM for specific tools. Options: arriba, squid, starfusion. Leave no space between options:
+Use the parameter `--cram` to compress the BAM files to CRAM for specific tools. Options: arriba, starfusion. Leave no space between options:
 
-- `--cram arriba,squid,starfusion`, default: []
+- `--cram arriba,starfusion`, default: []
 - `--cram arriba`
 
 ### Updating the pipeline
@@ -322,11 +307,15 @@ This version number will be logged in reports when you run the pipeline, so that
 
 To further assist in reproducbility, you can use share and re-use [parameter files](#running-the-pipeline) to repeat pipeline runs with the same settings without having to write out a command with every single parameter.
 
-> 💡 If you wish to share such profile (such as upload as supplementary material for academic publications), make sure to NOT include cluster specific paths to files, nor institutional specific profiles.
+:::tip
+If you wish to share such profile (such as upload as supplementary material for academic publications), make sure to NOT include cluster specific paths to files, nor institutional specific profiles.
+:::
 
 ## Core Nextflow arguments
 
-> **NB:** These options are part of Nextflow and use a _single_ hyphen (pipeline parameters use a double-hyphen).
+:::note
+These options are part of Nextflow and use a _single_ hyphen (pipeline parameters use a double-hyphen).
+:::
 
 ### `-profile`
 
@@ -334,7 +323,9 @@ Use this parameter to choose a configuration profile. Profiles can give configur
 
 Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Podman, Shifter, Charliecloud, Apptainer, Conda) - see below.
 
-> We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
+:::info
+We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
+:::
 
 The pipeline also dynamically loads configurations from [https://github.com/nf-core/configs](https://github.com/nf-core/configs) when it runs, making multiple config profiles for various institutional clusters available at run time. For more information and to see if your system is available in these configs please see the [nf-core/configs documentation](https://github.com/nf-core/configs#documentation).
 

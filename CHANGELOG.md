@@ -3,6 +3,32 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v3.0.0dev - [date]
+
+### Added
+
+- Add picard CollectInserSizeMetrics to QC workflow [#408](https://github.com/nf-core/rnafusion/pull/408)
+
+### Changed
+
+- Replace PICARD_MARKDUPLICATES with GATK4_MARKDUPLICATES [#409](https://github.com/nf-core/rnafusion/pull/409)
+- Removed `--fusioninspector_filter` and `--fusionreport_filter` in favor of `--tools_cutoff` (default = 1, no filters applied) [#389](https://github.com/nf-core/rnafusion/pull/389)
+- Now publishing convert2bed output to convert2bed to keep the output file for mosdepth [#420](https://github.com/nf-core/rnafusion/pull/420)
+- No more checks for existence of samplesheet, which made building references fail (building references uses a fake sample sheet if none is provided) [#420](https://github.com/nf-core/rnafusion/pull/420)
+- `--extreme_sensitivity` used for fusioninspector to minimize fusioninspector filtering [#424](https://github.com/nf-core/rnafusion/pull/424)
+- `--extreme_sensitivity` removed in favor of `--max_sensitivity --max_mate_dist 10000000 --annotate --examine_coding_effect` to collect more data from fusioninspector [#426](https://github.com/nf-core/rnafusion/pull/426)
+
+### Fixed
+
+- Fix channel i/o issue in StringTie workflow and add StringTie in github CI tests [#416](https://github.com/nf-core/rnafusion/pull/416)
+- Updated COSMIC database to fix 404 error while downloading fusionreport references [#420](https://github.com/nf-core/rnafusion/pull/420)
+
+### Removed
+
+- Remove `squid` and `pizzly` fusion detection tools [#406](https://github.com/nf-core/rnafusion/pull/406)
+- Remove harsh trimming option `--trim` [#413](https://github.com/nf-core/rnafusion/pull/413)
+- Remove qualimap rna_seq [#407](https://github.com/nf-core/rnafusion/pull/407)
+
 ## v2.4.0 - [2023/09/22]
 
 ### Added

@@ -1,6 +1,7 @@
 # ![nf-core/rnafusion](docs/images/nf-core-rnafusion_logo_light.png#gh-light-mode-only) ![nf-core/rnafusion](docs/images/nf-core-rnafusion_logo_dark.png#gh-dark-mode-only)
 
-[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/rnafusion/results)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.2565517-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.2565517)
+[![GitHub Actions CI Status](https://github.com/nf-core/rnafusion/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/rnafusion/actions?query=workflow%3A%22nf-core+CI%22)
+[![GitHub Actions Linting Status](https://github.com/nf-core/rnafusion/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/rnafusion/actions?query=workflow%3A%22nf-core+linting%22)[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/rnafusion/results)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.3946477-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.3946477)
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A523.04.0-23aa62.svg)](https://www.nextflow.io/)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
@@ -30,9 +31,8 @@ In rnafusion the full-sized test includes reference building and fusion detectio
 2. Create [STAR](https://github.com/alexdobin/STAR) index
 3. Download [Arriba](https://github.com/suhrig/arriba) references
 4. Download [FusionCatcher](https://github.com/ndaniel/fusioncatcher) references
-5. Download [Pizzly](https://github.com/pmelsted/pizzly) references ([kallisto](https://pachterlab.github.io/kallisto/manual) index)
-6. Download and build [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) references
-7. Download [Fusion-report](https://github.com/Clinical-Genomics/fusion-report) DBs
+5. Download and build [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) references
+6. Download [Fusion-report](https://github.com/Clinical-Genomics/fusion-report) DBs
 
 #### Main workflow
 
@@ -43,38 +43,29 @@ In rnafusion the full-sized test includes reference building and fusion detectio
 5. Arriba subworkflow
    - [STAR](https://github.com/alexdobin/STAR) alignment
    - [Arriba](https://github.com/suhrig/arriba) fusion detection
-6. Pizzly subworkflow
-   - [Kallisto](https://pachterlab.github.io/kallisto/) quantification
-   - [Pizzly](https://github.com/pmelsted/pizzly) fusion detection
-7. Squid subworkflow
-   - [STAR](https://github.com/alexdobin/STAR) alignment
-   - [Samtools view](http://www.htslib.org/): convert sam output from STAR to bam
-   - [Samtools sort](http://www.htslib.org/): bam output from STAR
-   - [SQUID](https://github.com/Kingsford-Group/squid) fusion detection
-   - [SQUID](https://github.com/Kingsford-Group/squid) annotate
-8. STAR-fusion subworkflow
+6. STAR-fusion subworkflow
    - [STAR](https://github.com/alexdobin/STAR) alignment
    - [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) fusion detection
-9. Fusioncatcher subworkflow
+7. Fusioncatcher subworkflow
    - [FusionCatcher](https://github.com/ndaniel/fusioncatcher) fusion detection
-10. StringTie subworkflow
-    - [StringTie](https://ccb.jhu.edu/software/stringtie/)
-11. Fusion-report
-    - Merge all fusions detected by the selected tools with [Fusion-report](https://github.com/Clinical-Genomics/fusion-report)
-12. Post-processing and analysis of data
+8. StringTie subworkflow
+   - [StringTie](https://ccb.jhu.edu/software/stringtie/)
+9. Fusion-report
+   - Merge all fusions detected by the selected tools with [Fusion-report](https://github.com/Clinical-Genomics/fusion-report)
+10. Post-processing and analysis of data
     - [FusionInspector](https://github.com/FusionInspector/FusionInspector)
     - [Arriba](https://github.com/suhrig/arriba) visualisation
-    - QC for mapped reads ([`QualiMap: BAM QC`](https://kokonech.github.io/qualimap/HG00096.chr20_bamqc/qualimapReport.html))
-    - Collect metrics ([`picard CollectRnaSeqMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037057492-CollectRnaSeqMetrics-Picard-) and ([`picard MarkDuplicates`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-))
-13. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
-14. Compress bam files to cram with [samtools view](http://www.htslib.org/)
+    - Collect metrics ([`picard CollectRnaSeqMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037057492-CollectRnaSeqMetrics-Picard-), [`picard CollectInsertSizeMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037055772-CollectInsertSizeMetrics-Picard-) and ([`picard MarkDuplicates`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-))
+11. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+12. Compress bam files to cram with [samtools view](http://www.htslib.org/)
 
 ## Usage
 
-> **Note**
-> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how
-> to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
-> with `-profile test` before running the workflow on actual data.
+:::note
+If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how
+to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
+with `-profile test` before running the workflow on actual data.
+:::
 
 As the reference building is computationally heavy (> 24h on HPC), it is recommended to test the pipeline with the `-stub` parameter (creation of empty files):
 
@@ -99,17 +90,18 @@ nextflow run nf-core/rnafusion \
    -stub
 ```
 
+:::warning
+Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
+provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
+see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
+:::
+
 > **Notes:**
 >
 > - Conda is not currently supported; run with singularity or docker.
 > - Paths need to be absolute.
 > - GRCh38 is the only supported reference.
 > - Single-end reads are to be used as last-resort. Paired-end reads are recommended. FusionCatcher cannot be used with single-end reads shorter than 130 bp.
-
-> **Warning:**
-> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
-> provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
-> see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
 
 For more details and further functionality, please refer to the [usage documentation](https://nf-co.re/rnafusion/usage) and the [parameter documentation](https://nf-co.re/rnafusion/parameters).
 

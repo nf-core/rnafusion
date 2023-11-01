@@ -65,8 +65,6 @@ def header_def(sample):
 ##INFO=<ID=FOUND_DB,Number=.,Type=String,Description="Databases in which the fusion has been found">\n\
 ##INFO=<ID=ARRIBA,Number=.,Type=String,Description="Found by arriba">\n\
 ##INFO=<ID=FUSIONCATCHER,Number=.,Type=String,Description="Found by fusioncatcher">\n\
-##INFO=<ID=PIZZLY,Number=.,Type=String,Description="Found by pizzly">\n\
-##INFO=<ID=SQUID,Number=.,Type=String,Description="Found by squid">\n\
 ##INFO=<ID=STARFUSION,Number=.,Type=String,Description="Found by starfusion">\n\
 ##INFO=<ID=TOOL_HITS,Number=.,Type=Integer,Description="Number of tools that found the fusion">\n\
 ##INFO=<ID=SCORE,Number=.,Type=Float,Description="Score from fusionreport">\n\
@@ -105,10 +103,6 @@ def read_build_fusionreport(fusionreport_file):
         fusion_report["arriba"] = ""
     if not "fusioncatcher" in fusion_report.columns:
         fusion_report["fusioncatcher"] = ""
-    if not "pizzly" in fusion_report.columns:
-        fusion_report["pizzly"] = ""
-    if not "squid" in fusion_report.columns:
-        fusion_report["squid"] = ""
     if not "starfusion" in fusion_report.columns:
         fusion_report["starfusion"] = ""
     return fusion_report
@@ -140,7 +134,7 @@ def column_manipulation(df):
         # INFO
         df.loc[index, "INFO"] = (
             "SVTYPE=BND;CHRA={};CHRB={};GENEA={};GENEB={};ORIENTATION={},{};FOUND_DB={};"
-            "ARRIBA={};FUSIONCATCHER={};PIZZLY={};SQUID={};STARFUSION={};TOOL_HITS={};SCORE={}".format(
+            "ARRIBA={};FUSIONCATCHER={};STARFUSION={};TOOL_HITS={};SCORE={}".format(
                 row["chromosomeA"],
                 row["chromosomeB"],
                 row["geneA"],
@@ -150,8 +144,6 @@ def column_manipulation(df):
                 row["found_db"],
                 row["arriba"],
                 row["fusioncatcher"],
-                row["pizzly"],
-                row["squid"],
                 row["starfusion"],
                 row["tools_hits"],
                 row["score"],

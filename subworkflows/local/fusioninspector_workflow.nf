@@ -17,7 +17,8 @@ workflow FUSIONINSPECTOR_WORKFLOW {
     main:
         ch_versions = Channel.empty()
         index ="${params.starfusion_ref}"
-        ch_fusion_list = ( params.fusioninspector_filter ? fusion_list_filtered : fusion_list )
+
+        ch_fusion_list = ( params.tools_cutoff > 1 ? fusion_list_filtered : fusion_list )
         .branch{
             no_fusions: it[1].size() == 0
             fusions: it[1].size() > 0
@@ -33,18 +34,18 @@ workflow FUSIONINSPECTOR_WORKFLOW {
             ch_fusion_list.fusions = CAT_CAT.out.file_out
         }
 
-        reads_fusion = reads.join(ch_fusion_list.fusions )
+        ch_reads_fusion = reads.join(ch_fusion_list.fusions )
 
-        FUSIONINSPECTOR( reads_fusion, index)
+        FUSIONINSPECTOR( ch_reads_fusion, index)
         ch_versions = ch_versions.mix(FUSIONINSPECTOR.out.versions)
 
-        fusion_data = FUSIONINSPECTOR.out.tsv.join(report)
-        MEGAFUSION(fusion_data)
+        ch_fusion_data = FUSIONINSPECTOR.out.tsv.join(report)
+        MEGAFUSION(ch_fusion_data)
         ch_versions = ch_versions.mix(MEGAFUSION.out.versions)
 
         if ((params.starfusion || params.all || params.stringtie) && !params.fusioninspector_only && !params.skip_vis) {
-            bam_sorted_indexed_fusions = bam_sorted_indexed.join(FUSIONINSPECTOR.out.tsv)
-            ARRIBA_VISUALISATION(bam_sorted_indexed_fusions, ch_gtf, ch_arriba_ref_protein_domains, ch_arriba_ref_cytobands)
+            ch_bam_sorted_indexed_fusions = bam_sorted_indexed.join(FUSIONINSPECTOR.out.tsv)
+            ARRIBA_VISUALISATION(ch_bam_sorted_indexed_fusions, ch_gtf, ch_arriba_ref_protein_domains, ch_arriba_ref_cytobands)
             ch_versions = ch_versions.mix(ARRIBA_VISUALISATION.out.versions)
         }
 

@@ -21,6 +21,7 @@ process FUSIONINSPECTOR {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def fasta = meta.single_end ? "--left_fq ${reads[0]}" : "--left_fq ${reads[0]} --right_fq ${reads[1]}"
     def args = task.ext.args ?: ''
+    def args2 = task.ext.args2 ?: ''
     """
     FusionInspector \\
         --fusions $fusion_list \\
@@ -29,7 +30,7 @@ process FUSIONINSPECTOR {
         --CPU ${task.cpus} \\
         -O . \\
         --out_prefix $prefix \\
-        --vis $args
+        --vis $args $args2
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
