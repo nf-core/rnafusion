@@ -357,12 +357,11 @@ def build_hgnc_dataframe(file):
 
 def build_gtf_dataframe(file):
     """
-    Build a DataFrame from GTF file, extracting relevant columns.
+    Build a DataFrame from GTF file converted in TSV, extracting relevant columns.
     """
-    df = read_gtf(file)
+    df = pd.read_csv(file, sep="\t")
     df[["fusion_dump", "Transcript_id"]] = df["transcript_id"].str.split("^", expand=True)
     df[["orig_chromosome", "orig_start", "orig_end", "orig_dir"]] = df["orig_coord_info"].str.split(",", expand=True)
-    #     return df
     return df[["Transcript_id", "transcript_version", "exon_number", "exon_id", "orig_start", "orig_end"]]
 
 

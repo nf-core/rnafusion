@@ -6,7 +6,7 @@ process VCF_COLLECT {
     container "quay.io/biocontainers/gtfparse:2.0.1--pyh7cba7a3_1"
 
     input:
-    tuple val(meta), path(tsv), path(out_gtf), path(report)
+    tuple val(meta), path(fusioninspector_tsv), path(fusioninspector_gtf_tsv), path(fusionreport_report)
     tuple val(meta2),  path(hgnc_ref)
     tuple val(meta3),  path(hgnc_date)
 
@@ -20,7 +20,7 @@ process VCF_COLLECT {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    vcf_collect.py --fusioninspector $tsv --fusionreport $report --fusioninspector_gtf $out_gtf --hgnc $hgnc_ref --sample ${prefix} --out ${prefix}.vcf
+    vcf_collect.py --fusioninspector $fusioninspector_tsv --fusionreport $fusionreport_report --fusioninspector_gtf $fusioninspector_gtf_tsv --hgnc $hgnc_ref --sample ${prefix} --out ${prefix}.vcf
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

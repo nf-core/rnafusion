@@ -1,3 +1,4 @@
+include { AGAT_CONVERTSPGFF2TSV     }                     from '../../modules/nf-core/agat/visualisation/main'
 include { ARRIBA_VISUALISATION     }                      from '../../modules/local/arriba/visualisation/main'
 include { CAT_CAT }                                       from '../../modules/nf-core/cat/cat/main'
 include { VCF_COLLECT }                                   from '../../modules/local/vcf_collect/main'
@@ -40,8 +41,11 @@ workflow FUSIONINSPECTOR_WORKFLOW {
 
         FUSIONINSPECTOR( ch_reads_fusion, index)
         ch_versions = ch_versions.mix(FUSIONINSPECTOR.out.versions)
-        fusion_data = FUSIONINSPECTOR.out.tsv.join(FUSIONINSPECTOR.out.out_gtf).join(fusionreport_out)
 
+        AGAT_CONVERTSPGFF2TSV(FUSIONINSPECTOR.out.out_gtf)
+        ch_versions = ch_versions.mix(AGAT_CONVERTSPGFF2TSV.out.versions)
+
+        fusion_data = FUSIONINSPECTOR.out.tsv.join(AGAT_CONVERTSPGFF2TSV.out.tsv).join(fusionreport_out)
         VCF_COLLECT(fusion_data, ch_hgnc_ref, ch_hgnc_date)
         ch_versions = ch_versions.mix(VCF_COLLECT.out.versions)
 
