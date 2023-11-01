@@ -40,7 +40,7 @@ workflow ARRIBA_WORKFLOW {
                 SAMTOOLS_SORT_FOR_ARRIBA(STAR_FOR_ARRIBA.out.bam)
                 ch_versions = ch_versions.mix(SAMTOOLS_SORT_FOR_ARRIBA.out.versions )
 
-                SAMTOOLS_VIEW_FOR_ARRIBA(SAMTOOLS_SORT_FOR_ARRIBA.bam.map { meta, bam -> [ meta, bam, [] ] }, ch_fasta, [])
+                SAMTOOLS_VIEW_FOR_ARRIBA(SAMTOOLS_SORT_FOR_ARRIBA.out.bam.map { meta, bam -> [ meta, bam, [] ] }, ch_fasta, [])
                 ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FOR_ARRIBA.out.versions )
 
                 SAMTOOLS_INDEX_FOR_ARRIBA(SAMTOOLS_VIEW_FOR_ARRIBA.out.cram)
