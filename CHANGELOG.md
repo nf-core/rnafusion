@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add picard CollectInserSizeMetrics to QC workflow [#408](https://github.com/nf-core/rnafusion/pull/408)
+- Build CRAM index in the same directory as CRAM files for arriba and STAR-Fusion [#427](https://github.com/nf-core/rnafusion/pull/427)
 
 ### Changed
 
