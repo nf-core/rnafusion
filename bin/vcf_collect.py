@@ -286,7 +286,7 @@ def column_manipulation(df):
         # INFO
         df.loc[index, "INFO"] = (
             "SVTYPE=BND;CHRA={};CHRB={};GENEA={};GENEB={};POSA={};POSB={};ORIENTATION={},{};FOUND_DB={};"
-            "FOUND_IN={};;TOOL_HITS={};SCORE={};FRAME_STATUS={};TRANSCRIPT_ID_A={};TRANSCRIPT_ID_B={};"
+            "FOUND_IN={};TOOL_HITS={};SCORE={};FRAME_STATUS={};TRANSCRIPT_ID_A={};TRANSCRIPT_ID_B={};"
             "TRANSCRIPT_VERSION_A={};TRANSCRIPT_VERSION_B={};HGNC_ID_A={};HGNC_ID_B={};EXON_NUMBER_A={};"
             "EXON_NUMBER_B={};ANNOTATIONS={}".format(
                 row["ChromosomeA"],
