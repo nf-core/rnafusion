@@ -19,7 +19,7 @@ process HGNC_DOWNLOAD {
     script:
     """
     wget https://ftp.ebi.ac.uk/pub/databases/genenames/hgnc/tsv/hgnc_complete_set.txt
-    date+%Y-%m-%d/%H:%M:  > HGNC-DB-timestamp.txt
+    date +%Y-%m-%d/%H:%M  > HGNC-DB-timestamp.txt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
