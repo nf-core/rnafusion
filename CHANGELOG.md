@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - No more checks for existence of samplesheet, which made building references fail (building references uses a fake sample sheet if none is provided) [#420](https://github.com/nf-core/rnafusion/pull/420)
 - `--extreme_sensitivity` used for fusioninspector to minimize fusioninspector filtering [#424](https://github.com/nf-core/rnafusion/pull/424)
 - `--extreme_sensitivity` removed in favor of `--max_sensitivity --max_mate_dist 10000000 --annotate --examine_coding_effect` to collect more data from fusioninspector [#426](https://github.com/nf-core/rnafusion/pull/426)
+- `arriba` updated to 2.4.0
 
 ### Fixed
 
