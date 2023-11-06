@@ -352,7 +352,7 @@ def build_hgnc_dataframe(file):
     Build a DataFrame from HGNC input file, extracting 'hgnc_id' and 'ensembl_gene_id' columns.
     """
     df = pd.read_csv(file, sep="\t", low_memory=False)
-    df['hgnc_id'] = df['hgnc_id'].str.replace("HGNC:","")
+    df["hgnc_id"] = df["hgnc_id"].str.replace("HGNC:", "")
     return df[["hgnc_id", "ensembl_gene_id"]].dropna()
 
 
