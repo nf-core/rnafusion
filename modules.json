@@ -70,11 +70,6 @@
                         "git_sha": "735e1e04e7e01751d2d6e97055bbdb6f70683cc1",
                         "installed_by": ["modules"]
                     },
-                    "picard/markduplicates": {
-                        "branch": "master",
-                        "git_sha": "2ee934606f1fdf7fc1cb05d6e8abc13bec8ab448",
-                        "installed_by": ["modules"]
-                    },
                     "samtools/faidx": {
                         "branch": "master",
                         "git_sha": "fd742419940e01ba1c5ecb172c3e32ec840662fe",
