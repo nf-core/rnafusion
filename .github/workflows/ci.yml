@@ -27,8 +27,8 @@ jobs:
           - "23.04.0"
           - "latest-everything"
         trim_parameters:
-        - "--fastp_trim false"
-        - "--fastp_trim true"
+          - "--fastp_trim false"
+          - "--fastp_trim true"
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v3
@@ -50,4 +50,3 @@ jobs:
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker -stub \
           --outdir /home/runner/work/rnafusion/rnafusion/results --all matrix.trim_parameters \
           --genomes_base /home/runner/work/rnafusion/rnafusion/results/references
-
