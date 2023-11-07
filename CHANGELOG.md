@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `--extreme_sensitivity` used for fusioninspector to minimize fusioninspector filtering [#424](https://github.com/nf-core/rnafusion/pull/424)
 - `--extreme_sensitivity` removed in favor of `--max_sensitivity --max_mate_dist 10000000 --annotate --examine_coding_effect` to collect more data from fusioninspector [#426](https://github.com/nf-core/rnafusion/pull/426)
 - `Arriba` updated to 2.4.0 [#429](https://github.com/nf-core/rnafusion/pull/429)
+- CI tests on `--all` instead of each tool separately, and include trimmed/not trimmed matrix tests [#430](https://github.com/nf-core/rnafusion/pull/430)
 
 ### Fixed
 
