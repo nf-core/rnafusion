@@ -11,7 +11,7 @@ from gtfparse import read_gtf
 logger = logging.getLogger()
 
 
-def vcf_collect(fusioninspector_in_file, fusionreport_in_file, gtf, hgnc, sample, out):
+def vcf_collect(fusioninspector_in_file, fusionreport_in_file, sample, hgnc, gtf, out):
     """
     Process FusionInspector and FusionReport data,
     merge with GTF from FusionInspector and HGNC database,
@@ -33,14 +33,17 @@ def vcf_collect(fusioninspector_in_file, fusionreport_in_file, gtf, hgnc, sample
         .reset_index()
     )
 
-    df = build_hgnc_dataframe(hgnc).merge(
+    df = build_hgcn_dataframe(hgnc).merge(
         merged_df, how="right", left_on="ensembl_gene_id", right_on="Left_ensembl_gene_id"
     )
     df = df.rename(columns={"hgnc_id": "Left_hgnc_id"})
-    df = build_hgnc_dataframe(hgnc).merge(df, how="right", left_on="ensembl_gene_id", right_on="Right_ensembl_gene_id")
+    df = build_hgcn_dataframe(hgnc).merge(df, how="right", left_on="ensembl_gene_id", right_on="Right_ensembl_gene_id")
     df = df.rename(columns={"hgnc_id": "Right_hgnc_id"})
     gtf_df = build_gtf_dataframe(gtf)
     all_df = df.merge(gtf_df, how="left", left_on="CDS_LEFT_ID", right_on="Transcript_id")
+    all_df[["PosA", "orig_start", "orig_end"]] = all_df[["PosA", "orig_start", "orig_end"]].fillna(0)
+    all_df[["PosA", "orig_start", "orig_end"]] = all_df[["PosA", "orig_start", "orig_end"]].astype(int)
+
     all_df = all_df[(all_df["PosA"] >= all_df["orig_start"]) & (all_df["PosA"] <= all_df["orig_end"])]
     all_df = all_df.rename(columns={"transcript_version": "Left_transcript_version"})
     all_df = all_df.rename(columns={"exon_number": "Left_exon_number"})
@@ -73,7 +76,10 @@ def vcf_collect(fusioninspector_in_file, fusionreport_in_file, gtf, hgnc, sample
         ]
     ].drop_duplicates()
     all_df = all_df.merge(gtf_df, how="left", left_on="CDS_RIGHT_ID", right_on="Transcript_id")
+    all_df[["PosB", "orig_start", "orig_end"]] = all_df[["PosB", "orig_start", "orig_end"]].fillna(0)
+    all_df[["PosB", "orig_start", "orig_end"]] = all_df[["PosB", "orig_start", "orig_end"]].astype(int)
     all_df = all_df[(all_df["PosB"] >= all_df["orig_start"]) & (all_df["PosB"] <= all_df["orig_end"])]
+
     all_df = all_df.rename(columns={"transcript_version": "Right_transcript_version"})
     all_df = all_df.rename(columns={"exon_number": "Right_exon_number"})
     all_df = all_df[
@@ -195,7 +201,6 @@ def build_fusioninspector_dataframe(file):
     df = df.rename(columns={"#FusionName": "FUSION"})
     df[["ChromosomeA", "PosA", "Strand1"]] = df["LeftBreakpoint"].str.split(":", expand=True)
     df[["ChromosomeB", "PosB", "Strand2"]] = df["RightBreakpoint"].str.split(":", expand=True)
-    df[["GeneA", "GeneB"]] = df["FUSION"].str.split("--", expand=True)
     df[["LeftGeneName", "Left_ensembl_gene_id"]] = df["LeftGene"].str.split("^", expand=True)
     df[["RightGeneName", "Right_ensembl_gene_id"]] = df["RightGene"].str.split("^", expand=True)
     return df.set_index(["FUSION"])
@@ -234,11 +239,11 @@ def read_build_fusionreport(fusionreport_file):
         from_html = [line.split('rows": [')[1] for line in f if 'name="fusion_list' in line]
         expression = from_html[0].split('], "tool')[0]
     fusion_report = pd.DataFrame.from_dict(ast.literal_eval(expression))
-    if "arriba" not in fusion_report.columns:
+    if not "arriba" in fusion_report.columns:
         fusion_report["arriba"] = ""
-    if "fusioncatcher" not in fusion_report.columns:
+    if not "fusioncatcher" in fusion_report.columns:
         fusion_report["fusioncatcher"] = ""
-    if "starfusion" not in fusion_report.columns:
+    if not "starfusion" in fusion_report.columns:
         fusion_report["starfusion"] = ""
     fusion_report["arriba"] = fusion_report[["arriba"]].apply(
         replace_value_with_column_name, args=("true", "arriba"), axis=1
@@ -254,7 +259,11 @@ def read_build_fusionreport(fusionreport_file):
     )
     fusion_report.columns = fusion_report.columns.str.upper()
     fusion_report["FOUND_DB"] = fusion_report["FOUND_DB"].apply(lambda x: ", ".join(x))
-    return fusion_report[["FUSION", "TOOLS_HITS", "SCORE", "FOUND_DB", "FOUND_IN"]].set_index(["FUSION"])
+    fusion_report[["GeneA", "GeneB"]] = fusion_report["FUSION"].str.split("--", expand=True)
+
+    return fusion_report[["FUSION", "GeneA", "GeneB", "TOOLS_HITS", "SCORE", "FOUND_DB", "FOUND_IN"]].set_index(
+        ["FUSION"]
+    )
 
 
 def column_manipulation(df):
@@ -270,10 +279,12 @@ def column_manipulation(df):
     df["REF"] = "N"
     df["INFO"] = ""
     df["Sample"] = ""
+    df["Strand1"] = df["Strand1"].astype(str)
 
     for index, row in df.iterrows():
-        # ALT
-        if not row["Strand1"] in ["+", "-"] or not row["Strand2"] in ["+", "-"]:
+        if row["Strand1"] == "nan":
+            df.loc[index, "ALT"] = "nan"
+        elif not row["Strand1"] in ["+", "-"] or not row["Strand2"] in ["+", "-"]:
             df.loc[index, "ALT"] = "N[{}:{}[".format(df["ChromosomeB"], row["PosB"])
         elif row["Strand1"] == "-" and row["Strand2"] == "-":
             df.loc[index, "ALT"] = "[{}:{}[N".format(row["ChromosomeB"], row["PosB"])
@@ -283,12 +294,12 @@ def column_manipulation(df):
             df.loc[index, "ALT"] = "N]{}:{}]".format(row["ChromosomeB"], row["PosB"])
         else:
             df.loc[index, "ALT"] = "N[{}:{}[".format(row["ChromosomeB"], row["PosB"])
-        # INFO
+
         df.loc[index, "INFO"] = (
             "SVTYPE=BND;CHRA={};CHRB={};GENEA={};GENEB={};POSA={};POSB={};ORIENTATION={},{};FOUND_DB={};"
-            "FOUND_IN={};TOOL_HITS={};SCORE={};FRAME_STATUS={};TRANSCRIPT_ID_A={};TRANSCRIPT_ID_B={};"
-            "TRANSCRIPT_VERSION_A={};TRANSCRIPT_VERSION_B={};HGNC_ID_A={};HGNC_ID_B={};EXON_NUMBER_A={};"
-            "EXON_NUMBER_B={};ANNOTATIONS={}".format(
+            "FOUND_IN={};;TOOL_HITS={};SCORE={};FRAME_STATUS={};TRANSCRIPT_ID_A={};TRANSCRIPT_ID_B={};"
+            "TRANSCRIPT_VERSION_A={};TRANSCRIPT_VERSION_B={};HGNC_ID_A={};HGNC_ID_B={};EXON_NUMBER_A={},EXON_NUMBER_B={};"
+            "ANNOTATIONS={}".format(
                 row["ChromosomeA"],
                 row["ChromosomeB"],
                 row["GeneA"],
@@ -347,7 +358,7 @@ def write_vcf(df_to_print, header, out_file):
         f.write(header.rstrip("\r\n") + "\n" + content)
 
 
-def build_hgnc_dataframe(file):
+def build_hgcn_dataframe(file):
     """
     Build a DataFrame from HGNC input file, extracting 'hgnc_id' and 'ensembl_gene_id' columns.
     """
