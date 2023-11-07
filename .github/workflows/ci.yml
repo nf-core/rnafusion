@@ -48,5 +48,5 @@ jobs:
       - name: Dry test run
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker -stub \
-          --outdir /home/runner/work/rnafusion/rnafusion/results --all matrix.trim_parameters \
+          --outdir /home/runner/work/rnafusion/rnafusion/results --all ${{ matrix.trim_parameters }} \
           --genomes_base /home/runner/work/rnafusion/rnafusion/results/references
