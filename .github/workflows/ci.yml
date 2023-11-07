@@ -26,6 +26,9 @@ jobs:
         NXF_VER:
           - "23.04.0"
           - "latest-everything"
+        trim_parameters:
+        - "--fastp_trim false"
+        - "--fastp_trim true"
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v3
@@ -35,51 +38,16 @@ jobs:
         with:
           version: "${{ matrix.NXF_VER }}"
 
-      - name: Dry test arriba build
+      - name: Dry test build
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker -stub --build_references \
-          --outdir /home/runner/work/rnafusion/rnafusion/results --arriba \
+          --outdir /home/runner/work/rnafusion/rnafusion/results --all \
           --genomes_base /home/runner/work/rnafusion/rnafusion/results/references \
           --cosmic_username ${{ secrets.COSMIC_USERNAME }} --cosmic_passwd ${{ secrets.COSMIC_PASSWD }}
 
-      - name: Dry test arriba
+      - name: Dry test run
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker -stub \
-          --outdir /home/runner/work/rnafusion/rnafusion/results --arriba \
-          --genomes_base /home/runner/work/rnafusion/rnafusion/results/references \
-          --cosmic_username ${{ secrets.COSMIC_USERNAME }} --cosmic_passwd ${{ secrets.COSMIC_PASSWD }}
+          --outdir /home/runner/work/rnafusion/rnafusion/results --all matrix.trim_parameters \
+          --genomes_base /home/runner/work/rnafusion/rnafusion/results/references
 
-      - name: Dry test fusioncatcher build
-        run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker -stub --build_references \
-          --outdir /home/runner/work/rnafusion/rnafusion/results --fusioncatcher \
-          --genomes_base /home/runner/work/rnafusion/rnafusion/results/references \
-          --cosmic_username ${{ secrets.COSMIC_USERNAME }} --cosmic_passwd ${{ secrets.COSMIC_PASSWD }}
-
-      - name: Dry test fusioncatcher
-        run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker -stub \
-          --outdir /home/runner/work/rnafusion/rnafusion/results --fusioncatcher \
-          --genomes_base /home/runner/work/rnafusion/rnafusion/results/references \
-          --cosmic_username ${{ secrets.COSMIC_USERNAME }} --cosmic_passwd ${{ secrets.COSMIC_PASSWD }}
-
-      - name: Dry test starfusion build
-        run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker -stub build_references \
-          --outdir /home/runner/work/rnafusion/rnafusion/results --starfusion \
-          --genomes_base /home/runner/work/rnafusion/rnafusion/results/references \
-          --cosmic_username ${{ secrets.COSMIC_USERNAME }} --cosmic_passwd ${{ secrets.COSMIC_PASSWD }}
-
-      - name: Dry test starfusion
-        run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker -stub \
-          --outdir /home/runner/work/rnafusion/rnafusion/results --starfusion \
-          --genomes_base /home/runner/work/rnafusion/rnafusion/results/references \
-          --cosmic_username ${{ secrets.COSMIC_USERNAME }} --cosmic_passwd ${{ secrets.COSMIC_PASSWD }}
-
-      - name: Dry test stingtie
-        run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker -stub \
-          --outdir /home/runner/work/rnafusion/rnafusion/results --stringtie \
-          --genomes_base /home/runner/work/rnafusion/rnafusion/results/references \
-          --cosmic_username ${{ secrets.COSMIC_USERNAME }} --cosmic_passwd ${{ secrets.COSMIC_PASSWD }}
