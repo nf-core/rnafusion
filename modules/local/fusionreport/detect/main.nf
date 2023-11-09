@@ -3,7 +3,7 @@ process FUSIONREPORT {
     label 'process_medium'
 
     conda "bioconda::star=2.7.9a"
-    container "docker.io/clinicalgenomics/fusion-report:2.1.5p7"
+    container "docker.io/clinicalgenomics/fusion-report:2.1.5p8"
 
 
     input:
