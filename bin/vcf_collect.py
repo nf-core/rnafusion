@@ -193,7 +193,7 @@ def header_def(sample):
     )
 
 
-def build_fusioninspector_dataframe(file):
+def build_fusioninspector_dataframe(file: str) -> pd.DataFrame:
     """
     Read FusionInspector output from a CSV file, preprocess the data, and set 'FUSION' as the index.
     """
