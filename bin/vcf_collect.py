@@ -11,7 +11,7 @@ from gtfparse import read_gtf
 logger = logging.getLogger()
 
 
-def vcf_collect(fusioninspector_in_file, fusionreport_in_file, sample, hgnc, gtf, out):
+def vcf_collect(fusioninspector_in_file: str, fusionreport_in_file: str, sample: str, hgnc: str, gtf: str, out_file) -> None:
     """
     Process FusionInspector and FusionReport data,
     merge with GTF from FusionInspector and HGNC database,
@@ -206,7 +206,7 @@ def build_fusioninspector_dataframe(file: str) -> pd.DataFrame:
     return df.set_index(["FUSION"])
 
 
-def replace_value_with_column_name(row, value_to_replace, column_name):
+def replace_value_with_column_name(row: pd.Series, value_to_replace: str, column_name: str) -> str:
     """
     Replace a specific value in a row with the corresponding column name.
     """
@@ -220,7 +220,7 @@ def replace_value_with_column_name(row, value_to_replace, column_name):
     return new_values
 
 
-def concatenate_columns(row):
+def concatenate_columns(row: pd.Series) -> str:
     """
     Concatenate non-empty values in a row into a single string separated by commas.
     """
@@ -228,7 +228,7 @@ def concatenate_columns(row):
     return ",".join(non_empty_values)
 
 
-def read_build_fusionreport(fusionreport_file):
+def read_build_fusionreport(fusionreport_file: str) -> pd.DataFrame:
     """
     Read and preprocess fusion-report data from a file, including handling missing tool columns,
     getting the columns with each tool and create a new FOUND_IN column with all the tool hits.
@@ -266,7 +266,7 @@ def read_build_fusionreport(fusionreport_file):
     )
 
 
-def column_manipulation(df):
+def column_manipulation(df: pd.DataFrame) -> pd.DataFrame:
     """
     Manipulate and prepare DataFrame for VCF file creation.
     """
@@ -297,7 +297,7 @@ def column_manipulation(df):
 
         df.loc[index, "INFO"] = (
             "SVTYPE=BND;CHRA={};CHRB={};GENEA={};GENEB={};POSA={};POSB={};ORIENTATION={},{};FOUND_DB={};"
-            "FOUND_IN={};;TOOL_HITS={};SCORE={};FRAME_STATUS={};TRANSCRIPT_ID_A={};TRANSCRIPT_ID_B={};"
+            "FOUND_IN={};TOOL_HITS={};SCORE={};FRAME_STATUS={};TRANSCRIPT_ID_A={};TRANSCRIPT_ID_B={};"
             "TRANSCRIPT_VERSION_A={};TRANSCRIPT_VERSION_B={};HGNC_ID_A={};HGNC_ID_B={};EXON_NUMBER_A={},EXON_NUMBER_B={};"
             "ANNOTATIONS={}".format(
                 row["ChromosomeA"],
@@ -328,7 +328,7 @@ def column_manipulation(df):
     return df
 
 
-def write_vcf(df_to_print, header, out_file):
+def write_vcf(df_to_print: pd.DataFrame, header: str, out_file: str) -> None:
     """
     Write a VCF file with a specified DataFrame, header, and output file path.
     """
@@ -358,7 +358,7 @@ def write_vcf(df_to_print, header, out_file):
         f.write(header.rstrip("\r\n") + "\n" + content)
 
 
-def build_hgcn_dataframe(file):
+def build_hgcn_dataframe(file: str) -> pd.DataFrame:
     """
     Build a DataFrame from HGNC input file, extracting 'hgnc_id' and 'ensembl_gene_id' columns.
     """
@@ -367,7 +367,7 @@ def build_hgcn_dataframe(file):
     return df[["hgnc_id", "ensembl_gene_id"]].dropna()
 
 
-def build_gtf_dataframe(file):
+def build_gtf_dataframe(file: str) -> pd.DataFrame:
     """
     Build a DataFrame from GTF file converted in TSV, extracting relevant columns.
     """
