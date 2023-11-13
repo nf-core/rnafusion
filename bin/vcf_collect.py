@@ -22,7 +22,7 @@ def vcf_collect(fusioninspector_in_file: str, fusionreport_in_file: str, sample:
         fusionreport_in_file (str): Path to FusionReport input file.
         sample (str): Sample name for the header.
         hgnc (str): Path to HGNC file.
-        gtf (str): Path to GTF file.
+        gtf (str): Path to output GTF file from FusionInspector.
         out (str): Output VCF file path.
 
     Adapted from: https://github.com/J35P312/MegaFusion
