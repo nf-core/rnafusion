@@ -159,7 +159,7 @@ def parse_args(argv=None):
     return parser.parse_args(argv)
 
 
-def header_def(sample):
+def header_def(sample: str) -> str:
     """
     Define the header of the VCF file
     """
@@ -195,6 +195,14 @@ def header_def(sample):
         sample
     )
 
+
+def convert_to_list(annots_str: str) -> list:
+    try:
+        return ast.literal_eval(annots_str)
+    except (SyntaxError, ValueError):
+        return np.nan
+
+
 def build_fusioninspector_dataframe(file: str) -> pd.DataFrame:
     """
     Read FusionInspector output from a CSV file, preprocess the data, and set 'FUSION' as the index.
@@ -205,6 +213,11 @@ def build_fusioninspector_dataframe(file: str) -> pd.DataFrame:
     df[["ChromosomeB", "PosB", "Strand2"]] = df["RightBreakpoint"].str.split(":", expand=True)
     df[["LeftGeneName", "Left_ensembl_gene_id"]] = df["LeftGene"].str.split("^", expand=True)
     df[["RightGeneName", "Right_ensembl_gene_id"]] = df["RightGene"].str.split("^", expand=True)
+    df["annots"] = (
+        df["annots"]
+        .apply(convert_to_list)
+        .apply(lambda x: ",".join(map(str, x)) if isinstance(x, list) else str(x) if pd.notna(x) else "")
+    )
     return df.set_index(["FUSION"])
 
 
@@ -328,12 +341,7 @@ def write_vcf(df_to_print: pd.DataFrame, header: str, out_file: str) -> None:
             "FORMAT",
             "Sample",
         ]
-    ].to_csv(
-        path_or_buf=out_file,
-        sep="\t",
-        header=None,
-        index=False,
-    )
+    ].to_csv(path_or_buf=out_file, sep="\t", header=None, index=False, quoting=csv.QUOTE_NONE)
 
     with open(out_file, "r+") as f:
         content = f.read()
