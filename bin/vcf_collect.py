@@ -285,46 +285,27 @@ def column_manipulation(df: pd.DataFrame) -> pd.DataFrame:
         if row["Strand1"] == "nan":
             df.loc[index, "ALT"] = "nan"
         elif not row["Strand1"] in ["+", "-"] or not row["Strand2"] in ["+", "-"]:
-            df.loc[index, "ALT"] = "N[{}:{}[".format(df["ChromosomeB"], row["PosB"])
+            df.loc[index, "ALT"] = f'N[{df["ChromosomeB"]}:{row["PosB"]}['
         elif row["Strand1"] == "-" and row["Strand2"] == "-":
-            df.loc[index, "ALT"] = "[{}:{}[N".format(row["ChromosomeB"], row["PosB"])
+            df.loc[index, "ALT"] = f'[{row["ChromosomeB"]}:{row["PosB"]}[N'
         elif row["Strand1"] == "+" and row["Strand2"] == "-":
-            df.loc[index, "ALT"] = "N]{}:{}]".format(row["ChromosomeB"], row["PosB"])
+            df.loc[index, "ALT"] = f'N]{row["ChromosomeB"]}:{row["PosB"]}]'
         elif row["Strand1"] == "-" and row["Strand2"] == "+":
-            df.loc[index, "ALT"] = "N]{}:{}]".format(row["ChromosomeB"], row["PosB"])
+            df.loc[index, "ALT"] = f'N]{row["ChromosomeB"]}:{row["PosB"]}]'
         else:
-            df.loc[index, "ALT"] = "N[{}:{}[".format(row["ChromosomeB"], row["PosB"])
+            df.loc[index, "ALT"] = f'N[{row["ChromosomeB"]}:{row["PosB"]}['
 
         df.loc[index, "INFO"] = (
-            "SVTYPE=BND;CHRA={};CHRB={};GENEA={};GENEB={};POSA={};POSB={};ORIENTATION={},{};FOUND_DB={};"
-            "FOUND_IN={};TOOL_HITS={};SCORE={};FRAME_STATUS={};TRANSCRIPT_ID_A={};TRANSCRIPT_ID_B={};"
-            "TRANSCRIPT_VERSION_A={};TRANSCRIPT_VERSION_B={};HGNC_ID_A={};HGNC_ID_B={};EXON_NUMBER_A={},EXON_NUMBER_B={};"
-            "ANNOTATIONS={}".format(
-                row["ChromosomeA"],
-                row["ChromosomeB"],
-                row["GeneA"],
-                row["GeneB"],
-                row["PosA"],
-                row["PosB"],
-                row["Strand1"],
-                row["Strand2"],
-                row["FOUND_DB"],
-                row["FOUND_IN"],
-                row["TOOLS_HITS"],
-                row["SCORE"],
-                row["PROT_FUSION_TYPE"],
-                row["CDS_LEFT_ID"],
-                row["CDS_RIGHT_ID"],
-                row["Left_transcript_version"],
-                row["Right_transcript_version"],
-                row["Left_hgnc_id"],
-                row["Right_hgnc_id"],
-                row["Left_exon_number"],
-                row["Right_exon_number"],
-                row["annots"],
-            )
+            f"SVTYPE=BND;CHRA={row['ChromosomeA']};CHRB={row['ChromosomeB']};GENEA={row['GeneA']};GENEB={row['GeneB']};"
+            f"POSA={row['PosA']};POSB={row['PosB']};ORIENTATION={row['Strand1']},{row['Strand2']};FOUND_DB={row['FOUND_DB']};"
+            f"FOUND_IN={row['FOUND_IN']};TOOL_HITS={row['TOOLS_HITS']};SCORE={row['SCORE']};FRAME_STATUS={row['PROT_FUSION_TYPE']};"
+            f"TRANSCRIPT_ID_A={row['CDS_LEFT_ID']};TRANSCRIPT_ID_B={row['CDS_RIGHT_ID']};"
+            f"TRANSCRIPT_VERSION_A={row['Left_transcript_version']};TRANSCRIPT_VERSION_B={row['Right_transcript_version']};"
+            f"HGNC_ID_A={row['Left_hgnc_id']};HGNC_ID_B={row['Right_hgnc_id']};"
+            f"EXON_NUMBER_A={row['Left_exon_number']},EXON_NUMBER_B={row['Right_exon_number']};"
+            f"ANNOTATIONS={row['annots']}"
         )
-        df.loc[index, "Sample"] = "./1:{}:{}:{}".format(row["JunctionReadCount"], row["SpanningFragCount"], row["FFPM"])
+        df.loc[index, "Sample"] = f"./1:{row['JunctionReadCount']}:{row['SpanningFragCount']}:{row['FFPM']}"
     return df
 
 
