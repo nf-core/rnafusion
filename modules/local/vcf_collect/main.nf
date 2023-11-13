@@ -2,10 +2,8 @@ process VCF_COLLECT {
     tag "$meta.id"
     label 'process_single'
 
-    conda "conda-forge::python=3.8.3"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/pandas:1.5.2' :
-        'quay.io/biocontainers/pandas:1.5.2' }"
+    conda "bioconda::gtfparse=2.0.1"
+    container "quay.io/biocontainers/gtfparse:2.0.1--pyh7cba7a3_1"
 
     input:
     tuple val(meta), path(fusioninspector_tsv), path(fusioninspector_gtf_tsv), path(fusionreport_report)
@@ -22,7 +20,7 @@ process VCF_COLLECT {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    vcf_collect.py --fusioninspector $fusioninspector_tsv --fusionreport $fusionreport_report --fusioninspector_gtf $fusioninspector_gtf_tsv --hgnc $hgnc_ref --sample ${prefix} --out ${prefix}_fusion_data.vcf
+    vcf_collect.py --fusioninspector $fusioninspector_tsv --fusionreport $fusionreport_report --fusioninspector_gtf $fusioninspector_gtf_tsv --hgnc $hgnc_ref --sample ${prefix} --out ${prefix}.vcf
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
