@@ -11,7 +11,9 @@ from gtfparse import read_gtf
 logger = logging.getLogger()
 
 
-def vcf_collect(fusioninspector_in_file: str, fusionreport_in_file: str, sample: str, hgnc: str, gtf: str, out_file) -> None:
+def vcf_collect(
+    fusioninspector_in_file: str, fusionreport_in_file: str, sample: str, hgnc: str, gtf: str, out_file
+) -> None:
     """
     Process FusionInspector and FusionReport data,
     merge with GTF from FusionInspector and HGNC database,
