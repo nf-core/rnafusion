@@ -200,6 +200,8 @@ The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They m
 
 ### Fusion-report
 
+Please note that fusion-report is executed from fork https://github.com/Clinical-Genomics/fusion-report
+
 <details markdown="1">
 <summary>Output files</summary>
 

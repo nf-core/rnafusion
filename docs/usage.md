@@ -94,6 +94,10 @@ process {
 The four `fusion-report` files: `cosmic.db`, `fusiongdb.db`, `fusiongdb2.db`, `mitelman.db`
 should then be copied into the HPC `<REFERENCE_PATH>/references/fusion_report_db`.
 
+#### Note about fusioncatcher references
+
+The references are only built based on ensembl version 102. It is not possible currently to use any other version/source.
+
 ## Running the pipeline
 
 ### Samplesheet input
