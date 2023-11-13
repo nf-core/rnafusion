@@ -6,7 +6,8 @@ import sys
 from pathlib import Path
 import pandas as pd
 import ast
-from gtfparse import read_gtf
+import numpy as np
+import csv
 
 logger = logging.getLogger()
 
@@ -176,16 +177,16 @@ def header_def(sample):
 ##INFO=<ID=FOUND_IN,Number=.,Type=String,Description="Callers that have found the fusion">\n\
 ##INFO=<ID=TOOL_HITS,Number=.,Type=Integer,Description="Number of tools that found the fusion">\n\
 ##INFO=<ID=SCORE,Number=.,Type=Float,Description="Score from fusionreport">\n\
-##INFO=<ID=FRAME_STATUS,Number=.,Type=Float,Description="Frame status of the fusion">\n\
-##INFO=<ID=TRANSCRIPT_ID_A,Number=.,Type=Float,Description="Transcript id A ">\n\
-##INFO=<ID=TRANSCRIPT_ID_B,Number=.,Type=Float,Description="Transcript id B">\n\
+##INFO=<ID=FRAME_STATUS,Number=.,Type=String,Description="Frame status of the fusion">\n\
+##INFO=<ID=TRANSCRIPT_ID_A,Number=.,Type=String,Description="Transcript id A ">\n\
+##INFO=<ID=TRANSCRIPT_ID_B,Number=.,Type=String,Description="Transcript id B">\n\
 ##INFO=<ID=TRANSCRIPT_VERSION_A,Number=.,Type=Float,Description="Transcript version A">\n\
 ##INFO=<ID=TRANSCRIPT_VERSION_B,Number=.,Type=Float,Description="Transcript version B">\n\
 ##INFO=<ID=HGNC_ID_A,Number=.,Type=Float,Description="HGNC id A">\n\
 ##INFO=<ID=HGNC_ID_B,Number=.,Type=Float,Description="HGNC id A">\n\
 ##INFO=<ID=EXON_NUMBER_A,Number=.,Type=Float,Description="Exon number A">\n\
 ##INFO=<ID=EXON_NUMBER_B,Number=.,Type=Float,Description="Exon number B">\n\
-##INFO=<ID=ANNOTATIONS,Number=.,Type=Float,Description="Annotations from FusionInspector">\n\
+##INFO=<ID=ANNOTATIONS,Number=.,Type=String,Description="Annotations from FusionInspector">\n\
 ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">\n\
 ##FORMAT=<ID=DV,Number=1,Type=Integer,Description="Number of paired-ends that support the event">\n\
 ##FORMAT=<ID=RV,Number=1,Type=Integer,Description="Number of split reads that support the event">\n\
@@ -193,7 +194,6 @@ def header_def(sample):
 #CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{}'.format(
         sample
     )
-
 
 def build_fusioninspector_dataframe(file: str) -> pd.DataFrame:
     """
