@@ -11,9 +11,11 @@ import csv
 
 logger = logging.getLogger()
 
+# vcf_collect(args.fusioninspector, args.fusionreport, args.fusioninspector_gtf, args.hgnc, args.sample, args.out)
+
 
 def vcf_collect(
-    fusioninspector_in_file: str, fusionreport_in_file: str, sample: str, hgnc: str, gtf: str, out_file
+    fusioninspector_in_file: str, fusionreport_in_file: str, gtf: str, hgnc: str, sample: str, out_file
 ) -> None:
     """
     Process FusionInspector and FusionReport data,
@@ -25,7 +27,7 @@ def vcf_collect(
         fusionreport_in_file (str): Path to FusionReport input file.
         sample (str): Sample name for the header.
         hgnc (str): Path to HGNC file.
-        gtf (str): Path to output GTF file from FusionInspector.
+        gtf (str): Path to output GTF file from FusionInspector in TSV format.
         out (str): Output VCF file path.
 
     Adapted from: https://github.com/J35P312/MegaFusion
@@ -116,7 +118,7 @@ def vcf_collect(
         ]
     ].drop_duplicates()
 
-    return write_vcf(column_manipulation(all_df), header_def(sample), out)
+    return write_vcf(column_manipulation(all_df), header_def(sample), out_file)
 
 
 def parse_args(argv=None):
@@ -371,7 +373,12 @@ def build_gtf_dataframe(file: str) -> pd.DataFrame:
 def main(argv=None):
     """Coordinate argument parsing and program execution."""
     args = parse_args(argv)
-    if not args.fusioninspector.is_file() or not args.fusionreport.is_file():
+    if (
+        not args.fusioninspector.is_file()
+        or not args.fusionreport.is_file()
+        or not args.fusioninspector_gtf
+        or not args.hgnc
+    ):
         logger.error(f"The given input file {args.fusioninspector} or {args.fusionreport} was not found!")
         sys.exit(2)
     vcf_collect(args.fusioninspector, args.fusionreport, args.fusioninspector_gtf, args.hgnc, args.sample, args.out)
