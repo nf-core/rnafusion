@@ -344,7 +344,7 @@ def write_vcf(df_to_print: pd.DataFrame, header: str, out_file: str) -> None:
             "FORMAT",
             "Sample",
         ]
-    ].to_csv(path_or_buf=out_file, sep="\t", header=None, index=False, quoting=csv.QUOTE_NONE, compression='gzip')
+    ].to_csv(path_or_buf=out_file, sep="\t", header=None, index=False, quoting=csv.QUOTE_NONE, compression="gzip")
 
     with gzip.open(out_file, "r+") as f:
         content = f.read()
