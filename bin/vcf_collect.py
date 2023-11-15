@@ -319,7 +319,7 @@ def column_manipulation(df: pd.DataFrame) -> pd.DataFrame:
             f"TRANSCRIPT_ID_A={row['CDS_LEFT_ID']};TRANSCRIPT_ID_B={row['CDS_RIGHT_ID']};"
             f"TRANSCRIPT_VERSION_A={row['Left_transcript_version']};TRANSCRIPT_VERSION_B={row['Right_transcript_version']};"
             f"HGNC_ID_A={row['Left_hgnc_id']};HGNC_ID_B={row['Right_hgnc_id']};"
-            f"EXON_NUMBER_A={row['Left_exon_number']},EXON_NUMBER_B={row['Right_exon_number']};"
+            f"EXON_NUMBER_A={row['Left_exon_number']};EXON_NUMBER_B={row['Right_exon_number']};"
             f"ANNOTATIONS={row['annots']}"
         )
         df.loc[index, "Sample"] = f"./1:{row['JunctionReadCount']}:{row['SpanningFragCount']}:{row['FFPM']}"
