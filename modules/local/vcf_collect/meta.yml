@@ -32,8 +32,8 @@ output:
       pattern: "versions.yml"
   - vcf:
       type: file
-      description: File containing the summary of all fusions as vcf file
-      pattern: "*.tsv"
+      description: File containing the summary of all fusions as compressed vcf file
+      pattern: "*.vcf.gz"
 
 authors:
   - "@rannick"

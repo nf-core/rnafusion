@@ -14,7 +14,7 @@ process VCF_COLLECT {
 
     output:
     path "versions.yml"              , emit: versions
-    tuple val(meta), path("*vcf")    , emit: vcf
+    tuple val(meta), path("*vcf.gz") , emit: vcf
 
     when:
     task.ext.when == null || task.ext.when
@@ -22,7 +22,7 @@ process VCF_COLLECT {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    vcf_collect.py --fusioninspector $fusioninspector_tsv --fusionreport $fusionreport_report --fusioninspector_gtf $fusioninspector_gtf_tsv --hgnc $hgnc_ref --sample ${prefix} --out ${prefix}_fusion_data.vcf
+    vcf_collect.py --fusioninspector $fusioninspector_tsv --fusionreport $fusionreport_report --fusioninspector_gtf $fusioninspector_gtf_tsv --hgnc $hgnc_ref --sample ${prefix} --out ${prefix}_fusion_data.vcf.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

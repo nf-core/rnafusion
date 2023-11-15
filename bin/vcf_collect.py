@@ -8,6 +8,7 @@ import pandas as pd
 import ast
 import numpy as np
 import csv
+import gzip
 
 logger = logging.getLogger()
 
@@ -343,9 +344,9 @@ def write_vcf(df_to_print: pd.DataFrame, header: str, out_file: str) -> None:
             "FORMAT",
             "Sample",
         ]
-    ].to_csv(path_or_buf=out_file, sep="\t", header=None, index=False, quoting=csv.QUOTE_NONE)
+    ].to_csv(path_or_buf=out_file, sep="\t", header=None, index=False, quoting=csv.QUOTE_NONE, compression='gzip')
 
-    with open(out_file, "r+") as f:
+    with gzip.open(out_file, "r+") as f:
         content = f.read()
         f.seek(0, 0)
         f.write(header.rstrip("\r\n") + "\n" + content)
