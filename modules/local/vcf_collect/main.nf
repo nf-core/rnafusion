@@ -22,7 +22,8 @@ process VCF_COLLECT {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    vcf_collect.py --fusioninspector $fusioninspector_tsv --fusionreport $fusionreport_report --fusioninspector_gtf $fusioninspector_gtf_tsv --hgnc $hgnc_ref --sample ${prefix} --out ${prefix}_fusion_data.vcf.gz
+    vcf_collect.py --fusioninspector $fusioninspector_tsv --fusionreport $fusionreport_report --fusioninspector_gtf $fusioninspector_gtf_tsv --hgnc $hgnc_ref --sample ${prefix} --out ${prefix}_fusion_data.vcf
+    gzip ${prefix}_fusion_data.vcf
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
