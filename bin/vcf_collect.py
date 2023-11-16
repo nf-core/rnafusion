@@ -275,7 +275,7 @@ def read_build_fusionreport(fusionreport_file: str) -> pd.DataFrame:
         concatenate_columns, axis=1
     )
     fusion_report.columns = fusion_report.columns.str.upper()
-    fusion_report["FOUND_DB"] = fusion_report["FOUND_DB"].apply(lambda x: ", ".join(x))
+    fusion_report["FOUND_DB"] = fusion_report["FOUND_DB"].apply(lambda x: ",".join(x))
     fusion_report[["GeneA", "GeneB"]] = fusion_report["FUSION"].str.split("--", expand=True)
 
     return fusion_report[["FUSION", "GeneA", "GeneB", "TOOLS_HITS", "SCORE", "FOUND_DB", "FOUND_IN"]].set_index(
@@ -297,6 +297,17 @@ def column_manipulation(df: pd.DataFrame) -> pd.DataFrame:
     df["INFO"] = ""
     df["Sample"] = ""
     df["Strand1"] = df["Strand1"].astype(str)
+    df["JunctionReadCount"] = df["JunctionReadCount"].fillna(0).astype(int).astype(str)
+    df["SpanningFragCount"] = df["SpanningFragCount"].fillna(0).astype(int).astype(str)
+    df["FFPM"] = df["FFPM"].fillna(0).astype(float).astype(str)
+    df["ChromosomeA"] = df["ChromosomeA"].fillna(0).astype(int).astype(str)
+    df["ChromosomeB"] = df["ChromosomeB"].fillna(0).astype(int).astype(str)
+    df["Left_hgnc_id"] = df["Left_hgnc_id"].fillna(0).astype(int).astype(str)
+    df["Right_hgnc_id"] = df["Right_hgnc_id"].fillna(0).astype(int).astype(str)
+    df["Left_exon_number"] = df["Left_exon_number"].fillna(0).astype(int).astype(str)
+    df["Right_exon_number"] = df["Right_exon_number"].fillna(0).astype(int).astype(str)
+    df["Left_transcript_version"] = df["Left_transcript_version"].fillna(0).astype(int).astype(str)
+    df["Right_transcript_version"] = df["Right_transcript_version"].fillna(0).astype(int).astype(str)
 
     for index, row in df.iterrows():
         if row["Strand1"] == "nan":
