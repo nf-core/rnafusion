@@ -37,19 +37,36 @@ def vcf_collect(
         .join(read_build_fusionreport(fusionreport_in_file), how="outer", on="FUSION")
         .reset_index()
     )
+    hgnc_df = build_hgnc_dataframe(hgnc)
 
-    df = build_hgcn_dataframe(hgnc).merge(
-        merged_df, how="right", left_on="ensembl_gene_id", right_on="Left_ensembl_gene_id"
+    df_symbol = merged_df[merged_df["Left_ensembl_gene_id"].isna()]
+    df_not_symbol = merged_df[merged_df["Left_ensembl_gene_id"].notna()]
+
+    df_not_symbol = hgnc_df.merge(
+        df_not_symbol, how="right", left_on="ensembl_gene_id", right_on="Left_ensembl_gene_id"
     )
+    df_symbol = hgnc_df.merge(df_symbol, how="right", left_on="symbol", right_on="GeneA")
+    df = pd.concat([df_not_symbol, df_symbol])
     df = df.rename(columns={"hgnc_id": "Left_hgnc_id"})
-    df = build_hgcn_dataframe(hgnc).merge(df, how="right", left_on="ensembl_gene_id", right_on="Right_ensembl_gene_id")
+
+    df_symbol = df[df["Right_ensembl_gene_id"].isna()]
+    df_not_symbol = df[df["Right_ensembl_gene_id"].notna()]
+
+    df_not_symbol = hgnc_df.merge(
+        df_not_symbol, how="right", left_on="ensembl_gene_id", right_on="Right_ensembl_gene_id"
+    )
+    df_symbol = hgnc_df.merge(df_symbol, how="right", left_on="symbol", right_on="GeneB")
+    df = pd.concat([df_not_symbol, df_symbol])
     df = df.rename(columns={"hgnc_id": "Right_hgnc_id"})
+
     gtf_df = build_gtf_dataframe(gtf)
     all_df = df.merge(gtf_df, how="left", left_on="CDS_LEFT_ID", right_on="Transcript_id")
-    all_df[["PosA", "orig_start", "orig_end"]] = all_df[["PosA", "orig_start", "orig_end"]].fillna(0)
-    all_df[["PosA", "orig_start", "orig_end"]] = all_df[["PosA", "orig_start", "orig_end"]].astype(int)
+    all_df[["PosA", "orig_start", "orig_end"]] = all_df[["PosA", "orig_start", "orig_end"]].fillna(0).astype(int)
 
-    all_df = all_df[(all_df["PosA"] >= all_df["orig_start"]) & (all_df["PosA"] <= all_df["orig_end"])]
+    all_df = all_df[
+        ((all_df["PosA"] >= all_df["orig_start"]) & (all_df["PosA"] <= all_df["orig_end"]))
+        | ((all_df["orig_start"] == 0) & (all_df["orig_end"] == 0))
+    ]
     all_df = all_df.rename(columns={"transcript_version": "Left_transcript_version"})
     all_df = all_df.rename(columns={"exon_number": "Left_exon_number"})
     all_df = all_df[
@@ -83,10 +100,14 @@ def vcf_collect(
     all_df = all_df.merge(gtf_df, how="left", left_on="CDS_RIGHT_ID", right_on="Transcript_id")
     all_df[["PosB", "orig_start", "orig_end"]] = all_df[["PosB", "orig_start", "orig_end"]].fillna(0)
     all_df[["PosB", "orig_start", "orig_end"]] = all_df[["PosB", "orig_start", "orig_end"]].astype(int)
-    all_df = all_df[(all_df["PosB"] >= all_df["orig_start"]) & (all_df["PosB"] <= all_df["orig_end"])]
+    all_df = all_df[
+        ((all_df["PosB"] >= all_df["orig_start"]) & (all_df["PosB"] <= all_df["orig_end"]))
+        | ((all_df["orig_start"] == 0) & (all_df["orig_end"] == 0))
+    ]
 
     all_df = all_df.rename(columns={"transcript_version": "Right_transcript_version"})
     all_df = all_df.rename(columns={"exon_number": "Right_exon_number"})
+
     all_df = all_df[
         [
             "FUSION",
@@ -300,8 +321,8 @@ def column_manipulation(df: pd.DataFrame) -> pd.DataFrame:
     df["JunctionReadCount"] = df["JunctionReadCount"].fillna(0).astype(int).astype(str)
     df["SpanningFragCount"] = df["SpanningFragCount"].fillna(0).astype(int).astype(str)
     df["FFPM"] = df["FFPM"].fillna(0).astype(float).astype(str)
-    df["ChromosomeA"] = df["ChromosomeA"].fillna(0).astype(int).astype(str)
-    df["ChromosomeB"] = df["ChromosomeB"].fillna(0).astype(int).astype(str)
+    df["ChromosomeA"] = df["ChromosomeA"].fillna(0).astype(str)
+    df["ChromosomeB"] = df["ChromosomeB"].fillna(0).astype(str)
     df["Left_hgnc_id"] = df["Left_hgnc_id"].fillna(0).astype(int).astype(str)
     df["Right_hgnc_id"] = df["Right_hgnc_id"].fillna(0).astype(int).astype(str)
     df["Left_exon_number"] = df["Left_exon_number"].fillna(0).astype(int).astype(str)
@@ -334,6 +355,7 @@ def column_manipulation(df: pd.DataFrame) -> pd.DataFrame:
             f"ANNOTATIONS={row['annots']}"
         )
         df.loc[index, "Sample"] = f"./1:{row['JunctionReadCount']}:{row['SpanningFragCount']}:{row['FFPM']}"
+
     return df
 
 
@@ -362,13 +384,13 @@ def write_vcf(df_to_print: pd.DataFrame, header: str, out_file: str) -> None:
         f.write(header.rstrip("\r\n") + "\n" + content)
 
 
-def build_hgcn_dataframe(file: str) -> pd.DataFrame:
+def build_hgnc_dataframe(file: str) -> pd.DataFrame:
     """
     Build a DataFrame from HGNC input file, extracting 'hgnc_id' and 'ensembl_gene_id' columns.
     """
     df = pd.read_csv(file, sep="\t", low_memory=False)
     df["hgnc_id"] = df["hgnc_id"].str.replace("HGNC:", "")
-    return df[["hgnc_id", "ensembl_gene_id"]].dropna()
+    return df[["hgnc_id", "ensembl_gene_id", "symbol"]].dropna()
 
 
 def build_gtf_dataframe(file: str) -> pd.DataFrame:
