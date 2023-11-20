@@ -255,6 +255,8 @@ Quantifying abundances of transcripts from bulk and single-cell RNA-Seq data, or
 - `vcf_collect`
   - `<sample>_fusion_data.vcf` - contains the fusions in vcf format with collected statistics.
 
+Vcf-collect takes as input the results of fusion-report and fusioninspector. That means fusions from all tools are aggregated. Fusioninspector applies a filter so it is possible some fusions detected by a caller are not filtered out by fusioninspector. In those cases, vcf-collect will display the fusions, but a lot of data will be missing as fusioninspector performs the analysis for each fusion.
+
 </details>
 
 [Megafusion](https://github.com/J35P312/MegaFusion) converts RNA fusion files to SV VCF and collects statistics and metrics in a VCF file.

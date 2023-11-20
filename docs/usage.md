@@ -299,6 +299,19 @@ Use the parameter `--cram` to compress the BAM files to CRAM for specific tools.
 - `--cram arriba,starfusion`, default: []
 - `--cram arriba`
 
+### Troubleshooting
+
+#### GstrandBit issues
+
+The issue below sometimes occurs:
+
+```
+EXITING because of FATAL ERROR: cannot insert sequence on the fly because of strand GstrandBit problem
+SOLUTION: please contact STAR author at https://groups.google.com/forum/#!forum/rna-star
+```
+
+As the error message suggest, it is a STAR-related error and your best luck in solving it will be the forum.
+
 ### Updating the pipeline
 
 When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
