@@ -247,12 +247,12 @@ All tools have the same weight.
 
 Quantifying abundances of transcripts from bulk and single-cell RNA-Seq data, or more generally of target sequences using high-throughput sequencing reads.
 
-### Megafusion
+### Vcf_collect
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `megafusion`
+- `vcf_collect`
   - `<sample>_fusion_data.vcf` - contains the fusions in vcf format with collected statistics.
 
 </details>

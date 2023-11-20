@@ -13,7 +13,7 @@ reports:
     display: "FusionInspector TSV report"
   "**/fusionreport/*/*_fusionreport_index.html":
     display: "Fusion-report HTML report"
-  "**/megafusion/*_fusion_data.vcf":
+  "**/vcf_collect/*_fusion_data.vcf":
     display: "Collected statistics on each fusion fed to FusionInspector in VCF format"
   "**/picard/*.MarkDuplicates.metrics.txt":
     display: "Picard: Metrics from CollectRnaMetrics"
