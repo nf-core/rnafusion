@@ -118,6 +118,8 @@ If no parameters are specified, the default is applied.
 
 </details>
 
+The visualisation displays the fusions that fusioninspector outputs. That means that fusions from all callers are aggregated (by fusion-report) and then analyzed through fusioninspector (Note: Fusioninspecor contains a filtering step!).
+
 ### Cat
 
 <details markdown="1">
@@ -216,9 +218,22 @@ Please note that fusion-report is executed from fork https://github.com/Clinical
 </details>
 
 [Fusion-report](https://github.com/matq007/fusion-report) is a tool for parsing outputs from fusion detection tools.
-The score is explained [on the original fusion-report github page](https://matq007.github.io/fusion-report/#/score).
+The score is explained here: <https://github.com/Clinical-Genomics/fusion-report/blob/master/docs/score.md>. Summary:
 
-`--fusionreport_filter` can be used to filter the output of fusion-report to fusions identified by at least 2 different tools.
+The weights for databases are as follows:
+
+* FusionGDB (20)
+* COSMIC (40)
+* MITELMAN (40)
+* FusionGDB2 (0)
+
+The final formula for calculating score is:
+
+$$
+score = 0.5 * \sum_{tool}^{tools} f(fusion, tool)*w(tool) + 0.5 * \sum_{db}^{dbs} g(fusion, db)*w(db)
+$$
+
+All tools have the same weight.
 
 ### Kallisto
 

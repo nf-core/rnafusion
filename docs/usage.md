@@ -184,6 +184,12 @@ outdir: './results/'
 
 You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
 
+
+:::warning
+Conda is not currently supported.
+Supported genome is currently only GRCh38.
+:::
+
 ### Options
 
 #### Trimming
@@ -212,7 +218,7 @@ nextflow run nf-core/rnafusion \
   --tools_cutoff <INT>
 ```
 
-`--tools_cutoff INT` will discard fusions detected by less than INT tools both for display in fusionreport html index and to consider in fusioninspector.
+`--tools_cutoff INT` will discard fusions detected by less than INT tools both for display in fusionreport html index and to consider in fusioninspector. Default = 1, no filtering.
 
 #### Adding custom fusions to consider as well as the detected set: whitelist
 
