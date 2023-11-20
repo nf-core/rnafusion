@@ -184,7 +184,6 @@ outdir: './results/'
 
 You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
 
-
 :::warning
 Conda is not currently supported.
 Supported genome is currently only GRCh38.

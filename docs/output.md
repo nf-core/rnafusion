@@ -222,10 +222,10 @@ The score is explained here: <https://github.com/Clinical-Genomics/fusion-report
 
 The weights for databases are as follows:
 
-* FusionGDB (20)
-* COSMIC (40)
-* MITELMAN (40)
-* FusionGDB2 (0)
+- FusionGDB (20)
+- COSMIC (40)
+- MITELMAN (40)
+- FusionGDB2 (0)
 
 The final formula for calculating score is:
 
