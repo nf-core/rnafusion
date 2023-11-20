@@ -10,3 +10,26 @@ report_section_order:
     order: -1001
 
 export_plots: true
+
+# Run only these modules
+run_modules:
+  - custom_content
+  - fastqc
+  - fastp
+  - star
+  - samtools
+  - picard
+
+
+module_order:
+  - fastqc:
+      name: "FastQC (raw)"
+      info: "This section of the report shows FastQC results before adapter trimming."
+      path_filters:
+        - "./fastqc/raw/*.zip"
+  - fastp
+  - fastqc:
+      name: "FastQC (trimmed)"
+      info: "This section of the report shows FastQC results after adapter trimming."
+      path_filters:
+        - "./fastqc/trim/*.zip"
