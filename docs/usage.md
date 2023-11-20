@@ -15,7 +15,7 @@ The pipeline is divided into two parts:
 2. Detecting fusions
    - Supported tools: `Arriba`, `FusionCatcher`, `STAR-Fusion`, and `StringTie`
    - QC: `Fastqc`, `MultiQC`, and `Picard CollectInsertSize`, `Picard CollectWgsMetrics`, `Picard Markduplicates`
-   - Fusions visualization: `Arriba`, `fusion-report` and `FusionInspector`, VCF file creation based on `MegaFusion`
+   - Fusions visualization: `Arriba`, `fusion-report`, `FusionInspector`, and `vcf_collect`
 
 ## Download and build references
 
