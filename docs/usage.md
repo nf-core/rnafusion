@@ -309,7 +309,7 @@ EXITING because of FATAL ERROR: cannot insert sequence on the fly because of str
 SOLUTION: please contact STAR author at https://groups.google.com/forum/#!forum/rna-star
 ```
 
-As the error message suggest, it is a STAR-related error and your best luck in solving it will be the forum.
+As the error message suggests, it is a STAR-related error and your best luck in solving it will be the forum.
 
 ### Updating the pipeline
 
