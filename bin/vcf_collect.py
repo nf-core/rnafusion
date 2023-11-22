@@ -158,7 +158,13 @@ def parse_args(argv=None):
         "--fusionreport",
         metavar="FUSIONREPORT",
         type=Path,
-        help="Fusionreport output in TSV format.",
+        help="Fusionreport output in index/html format.",
+    )
+    parser.add_argument(
+        "--fusionreport_csv",
+        metavar="FUSIONREPORT_CSV",
+        type=Path,
+        help="Fusionreport output in CSV format.",
     )
     parser.add_argument(
         "--fusioninspector_gtf",
@@ -302,6 +308,11 @@ def read_build_fusionreport(fusionreport_file: str) -> pd.DataFrame:
     return fusion_report[["FUSION", "GeneA", "GeneB", "TOOLS_HITS", "SCORE", "FOUND_DB", "FOUND_IN"]].set_index(
         ["FUSION"]
     )
+
+def read_fusionreport_csv(file: str) -> pd.DataFrame:
+    df = pd.read_csv(file, sep="\t")
+
+
 
 
 def column_manipulation(df: pd.DataFrame) -> pd.DataFrame:
