@@ -11,7 +11,7 @@ workflow TRIM_WORKFLOW {
         ch_versions = Channel.empty()
         ch_fastp_html = Channel.empty()
         ch_fastp_json = Channel.empty()
-        ch_fastqc_trimmed = Channel.empty
+        ch_fastqc_trimmed = Channel.empty()
 
         if (params.fastp_trim) {
             FASTP(reads, params.adapter_fasta, false, false)
