@@ -58,7 +58,7 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         }
 
     emit:
-        arriba_visualisation = ch_arriba_visualisation.ifEmpty(null)
+        ch_arriba_visualisation
         versions             = ch_versions.ifEmpty(null)
 }
 
