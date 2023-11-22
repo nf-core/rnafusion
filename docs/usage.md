@@ -94,6 +94,10 @@ process {
 The four `fusion-report` files: `cosmic.db`, `fusiongdb.db`, `fusiongdb2.db`, `mitelman.db`
 should then be copied into the HPC `<REFERENCE_PATH>/references/fusion_report_db`.
 
+#### Note about fusioncatcher references
+
+The references are only built based on ensembl version 102. It is not possible currently to use any other version/source.
+
 ## Running the pipeline
 
 ### Samplesheet input
@@ -180,6 +184,11 @@ outdir: './results/'
 
 You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
 
+:::warning
+Conda is not currently supported.
+Supported genome is currently only GRCh38.
+:::
+
 ### Options
 
 #### Trimming
@@ -208,7 +217,7 @@ nextflow run nf-core/rnafusion \
   --tools_cutoff <INT>
 ```
 
-`--tools_cutoff INT` will discard fusions detected by less than INT tools both for display in fusionreport html index and to consider in fusioninspector.
+`--tools_cutoff INT` will discard fusions detected by less than INT tools both for display in fusionreport html index and to consider in fusioninspector. Default = 1, no filtering.
 
 #### Adding custom fusions to consider as well as the detected set: whitelist
 
@@ -288,6 +297,19 @@ Use the parameter `--cram` to compress the BAM files to CRAM for specific tools.
 
 - `--cram arriba,starfusion`, default: []
 - `--cram arriba`
+
+### Troubleshooting
+
+#### GstrandBit issues
+
+The issue below sometimes occurs:
+
+```
+EXITING because of FATAL ERROR: cannot insert sequence on the fly because of strand GstrandBit problem
+SOLUTION: please contact STAR author at https://groups.google.com/forum/#!forum/rna-star
+```
+
+As the error message suggests, it is a STAR-related error and your best luck in solving it will be the forum.
 
 ### Updating the pipeline
 

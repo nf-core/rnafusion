@@ -118,6 +118,8 @@ If no parameters are specified, the default is applied.
 
 </details>
 
+The visualisation displays the fusions that fusioninspector outputs. That means that fusions from all callers are aggregated (by fusion-report) and then analyzed through fusioninspector (Note: Fusioninspecor contains a filtering step!).
+
 ### Cat
 
 <details markdown="1">
@@ -200,6 +202,8 @@ The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They m
 
 ### Fusion-report
 
+Please note that fusion-report is executed from fork https://github.com/Clinical-Genomics/fusion-report
+
 <details markdown="1">
 <summary>Output files</summary>
 
@@ -214,9 +218,22 @@ The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They m
 </details>
 
 [Fusion-report](https://github.com/matq007/fusion-report) is a tool for parsing outputs from fusion detection tools.
-The score is explained [on the original fusion-report github page](https://matq007.github.io/fusion-report/#/score).
+The score is explained here: <https://github.com/Clinical-Genomics/fusion-report/blob/master/docs/score.md>. Summary:
 
-`--fusionreport_filter` can be used to filter the output of fusion-report to fusions identified by at least 2 different tools.
+The weights for databases are as follows:
+
+- FusionGDB (20)
+- COSMIC (40)
+- MITELMAN (40)
+- FusionGDB2 (0)
+
+The final formula for calculating score is:
+
+$$
+score = 0.5 * \sum_{tool}^{tools} f(fusion, tool)*w(tool) + 0.5 * \sum_{db}^{dbs} g(fusion, db)*w(db)
+$$
+
+All tools have the same weight.
 
 ### Kallisto
 
@@ -237,6 +254,8 @@ Quantifying abundances of transcripts from bulk and single-cell RNA-Seq data, or
 
 - `vcf_collect`
   - `<sample>_fusion_data.vcf` - contains the fusions in vcf format with collected statistics.
+
+Vcf-collect takes as input the results of fusion-report and fusioninspector. That means fusions from all tools are aggregated. Fusioninspector applies a filter so it is possible some fusions detected by a caller are not filtered out by fusioninspector. In those cases, vcf-collect will display the fusions, but a lot of data will be missing as fusioninspector performs the analysis for each fusion.
 
 </details>
 
