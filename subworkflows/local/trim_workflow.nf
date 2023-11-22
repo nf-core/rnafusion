@@ -1,4 +1,3 @@
-include { FASTQC as FASTQC_FOR_TRIM }   from '../../modules/nf-core/fastqc/main'
 include { FASTP }                       from '../../modules/nf-core/fastp/main'
 include { FASTQC as FASTQC_FOR_FASTP }  from '../../modules/nf-core/fastqc/main'
 
