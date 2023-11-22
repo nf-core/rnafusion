@@ -23,7 +23,6 @@ run_modules:
   - picard
   - arriba
 
-
 module_order:
   - fastqc:
       name: "FastQC (raw)"
