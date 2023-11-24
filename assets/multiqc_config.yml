@@ -35,8 +35,3 @@ module_order:
       info: "This section of the report shows FastQC results after adapter trimming."
       path_filters:
         - "*_trimmed*.zip"
-  - arriba:
-      name: "Arriba visualisation"
-      info: "This section of the report shows Arriba visualisation after FusionInspector analysis."
-      path_filters:
-        - "*.pdf"
