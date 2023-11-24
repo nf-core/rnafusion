@@ -63,24 +63,10 @@ def vcf_collect(
     all_df = df.merge(gtf_df, how="left", left_on="CDS_LEFT_ID", right_on="Transcript_id")
     all_df[["PosA", "orig_start", "orig_end"]] = all_df[["PosA", "orig_start", "orig_end"]].fillna(0).astype(int)
 
-    all_df["bla"] = ((all_df["PosA"] >= all_df["orig_start"]) & (all_df["PosA"] <= all_df["orig_end"])) | (
-        (all_df["orig_start"] == 0) & (all_df["orig_end"] == 0)
-    )
-
     all_df = all_df[
         ((all_df["PosA"] >= all_df["orig_start"]) & (all_df["PosA"] <= all_df["orig_end"]))
         | ((all_df["orig_start"] == 0) & (all_df["orig_end"] == 0))
     ]
-
-    all_df.replace("", np.nan, inplace=True)
-    # Fill non-empty values within each group for 'exon_number' and 'transcript_version'
-    all_df["exon_number"] = all_df.groupby("PosA")["exon_number"].transform(
-        lambda x: x.fillna(method="ffill").fillna(method="bfill")
-    )
-    all_df["transcript_version"] = all_df.groupby("PosA")["transcript_version"].transform(
-        lambda x: x.fillna(method="ffill").fillna(method="bfill")
-    )
-
     all_df = all_df.rename(columns={"transcript_version": "Left_transcript_version"})
     all_df = all_df.rename(columns={"exon_number": "Left_exon_number"})
     all_df = all_df[
