@@ -24,12 +24,12 @@ run_modules:
   - arriba
 
 module_order:
+  - fastp
   - fastqc:
       name: "FastQC (raw)"
       info: "This section of the report shows FastQC results before adapter trimming."
       path_filters:
         - "*.zip"
-  - fastp
   - fastqc:
       name: "FastQC (trimmed)"
       info: "This section of the report shows FastQC results after adapter trimming."
