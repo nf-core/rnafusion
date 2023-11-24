@@ -57,7 +57,7 @@
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "214d575774c172062924ad3564b4f66655600730",
+                        "git_sha": "1537442a7be4a78efa3d1ff700a923c627bbda5d",
                         "installed_by": ["modules"]
                     },
                     "picard/collectinsertsizemetrics": {
@@ -77,7 +77,7 @@
                     },
                     "samtools/index": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "5394565c5fe4c760e5b35977ec7607c62e81d1f8",
                         "installed_by": ["modules"]
                     },
                     "samtools/sort": {
