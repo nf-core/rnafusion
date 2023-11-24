@@ -20,6 +20,7 @@ workflow FUSIONINSPECTOR_WORKFLOW {
 
     main:
         ch_versions = Channel.empty()
+        ch_arriba_visualisation = Channel.empty()
         index ="${params.starfusion_ref}"
 
         ch_fusion_list = ( params.tools_cutoff > 1 ? fusion_list_filtered : fusion_list )
@@ -54,9 +55,11 @@ workflow FUSIONINSPECTOR_WORKFLOW {
             ch_bam_sorted_indexed_fusions = bam_sorted_indexed.join(FUSIONINSPECTOR.out.tsv)
             ARRIBA_VISUALISATION(ch_bam_sorted_indexed_fusions, ch_gtf, ch_arriba_ref_protein_domains, ch_arriba_ref_cytobands)
             ch_versions = ch_versions.mix(ARRIBA_VISUALISATION.out.versions)
+            ch_arriba_visualisation = ARRIBA_VISUALISATION.out.pdf
         }
 
     emit:
-        versions        = ch_versions.ifEmpty(null)
+        ch_arriba_visualisation
+        versions             = ch_versions.ifEmpty(null)
 }
 
