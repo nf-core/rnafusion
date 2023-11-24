@@ -10,6 +10,7 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         fusion_list
         fusion_list_filtered
         fusionreport_out
+        fusionreport_csv
         bam_sorted_indexed
         ch_gtf
         ch_arriba_ref_protein_domains
@@ -46,7 +47,7 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         AGAT_CONVERTSPGFF2TSV(FUSIONINSPECTOR.out.out_gtf)
         ch_versions = ch_versions.mix(AGAT_CONVERTSPGFF2TSV.out.versions)
 
-        fusion_data = FUSIONINSPECTOR.out.tsv_coding_effect.join(AGAT_CONVERTSPGFF2TSV.out.tsv).join(fusionreport_out)
+        fusion_data = FUSIONINSPECTOR.out.tsv_coding_effect.join(AGAT_CONVERTSPGFF2TSV.out.tsv).join(fusionreport_out).join(fusionreport_csv)
         VCF_COLLECT(fusion_data, ch_hgnc_ref, ch_hgnc_date)
         ch_versions = ch_versions.mix(VCF_COLLECT.out.versions)
 

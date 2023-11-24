@@ -222,6 +222,7 @@ workflow RNAFUSION {
         FUSIONREPORT_WORKFLOW.out.fusion_list,
         FUSIONREPORT_WORKFLOW.out.fusion_list_filtered,
         FUSIONREPORT_WORKFLOW.out.report,
+        FUSIONREPORT_WORKFLOW.out.csv,
         STARFUSION_WORKFLOW.out.ch_bam_sorted_indexed,
         ch_chrgtf,
         ch_arriba_ref_protein_domains,
