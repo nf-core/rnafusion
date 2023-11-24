@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI tests on `--all` instead of each tool separately, and include trimmed/not trimmed matrix tests [#430](https://github.com/nf-core/rnafusion/pull/430)
 - AWS tests on `--all` instead of each tool separately, and include trimmed/not trimmed matrix tests [#433](https://github.com/nf-core/rnafusion/pull/433)
 - Update `fusion-report` to 2.1.5p8 to fix download of references via proxy [#432](https://github.com/nf-core/rnafusion/pull/432)
+- Update `fusion-report` to 2.1.8, removing FusionGDB database [#445](https://github.com/nf-core/rnafusion/pull/445)
 
 ### Fixed
 
