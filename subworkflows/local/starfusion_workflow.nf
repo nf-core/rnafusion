@@ -45,16 +45,19 @@ workflow STARFUSION_WORKFLOW {
 
                 ch_starfusion_fusions = STARFUSION.out.fusions
                 ch_star_stats = STAR_FOR_STARFUSION.out.log_final
+                ch_star_gene_count = STAR_FOR_STARFUSION.out.read_per_gene_tab
             }
         }
         else {
             ch_starfusion_fusions = reads.combine(Channel.value(file(ch_dummy_file, checkIfExists:true)))
                                     .map { meta, reads, fusions -> [ meta, fusions ] }
             ch_star_stats = Channel.empty()
+            ch_star_gene_count = Channel.empty()
         }
     emit:
         fusions               = ch_starfusion_fusions
         star_stats            = ch_star_stats
+        star_gene_count       = ch_star_gene_count
         ch_bam_sorted         = ch_align.ifEmpty([[],[]])
         ch_bam_sorted_indexed = bam_sorted_indexed.ifEmpty([[],[],[]])
         versions              = ch_versions.ifEmpty(null)
