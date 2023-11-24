@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix channel i/o issue in StringTie workflow and add StringTie in github CI tests [#416](https://github.com/nf-core/rnafusion/pull/416)
 - Updated COSMIC database to fix 404 error while downloading fusionreport references [#420](https://github.com/nf-core/rnafusion/pull/420)
+- Add 'when' condition to run collectinsertsize [#444](https://github.com/nf-core/rnafusion/pull/444)
 
 ### Removed
 
