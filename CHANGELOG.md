@@ -24,11 +24,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AWS tests on `--all` instead of each tool separately, and include trimmed/not trimmed matrix tests [#433](https://github.com/nf-core/rnafusion/pull/433)
 - Update `fusion-report` to 2.1.5p8 to fix download of references via proxy [#432](https://github.com/nf-core/rnafusion/pull/432)
 - Remove `--max_sensitivity --max_mate_dist 10000000` from fusioninspector. Update vcf creation to get positions/chromosomes and strands even when fusions are filtered out by fusioninspector, using the csv output from fusion-report [#443](https://github.com/nf-core/rnafusion/pull/443)
+- Update `fusion-report` to 2.1.8, removing FusionGDB database [#445](https://github.com/nf-core/rnafusion/pull/445)
 
 ### Fixed
 
 - Fix channel i/o issue in StringTie workflow and add StringTie in github CI tests [#416](https://github.com/nf-core/rnafusion/pull/416)
 - Updated COSMIC database to fix 404 error while downloading fusionreport references [#420](https://github.com/nf-core/rnafusion/pull/420)
+- Update modules, and make sure MultiQC displays the QC results properly [#440](https://github.com/nf-core/rnafusion/pull/440)
 - Add 'when' condition to run collectinsertsize [#444](https://github.com/nf-core/rnafusion/pull/444)
 
 ### Removed
