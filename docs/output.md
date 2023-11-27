@@ -11,11 +11,9 @@ The directories listed below will be created in the results directory after the 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
 - [Download and build references](#references) - Build references needed to run the rest of the pipeline
-- [STAR](#star) - Alignment for arriba, squid and STAR-fusion
+- [STAR](#star) - Alignment for arriba, and STAR-fusion
 - [Cat](#cat) - Concatenate fastq files per sample ID
 - [Arriba](#arriba) - Arriba fusion detection
-- [Pizzly](#pizzly) - Pizzly fusion detection
-- [Squid](#squid) - Squid fusion detection
 - [STAR-fusion](#starfusion) - STAR-fusion fusion detection
 - [StringTie](#stringtie) - StringTie assembly
 - [FusionCatcher](#fusioncatcher) - Fusion catcher fusion detection
@@ -23,7 +21,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [Fusion-report](#fusion-report) - Summary of the findings of each tool and comparison to COSMIC, Mitelman, FusionGBD and FusionGDB2 databases
 - [FusionInspector](#fusionInspector) - Supervised analysis of fusion predictions from fusion-report, recover and re-score evidence for such predictions
 - [Arriba visualisation](#arriba-visualisation) - Arriba visualisation report for FusionInspector fusions
-- [Qualimap](#qualimap) - Quality control of alignments
 - [Picard](#picard) - Collect QC metrics
 - [FastQC](#fastqc) - Raw read quality control
 - [MultiQC](#multiqc) - Aggregate reports describing QC results from the whole pipeline
@@ -55,8 +52,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
     - `fusiongdb.db`
     - `fusiongdb2.db`
     - `mitelman.db`
-  - `pizzly`
-    - `kallisto` - file containing the kallisto index
   - `star` - dir with STAR index
   - `starfusion`
     - files and dirs used to build the index
@@ -78,7 +73,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 ├── arriba_visualisation
 ├── cram_arriba
 ├── cram_starfusion
-├── cram_squid
 ├── fastp
 ├── fastqc
 ├── fusioncatcher
@@ -88,15 +82,10 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 ├── megafusion
 ├── multiqc
 ├── picard
-├── pizzly
 ├── pipeline_info
-├── pizzly
-├── qualimap
 ├── samtools_sort_for_arriba
-├── squid
 ├── star_for_arriba
 ├── star_for_starfusion
-├── star_for_squid
 ├── starfusion
 └── work
 .nextflow.log
@@ -128,6 +117,8 @@ If no parameters are specified, the default is applied.
   - `<sample>_combined_fusions_arriba_visualisation.pdf`
 
 </details>
+
+The visualisation displays the fusions that fusioninspector outputs. That means that fusions from all callers are aggregated (by fusion-report) and then analyzed through fusioninspector (Note: Fusioninspecor contains a filtering step!).
 
 ### Cat
 
@@ -177,7 +168,9 @@ If `--trim_fastp` is selected, [fastp](https://github.com/OpenGene/fastp) will f
 
 ![MultiQC - FastQC adapter content plot](images/mqc_fastqc_adapter.png)
 
-> **NB:** The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
+:::note
+The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
+:::
 
 ### FusionCatcher
 
@@ -209,6 +202,8 @@ If `--trim_fastp` is selected, [fastp](https://github.com/OpenGene/fastp) will f
 
 ### Fusion-report
 
+Please note that fusion-report is executed from fork https://github.com/Clinical-Genomics/fusion-report
+
 <details markdown="1">
 <summary>Output files</summary>
 
@@ -223,9 +218,21 @@ If `--trim_fastp` is selected, [fastp](https://github.com/OpenGene/fastp) will f
 </details>
 
 [Fusion-report](https://github.com/matq007/fusion-report) is a tool for parsing outputs from fusion detection tools.
-The score is explained [on the original fusion-report github page](https://matq007.github.io/fusion-report/#/score).
+The score is explained here: <https://github.com/Clinical-Genomics/fusion-report/blob/master/docs/score.md>. Summary:
 
-`--fusionreport_filter` can be used to filter the output of fusion-report to fusions identified by at least 2 different tools.
+The weights for databases are as follows:
+
+- COSMIC (50)
+- MITELMAN (50)
+- FusionGDB2 (0)
+
+The final formula for calculating score is:
+
+$$
+score = 0.5 * \sum_{tool}^{tools} f(fusion, tool)*w(tool) + 0.5 * \sum_{db}^{dbs} g(fusion, db)*w(db)
+$$
+
+All tools have the same weight.
 
 ### Kallisto
 
@@ -239,13 +246,15 @@ The score is explained [on the original fusion-report github page](https://matq0
 
 Quantifying abundances of transcripts from bulk and single-cell RNA-Seq data, or more generally of target sequences using high-throughput sequencing reads.
 
-### Megafusion
+### Vcf_collect
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `megafusion`
+- `vcf_collect`
   - `<sample>_fusion_data.vcf` - contains the fusions in vcf format with collected statistics.
+
+Vcf-collect takes as input the results of fusion-report and fusioninspector. That means fusions from all tools are aggregated. Fusioninspector applies a filter so it is possible some fusions detected by a caller are not filtered out by fusioninspector. In those cases, vcf-collect will display the fusions, but a lot of data will be missing as fusioninspector performs the analysis for each fusion.
 
 </details>
 
@@ -277,66 +286,21 @@ Picard CollectRnaMetrics and picard MarkDuplicates share the same output directo
 - `picard`
   - `<sample>.MarkDuplicates.metrics.txt` - metrics from MarkDuplicates
   - `<sample>_rna_metrics.txt` - metrics from CollectRnaMetrics
+  - `<sample>_insert_size_metrics.txt.txt` - metrics from CollectInsertSizeMetrics
   - `<sample>.bam` - BAM file with marked duplicates
-
-</details>
-
-#### Pizzly
-
-Pizzly uses the following arguments:
-
-```bash
--k 31 \
---align-score 2 \
---insert-size 400 \
---cache index.cache.txt
-```
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `pizzly`
-  - `<sample_id>.pizzly.txt` - contains the identified fusions
-  - `<sample_id>.pizzly.unfiltered.json`
-
-</details>
-
-### Qualimap
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `qualimap`
-  - `qualimapReport.html` - HTML report
-  - `rnaseq_qc_results.txt` - TXT results
-  - `css` - dir for html style
-  - `images_qualimapReport`- dir for html images
-  - `raw_data_qualimapReport` - dir for html raw data
 
 </details>
 
 ### Samtools
 
-#### Samtools view
-
-Samtools view is used to convert the chimeric SAM output from STAR_FOR_SQUID to BAM
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `samtools_view_for_squid`
-  - `<sample>_chimeric.bam` - sorted BAM file
-
-</details>
-
 #### Samtools sort
 
-Samtools sort is used to sort BAM files from STAR_FOR_STARFUSION (for arriba visualisation) and the chimeric BAM from STAR_FOR_SQUID
+Samtools sort is used to sort BAM files from STAR_FOR_STARFUSION (for arriba visualisation)
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `samtools_sort_for_<arriba/squid>`
+- `samtools_sort_for_<arriba>`
   - `<sample>(_chimeric)_sorted.bam` - sorted BAM file
 
 </details>
@@ -350,19 +314,6 @@ Samtools index is used to index BAM files from STAR_FOR_ARRIBA (for arriba visua
 
 - `samtools_for_<arriba/qc>`
   - `<sample>.(Aligned.sortedByCoord).out.bam.bai` -
-
-</details>
-
-### Squid
-
-Squid is run in two steps: i) fusion detection and ii) fusion annotation, but the output is in a shared `squid` directory
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `squid`
-  - `<sample>.squid.fusions_sv.txt` - contains the identified fusions
-  - `<sample>.squid.fusions.annotated.txt`- contains the identified fusions annotated
 
 </details>
 
@@ -393,20 +344,6 @@ For `arriba` with the parameters:
 --chimMultimapNmax 50
 ```
 
-For `squid` with the parameters:
-
-```bash
---twopassMode Basic \
---chimOutType SeparateSAMold \
---chimSegmentMin 20 \
---chimJunctionOverhangMin 12 \
---alignSJDBoverhangMin 10 \
---outReadsUnmapped Fastx \
---outSAMstrandField intronMotif \
---outSAMtype BAM SortedByCoordinate \
---readFilesCommand zcat
-```
-
 For `STAR-fusion` with the parameters:
 
 ```bash
@@ -435,7 +372,7 @@ For `STAR-fusion` with the parameters:
 --quantMode GeneCounts
 ```
 
-> STAR_FOR_STARFUSION uses `${params.ensembl}/Homo_sapiens.GRCh38.${params.ensembl_version}.chr.gtf` whereas STAR_FOR_ARRIBA and STAR_FOR_SQUID use `${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf`
+> STAR_FOR_STARFUSION uses `${params.ensembl}/Homo_sapiens.GRCh38.${params.ensembl_version}.chr.gtf` whereas STAR_FOR_ARRIBA uses `${params.ensembl_ref}/Homo_sapiens.GRCh38.${params.ensembl_version}.gtf`
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -450,13 +387,6 @@ For `STAR-fusion` with the parameters:
 **For arriba:**
 
 - `<sample>.Aligned.out.bam`
-
-**For squid:**
-
-- `<sample>.Aligned.sortedByCoord.out.bam`
-- `<sample>.Chimeric.out.sam`
-- `<sample>.unmapped_1.fastq.gz`
-- `<sample>.unmapped_2.fastq.gz`
 
   **For starfusion:**
 
@@ -497,6 +427,7 @@ The STAR index is generated with `--sjdbOverhang ${params.read_length - 1}`, par
   - Reports generated by Nextflow: `execution_report.html`, `execution_timeline.html`, `execution_trace.txt` and `pipeline_dag.dot`/`pipeline_dag.svg`.
   - Reports generated by the pipeline: `pipeline_report.html`, `pipeline_report.txt` and `software_versions.yml`. The `pipeline_report*` files will only be present if the `--email` / `--email_on_fail` parameter's are used when running the pipeline.
   - Reformatted samplesheet files used as input to the pipeline: `samplesheet.valid.csv`.
+  - Parameters used by the pipeline run: `params.json`.
 
 </details>
 

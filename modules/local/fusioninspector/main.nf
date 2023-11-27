@@ -10,9 +10,11 @@ process FUSIONINSPECTOR {
     path reference
 
     output:
-    tuple val(meta), path("*FusionInspector.fusions.tsv")    , emit: tsv
-    path "*"                                                 , emit: output
-    path "versions.yml"                                      , emit: versions
+    tuple val(meta), path("*FusionInspector.fusions.tsv")                  , emit: tsv
+    tuple val(meta), path("*.coding_effect")                , optional:true, emit: tsv_coding_effect
+    tuple val(meta), path("*.gtf")                          , optional:true, emit: out_gtf
+    path "*"                                                               , emit: output
+    path "versions.yml"                                                    , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -21,6 +23,7 @@ process FUSIONINSPECTOR {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def fasta = meta.single_end ? "--left_fq ${reads[0]}" : "--left_fq ${reads[0]} --right_fq ${reads[1]}"
     def args = task.ext.args ?: ''
+    def args2 = task.ext.args2 ?: ''
     """
     FusionInspector \\
         --fusions $fusion_list \\
@@ -29,7 +32,7 @@ process FUSIONINSPECTOR {
         --CPU ${task.cpus} \\
         -O . \\
         --out_prefix $prefix \\
-        --vis $args
+        --vis $args $args2
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -38,9 +41,12 @@ process FUSIONINSPECTOR {
     """
 
     stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch FusionInspector.log
-    touch FusionInspector.fusions.tsv
+    touch ${prefix}.FusionInspector.log
+    touch ${prefix}.FusionInspector.fusions.tsv
+    touch ${prefix}.FusionInspector.fusions.tsv.annotated.coding_effect
+    touch ${prefix}.gtf
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -32,7 +32,6 @@
                 "input": {
                     "type": "string",
                     "format": "file-path",
-                    "exists": true,
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
@@ -61,6 +60,16 @@
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
                     "description": "Specifies which analysis type for the pipeline - either build references or analyse data"
+                },
+                "cosmic_username": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "COSMIC username"
+                },
+                "cosmic_passwd": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "COSMIC password"
                 },
                 "genomes_base": {
                     "type": "string",
@@ -149,11 +158,6 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to fusioncatcher references"
                 },
-                "fusioninspector_filter": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Feed filtered fusionreport fusions to fusioninspector"
-                },
                 "fusioninspector_limitSjdbInsertNsj": {
                     "type": "integer",
                     "fa_icon": "far fa-file-code",
@@ -179,41 +183,20 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to fusionreport references"
                 },
-                "fusionreport_filter": {
+                "hgnc_ref": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to HGNC database file"
+                },
+                "hgnc_date": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to HGNC timestamp file for database retrieval"
+                },
+                "qiagen": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
-                    "default": true,
-                    "description": "Display fusions identified with 2 tools or more"
-                },
-                "pizzly": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Build or run pizzly references/analyses"
-                },
-                "pizzly_fusions": {
-                    "type": "string",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Path to pizzly output"
-                },
-                "pizzly_ref": {
-                    "type": "string",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Path to pizzly references"
-                },
-                "squid": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Build or run squid references/analyses"
-                },
-                "squid_fusions": {
-                    "type": "string",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Path to squid output"
-                },
-                "squid_ref": {
-                    "type": "string",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Path to squid references"
+                    "description": "Use QIAGEN instead of SANGER to download COSMIC database"
                 },
                 "starfusion": {
                     "type": "boolean",
@@ -245,25 +228,15 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Run stringtie analysis"
                 },
+                "tools_cutoff": {
+                    "type": "integer",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Discard fusions identified by less than INT tools"
+                },
                 "whitelist": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
                     "description": "Path to fusions to add to the input of fusioninspector"
-                },
-                "cosmic_username": {
-                    "type": "string",
-                    "fa_icon": "far fa-file-code",
-                    "description": "COSMIC username"
-                },
-                "cosmic_passwd": {
-                    "type": "string",
-                    "fa_icon": "far fa-file-code",
-                    "description": "COSMIC password"
-                },
-                "qiagen": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Use QIAGEN instead of SANGER to download COSMIC database"
                 }
             }
         },
@@ -273,11 +246,6 @@
             "fa_icon": "fas fa-cut",
             "description": "Options to adjust read trimming criteria.",
             "properties": {
-                "trim": {
-                    "type": "boolean",
-                    "description": "Preform trimming of reads, default: false",
-                    "fa_icon": "fas fa-cut"
-                },
                 "fastp_trim": {
                     "type": "boolean",
                     "description": "Preform fastp trimming of reads, default: false",
@@ -303,7 +271,7 @@
             "properties": {
                 "cram": {
                     "type": "string",
-                    "description": "List of tools for which to compress BAM file to CRAM,default: [], options: arriba, squid, starfusion. Leave no space between options",
+                    "description": "List of tools for which to compress BAM file to CRAM,default: [], options: arriba, starfusion. Leave no space between options",
                     "fa_icon": "fas fa-cut"
                 }
             }
@@ -471,14 +439,12 @@
                     "type": "boolean",
                     "description": "Display help text.",
                     "fa_icon": "fas fa-question-circle",
-                    "default": false,
                     "hidden": true
                 },
                 "version": {
                     "type": "boolean",
                     "description": "Display version and exit.",
                     "fa_icon": "fas fa-question-circle",
-                    "default": false,
                     "hidden": true
                 },
                 "publish_dir_mode": {
@@ -502,7 +468,6 @@
                     "type": "boolean",
                     "description": "Send plain-text email instead of HTML.",
                     "fa_icon": "fas fa-remove-format",
-                    "default": false,
                     "hidden": true
                 },
                 "max_multiqc_email_size": {
@@ -517,7 +482,6 @@
                     "type": "boolean",
                     "description": "Do not use coloured log outputs.",
                     "fa_icon": "fas fa-palette",
-                    "default": false,
                     "hidden": true
                 },
                 "hook_url": {
@@ -556,7 +520,6 @@
                     "type": "boolean",
                     "fa_icon": "far fa-eye-slash",
                     "description": "Show all params when using `--help`",
-                    "default": false,
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
                 },
@@ -564,7 +527,6 @@
                     "type": "boolean",
                     "fa_icon": "far fa-check-circle",
                     "description": "Validation of parameters fails when an unrecognised parameter is found.",
-                    "default": false,
                     "hidden": true,
                     "help_text": "By default, when an unrecognised parameter is found, it returns a warinig."
                 },
@@ -572,7 +534,6 @@
                     "type": "boolean",
                     "fa_icon": "far fa-check-circle",
                     "description": "Validation of parameters in lenient more.",
-                    "default": false,
                     "hidden": true,
                     "help_text": "Allows string values that are parseable as numbers or booleans. For further information see [JSONSchema docs](https://github.com/everit-org/json-schema#lenient-mode)."
                 },

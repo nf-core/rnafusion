@@ -5,7 +5,7 @@ keywords:
 tools:
   - fusionreport:
       description: Tool for parsing outputs from fusion detection tools
-      homepage: https://github.com/matq007/fusion-report
+      homepage: https://github.com/Clinical-Genomics/fusion-report
       documentation: https://matq007.github.io/fusion-report/#/
       doi: "10.1101/011650"
       licence: ["GPL v3"]
@@ -24,14 +24,6 @@ input:
       type: path
       description: File
       pattern: "*.fusions.tsv"
-  - pizzly_fusions:
-      type: path
-      description: File containing fusions from pizzly
-      pattern: "*.pizzly.txt"
-  - squid_fusions:
-      type: path
-      description: File containing fusions from squid
-      pattern: "*.annotated.txt"
   - starfusion_fusions:
       type: path
       description: File containing fusions from STARfusion

@@ -3,6 +3,40 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v3.0.0 - [2023-11-27]
+
+### Added
+
+- Add picard CollectInsertSizeMetrics to QC workflow [#408](https://github.com/nf-core/rnafusion/pull/408)
+- Build CRAM index in the same directory as CRAM files for Arriba and STAR-Fusion [#427](https://github.com/nf-core/rnafusion/pull/427)
+
+### Changed
+
+- Replace PICARD_MARKDUPLICATES with GATK4_MARKDUPLICATES [#409](https://github.com/nf-core/rnafusion/pull/409)
+- Removed `--fusioninspector_filter` and `--fusionreport_filter` in favor of `--tools_cutoff` (default = 1, no filters applied) [#389](https://github.com/nf-core/rnafusion/pull/389)
+- Now publishing convert2bed output to convert2bed to keep the output file [#420](https://github.com/nf-core/rnafusion/pull/420)
+- No more checks for existence of samplesheet, which made building references fail (building references uses a fake sample sheet if none is provided) [#420](https://github.com/nf-core/rnafusion/pull/420)
+- `--annotate --examine_coding_effect` to collect more data from fusioninspector [#426](https://github.com/nf-core/rnafusion/pull/426)
+- Update vcf creation to get positions/chromosomes and strands even when fusions are filtered out by fusioninspector, using the csv output from fusion-report [#443](https://github.com/nf-core/rnafusion/pull/443)
+- `Arriba` updated to 2.4.0 [#429](https://github.com/nf-core/rnafusion/pull/429)
+- Change megafusion into vcf_collect, taking into account e.g. the annotation and coding effects outputs from fusioninspector, HGNC ids, frame status... [#414](https://github.com/nf-core/rnafusion/pull/414)
+- CI tests on `--all` instead of each tool separately, and include trimmed/not trimmed matrix tests [#430](https://github.com/nf-core/rnafusion/pull/430)
+- AWS tests on `--all` instead of each tool separately, and include trimmed/not trimmed matrix tests [#433](https://github.com/nf-core/rnafusion/pull/433)
+- Update `fusion-report` to 2.1.8, updated COSMIC database to fix 404 error, fix download of references via proxy and removing FusionGDB database [#445](https://github.com/nf-core/rnafusion/pull/445)
+- Update documentation [#446](https://github.com/nf-core/rnafusion/pull/446)
+
+### Fixed
+
+- Fix channel i/o issue in StringTie workflow and add StringTie in github CI tests [#416](https://github.com/nf-core/rnafusion/pull/416)
+- Update modules, and make sure MultiQC displays the QC results properly [#440](https://github.com/nf-core/rnafusion/pull/440)
+- Add 'when' condition to run CollectInsertSizeMetrics only when STAR-fusion bam files are available [#444](https://github.com/nf-core/rnafusion/pull/444)
+
+### Removed
+
+- Remove `squid` and `pizzly` fusion detection tools [#406](https://github.com/nf-core/rnafusion/pull/406)
+- Remove harsh trimming option `--trim` [#413](https://github.com/nf-core/rnafusion/pull/413)
+- Remove qualimap rna_seq [#407](https://github.com/nf-core/rnafusion/pull/407)
+
 ## v2.4.0 - [2023/09/22]
 
 ### Added
@@ -20,6 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - cram file from output bam of `STAR_FOR_STARFUSION`: meta.id to meta.id.star_for_starfusion.Aligned.sortedByCoord.out
   - `fusion-report` index.html file to meta.id_fusionreport_index.html
   - meta.id.vcf output from `MEGAFUSION` to meta.id_fusion_data.vcf
+  - Update metro map [#428](https://github.com/nf-core/rnafusion/pull/428)
 
 ### Fixed
 

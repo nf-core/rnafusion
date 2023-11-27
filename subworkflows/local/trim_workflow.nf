@@ -1,5 +1,3 @@
-include { REFORMAT }                    from '../../modules/local/reformat/main'
-include { FASTQC as FASTQC_FOR_TRIM }   from '../../modules/nf-core/fastqc/main'
 include { FASTP }                       from '../../modules/nf-core/fastp/main'
 include { FASTQC as FASTQC_FOR_FASTP }  from '../../modules/nf-core/fastqc/main'
 
@@ -10,18 +8,11 @@ workflow TRIM_WORKFLOW {
 
     main:
         ch_versions = Channel.empty()
+        ch_fastp_html = Channel.empty()
+        ch_fastp_json = Channel.empty()
+        ch_fastqc_trimmed = Channel.empty()
 
-        if (params.trim) {
-
-            REFORMAT( reads )
-            ch_versions = ch_versions.mix(REFORMAT.out.versions)
-            FASTQC_FOR_TRIM (REFORMAT.out.reads_out)
-            ch_versions = ch_versions.mix(FASTQC_FOR_TRIM.out.versions)
-
-            ch_reads_all = reads
-            ch_reads_fusioncatcher = REFORMAT.out.reads_out
-        }
-        else if (params.fastp_trim) {
+        if (params.fastp_trim) {
             FASTP(reads, params.adapter_fasta, false, false)
             ch_versions = ch_versions.mix(FASTP.out.versions)
 
@@ -30,6 +21,9 @@ workflow TRIM_WORKFLOW {
 
             ch_reads_all = FASTP.out.reads
             ch_reads_fusioncatcher = ch_reads_all
+            ch_fastp_html = FASTP.out.html
+            ch_fastp_json = FASTP.out.json
+            ch_fastqc_trimmed = FASTQC_FOR_FASTP.out.zip
 
         }
         else {
@@ -40,6 +34,9 @@ workflow TRIM_WORKFLOW {
     emit:
         ch_reads_all
         ch_reads_fusioncatcher
+        ch_fastp_html
+        ch_fastp_json
+        ch_fastqc_trimmed
         versions      = ch_versions.ifEmpty(null)
     }
 

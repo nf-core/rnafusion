@@ -2,14 +2,14 @@ process FUSIONREPORT {
     tag "$meta.id"
     label 'process_medium'
 
-    // Note: 2.7X indices incompatible with AWS iGenomes.
     conda "bioconda::star=2.7.9a"
-    container "docker.io/clinicalgenomics/fusion-report:2.1.5p4"
+    container "docker.io/clinicalgenomics/fusion-report:2.1.8"
 
 
     input:
-    tuple val(meta), path(reads), path(arriba_fusions), path(pizzly_fusions), path(squid_fusions), path(starfusion_fusions),  path(fusioncatcher_fusions)
+    tuple val(meta), path(reads), path(arriba_fusions), path(starfusion_fusions),  path(fusioncatcher_fusions)
     tuple val(meta2), path(fusionreport_ref)
+    val(tools_cutoff)
 
     output:
     path "versions.yml"                                                 , emit: versions
@@ -27,13 +27,11 @@ process FUSIONREPORT {
     def args = task.ext.args ?: ''
     def args2 = task.ext.args2 ?: ''
     def tools = params.arriba || params.all         ? "--arriba ${arriba_fusions} " : ''
-    tools    += params.pizzly || params.all         ? "--pizzly ${pizzly_fusions} " : ''
-    tools    += params.squid  || params.all         ? "--squid ${squid_fusions} " : ''
     tools    += params.starfusion  || params.all    ? "--starfusion ${starfusion_fusions} " : ''
     tools    += params.fusioncatcher  || params.all ? "--fusioncatcher ${fusioncatcher_fusions} " : ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    fusion_report run $meta.id . $fusionreport_ref $tools --allow-multiple-gene-symbols $args $args2
+    fusion_report run $meta.id . $fusionreport_ref $tools --allow-multiple-gene-symbols --tool-cutoff $tools_cutoff $args $args2
 
     mv fusion_list.tsv ${prefix}.fusionreport.tsv
     mv fusion_list_filtered.tsv ${prefix}.fusionreport_filtered.tsv
