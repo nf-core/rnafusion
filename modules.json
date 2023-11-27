@@ -92,22 +92,22 @@
                     },
                     "star/align": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "9f6b233518f7d9ecdcf24b798b7e491db5424273",
                         "installed_by": ["modules"]
                     },
                     "star/genomegenerate": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "0e98289b5bec6e3f8f588a8a9d05e8aacc1179a0",
                         "installed_by": ["modules"]
                     },
                     "stringtie/merge": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "b0dcb44b018d9b2bcb35b1abb7bcd34061bc5a6d",
                         "installed_by": ["modules"]
                     },
                     "stringtie/stringtie": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "b0dcb44b018d9b2bcb35b1abb7bcd34061bc5a6d",
                         "installed_by": ["modules"]
                     }
                 }

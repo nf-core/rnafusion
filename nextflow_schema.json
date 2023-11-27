@@ -295,7 +295,6 @@
                     "description": "Path to FASTA genome file.",
                     "fa_icon": "far fa-file-code"
                 },
-
                 "fai": {
                     "type": "string",
                     "format": "file-path",
