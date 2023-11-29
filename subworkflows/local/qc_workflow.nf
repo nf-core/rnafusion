@@ -33,7 +33,7 @@ workflow QC_WORKFLOW {
 
 
     emit:
-        versions            = ch_versions.ifEmpty(null)
+        versions            = ch_versions
         rnaseq_metrics      = ch_rnaseq_metrics
         duplicate_metrics   = ch_duplicate_metrics
         insertsize_metrics  = ch_insertsize_metrics
