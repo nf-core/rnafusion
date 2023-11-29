@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- python3 explicit in vcf_collect [#452](https://github.com/nf-core/rnafusion/pull/452)
+
 ### Fixed
 
 ### Removed
