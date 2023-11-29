@@ -34,7 +34,7 @@ workflow FUSIONREPORT_WORKFLOW {
         }
 
     emit:
-        versions                 = ch_versions.ifEmpty(null)
+        versions                 = ch_versions
         fusion_list              = ch_fusion_list
         fusion_list_filtered     = ch_fusion_list_filtered
         report                   = ch_report.ifEmpty(null)

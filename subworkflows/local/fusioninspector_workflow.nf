@@ -60,6 +60,6 @@ workflow FUSIONINSPECTOR_WORKFLOW {
 
     emit:
         ch_arriba_visualisation
-        versions             = ch_versions.ifEmpty(null)
+        versions             = ch_versions
 }
 
