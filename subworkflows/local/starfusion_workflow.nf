@@ -60,7 +60,7 @@ workflow STARFUSION_WORKFLOW {
         star_gene_count       = ch_star_gene_count
         ch_bam_sorted         = ch_align.ifEmpty([[],[]])
         ch_bam_sorted_indexed = bam_sorted_indexed.ifEmpty([[],[],[]])
-        versions              = ch_versions.ifEmpty(null)
+        versions              = ch_versions
 
     }
 

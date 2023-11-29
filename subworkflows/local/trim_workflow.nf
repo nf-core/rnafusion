@@ -37,6 +37,6 @@ workflow TRIM_WORKFLOW {
         ch_fastp_html
         ch_fastp_json
         ch_fastqc_trimmed
-        versions      = ch_versions.ifEmpty(null)
+        versions = ch_versions
     }
 
