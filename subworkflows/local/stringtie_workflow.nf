@@ -20,6 +20,8 @@ workflow STRINGTIE_WORKFLOW {
                 .transcript_gtf
                 .map { it -> it[1] }
                 .set { stringtie_gtf }
+            ch_versions = ch_versions.mix(STRINGTIE_STRINGTIE.out.versions)
+
 
             STRINGTIE_MERGE (stringtie_gtf, ch_chrgtf.map { meta, gtf -> [ gtf ]})
             ch_versions = ch_versions.mix(STRINGTIE_MERGE.out.versions)
@@ -28,7 +30,7 @@ workflow STRINGTIE_WORKFLOW {
 
     emit:
         stringtie_gtf = ch_stringtie_gtf.ifEmpty(null)
-        versions      = ch_versions.ifEmpty(null)
+        versions      = ch_versions
 
     }
 

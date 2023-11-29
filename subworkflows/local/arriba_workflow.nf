@@ -59,6 +59,6 @@ workflow ARRIBA_WORKFLOW {
     emit:
         fusions         = ch_arriba_fusions
         fusions_fail    = ch_arriba_fusion_fail
-        versions        = ch_versions.ifEmpty(null)
+        versions        = ch_versions
     }
 

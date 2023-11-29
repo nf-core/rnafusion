@@ -19,6 +19,7 @@ workflow FUSIONCATCHER_WORKFLOW {
                     params.fusioncatcher_ref
                 )
                 ch_fusioncatcher_fusions = FUSIONCATCHER.out.fusions
+                ch_versions = ch_versions.mix(FUSIONCATCHER.out.versions)
             }
         }
         else {
@@ -28,6 +29,6 @@ workflow FUSIONCATCHER_WORKFLOW {
 
     emit:
         fusions  = ch_fusioncatcher_fusions
-        versions = ch_versions.ifEmpty(null)
+        versions = ch_versions
     }
 

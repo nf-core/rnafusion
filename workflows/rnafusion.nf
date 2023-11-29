@@ -149,7 +149,7 @@ workflow RNAFUSION {
     .reads
     .mix(ch_fastq.single)
     .set { ch_cat_fastq }
-    ch_versions = ch_versions.mix(CAT_FASTQ.out.versions.first().ifEmpty(null))
+    ch_versions = ch_versions.mix(CAT_FASTQ.out.versions)
 
 
     //
@@ -158,14 +158,14 @@ workflow RNAFUSION {
     FASTQC (
         ch_cat_fastq
     )
-    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+    ch_versions = ch_versions.mix(FASTQC.out.versions)
 
     TRIM_WORKFLOW (
         ch_cat_fastq
     )
     ch_reads_fusioncatcher = TRIM_WORKFLOW.out.ch_reads_fusioncatcher
     ch_reads_all = TRIM_WORKFLOW.out.ch_reads_all
-
+    ch_versions = ch_versions.mix(TRIM_WORKFLOW.out.versions)
 
     // Run STAR alignment and Arriba
     ARRIBA_WORKFLOW (
@@ -177,7 +177,7 @@ workflow RNAFUSION {
         ch_arriba_ref_known_fusions,
         ch_arriba_ref_protein_domains
     )
-    ch_versions = ch_versions.mix(ARRIBA_WORKFLOW.out.versions.first().ifEmpty(null))
+    ch_versions = ch_versions.mix(ARRIBA_WORKFLOW.out.versions)
 
 
 //Run STAR fusion
@@ -187,14 +187,14 @@ workflow RNAFUSION {
         ch_starindex_ref,
         ch_fasta
     )
-    ch_versions = ch_versions.mix(STARFUSION_WORKFLOW.out.versions.first().ifEmpty(null))
+    ch_versions = ch_versions.mix(STARFUSION_WORKFLOW.out.versions)
 
 
 //Run fusioncatcher
     FUSIONCATCHER_WORKFLOW (
         ch_reads_fusioncatcher
     )
-    ch_versions = ch_versions.mix(FUSIONCATCHER_WORKFLOW.out.versions.first().ifEmpty(null))
+    ch_versions = ch_versions.mix(FUSIONCATCHER_WORKFLOW.out.versions)
 
 
 //Run stringtie
@@ -202,7 +202,7 @@ workflow RNAFUSION {
         STARFUSION_WORKFLOW.out.ch_bam_sorted,
         ch_chrgtf
     )
-    ch_versions = ch_versions.mix(STRINGTIE_WORKFLOW.out.versions.first().ifEmpty(null))
+    ch_versions = ch_versions.mix(STRINGTIE_WORKFLOW.out.versions)
 
 
     //Run fusion-report
@@ -213,7 +213,7 @@ workflow RNAFUSION {
         STARFUSION_WORKFLOW.out.fusions,
         FUSIONCATCHER_WORKFLOW.out.fusions
     )
-    ch_versions = ch_versions.mix(FUSIONREPORT_WORKFLOW.out.versions.first().ifEmpty(null))
+    ch_versions = ch_versions.mix(FUSIONREPORT_WORKFLOW.out.versions)
 
 
     //Run fusionInpector
@@ -230,7 +230,7 @@ workflow RNAFUSION {
         ch_hgnc_ref,
         ch_hgnc_date
     )
-    ch_versions = ch_versions.mix(FUSIONINSPECTOR_WORKFLOW.out.versions.first().ifEmpty(null))
+    ch_versions = ch_versions.mix(FUSIONINSPECTOR_WORKFLOW.out.versions)
 
 
     //QC
@@ -243,7 +243,7 @@ workflow RNAFUSION {
         ch_fai,
         ch_rrna_interval
     )
-    ch_versions = ch_versions.mix(QC_WORKFLOW.out.versions.first().ifEmpty(null))
+    ch_versions = ch_versions.mix(QC_WORKFLOW.out.versions)
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
