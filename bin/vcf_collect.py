@@ -346,11 +346,8 @@ def read_build_fusionreport(fusionreport_file: str) -> pd.DataFrame:
 
 def read_fusionreport_csv(file: str) -> pd.DataFrame:
     df = pd.read_csv(file)
-    columns_to_iterate = ["starfusion", "arriba", "fusioncatcher"]
-    for column in columns_to_iterate:
-        if column not in df.columns:
-            df[column] = ""
     df[["starfusion", "arriba", "fusioncatcher"]] = df[["starfusion", "arriba", "fusioncatcher"]].astype("str")
+    columns_to_iterate = ["starfusion", "arriba", "fusioncatcher"]
     for index, row in df.iterrows():
         for column in columns_to_iterate:
             cell_value = row[column]
