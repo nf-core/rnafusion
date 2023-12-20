@@ -1,5 +1,31 @@
 reports:
   multiqc_report.html:
     display: "MultiQC HTML report"
-  samplesheet.csv:
-    display: "Auto-created samplesheet with collated metadata and FASTQ paths"
+  "**/arriba/*.arriba.fusions.tsv":
+    display: "Arriba identified fusion TSV report"
+  "**/arriba_visualisation/*_combined_fusions_arriba_visualisation.pdf":
+    display: "PDF visualisation of the transcripts involved in predicted fusions"
+  "**/fastp/*fastp.html":
+    display: "Post fastp trimming HTML report"
+  "**/fusioncatcher/*.fusioncatcher.fusion-genes.txt":
+    display: "FusionCatcher identified fusion TXT report"
+  "**/fusioninspector/*.FusionInspector.fusions.abridged.tsv":
+    display: "FusionInspector TSV report"
+  "**/fusionreport/*/*_fusionreport_index.html":
+    display: "Fusion-report HTML report"
+  "**/vcf/*_fusion_data.vcf.gz":
+    display: "Collected statistics on each fusion fed to FusionInspector in VCF format"
+  "**/picard/*.MarkDuplicates.metrics.txt":
+    display: "Picard: Metrics from CollectRnaMetrics"
+  "**/picard/*_rna_metrics.txt":
+    display: "GATK4: Metrics from MarkDuplicates"
+  "**/picard/*insert*size*metrics.txt":
+    display: "GATK4: Metrics from InsertSizeMetrics"
+  "**/picard/*pdf":
+    display: "GATK4: InsertSizeMetrics histogram"
+  "**/star_for_starfusion/*ReadsPerGene.out.tab":
+    display: "Number of reads per gene"
+  "**/starfusion/*.starfusion.fusion_predictions.tsv":
+    display: "STAR-Fusion identified fusion TSV report"
+  "**/stringtie/*/*stringtie.merged.gtf":
+    display: "Merged GTFs from StringTie with annotations"

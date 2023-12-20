@@ -8,6 +8,19 @@ nextflow_process {
     tag "multiqc"
 
     test("MULTIQC: FASTQC") {
+        setup {
+            run("FASTQC") {
+                script "../../fastqc/main.nf"
+                process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test', single_end: false ],
+                    [ file(params.test_data['sarscov2']['illumina']['test_1_fastq_gz'], checkIfExists: true)]
+                ])
+                """
+                }
+            }
+        }
 
         when {
             params {
@@ -35,6 +48,20 @@ nextflow_process {
     }
 
     test("MULTIQC: FASTQC and a config file") {
+    
+        setup {
+            run("FASTQC") {
+                script "../../fastqc/main.nf"
+                process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test', single_end: false ],
+                    [ file(params.test_data['sarscov2']['illumina']['test_1_fastq_gz'], checkIfExists: true)]
+                ])
+                """
+                }
+            }
+        }
 
         when {
             params {

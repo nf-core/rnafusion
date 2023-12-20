@@ -17,10 +17,19 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// TODO nf-core: Remove this line if you don't need a FASTA file
-//   This is an example of how to use getGenomeAttribute() to fetch parameters
-//   from igenomes.config using `--genome`
-params.fasta = WorkflowMain.getGenomeAttribute(params, 'fasta')
+params.fasta           = WorkflowMain.getGenomeAttribute(params, 'fasta')
+params.fai             = WorkflowMain.getGenomeAttribute(params, 'fai')
+params.gtf             = WorkflowMain.getGenomeAttribute(params, 'gtf')
+params.chrgtf          = WorkflowMain.getGenomeAttribute(params, 'chrgtf')
+params.transcript      = WorkflowMain.getGenomeAttribute(params, 'transcript')
+params.refflat         = WorkflowMain.getGenomeAttribute(params, 'refflat')
+params.rrna_intervals  = WorkflowMain.getGenomeAttribute(params, 'rrna_intervals')
+
+/*
+========================================================================================
+    PARAMETER VALUES
+========================================================================================
+*/
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,13 +61,20 @@ WorkflowMain.initialise(workflow, params, log)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { RNAFUSION } from './workflows/rnafusion'
+include { BUILD_REFERENCES } from './workflows/build_references'
+include { RNAFUSION }        from './workflows/rnafusion'
+
 
 //
 // WORKFLOW: Run main nf-core/rnafusion analysis pipeline
 //
 workflow NFCORE_RNAFUSION {
-    RNAFUSION ()
+
+    if (params.build_references) {
+        BUILD_REFERENCES ()
+    } else {
+        RNAFUSION()
+    }
 }
 
 /*
