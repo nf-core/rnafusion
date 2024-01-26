@@ -64,7 +64,7 @@ workflow BUILD_REFERENCES {
         if (params.starfusion_build){
             STARFUSION_BUILD( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.chrgtf )
         } else {
-            STARFUSION_DOWNLOAD()
+            STARFUSION_DOWNLOAD( fake_meta )
         }
     }
 
