@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update to nf-tools 2.11.1
+
 ### Fixed
 
 - fix VCF_COLLECT handling when a tool is absent from FUSIONREPORT report
