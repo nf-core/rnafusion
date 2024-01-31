@@ -37,7 +37,7 @@
                     },
                     "fastqc": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "65ad3e0b9a4099592e1102e92e10455dc661cf53",
                         "installed_by": ["modules"]
                     },
                     "gatk4/bedtointervallist": {
@@ -57,7 +57,7 @@
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "1537442a7be4a78efa3d1ff700a923c627bbda5d",
+                        "git_sha": "4ab13872435962dadc239979554d13709e20bf29",
                         "installed_by": ["modules"]
                     },
                     "picard/collectinsertsizemetrics": {
