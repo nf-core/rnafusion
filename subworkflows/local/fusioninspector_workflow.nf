@@ -29,6 +29,8 @@ workflow FUSIONINSPECTOR_WORKFLOW {
             fusions: it[1].size() > 0
         }
 
+        ch_fusion_list.fusions.dump(tag:'before_cat')
+
         if (params.whitelist)  {
             ch_whitelist = ch_fusion_list.fusions.combine(Channel.value(file(params.whitelist, checkIfExists:true)))
                             .map { meta, fusions, whitelist -> [ meta, [fusions, whitelist] ] }
@@ -36,10 +38,14 @@ workflow FUSIONINSPECTOR_WORKFLOW {
             CAT_CAT(ch_whitelist) // fusioninspector takes care of possible duplicates
             ch_versions = ch_versions.mix(CAT_CAT.out.versions)
 
-            ch_fusion_list.fusions = CAT_CAT.out.file_out
+            ch_reads_fusion = reads.join(CAT_CAT.out.file_out )
+            ch_reads_fusion.dump(tag:'with_cat')
         }
+        else {
+            ch_reads_fusion = reads.join(ch_fusion_list.fusions )
+            ch_reads_fusion.dump(tag:'without_cat')
 
-        ch_reads_fusion = reads.join(ch_fusion_list.fusions )
+        }
 
         FUSIONINSPECTOR( ch_reads_fusion, index)
         ch_versions = ch_versions.mix(FUSIONINSPECTOR.out.versions)
