@@ -43,7 +43,6 @@ def vcf_collect(
         .reset_index()
     )
     hgnc_df = build_hgnc_dataframe(hgnc)
-
     df_symbol = merged_df[merged_df["Left_ensembl_gene_id"].isna()]
     df_not_symbol = merged_df[merged_df["Left_ensembl_gene_id"].notna()]
 
@@ -115,6 +114,7 @@ def vcf_collect(
             "annots",
         ]
     ].drop_duplicates()
+    all_df["CDS_RIGHT_ID"] = all_df["CDS_RIGHT_ID"].astype("str")
     all_df = all_df.merge(gtf_df, how="left", left_on="CDS_RIGHT_ID", right_on="Transcript_id")
     all_df[["PosB", "orig_start", "orig_end"]] = all_df[["PosB", "orig_start", "orig_end"]].fillna(0)
     all_df[["PosB", "orig_start", "orig_end"]] = all_df[["PosB", "orig_start", "orig_end"]].astype(int)
@@ -272,15 +272,35 @@ def build_fusioninspector_dataframe(file: str) -> pd.DataFrame:
     """
     df = pd.read_csv(file, sep="\t")
     df = df.rename(columns={"#FusionName": "FUSION"})
-    df[["ChromosomeA", "PosA", "Strand1"]] = df["LeftBreakpoint"].str.split(":", expand=True)
-    df[["ChromosomeB", "PosB", "Strand2"]] = df["RightBreakpoint"].str.split(":", expand=True)
-    df[["LeftGeneName", "Left_ensembl_gene_id"]] = df["LeftGene"].str.split("^", expand=True)
-    df[["RightGeneName", "Right_ensembl_gene_id"]] = df["RightGene"].str.split("^", expand=True)
-    df["annots"] = (
-        df["annots"]
-        .apply(convert_to_list)
-        .apply(lambda x: ",".join(map(str, x)) if isinstance(x, list) else str(x) if pd.notna(x) else "")
-    )
+    if not (df.empty):
+        df[["ChromosomeA", "PosA", "Strand1"]] = df["LeftBreakpoint"].str.split(":", expand=True)
+        df[["ChromosomeB", "PosB", "Strand2"]] = df["RightBreakpoint"].str.split(":", expand=True)
+        df[["LeftGeneName", "Left_ensembl_gene_id"]] = df["LeftGene"].str.split("^", expand=True)
+        df[["RightGeneName", "Right_ensembl_gene_id"]] = df["RightGene"].str.split("^", expand=True)
+        df["annots"] = (
+            df["annots"]
+            .apply(convert_to_list)
+            .apply(lambda x: ",".join(map(str, x)) if isinstance(x, list) else str(x) if pd.notna(x) else "")
+        )
+    else:
+        for i in [
+            "ChromosomeA",
+            "Strand1",
+            "ChromosomeB",
+            "Strand2",
+            "LeftGeneName",
+            "Left_ensembl_gene_id",
+            "RightGeneName",
+            "Right_ensembl_gene_id",
+            "annots",
+        ]:
+            df[i] = ""
+        for j in [
+            "PosA",
+            "PosB",
+        ]:
+            df[j] = np.nan
+
     return df.set_index(["FUSION"])
 
 
@@ -315,8 +335,8 @@ def read_build_fusionreport(fusionreport_file: str) -> pd.DataFrame:
     """
     with open(fusionreport_file) as f:
         from_html = [line.split('rows": [')[1] for line in f if 'name="fusion_list' in line]
-        expression = from_html[0].split('], "tool')[0]
-    fusion_report = pd.DataFrame.from_dict(ast.literal_eval(expression))
+        expression = ast.literal_eval(from_html[0].split('], "tool')[0])
+    fusion_report = pd.DataFrame.from_dict({k: [v] for k, v in expression.items()})
     if not "arriba" in fusion_report.columns:
         fusion_report["arriba"] = ""
     if not "fusioncatcher" in fusion_report.columns:
