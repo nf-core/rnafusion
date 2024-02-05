@@ -9,12 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update to nf-tools 2.11.1
+- Update to nf-tools 2.11.1 [#457] (https://github.com/nf-core/rnafusion/pull/457)
 
 ### Fixed
 
-- fix VCF_COLLECT handling when a tool is absent from FUSIONREPORT report
 - fix bug when using parameter "whitelist" [#466](https://github.com/nf-core/rnafusion/pull/466)
+- fix VCF_COLLECT handling when a tool is absent from FUSIONREPORT report [#458](https://github.com/nf-core/rnafusion/pull/458)
+- fix VCF_COLLECT when fusioninspector output is empty but fusionreport is not [#465](https://github.com/nf-core/rnafusion/pull/465)
 
 ### Removed
 
