@@ -37,14 +37,10 @@ workflow FUSIONINSPECTOR_WORKFLOW {
 
             CAT_CAT(ch_whitelist) // fusioninspector takes care of possible duplicates
             ch_versions = ch_versions.mix(CAT_CAT.out.versions)
-
             ch_reads_fusion = reads.join(CAT_CAT.out.file_out )
-            ch_reads_fusion.dump(tag:'with_cat')
         }
         else {
             ch_reads_fusion = reads.join(ch_fusion_list.fusions )
-            ch_reads_fusion.dump(tag:'without_cat')
-
         }
 
         FUSIONINSPECTOR( ch_reads_fusion, index)

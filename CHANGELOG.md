@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - fix VCF_COLLECT handling when a tool is absent from FUSIONREPORT report
+- fix bug when using parameter "whitelist" [#466](https://github.com/nf-core/rnafusion/pull/466)
 
 ### Removed
 
