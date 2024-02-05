@@ -9,13 +9,16 @@
 The pipeline is divided into two parts:
 
 1. Download and build references
-   - specified with `--build_references` parameter
-   - required only once before running the pipeline
-   - **Important**: has to be run with each new release
+
+- specified with `--build_references` parameter
+- required only once before running the pipeline
+- **Important**: has to be run with each new release
+
 2. Detecting fusions
-   - Supported tools: `Arriba`, `FusionCatcher`, `STAR-Fusion`, and `StringTie`
-   - QC: `Fastqc`, `MultiQC`, and `Picard CollectInsertSize`, `Picard CollectWgsMetrics`, `Picard Markduplicates`
-   - Fusions visualization: `Arriba`, `fusion-report`, `FusionInspector`, and `vcf_collect`
+
+- Supported tools: `Arriba`, `FusionCatcher`, `STAR-Fusion`, and `StringTie`
+- QC: `Fastqc`, `MultiQC`, and `Picard CollectInsertSize`, `Picard CollectWgsMetrics`, `Picard Markduplicates`
+- Fusions visualization: `Arriba`, `fusion-report`, `FusionInspector`, and `vcf_collect`
 
 ## Download and build references
 

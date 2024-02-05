@@ -80,7 +80,7 @@
                     "type": "integer",
                     "fa_icon": "far fa-file-code",
                     "description": "ensembl version",
-                    "default": 105
+                    "default": 102
                 },
                 "starfusion_build": {
                     "type": "boolean",
