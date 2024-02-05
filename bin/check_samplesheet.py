@@ -123,7 +123,9 @@ class RowChecker:
     def _validate_strandedness(self, row):
         """Assert that the strandedness given is one of unstranded/forward/reverse"""
         if row[self._strandedness] not in self.VALID_STRANDEDNESSES:
-            raise AssertionError(f"Strandedness must be one of {', '.join(self.VALID_STRANDEDNESSES)}")
+            raise AssertionError(
+                f"Strandedness must be one of {', '.join(self.VALID_STRANDEDNESSES)}"
+            )
 
     def validate_unique_samples(self):
         """
@@ -198,7 +200,9 @@ def check_samplesheet(file_in, file_out):
         # Validate the existence of the expected header columns.
         if not required_columns.issubset(reader.fieldnames):
             req_cols = ", ".join(required_columns)
-            logger.critical(f"The sample sheet **must** contain these column headers: {req_cols}.")
+            logger.critical(
+                f"The sample sheet **must** contain these column headers: {req_cols}."
+            )
             sys.exit(1)
         # Validate each row.
         checker = RowChecker()

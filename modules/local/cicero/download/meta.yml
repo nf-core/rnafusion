@@ -1,0 +1,26 @@
+name: cicero_download
+description: CICERO is a command-line tool for the detection of gene fusions from RNA-Seq data.
+keywords:
+  - fusion
+  - cicero
+tools:
+  - cicero:
+      description: Fast and accurate gene fusion detection from RNA-Seq data
+      homepage: https://stjude.github.io/CICERO/
+      documentation: https://stjude.github.io/CICERO/
+      tool_dev_url: https://github.com/stjude/CICERO
+      doi: "10.1186/s13059-020-02043-x"
+      licence: ["Apache 2.0"]
+
+output:
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+  - reference:
+      type: directory
+      description: Folder with cicero references
+      pattern: "*"
+
+authors:
+  - "@rannick"

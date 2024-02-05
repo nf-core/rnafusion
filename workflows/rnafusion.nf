@@ -32,6 +32,9 @@ ch_arriba_ref_blacklist = Channel.fromPath(params.arriba_ref_blacklist).map { it
 ch_arriba_ref_known_fusions = Channel.fromPath(params.arriba_ref_known_fusions).map { it -> [[id:it.Name], it] }.collect()
 ch_arriba_ref_protein_domains = Channel.fromPath(params.arriba_ref_protein_domains).map { it -> [[id:it.Name], it] }.collect()
 ch_arriba_ref_cytobands = Channel.fromPath(params.arriba_ref_cytobands).map { it -> [[id:it.Name], it] }.collect()
+ch_cicero_ref_fasta = Channel.fromPath(params.cicero_ref_fasta).map { it -> [[id:it.Name], it] }.collect()
+ch_cicero_ref_refflat = Channel.fromPath(params.cicero_ref_refflat).map { it -> [[id:it.Name], it] }.collect()
+ch_cicero_ref_dir = Channel.fromPath(params.cicero_ref_dir).map { it -> [[id:it.Name], it] }.collect()
 ch_hgnc_ref = Channel.fromPath(params.hgnc_ref).map { it -> [[id:it.Name], it] }.collect()
 ch_hgnc_date = Channel.fromPath(params.hgnc_date).map { it -> [[id:it.Name], it] }.collect()
 ch_fasta = Channel.fromPath(params.fasta).map { it -> [[id:it.Name], it] }.collect()
@@ -167,7 +170,7 @@ workflow RNAFUSION {
     ch_reads_all = TRIM_WORKFLOW.out.ch_reads_all
     ch_versions = ch_versions.mix(TRIM_WORKFLOW.out.versions)
 
-    // Run STAR alignment and Arriba
+    // Run STAR alignment and Arriba/Cicero
     ARRIBA_WORKFLOW (
         ch_reads_all,
         ch_gtf,
@@ -175,7 +178,10 @@ workflow RNAFUSION {
         ch_starindex_ensembl_ref,
         ch_arriba_ref_blacklist,
         ch_arriba_ref_known_fusions,
-        ch_arriba_ref_protein_domains
+        ch_arriba_ref_protein_domains,
+        ch_cicero_ref_fasta,
+        ch_cicero_ref_refflat,
+        ch_cicero_ref_dir
     )
     ch_versions = ch_versions.mix(ARRIBA_WORKFLOW.out.versions)
 

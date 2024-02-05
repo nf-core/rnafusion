@@ -1,4 +1,6 @@
 include { ARRIBA }                                      from '../../modules/nf-core/arriba/main'
+// include { CICERO }                                      from '../../modules/local/cicero/detect/main'
+include { RNAPEG }                                      from '../../modules/local/rnapeg/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_ARRIBA}  from '../../modules/nf-core/samtools/index/main'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_ARRIBA}    from '../../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_ARRIBA}    from '../../modules/nf-core/samtools/view/main'
@@ -13,21 +15,34 @@ workflow ARRIBA_WORKFLOW {
         ch_arriba_ref_blacklist
         ch_arriba_ref_known_fusions
         ch_arriba_ref_protein_domains
+        ch_cicero_ref_fasta
+        ch_cicero_ref_refflat
+        ch_cicero_ref_dir
 
     main:
         ch_versions = Channel.empty()
         ch_dummy_file = file("$baseDir/assets/dummy_file_arriba.txt", checkIfExists: true)
 
-        if ((params.arriba || params.all) && !params.fusioninspector_only) {
+        if (params.arriba || params.cicero && !params.fusioninspector_only) {
 
             STAR_FOR_ARRIBA( reads, ch_starindex_ref, ch_gtf, params.star_ignore_sjdbgtf, '', params.seq_center ?: '')
             ch_versions = ch_versions.mix(STAR_FOR_ARRIBA.out.versions)
+
+            if (params.cicero) {
+                RNAPEG ( STAR_FOR_ARRIBA.out.bam, ch_cicero_ref_fasta, ch_cicero_ref_refflat )
+            //     // CICERO ( STAR_FOR_ARRIBA.out.bam, RNAPEG.out.junctions, ch_cicero_ref_dir )
+            //     // ch_versions = ch_versions.mix(CICERO.out.versions)
+                // println("here!")
+            }
+        }
+
+        if ((params.arriba || params.all) && !params.fusioninspector_only) {
 
             if (params.arriba_fusions) {
                 ch_arriba_fusions = reads.combine( Channel.value( file( params.arriba_fusions, checkIfExists: true ) ) )
                     .map { meta, reads, fusions -> [ meta, fusions ] }
                 ch_arriba_fusion_fail = ch_dummy_file
-            } else {
+            } else if ((params.arriba || params.all) && !params.fusioninspector_only) {
                 ARRIBA ( STAR_FOR_ARRIBA.out.bam, ch_fasta, ch_gtf, ch_arriba_ref_blacklist, ch_arriba_ref_known_fusions, [[],[]], [[],[]], ch_arriba_ref_protein_domains )
                 ch_versions = ch_versions.mix(ARRIBA.out.versions)
 

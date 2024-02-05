@@ -38,6 +38,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
     - `blacklist_hg38_GRCh38_v2.1.0.tsv.gz`
     - `protein_domains_hg38_GRCh38_v2.1.0.gff3`
     - `cytobands_hg38_GRCh38_v2.1.0.tsv`
+  - `cicero`
+    - `GRCh38_no_alt`
   - `ensembl`
     - `Homo_sapiens.GRCh38.{ensembl_version}.all.fa`
     - `Homo_sapiens.GRCh38.{ensembl_version}.cdna.all.fa.gz`

@@ -133,6 +133,26 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to arriba output"
                 },
+                "cicero": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Build or run cicero references/analyses"
+                },
+                "cicero_ref_fasta": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to cicero reference fasta"
+                },
+                "cicero_ref_refflat": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to cicero reference refflat"
+                },
+                "cicero_ref_dir": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to cicero reference directory"
+                },
                 "ensembl_ref": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",

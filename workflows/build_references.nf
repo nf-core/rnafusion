@@ -5,6 +5,7 @@
 */
 
 include { ARRIBA_DOWNLOAD }                 from '../modules/local/arriba/download/main'
+include { CICERO_DOWNLOAD }                 from '../modules/local/cicero/download/main'
 include { ENSEMBL_DOWNLOAD }                from '../modules/local/ensembl/main'
 include { FUSIONCATCHER_DOWNLOAD }          from '../modules/local/fusioncatcher/download/main'
 include { FUSIONREPORT_DOWNLOAD }           from '../modules/local/fusionreport/download/main'
@@ -66,6 +67,10 @@ workflow BUILD_REFERENCES {
         } else {
             STARFUSION_DOWNLOAD()
         }
+    }
+
+    if (params.cicero || params.all) {
+        CICERO_DOWNLOAD()
     }
 
     if (params.starfusion_build){
