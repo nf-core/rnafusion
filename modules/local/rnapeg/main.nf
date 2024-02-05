@@ -13,25 +13,25 @@ process RNAPEG {
     tuple val(meta), path("*/junctions.txt")         , emit: junctions
     path "versions.yml"                              , emit: versions
 
-    // when:
-    // task.ext.when == null || task.ext.when
+    when:
+    task.ext.when == null || task.ext.when
 
-    // script:
-    // def args = task.ext.args ?: ''
-    // def prefix = task.ext.prefix ?: "${meta.id}"
-    // """
-    // RNApeg.sh \\
-    //     -g GRCh38_no_alt \\
-    //     -b $bam \\
-    //     -f $fasta \\
-    //     -r $refflat \\
-    //     $args
+    script:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    RNApeg.sh \\
+        -g GRCh38_no_alt \\
+        -b $bam \\
+        -f $fasta \\
+        -r $refflat \\
+        $args
 
-    // cat <<-END_VERSIONS > versions.yml
-    // "${task.process}":
-    //     rnapeg: 2.7.7
-    // END_VERSIONS
-    // """
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        rnapeg: 2.7.7
+    END_VERSIONS
+    """
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
