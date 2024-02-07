@@ -16,8 +16,8 @@ process CICERO_DOWNLOAD {
     wget https://zenodo.org/records/5088371/files/reference.tar.gz?download=1 -O GRCh38_no_alt.tar.gz
     tar -xzvf GRCh38_no_alt.tar.gz
     rm GRCh38_no_alt.tar.gz
-    mv Homo_sapiens/GRCh38_no_alt ..
-    rm -r Homo_sapiens
+    mv reference/Homo_sapiens/GRCh38_no_alt ../..
+    rm -r reference
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
