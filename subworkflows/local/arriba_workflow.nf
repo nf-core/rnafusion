@@ -18,6 +18,7 @@ workflow ARRIBA_WORKFLOW {
         ch_arriba_ref_known_fusions
         ch_arriba_ref_protein_domains
         ch_cicero_ref_fasta
+        ch_cicero_ref_fasta_fai
         ch_cicero_ref_refflat
         ch_cicero_ref_dir
 
@@ -39,7 +40,7 @@ workflow ARRIBA_WORKFLOW {
 
                 ch_bam_bai = SAMTOOLS_SORT_FOR_CICERO.out.bam.join(SAMTOOLS_INDEX_FOR_CICERO.out.bai)
 
-                RNAPEG ( ch_bam_bai, ch_cicero_ref_fasta, ch_cicero_ref_refflat )
+                RNAPEG ( ch_bam_bai, ch_cicero_ref_fasta, ch_cicero_ref_fasta_fai, ch_cicero_ref_refflat )
                 ch_versions = ch_versions.mix(RNAPEG.out.versions )
 
             //     // CICERO ( STAR_FOR_ARRIBA.out.bam, RNAPEG.out.junctions, ch_cicero_ref_dir )

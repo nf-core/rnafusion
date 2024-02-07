@@ -7,7 +7,8 @@ process RNAPEG {
     input:
     tuple val(meta), path(bam), path(bai)
     tuple val(meta2), path(fasta)
-    tuple val(meta3), path(refflat)
+    tuple val(meta3), path(fasta_fai)
+    tuple val(meta4), path(refflat)
 
     output:
     tuple val(meta), path("*/junctions.txt")         , emit: junctions
