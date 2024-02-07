@@ -1,6 +1,6 @@
 process RNAPEG {
     tag "$meta.id"
-    label 'process_medium'
+    label 'process_single'
 
     container "docker.io/rannickscilifelab/rnapeg:2.7.7"
 
@@ -11,8 +11,8 @@ process RNAPEG {
     tuple val(meta4), path(refflat)
 
     output:
-    tuple val(meta), path("*/junctions.txt")         , emit: junctions
-    path "versions.yml"                              , emit: versions
+    tuple val(meta), path("*junctions.tab.shifted.tab"), emit: junctions
+    path "versions.yml"                                , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
