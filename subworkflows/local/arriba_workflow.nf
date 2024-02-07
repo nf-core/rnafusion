@@ -2,6 +2,7 @@ include { ARRIBA }                                      from '../../modules/nf-c
 // include { CICERO }                                      from '../../modules/local/cicero/detect/main'
 include { RNAPEG }                                      from '../../modules/local/rnapeg/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_ARRIBA}  from '../../modules/nf-core/samtools/index/main'
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_CICERO}  from '../../modules/nf-core/samtools/index/main'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_ARRIBA}    from '../../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_ARRIBA}    from '../../modules/nf-core/samtools/view/main'
 include { STAR_ALIGN as STAR_FOR_ARRIBA }               from '../../modules/nf-core/star/align/main'
@@ -29,7 +30,12 @@ workflow ARRIBA_WORKFLOW {
             ch_versions = ch_versions.mix(STAR_FOR_ARRIBA.out.versions)
 
             if (params.cicero) {
+                SAMTOOLS_INDEX_FOR_CICERO(STAR_FOR_ARRIBA.out.bam)
+                ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FOR_CICERO.out.versions )
+
                 RNAPEG ( STAR_FOR_ARRIBA.out.bam, ch_cicero_ref_fasta, ch_cicero_ref_refflat )
+                ch_versions = ch_versions.mix(RNAPEG.out.versions )
+
             //     // CICERO ( STAR_FOR_ARRIBA.out.bam, RNAPEG.out.junctions, ch_cicero_ref_dir )
             //     // ch_versions = ch_versions.mix(CICERO.out.versions)
                 // println("here!")
