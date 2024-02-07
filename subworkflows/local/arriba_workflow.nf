@@ -1,5 +1,5 @@
 include { ARRIBA }                                      from '../../modules/nf-core/arriba/main'
-// include { CICERO }                                      from '../../modules/local/cicero/detect/main'
+include { CICERO }                                      from '../../modules/local/cicero/detect/main'
 include { RNAPEG }                                      from '../../modules/local/rnapeg/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_ARRIBA}  from '../../modules/nf-core/samtools/index/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_CICERO}  from '../../modules/nf-core/samtools/index/main'
