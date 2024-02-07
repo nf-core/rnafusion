@@ -21,7 +21,6 @@ process RNAPEG {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     RNApeg.sh \\
-        -g GRCh38_no_alt \\
         -b $bam \\
         -f $fasta \\
         -r $refflat \\
