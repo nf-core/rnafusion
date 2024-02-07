@@ -37,7 +37,9 @@ workflow ARRIBA_WORKFLOW {
                 SAMTOOLS_INDEX_FOR_CICERO(SAMTOOLS_SORT_FOR_CICERO.out.bam)
                 ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FOR_CICERO.out.versions )
 
-                RNAPEG ( STAR_FOR_ARRIBA.out.bam, ch_cicero_ref_fasta, ch_cicero_ref_refflat )
+                ch_bam_bai = SAMTOOLS_SORT_FOR_CICERO.out.bam.join(SAMTOOLS_INDEX_FOR_CICERO.out.bai)
+
+                RNAPEG ( ch_bam_bai, ch_cicero_ref_fasta, ch_cicero_ref_refflat )
                 ch_versions = ch_versions.mix(RNAPEG.out.versions )
 
             //     // CICERO ( STAR_FOR_ARRIBA.out.bam, RNAPEG.out.junctions, ch_cicero_ref_dir )
