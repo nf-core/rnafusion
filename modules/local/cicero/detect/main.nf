@@ -8,7 +8,7 @@ process CICERO {
     input:
     tuple val(meta), path(bam)
     tuple val(meta), path(junctions)
-    path refdir
+    tuple val(meta), path(refdir)
 
     output:
     tuple val(meta), path("./*/*.final_fusions.txt") , emit: fusions
