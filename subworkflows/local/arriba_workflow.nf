@@ -43,7 +43,7 @@ workflow ARRIBA_WORKFLOW {
                 RNAPEG ( ch_bam_bai, ch_cicero_ref_fasta, ch_cicero_ref_fasta_fai, ch_cicero_ref_refflat )
                 ch_versions = ch_versions.mix(RNAPEG.out.versions )
 
-                CICERO ( STAR_FOR_ARRIBA.out.bam, RNAPEG.out.junctions, ch_cicero_ref_dir )
+                CICERO ( ch_bam_bai, RNAPEG.out.junctions, ch_cicero_ref_dir )
                 ch_versions = ch_versions.mix(CICERO.out.versions)
             }
         }

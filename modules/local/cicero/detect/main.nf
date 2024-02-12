@@ -4,9 +4,8 @@ process CICERO {
 
     container "docker.io/rannickscilifelab/cicero:1.9.6"
 
-
     input:
-    tuple val(meta), path(bam)
+    tuple val(meta), path(bam), path(bai)
     tuple val(meta), path(junctions)
     tuple val(meta), path(refdir)
 
