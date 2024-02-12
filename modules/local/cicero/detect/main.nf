@@ -2,7 +2,7 @@ process CICERO {
     tag "$meta.id"
     label 'process_medium'
 
-    container "ghcr.io/stjude/cicero:v1.9.6"
+    container "docker.io/rannickscilifelab/cicero:1.9.6"
 
 
     input:
