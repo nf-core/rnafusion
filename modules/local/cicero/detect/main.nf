@@ -24,10 +24,9 @@ process CICERO {
     Cicero.sh \\
         -n $task.cpus \\
         -b $bam \\
-        -g GRCh38_no_alt \\
         -r $refdir \\
         -j $junctions \\
-        -o ${prefix} \\
+        -o . \\
         $args
 
     cat <<-END_VERSIONS > versions.yml
