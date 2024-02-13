@@ -25,7 +25,7 @@ process CICERO {
         -n $task.cpus \\
         -b $bam \\
         -g GRCh38_no_alt \\
-        -r $refdir \\
+        -r ${refdir}/.. \\
         -j $junctions \\
         -o . \\
         $args
