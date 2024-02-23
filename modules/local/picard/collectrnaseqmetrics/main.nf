@@ -37,11 +37,11 @@ process PICARD_COLLECTRNASEQMETRICS {
     if (!task.memory) {
         log.info '[Picard CollectRnaMetrics] Available memory not known - defaulting to 3GB. Specify process memory requirements to change this.'
     } else {
-        avail_mem = task.memory.giga
+        avail_mem = (task.memory.mega*0.8).intValue()
     }
     """
     picard \\
-        -Xmx${avail_mem}g \\
+        -Xmx${avail_mem}M \\
         CollectRnaSeqMetrics \\
         --TMP_DIR ./tmp \\
         ${strandedness} \\
