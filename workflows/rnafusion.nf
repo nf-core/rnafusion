@@ -17,6 +17,8 @@ WorkflowRnafusion.initialise(params, log)
 
 // Check mandatory parameters
 
+
+//TODO: move this to utils_nf_core_rnafusion_pipeline
 if (file(params.input).exists() || params.build_references) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet does not exist or was not specified!' }
 if (params.fusioninspector_only && !params.fusioninspector_fusions) { exit 1, 'Parameter --fusioninspector_fusions PATH_TO_FUSION_LIST expected with parameter --fusioninspector_only'}
 if (params.tools_cutoff < 1) { exit 1, 'Parameter: --tools_cutoff should be >= 1'}
@@ -88,6 +90,8 @@ include { FUSIONCATCHER_WORKFLOW        }   from '../subworkflows/local/fusionca
 include { FUSIONINSPECTOR_WORKFLOW      }   from '../subworkflows/local/fusioninspector_workflow'
 include { FUSIONREPORT_WORKFLOW         }   from '../subworkflows/local/fusionreport_workflow'
 
+include { validateInputSamplesheet       } from '../../subworkflows/local/utils_nfcore_rnaseq_pipeline'
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -118,31 +122,35 @@ workflow RNAFUSION {
     ch_versions = Channel.empty()
 
 
-
+    //
+    // Create channel from input file provided through params.input
+    //
+    Channel
+        .fromSamplesheet("input")
+        .map {
+            meta, fastq_1, fastq_2 ->
+                if (!fastq_2) {
+                    return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
+                } else {
+                    return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
+                }
+        }
+        .groupTuple()
+        .map {
+            validateInputSamplesheet(it)
+        }
+        .branch {
+            meta, fastqs ->
+                single  : fastqs.size() == 1
+                    return [ meta, fastqs.flatten() ]
+                multiple: fastqs.size() > 1
+                    return [ meta, fastqs.flatten() ]
+        }
+        .set { ch_fastq }
 
     //
-    // SUBWORKFLOW: Read in samplesheet, validate and stage input files
+    // MODULE: Concatenate FastQ files from same sample if required
     //
-    INPUT_CHECK (
-        file(params.input)
-    )
-    .reads
-    .map {
-        meta, fastq ->
-            def meta_clone = meta.clone()
-            meta_clone.id = meta_clone.id.split('_')[0..-2].join('_')
-            [ meta_clone, fastq ] }
-    .groupTuple(by: [0])
-    .branch {
-        meta, fastq ->
-            single  : fastq.size() == 1
-                return [ meta, fastq.flatten() ]
-            multiple: fastq.size() > 1
-                return [ meta, fastq.flatten() ]
-    }
-    .set { ch_fastq }
-    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-
     CAT_FASTQ (
         ch_fastq.multiple
     )
@@ -167,7 +175,10 @@ workflow RNAFUSION {
     ch_reads_all = TRIM_WORKFLOW.out.ch_reads_all
     ch_versions = ch_versions.mix(TRIM_WORKFLOW.out.versions)
 
-    // Run STAR alignment and Arriba
+    //
+    // SUBWORKFLOW:  Run STAR alignment and Arriba
+    //
+
     ARRIBA_WORKFLOW (
         ch_reads_all,
         ch_gtf,
