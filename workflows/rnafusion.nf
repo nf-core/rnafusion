@@ -14,7 +14,7 @@ include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
 
 
 
-// // Check mandatory parameters
+// Check mandatory parameters
 
 
 // //TODO: move this to utils_nf_core_rnafusion_pipeline
@@ -98,8 +98,6 @@ include { CAT_FASTQ                   } from '../modules/nf-core/cat/fastq/main'
 
 workflow RNAFUSION {
 
-    main:
-
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
@@ -147,7 +145,7 @@ workflow RNAFUSION {
         ch_cat_fastq
     )
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
-    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+    ch_versions = ch_versions.mix(FASTQC.out.versions)
 
     TRIM_WORKFLOW (
         ch_cat_fastq
