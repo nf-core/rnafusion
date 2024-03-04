@@ -284,6 +284,11 @@
             "fa_icon": "fas fa-dna",
             "description": "Reference genome related files and options required for the workflow.",
             "properties": {
+                "genome": {
+                    "type": "string",
+                    "description": "Name of iGenomes reference.",
+                    "fa_icon": "fas fa-book"
+                },
                 "fasta": {
                     "type": "string",
                     "format": "file-path",
