@@ -13,17 +13,25 @@ nextflow.enable.dsl = 2
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    GENOME PARAMETER VALUES
+    IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-params.fasta           = WorkflowMain.getGenomeAttribute(params, 'fasta')
-params.fai             = WorkflowMain.getGenomeAttribute(params, 'fai')
-params.gtf             = WorkflowMain.getGenomeAttribute(params, 'gtf')
-params.chrgtf          = WorkflowMain.getGenomeAttribute(params, 'chrgtf')
-params.transcript      = WorkflowMain.getGenomeAttribute(params, 'transcript')
-params.refflat         = WorkflowMain.getGenomeAttribute(params, 'refflat')
-params.rrna_intervals  = WorkflowMain.getGenomeAttribute(params, 'rrna_intervals')
+include { BUILD_REFERENCES }        from './workflows/build_references'
+include { RNAFUSION  }              from './workflows/rnafusion'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_rnafusion_pipeline'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rnafusion_pipeline'
+include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_rnafusion_pipeline'
+
+
+
+params.fasta           = getGenomeAttribute('fasta')
+params.fai             = getGenomeAttribute('fai')
+params.gtf             = getGenomeAttribute('gtf')
+params.chrgtf          = getGenomeAttribute('chrgtf')
+params.transcript      = getGenomeAttribute('transcript')
+params.refflat         = getGenomeAttribute('refflat')
+params.rrna_intervals  = getGenomeAttribute('rrna_intervals')
 
 /*
 ========================================================================================
