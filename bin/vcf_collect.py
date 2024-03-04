@@ -352,7 +352,8 @@ def read_build_fusionreport(fusionreport_file: str) -> pd.DataFrame:
     with open(fusionreport_file) as f:
         from_html = [line.split('rows": [')[1] for line in f if 'name="fusion_list' in line]
         expression = ast.literal_eval(from_html[0].split('], "tool')[0])
-    fusion_report = pd.DataFrame.from_dict({k: [v] for k, v in expression.items()})
+        # print(expression)
+        fusion_report = pd.DataFrame(list(expression))
     if not "arriba" in fusion_report.columns:
         fusion_report["arriba"] = ""
     if not "fusioncatcher" in fusion_report.columns:
@@ -371,8 +372,10 @@ def read_build_fusionreport(fusionreport_file: str) -> pd.DataFrame:
     fusion_report["FOUND_IN"] = fusion_report[["arriba", "starfusion", "fusioncatcher"]].apply(
         concatenate_columns, axis=1
     )
+    print(fusion_report)
     fusion_report.columns = fusion_report.columns.str.upper()
-    fusion_report["FOUND_DB"] = fusion_report["FOUND_DB"].apply(lambda x: ",".join(x))
+    print(fusion_report["FOUND_DB"])
+    fusion_report["FOUND_DB"] = fusion_report["FOUND_DB"].apply(lambda x: ",".join(x) if len(x) > 0 else '')
     fusion_report[["GeneA", "GeneB"]] = fusion_report["FUSION"].str.split("--", expand=True)
 
     return fusion_report[
