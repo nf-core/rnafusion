@@ -65,7 +65,9 @@ def vcf_collect(
 
     gtf_df = build_gtf_dataframe(gtf)
     all_df = df.merge(gtf_df, how="left", left_on="CDS_LEFT_ID", right_on="Transcript_id")
-    all_df[["PosA", "orig_start", "orig_end"]] = all_df[["PosA", "orig_start", "orig_end"]].fillna(0).astype(int)
+    all_df[["PosA", "orig_start", "orig_end"]] = (
+        all_df[["PosA", "orig_start", "orig_end"]].fillna(0).astype(int)
+    )
 
     all_df = all_df[
         ((all_df["PosA"] >= all_df["orig_start"]) & (all_df["PosA"] <= all_df["orig_end"]))
@@ -75,7 +77,9 @@ def vcf_collect(
     all_df.replace("", np.nan, inplace=True)
     all_df = all_df.drop_duplicates()
 
-    all_df[["exon_number", "transcript_version"]] = all_df[["exon_number", "transcript_version"]].replace(0, np.nan)
+    all_df[["exon_number", "transcript_version"]] = all_df[
+        ["exon_number", "transcript_version"]
+    ].replace(0, np.nan)
     # Fill non-empty values within each group for 'exon_number' and 'transcript_version'
     all_df["exon_number"] = all_df.groupby("PosA")["exon_number"].transform(
         lambda x: x.fillna(method="ffill").fillna(method="bfill")
@@ -116,8 +120,12 @@ def vcf_collect(
     ].drop_duplicates()
     all_df["CDS_RIGHT_ID"] = all_df["CDS_RIGHT_ID"].astype("str")
     all_df = all_df.merge(gtf_df, how="left", left_on="CDS_RIGHT_ID", right_on="Transcript_id")
-    all_df[["PosB", "orig_start", "orig_end"]] = all_df[["PosB", "orig_start", "orig_end"]].fillna(0)
-    all_df[["PosB", "orig_start", "orig_end"]] = all_df[["PosB", "orig_start", "orig_end"]].astype(int)
+    all_df[["PosB", "orig_start", "orig_end"]] = all_df[["PosB", "orig_start", "orig_end"]].fillna(
+        0
+    )
+    all_df[["PosB", "orig_start", "orig_end"]] = all_df[["PosB", "orig_start", "orig_end"]].astype(
+        int
+    )
     all_df = all_df[
         ((all_df["PosB"] >= all_df["orig_start"]) & (all_df["PosB"] <= all_df["orig_end"]))
         | ((all_df["orig_start"] == 0) & (all_df["orig_end"] == 0))
@@ -126,7 +134,9 @@ def vcf_collect(
     all_df[["PosA", "PosB"]] = all_df[["PosA", "PosB"]].replace(0, np.nan)
     all_df = all_df.replace("", np.nan)
 
-    all_df[["exon_number", "transcript_version"]] = all_df[["exon_number", "transcript_version"]].replace(0, np.nan)
+    all_df[["exon_number", "transcript_version"]] = all_df[
+        ["exon_number", "transcript_version"]
+    ].replace(0, np.nan)
     # Fill non-empty values within each group for 'exon_number' and 'transcript_version'
     all_df["exon_number"] = all_df.groupby("PosB")["exon_number"].transform(
         lambda x: x.fillna(method="ffill").fillna(method="bfill")
@@ -212,7 +222,9 @@ def parse_args(argv=None):
         type=Path,
         help="HGNC database.",
     )
-    parser.add_argument("--sample", metavar="SAMPLE", type=Path, help="Sample name.", default="Sample")
+    parser.add_argument(
+        "--sample", metavar="SAMPLE", type=Path, help="Sample name.", default="Sample"
+    )
     parser.add_argument(
         "--out",
         metavar="OUT",
@@ -280,7 +292,11 @@ def build_fusioninspector_dataframe(file: str) -> pd.DataFrame:
         df["annots"] = (
             df["annots"]
             .apply(convert_to_list)
-            .apply(lambda x: ",".join(map(str, x)) if isinstance(x, list) else str(x) if pd.notna(x) else "")
+            .apply(
+                lambda x: (
+                    ",".join(map(str, x)) if isinstance(x, list) else str(x) if pd.notna(x) else ""
+                )
+            )
         )
     else:
         for i in [
@@ -359,9 +375,9 @@ def read_build_fusionreport(fusionreport_file: str) -> pd.DataFrame:
     fusion_report["FOUND_DB"] = fusion_report["FOUND_DB"].apply(lambda x: ",".join(x))
     fusion_report[["GeneA", "GeneB"]] = fusion_report["FUSION"].str.split("--", expand=True)
 
-    return fusion_report[["FUSION", "GeneA", "GeneB", "TOOLS_HITS", "SCORE", "FOUND_DB", "FOUND_IN"]].set_index(
-        ["FUSION"]
-    )
+    return fusion_report[
+        ["FUSION", "GeneA", "GeneB", "TOOLS_HITS", "SCORE", "FOUND_DB", "FOUND_IN"]
+    ].set_index(["FUSION"])
 
 
 def read_fusionreport_csv(file: str) -> pd.DataFrame:
@@ -370,7 +386,9 @@ def read_fusionreport_csv(file: str) -> pd.DataFrame:
     for column in columns_to_iterate:
         if column not in df.columns:
             df[column] = ""
-    df[["starfusion", "arriba", "fusioncatcher"]] = df[["starfusion", "arriba", "fusioncatcher"]].astype("str")
+    df[["starfusion", "arriba", "fusioncatcher"]] = df[
+        ["starfusion", "arriba", "fusioncatcher"]
+    ].astype("str")
     for index, row in df.iterrows():
         for column in columns_to_iterate:
             cell_value = row[column]
@@ -398,7 +416,9 @@ def read_fusionreport_csv(file: str) -> pd.DataFrame:
     df[["GeneA", "GeneB"]] = df["Fusion"].str.split("--", expand=True)
     df = df.set_index("Fusion")
     df.to_csv("tmp.csv")
-    return df[["GeneA", "GeneB", "ChromosomeA", "PosA", "StrandA", "ChromosomeB", "PosB", "StrandB"]]
+    return df[
+        ["GeneA", "GeneB", "ChromosomeA", "PosA", "StrandA", "ChromosomeB", "PosB", "StrandB"]
+    ]
 
 
 def column_manipulation(df: pd.DataFrame) -> pd.DataFrame:
@@ -425,7 +445,9 @@ def column_manipulation(df: pd.DataFrame) -> pd.DataFrame:
     df["Left_exon_number"] = df["Left_exon_number"].fillna(0).astype(int).astype(str)
     df["Right_exon_number"] = df["Right_exon_number"].fillna(0).astype(int).astype(str)
     df["Left_transcript_version"] = df["Left_transcript_version"].fillna(0).astype(int).astype(str)
-    df["Right_transcript_version"] = df["Right_transcript_version"].fillna(0).astype(int).astype(str)
+    df["Right_transcript_version"] = (
+        df["Right_transcript_version"].fillna(0).astype(int).astype(str)
+    )
     df["PosA"] = df["PosA"].fillna(0).astype(int).astype(str)
     df["PosB"] = df["PosB"].fillna(0).astype(int).astype(str)
     df["PROT_FUSION_TYPE"] = df["PROT_FUSION_TYPE"].replace(".", "nan")
@@ -452,7 +474,9 @@ def column_manipulation(df: pd.DataFrame) -> pd.DataFrame:
             f"EXON_NUMBER_A={row['Left_exon_number']};EXON_NUMBER_B={row['Right_exon_number']};"
             f"ANNOTATIONS={row['annots']}"
         )
-        df.loc[index, "Sample"] = f"./1:{row['JunctionReadCount']}:{row['SpanningFragCount']}:{row['FFPM']}"
+        df.loc[index, "Sample"] = (
+            f"./1:{row['JunctionReadCount']}:{row['SpanningFragCount']}:{row['FFPM']}"
+        )
 
     return df
 
@@ -497,7 +521,9 @@ def build_gtf_dataframe(file: str) -> pd.DataFrame:
     """
     df = pd.read_csv(file, sep="\t")
     df[["fusion_dump", "Transcript_id"]] = df["transcript_id"].str.split("^", expand=True)
-    df[["orig_chromosome", "orig_start", "orig_end", "orig_dir"]] = df["orig_coord_info"].str.split(",", expand=True)
+    df[["orig_chromosome", "orig_start", "orig_end", "orig_dir"]] = df["orig_coord_info"].str.split(
+        ",", expand=True
+    )
     return df[["Transcript_id", "transcript_version", "exon_number", "orig_start", "orig_end"]]
 
 
@@ -511,7 +537,9 @@ def main(argv=None):
         or not args.fusionreport_csv
         or not args.hgnc
     ):
-        logger.error(f"The given input file {args.fusioninspector} or {args.fusionreport} was not found!")
+        logger.error(
+            f"The given input file {args.fusioninspector} or {args.fusionreport} was not found!"
+        )
         sys.exit(2)
     vcf_collect(
         args.fusioninspector,

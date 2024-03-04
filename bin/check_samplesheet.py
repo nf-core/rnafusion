@@ -123,7 +123,9 @@ class RowChecker:
     def _validate_strandedness(self, row):
         """Assert that the strandedness given is one of unstranded/forward/reverse"""
         if row[self._strandedness] not in self.VALID_STRANDEDNESSES:
-            raise AssertionError(f"Strandedness must be one of {', '.join(self.VALID_STRANDEDNESSES)}")
+            raise AssertionError(
+                f"Strandedness must be one of {', '.join(self.VALID_STRANDEDNESSES)}"
+            )
 
     def validate_unique_samples(self):
         """
