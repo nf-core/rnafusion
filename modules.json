@@ -25,11 +25,6 @@
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": ["modules"]
                     },
-                    "custom/dumpsoftwareversions": {
-                        "branch": "master",
-                        "git_sha": "8ec825f465b9c17f9d83000022995b4f7de6fe93",
-                        "installed_by": ["modules"]
-                    },
                     "fastp": {
                         "branch": "master",
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
@@ -109,25 +104,6 @@
                         "branch": "master",
                         "git_sha": "b0dcb44b018d9b2bcb35b1abb7bcd34061bc5a6d",
                         "installed_by": ["modules"]
-                    }
-                }
-            },
-            "subworkflows": {
-                "nf-core": {
-                    "utils_nextflow_pipeline": {
-                        "branch": "master",
-                        "git_sha": "5caf7640a9ef1d18d765d55339be751bb0969dfa",
-                        "installed_by": ["subworkflows"]
-                    },
-                    "utils_nfcore_pipeline": {
-                        "branch": "master",
-                        "git_sha": "5caf7640a9ef1d18d765d55339be751bb0969dfa",
-                        "installed_by": ["subworkflows"]
-                    },
-                    "utils_nfvalidation_plugin": {
-                        "branch": "master",
-                        "git_sha": "5caf7640a9ef1d18d765d55339be751bb0969dfa",
-                        "installed_by": ["subworkflows"]
                     }
                 }
             },
