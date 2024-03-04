@@ -35,9 +35,6 @@ include { RNAFUSION               } from './workflows/rnafusion'
 //
 workflow NFCORE_RNAFUSION {
 
-    take:
-    samplesheet // channel: samplesheet read in from --input
-
     main:
 
     //
@@ -46,7 +43,7 @@ workflow NFCORE_RNAFUSION {
     if (params.build_references) {
         BUILD_REFERENCES ()
     } else {
-        RNAFUSION(samplesheet)
+        RNAFUSION()
     }
 
     emit:
@@ -79,9 +76,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_RNAFUSION (
-        PIPELINE_INITIALISATION.out.samplesheet
-    )
+    NFCORE_RNAFUSION ()
 
     //
     // SUBWORKFLOW: Run completion tasks
