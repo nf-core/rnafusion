@@ -17,22 +17,12 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { RNAFUSION  } from './workflows/rnafusion'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_rnafusion_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rnafusion_pipeline'
-
 include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_rnafusion_pipeline'
+include { BUILD_REFERENCES        } from './workflows/build_references'
+include { RNAFUSION               } from './workflows/rnafusion'
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    GENOME PARAMETER VALUES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-// TODO nf-core: Remove this line if you don't need a FASTA file
-//   This is an example of how to use getGenomeAttribute() to fetch parameters
-//   from igenomes.config using `--genome`
-params.fasta = getGenomeAttribute('fasta')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -53,9 +43,11 @@ workflow NFCORE_RNAFUSION {
     //
     // WORKFLOW: Run pipeline
     //
-    RNAFUSION (
-        samplesheet
-    )
+    if (params.build_references) {
+        BUILD_REFERENCES ()
+    } else {
+        RNAFUSION(samplesheet)
+    }
 
     emit:
     multiqc_report = RNAFUSION.out.multiqc_report // channel: /path/to/multiqc_report.html
