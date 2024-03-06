@@ -11,18 +11,6 @@ include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pi
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_rnafusion_pipeline'
 include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
 
-
-
-
-// Check mandatory parameters
-
-
-// //TODO: move this to utils_nf_core_rnafusion_pipeline
-// if (file(params.input).exists() || params.build_references) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet does not exist or was not specified!' }
-// if (params.fusioninspector_only && !params.fusioninspector_fusions) { exit 1, 'Parameter --fusioninspector_fusions PATH_TO_FUSION_LIST expected with parameter --fusioninspector_only'}
-// if (params.tools_cutoff < 1) { exit 1, 'Parameter: --tools_cutoff should be >= 1'}
-
-
 ch_chrgtf = params.starfusion_build ? Channel.fromPath(params.chrgtf).map { it -> [[id:it.Name], it] }.collect() : Channel.fromPath("${params.starfusion_ref}/ref_annot.gtf").map { it -> [[id:it.Name], it] }.collect()
 ch_starindex_ref = params.starfusion_build ? Channel.fromPath(params.starindex_ref).map { it -> [[id:it.Name], it] }.collect() : Channel.fromPath("${params.starfusion_ref}/ref_genome.fa.star.idx").map { it -> [[id:it.Name], it] }.collect()
 ch_starindex_ensembl_ref = Channel.fromPath(params.starindex_ref).map { it -> [[id:it.Name], it] }.collect()
@@ -39,24 +27,6 @@ ch_fasta = Channel.fromPath(params.fasta).map { it -> [[id:it.Name], it] }.colle
 ch_gtf = Channel.fromPath(params.gtf).map { it -> [[id:it.Name], it] }.collect()
 ch_transcript = Channel.fromPath(params.transcript).map { it -> [[id:it.Name], it] }.collect()
 ch_fai = Channel.fromPath(params.fai).map { it -> [[id:it.Name], it] }.collect()
-
-// def checkPathParamList = [
-//     params.fasta,
-//     params.fai,
-//     params.gtf,
-//     params.transcript,
-// ]
-
-// for (param in checkPathParamList) if ((param) && !params.build_references) file(param, checkIfExists: true)
-// def params_fasta_path_uri = params.fasta =~ /^([a-zA-Z0-9]*):\/\/(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/
-// // check if params.fasta is a remote uri such as s3://, gs:// or dx://
-// if (params_fasta_path_uri){
-//     log.info "INFO: a remote uri path detected, check for absolute path and trailing '/' not performed"
-//     // log.info "INFO:  remote uri path detected (e.g. s3), check for absolute path and trailing '/' not performed"
-// }
-// else {
-//     for (param in checkPathParamList) if ((param.toString())!= file(param).toString() && !params.build_references) { exit 1, "Problem with ${param}: ABSOLUTE PATHS are required! Check for trailing '/' at the end of paths too." }
-// }
 
 
 /*
