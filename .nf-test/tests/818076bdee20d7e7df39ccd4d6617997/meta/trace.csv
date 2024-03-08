@@ -1,3 +1,0 @@
-task_id	hash	native_id	name	status	exit	submit	duration	realtime	%cpu	peak_rss	peak_vmem	rchar	wchar
-1	81/2c2c1f	89776	NFCORE_RNAFUSION:BUILD_REFERENCES:HGNC_DOWNLOAD (hgnc)	COMPLETED	0	2024-03-08 14:13:30.756	36s	26s	3.0%	24.8 MB	2.3 GB	16.2 MB	15.8 MB
-2	52/33e328	89787	NFCORE_RNAFUSION:BUILD_REFERENCES:ENSEMBL_DOWNLOAD (ensembl)	ABORTED	-	2024-03-08 14:13:30.864	-	-	-	-	-	-	-
