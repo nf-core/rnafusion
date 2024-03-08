@@ -16,8 +16,8 @@ nextflow_pipeline {
                 max_memory                   = '6.GB'
                 max_time                     = '6.h'
                 input                        = 'https://raw.githubusercontent.com/nf-core/test-datasets/rnafusion/testdata/human/samplesheet_valid.csv'
-                cosmic_username              = secrets.COSMIC_USERNAME
-                cosmic_passwd                = secrets.COSMIC_PASSWD
+                cosmic_username              = COSMIC_USERNAME
+                cosmic_passwd                = COSMIC_PASSWD
             }
         }
 
@@ -27,5 +27,23 @@ nextflow_pipeline {
             )
         }
     }
+    test("Run fusion detection with profile test") {
 
+        when {
+            params {
+                outdir                       = "results"
+                genome_base                  = "references"
+                max_cpus                     = 2
+                max_memory                   = '6.GB'
+                max_time                     = '6.h'
+                input                        = 'https://raw.githubusercontent.com/nf-core/test-datasets/rnafusion/testdata/human/samplesheet_valid.csv'
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success }
+            )
+        }
+    }
 }
