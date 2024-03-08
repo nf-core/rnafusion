@@ -1,1 +1,11 @@
-{"input":"https://raw.githubusercontent.com/nf-core/test-datasets/rnafusion/testdata/human/samplesheet_valid.csv","cosmic_username":null,"build_references":true,"genome_base":"references","cosmic_passwd":null,"max_time":"6.h","max_cpus":2,"max_memory":"6.GB","outdir":"results"}
+{
+    "input": "https://raw.githubusercontent.com/nf-core/test-datasets/rnafusion/testdata/human/samplesheet_valid.csv",
+    "cosmic_username": null,
+    "build_references": true,
+    "genome_base": "references",
+    "cosmic_passwd": null,
+    "max_time": "6.h",
+    "max_cpus": 2,
+    "max_memory": "6.GB",
+    "outdir": "results"
+}
