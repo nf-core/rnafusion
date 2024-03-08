@@ -1,0 +1,314 @@
+Mar-08 14:13:11.080 [main] DEBUG nextflow.cli.Launcher - $> nextflow -log /Users/annick.renevey/Projects/rnafusion/.nf-test/tests/818076bdee20d7e7df39ccd4d6617997/meta/nextflow.log run /Users/annick.renevey/Projects/rnafusion/tests/../main.nf -c /Users/annick.renevey/Projects/rnafusion/nextflow.config -c /Users/annick.renevey/Projects/rnafusion/tests/nextflow.config -params-file /Users/annick.renevey/Projects/rnafusion/.nf-test/tests/818076bdee20d7e7df39ccd4d6617997/meta/params.json -ansi-log false -profile debug,test,docker -with-trace /Users/annick.renevey/Projects/rnafusion/.nf-test/tests/818076bdee20d7e7df39ccd4d6617997/meta/trace.csv -w /Users/annick.renevey/Projects/rnafusion/.nf-test/tests/818076bdee20d7e7df39ccd4d6617997/work
+Mar-08 14:13:11.190 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 23.04.1
+Mar-08 14:13:11.228 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/Users/annick.renevey/.nextflow/plugins; core-plugins: nf-amazon@1.16.2,nf-azure@1.0.1,nf-codecommit@0.1.4,nf-console@1.0.5,nf-ga4gh@1.0.5,nf-google@1.7.3,nf-tower@1.5.12,nf-wave@0.8.2
+Mar-08 14:13:11.245 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Mar-08 14:13:11.246 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Mar-08 14:13:11.250 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.4.1 in 'deployment' mode
+Mar-08 14:13:11.269 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Mar-08 14:13:11.303 [main] DEBUG nextflow.config.ConfigBuilder - Found config base: /Users/annick.renevey/Projects/rnafusion/nextflow.config
+Mar-08 14:13:11.310 [main] DEBUG nextflow.config.ConfigBuilder - User config file: /Users/annick.renevey/Projects/rnafusion/nextflow.config
+Mar-08 14:13:11.311 [main] DEBUG nextflow.config.ConfigBuilder - User config file: /Users/annick.renevey/Projects/rnafusion/tests/nextflow.config
+Mar-08 14:13:11.311 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /Users/annick.renevey/Projects/rnafusion/nextflow.config
+Mar-08 14:13:11.311 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /Users/annick.renevey/Projects/rnafusion/nextflow.config
+Mar-08 14:13:11.311 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /Users/annick.renevey/Projects/rnafusion/tests/nextflow.config
+Mar-08 14:13:11.393 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `debug,test,docker`
+Mar-08 14:13:16.099 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `debug,test,docker`
+Mar-08 14:13:17.277 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `debug,test,docker`
+Mar-08 14:13:17.413 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [cfc_dev, uzl_omics, ifb_core, denbi_qbic, alice, mjolnir_globe, uppmax, incliva, ilifu, uge, rosalind_uge, lugh, unibe_ibu, vai, czbiohub_aws, jax, ccga_med, scw, unc_longleaf, tigem, tubingen_apg, google, apollo, ipop_up, vsc_calcua, pdc_kth, googlels, daisybio, eddie, medair, biowulf, apptainer, bi, bigpurple, adcra, cedars, pawsey_setonix, vsc_kul_uhasselt, pawsey_nimbus, ucl_myriad, utd_ganymede, charliecloud, icr_davros, ceres, munin, arm, rosalind, hasta, cfc, uzh, ebi_codon_slurm, ebc, ku_sund_dangpu, ccga_dx, crick, marvin, biohpc_gen, shifter, mana, mamba, york_viking, unc_lccc, wehi, awsbatch, wustl_htcf, imperial, maestro, software_license, utd_europa, genotoul, nci_gadi, abims, janelia, nu_genomics, googlebatch, oist, sahmri, mpcdf, leicester, vsc_ugent, create, sage, cambridge, jex, podman, ebi_codon, cheaha, xanadu, nyu_hpc, test, computerome, ucd_sonic, seg_globe, sanger, dkfz, pasteur, ethz_euler, test_full, imb, tuos_stanage, azurebatch, hki, crukmi, csiro_petrichor, docker, engaging, gis, hypatia, psmn, eva, nygc, fgcz, conda, crg, singularity, self_hosted_runner, tufts, uw_hyak_pedslabs, utd_sysbio, debug, genouest, cbe, phoenix, gitpod, seawulf, uod_hpc, fub_curta, uct_hpc, aws_tower, binac]
+Mar-08 14:13:17.512 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=2 from script declararion
+Mar-08 14:13:17.534 [main] INFO  nextflow.cli.CmdRun - Launching `/Users/annick.renevey/Projects/rnafusion/tests/../main.nf` [cheesy_hawking] DSL2 - revision: 12cef51b71
+Mar-08 14:13:17.536 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins declared=[nf-validation@1.1.3]
+Mar-08 14:13:17.541 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Mar-08 14:13:17.541 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[nf-validation@1.1.3]
+Mar-08 14:13:17.542 [main] DEBUG nextflow.plugin.PluginUpdater - Installing plugin nf-validation version: 1.1.3
+Mar-08 14:13:17.559 [main] INFO  org.pf4j.AbstractPluginManager - Plugin 'nf-validation@1.1.3' resolved
+Mar-08 14:13:17.560 [main] INFO  org.pf4j.AbstractPluginManager - Start plugin 'nf-validation@1.1.3'
+Mar-08 14:13:17.592 [main] DEBUG nextflow.plugin.BasePlugin - Plugin started nf-validation@1.1.3
+Mar-08 14:13:17.616 [main] DEBUG nextflow.secret.LocalSecretsProvider - Secrets store: /Users/annick.renevey/.nextflow/secrets/store.json
+Mar-08 14:13:17.628 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@57e03347] - activable => nextflow.secret.LocalSecretsProvider@57e03347
+Mar-08 14:13:17.713 [main] DEBUG nextflow.Session - Session UUID: 1bbe00d2-1928-4556-b97c-ecef4af4222e
+Mar-08 14:13:17.713 [main] DEBUG nextflow.Session - Run name: cheesy_hawking
+Mar-08 14:13:17.714 [main] DEBUG nextflow.Session - Executor pool size: 8
+Mar-08 14:13:17.727 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=24; workQueue=LinkedBlockingQueue[10000]; allowCoreThreadTimeout=false
+Mar-08 14:13:17.787 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 23.04.1 build 5866
+  Created: 15-04-2023 06:51 UTC (08:51 CEST)
+  System: Mac OS X 14.2.1
+  Runtime: Groovy 3.0.16 on OpenJDK 64-Bit Server VM 17.0.3+7-LTS
+  Encoding: UTF-8 (UTF-8)
+  Process: 89543@annickrmbp [130.229.140.244]
+  CPUs: 8 - Mem: 16 GB (22.8 MB) - Swap: 6 GB (1.4 GB)
+Mar-08 14:13:17.818 [main] DEBUG nextflow.Session - Work-dir: /Users/annick.renevey/Projects/rnafusion/.nf-test/tests/818076bdee20d7e7df39ccd4d6617997/work [Mac OS X]
+Mar-08 14:13:17.840 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+Mar-08 14:13:17.857 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Mar-08 14:13:17.959 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Mar-08 14:13:17.990 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 9; maxThreads: 1000
+Mar-08 14:13:18.140 [main] DEBUG nextflow.Session - Session start
+Mar-08 14:13:18.175 [main] DEBUG nextflow.trace.TraceFileObserver - Workflow started -- trace file: /Users/annick.renevey/Projects/rnafusion/.nf-test/tests/818076bdee20d7e7df39ccd4d6617997/meta/trace.csv
+Mar-08 14:13:18.579 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Mar-08 14:13:19.365 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [paramsHelp:paramsHelp]; plugin Id: nf-validation
+Mar-08 14:13:19.385 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [paramsSummaryLog:paramsSummaryLog]; plugin Id: nf-validation
+Mar-08 14:13:19.385 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [validateParameters:validateParameters]; plugin Id: nf-validation
+Mar-08 14:13:19.411 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [paramsSummaryMap:paramsSummaryMap]; plugin Id: nf-validation
+Mar-08 14:13:19.413 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [fromSamplesheet:fromSamplesheet]; plugin Id: nf-validation
+Mar-08 14:13:22.583 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [paramsHelp:paramsHelp]; plugin Id: nf-validation
+Mar-08 14:13:22.586 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [paramsSummaryLog:paramsSummaryLog]; plugin Id: nf-validation
+Mar-08 14:13:22.586 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [validateParameters:validateParameters]; plugin Id: nf-validation
+Mar-08 14:13:22.588 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [paramsSummaryMap:paramsSummaryMap]; plugin Id: nf-validation
+Mar-08 14:13:22.588 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [fromSamplesheet:fromSamplesheet]; plugin Id: nf-validation
+Mar-08 14:13:22.738 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [paramsSummaryLog:paramsSummaryLog, paramsSummaryMap:paramsSummaryMap]; plugin Id: nf-validation
+Mar-08 14:13:27.381 [main] DEBUG nextflow.Nextflow - Using schema file: nextflow_schema.json
+Mar-08 14:13:27.389 [main] WARN  nextflow.script.ScriptBinding - Access to undefined parameter `monochromeLogs` -- Initialise it to a default value eg. `params.monochromeLogs = some_value`
+Mar-08 14:13:27.418 [main] INFO  nextflow.Nextflow - 
+
+-[2m----------------------------------------------------[0m-
+                                        [0;32m,--.[0;30m/[0;32m,-.[0m
+[0;34m        ___     __   __   __   ___     [0;32m/,-._.--~'[0m
+[0;34m  |\ | |__  __ /  ` /  \ |__) |__         [0;33m}  {[0m
+[0;34m  | \| |       \__, \__/ |  \ |___     [0;32m\`-._,-`-,[0m
+                                        [0;32m`._,._,'[0m
+[0;35m  nf-core/rnafusion v3.0.2dev[0m
+-[2m----------------------------------------------------[0m-
+[1mCore Nextflow options[0m
+  [0;34mrunName                           : [0;32mcheesy_hawking[0m
+  [0;34mcontainerEngine                   : [0;32mdocker[0m
+  [0;34mlaunchDir                         : [0;32m/Users/annick.renevey/Projects/rnafusion/.nf-test/tests/818076bdee20d7e7df39ccd4d6617997[0m
+  [0;34mworkDir                           : [0;32m/Users/annick.renevey/Projects/rnafusion/.nf-test/tests/818076bdee20d7e7df39ccd4d6617997/work[0m
+  [0;34mprojectDir                        : [0;32m/Users/annick.renevey/Projects/rnafusion[0m
+  [0;34muserName                          : [0;32mannick.renevey[0m
+  [0;34mprofile                           : [0;32mdebug,test,docker[0m
+  [0;34mconfigFiles                       : [0;32m[0m
+
+[1mInput/output options[0m
+  [0;34minput                             : [0;32mhttps://raw.githubusercontent.com/nf-core/test-datasets/rnafusion/testdata/human/samplesheet_valid.csv[0m
+  [0;34moutdir                            : [0;32mresults[0m
+  [0;34mbuild_references                  : [0;32mtrue[0m
+  [0;34mgenomes_base                      : [0;32mresults/references[0m
+  [0;34mstarfusion_build                  : [0;32mtrue[0m
+  [0;34marriba_ref                        : [0;32mresults/references/arriba[0m
+  [0;34marriba_ref_blacklist              : [0;32mresults/references/arriba/blacklist_hg38_GRCh38_v2.4.0.tsv.gz[0m
+  [0;34marriba_ref_cytobands              : [0;32mresults/references/arriba/cytobands_hg38_GRCh38_v2.4.0.tsv[0m
+  [0;34marriba_ref_known_fusions          : [0;32mresults/references/arriba/known_fusions_hg38_GRCh38_v2.4.0.tsv.gz[0m
+  [0;34marriba_ref_protein_domains        : [0;32mresults/references/arriba/protein_domains_hg38_GRCh38_v2.4.0.gff3[0m
+  [0;34mensembl_ref                       : [0;32mresults/references/ensembl[0m
+  [0;34mfusioncatcher_limitSjdbInsertNsj  : [0;32m2000000[0m
+  [0;34mfusioncatcher_ref                 : [0;32mresults/references/fusioncatcher/human_v102[0m
+  [0;34mfusioninspector_limitSjdbInsertNsj: [0;32m1000000[0m
+  [0;34mfusionreport_ref                  : [0;32mresults/references/fusion_report_db[0m
+  [0;34mhgnc_ref                          : [0;32mresults/references/hgnc/hgnc_complete_set.txt[0m
+  [0;34mhgnc_date                         : [0;32mresults/references/hgnc/HGNC-DB-timestamp.txt[0m
+  [0;34mstarfusion_ref                    : [0;32mresults/references/starfusion/ctat_genome_lib_build_dir[0m
+  [0;34mstarindex_ref                     : [0;32mresults/references/star[0m
+  [0;34mtools_cutoff                      : [0;32m1[0m
+
+[1mRead trimming options[0m
+  [0;34madapter_fasta                     : [0;32m[][0m
+
+[1mAlignment compression options[0m
+  [0;34mcram                              : [0;32m[][0m
+
+[1mReference genome options[0m
+  [0;34mgenome                            : [0;32mGRCh38[0m
+  [0;34mfasta                             : [0;32mresults/references/ensembl/Homo_sapiens.GRCh38.102.all.fa[0m
+  [0;34mfai                               : [0;32mresults/references/ensembl/Homo_sapiens.GRCh38.102.all.fa.fai[0m
+  [0;34mgtf                               : [0;32mresults/references/ensembl/Homo_sapiens.GRCh38.102.gtf[0m
+  [0;34mchrgtf                            : [0;32mresults/references/ensembl/Homo_sapiens.GRCh38.102.chr.gtf[0m
+  [0;34mtranscript                        : [0;32mresults/references/ensembl/Homo_sapiens.GRCh38.102.cdna.all.fa.gz[0m
+  [0;34mrefflat                           : [0;32mresults/references/ensembl/Homo_sapiens.GRCh38.102.chr.gtf.refflat[0m
+  [0;34mrrna_intervals                    : [0;32mresults/references/ensembl/Homo_sapiens.GRCh38.102.interval_list[0m
+
+[1mInstitutional config options[0m
+  [0;34mconfig_profile_name               : [0;32mTest profile[0m
+  [0;34mconfig_profile_description        : [0;32mMinimal test dataset to check pipeline function[0m
+
+[1mMax job request options[0m
+  [0;34mmax_cpus                          : [0;32m2[0m
+  [0;34mmax_memory                        : [0;32m6.GB[0m
+  [0;34mmax_time                          : [0;32m6.h[0m
+
+!! Only displaying parameters that differ from the pipeline defaults !!
+-[2m----------------------------------------------------[0m-
+If you use nf-core/rnafusion for your analysis please cite:
+
+* The pipeline
+  
+
+* The nf-core framework
+  https://doi.org/10.1038/s41587-020-0439-x
+
+* Software dependencies
+  https://github.com/nf-core/rnafusion/blob/master/CITATIONS.md
+-[2m----------------------------------------------------[0m-
+Mar-08 14:13:27.425 [main] DEBUG nextflow.validation.SchemaValidator - Starting parameters validation
+Mar-08 14:13:27.617 [main] WARN  nextflow.validation.SchemaValidator - The following invalid input values have been detected:
+
+* --genome_base: references
+* --modules_testdata_base_path: s3://ngi-igenomes/testdata/nf-core/modules/
+* --pipelines_testdata_base_path: s3://ngi-igenomes/testdata/nf-core/pipelines/rnaseq/3.15/
+
+
+Mar-08 14:13:27.912 [main] DEBUG nextflow.validation.SchemaValidator - Starting validation: 'input': '/nf-core/test-datasets/rnafusion/testdata/human/samplesheet_valid.csv' with '/Users/annick.renevey/Projects/rnafusion/assets/schema_input.json'
+Mar-08 14:13:29.935 [main] DEBUG nextflow.validation.SchemaValidator - Validation passed: 'input': '/nf-core/test-datasets/rnafusion/testdata/human/samplesheet_valid.csv' with '/Users/annick.renevey/Projects/rnafusion/assets/schema_input.json'
+Mar-08 14:13:29.935 [main] DEBUG nextflow.validation.SchemaValidator - Finishing parameters validation
+Mar-08 14:13:30.046 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_RNAFUSION:BUILD_REFERENCES:ENSEMBL_DOWNLOAD
+Mar-08 14:13:30.049 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:ENSEMBL_DOWNLOAD` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:ENSEMBL_DOWNLOAD
+Mar-08 14:13:30.050 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:.*` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:ENSEMBL_DOWNLOAD
+Mar-08 14:13:30.053 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:.*` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:ENSEMBL_DOWNLOAD
+Mar-08 14:13:30.061 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Mar-08 14:13:30.061 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-08 14:13:30.083 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+Mar-08 14:13:30.090 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=8; memory=16 GB; capacity=8; pollInterval=100ms; dumpInterval=5m
+Mar-08 14:13:30.203 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_RNAFUSION:BUILD_REFERENCES:HGNC_DOWNLOAD
+Mar-08 14:13:30.204 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:HGNC_DOWNLOAD` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:HGNC_DOWNLOAD
+Mar-08 14:13:30.206 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:.*` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:HGNC_DOWNLOAD
+Mar-08 14:13:30.207 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:.*` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:HGNC_DOWNLOAD
+Mar-08 14:13:30.213 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Mar-08 14:13:30.214 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-08 14:13:30.236 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name NFCORE_RNAFUSION:BUILD_REFERENCES:SAMTOOLS_FAIDX
+Mar-08 14:13:30.237 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:SAMTOOLS_FAIDX` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:SAMTOOLS_FAIDX
+Mar-08 14:13:30.238 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:.*` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:SAMTOOLS_FAIDX
+Mar-08 14:13:30.238 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:.*` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:SAMTOOLS_FAIDX
+Mar-08 14:13:30.240 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Mar-08 14:13:30.240 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-08 14:13:30.248 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name NFCORE_RNAFUSION:BUILD_REFERENCES:GATK4_CREATESEQUENCEDICTIONARY
+Mar-08 14:13:30.248 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:.*` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:GATK4_CREATESEQUENCEDICTIONARY
+Mar-08 14:13:30.249 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:.*` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:GATK4_CREATESEQUENCEDICTIONARY
+Mar-08 14:13:30.250 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Mar-08 14:13:30.250 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-08 14:13:30.263 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name NFCORE_RNAFUSION:BUILD_REFERENCES:RRNA_TRANSCRIPTS
+Mar-08 14:13:30.264 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:.*` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:RRNA_TRANSCRIPTS
+Mar-08 14:13:30.264 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:.*` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:RRNA_TRANSCRIPTS
+Mar-08 14:13:30.265 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Mar-08 14:13:30.265 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-08 14:13:30.273 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name NFCORE_RNAFUSION:BUILD_REFERENCES:CONVERT2BED
+Mar-08 14:13:30.274 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:.*` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:CONVERT2BED
+Mar-08 14:13:30.274 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:.*` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:CONVERT2BED
+Mar-08 14:13:30.274 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Mar-08 14:13:30.275 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-08 14:13:30.290 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name NFCORE_RNAFUSION:BUILD_REFERENCES:GATK4_BEDTOINTERVALLIST
+Mar-08 14:13:30.292 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:GATK4_BEDTOINTERVALLIST` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:GATK4_BEDTOINTERVALLIST
+Mar-08 14:13:30.292 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:.*` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:GATK4_BEDTOINTERVALLIST
+Mar-08 14:13:30.292 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:.*` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:GATK4_BEDTOINTERVALLIST
+Mar-08 14:13:30.294 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Mar-08 14:13:30.294 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-08 14:13:30.302 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_RNAFUSION:BUILD_REFERENCES:GTF_TO_REFFLAT
+Mar-08 14:13:30.303 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:GTF_TO_REFFLAT` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:GTF_TO_REFFLAT
+Mar-08 14:13:30.304 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:.*` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:GTF_TO_REFFLAT
+Mar-08 14:13:30.304 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:.*` matches process NFCORE_RNAFUSION:BUILD_REFERENCES:GTF_TO_REFFLAT
+Mar-08 14:13:30.306 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Mar-08 14:13:30.306 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-08 14:13:30.322 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: SAMTOOLS_VIEW_FOR_STARFUSION, SAMTOOLS_SORT_FOR_ARRIBA, GATK4_BEDTOINTERVALLIST, STAR_FOR_ARRIBA, STARFUSION_DOWNLOAD, FUSIONCATCHER, FUSIONCATCHER_DOWNLOAD, STAR_FOR_STARFUSION, GATK4_CREATESEQUENCEDICTIONARY, FASTP, FASTQC_FOR_FASTP, ENSEMBL_DOWNLOAD, GATK4_MARKDUPLICATES, CAT_FASTQ, GTF_TO_REFFLAT, STARFUSION, NFCORE_RNAFUSION:BUILD_REFERENCES:GATK4_BEDTOINTERVALLIST, NFCORE_RNAFUSION:BUILD_REFERENCES:GATK4_CREATESEQUENCEDICTIONARY, NFCORE_RNAFUSION:BUILD_REFERENCES:CONVERT2BED, VCF_COLLECT, SAMTOOLS_INDEX_FOR_ARRIBA, ARRIBA_VISUALISATION, CONVERT2BED, FUSIONREPORT_DOWNLOAD, STAR_ALIGN, SAMTOOLS_INDEX_FOR_STARFUSION, FUSIONINSPECTOR, SAMTOOLS_INDEX, FASTQC, ARRIBA_DOWNLOAD, NFCORE_RNAFUSION:BUILD_REFERENCES:ENSEMBL_DOWNLOAD, MULTIQC, NFCORE_RNAFUSION:BUILD_REFERENCES:HGNC_DOWNLOAD, STRINGTIE_MERGE, SAMTOOLS_SORT, SAMTOOLS_INDEX_FOR_STARFUSION_CRAM, SAMTOOLS_VIEW_FOR_ARRIBA, NFCORE_RNAFUSION:BUILD_REFERENCES:GTF_TO_REFFLAT, NFCORE_RNAFUSION:BUILD_REFERENCES:SAMTOOLS_FAIDX, STARFUSION_BUILD, CAT_CAT, PICARD_COLLECTRNASEQMETRICS, HGNC_DOWNLOAD, SAMTOOLS_VIEW, SAMTOOLS_FAIDX, FUSIONREPORT, RRNA_TRANSCRIPTS, AGAT_CONVERTSPGFF2TSV, STRINGTIE_STRINGTIE, PICARD_COLLECTINSERTSIZEMETRICS, ARRIBA, NFCORE_RNAFUSION:BUILD_REFERENCES:RRNA_TRANSCRIPTS, STAR_GENOMEGENERATE
+Mar-08 14:13:30.337 [main] WARN  nextflow.Session - There's no process matching config selector: SAMPLESHEET_CHECK
+Mar-08 14:13:30.337 [main] DEBUG nextflow.Session - Igniting dataflow network (25)
+Mar-08 14:13:30.369 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_RNAFUSION:BUILD_REFERENCES:ENSEMBL_DOWNLOAD
+Mar-08 14:13:30.370 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_RNAFUSION:BUILD_REFERENCES:HGNC_DOWNLOAD
+Mar-08 14:13:30.371 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_RNAFUSION:BUILD_REFERENCES:SAMTOOLS_FAIDX
+Mar-08 14:13:30.371 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_RNAFUSION:BUILD_REFERENCES:GATK4_CREATESEQUENCEDICTIONARY
+Mar-08 14:13:30.372 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_RNAFUSION:BUILD_REFERENCES:RRNA_TRANSCRIPTS
+Mar-08 14:13:30.372 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_RNAFUSION:BUILD_REFERENCES:CONVERT2BED
+Mar-08 14:13:30.373 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_RNAFUSION:BUILD_REFERENCES:GATK4_BEDTOINTERVALLIST
+Mar-08 14:13:30.373 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_RNAFUSION:BUILD_REFERENCES:GTF_TO_REFFLAT
+Mar-08 14:13:30.373 [main] DEBUG nextflow.script.ScriptRunner - > Awaiting termination 
+Mar-08 14:13:30.373 [main] DEBUG nextflow.Session - Session await
+Mar-08 14:13:30.553 [Actor Thread 17] INFO  nextflow.processor.TaskProcessor - [NFCORE_RNAFUSION:BUILD_REFERENCES:HGNC_DOWNLOAD] cache hash: 7f18070817f5b2ac14c8e745abfb6933; mode: STANDARD; entries: 
+  338337db5eff3bff24c213e2d8964e63 [java.util.UUID] 1bbe00d2-1928-4556-b97c-ecef4af4222e 
+  5dd471f5f4c9a54dea64867d4265ee28 [java.lang.String] NFCORE_RNAFUSION:BUILD_REFERENCES:HGNC_DOWNLOAD 
+  9ff7290eb13332bf5c4063dc712689d6 [java.lang.String] """
+    wget https://ftp.ebi.ac.uk/pub/databases/genenames/hgnc/tsv/hgnc_complete_set.txt
+    date +%Y-%m-%d/%H:%M  > HGNC-DB-timestamp.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        wget: \$(echo wget -V 2>&1 | grep "GNU Wget" | cut -d" " -f3 > versions.yml)
+    END_VERSIONS
+    """
+ 
+  00c7c646a986ea5502fb404ea15e7443 [java.lang.String] quay.io/biocontainers/gnu-wget:1.18--h5bf99c6_5 
+  4f9d4b0d22865056c37fb6d9c2a04a67 [java.lang.String] $ 
+  16fe7483905cce7a85670e43e4678877 [java.lang.Boolean] true 
+  77476d335f7c3b5b95495d42532f58d0 [java.util.HashMap$EntrySet] [task.process=NFCORE_RNAFUSION:BUILD_REFERENCES:HGNC_DOWNLOAD] 
+
+Mar-08 14:13:30.613 [Actor Thread 15] INFO  nextflow.processor.TaskProcessor - [NFCORE_RNAFUSION:BUILD_REFERENCES:ENSEMBL_DOWNLOAD] cache hash: dd31277bda420c7e0145fc89ea8613e5; mode: STANDARD; entries: 
+  338337db5eff3bff24c213e2d8964e63 [java.util.UUID] 1bbe00d2-1928-4556-b97c-ecef4af4222e 
+  f65e11932b552ca585de284c5e5d0162 [java.lang.String] NFCORE_RNAFUSION:BUILD_REFERENCES:ENSEMBL_DOWNLOAD 
+  0955cd72953c2b84dffe718d8e97dc15 [java.lang.String] """
+    wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/fasta/homo_sapiens/dna/Homo_sapiens.${params.genome}.dna.chromosome.{1..22}.fa.gz
+    wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/fasta/homo_sapiens/dna/Homo_sapiens.${params.genome}.dna.chromosome.{MT,X,Y}.fa.gz
+
+    wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/gtf/homo_sapiens/Homo_sapiens.${params.genome}.${ensembl_version}.gtf.gz
+    wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/gtf/homo_sapiens/Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf.gz
+    wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/fasta/homo_sapiens/cdna/Homo_sapiens.${params.genome}.cdna.all.fa.gz -O Homo_sapiens.${params.genome}.${ensembl_version}.cdna.all.fa.gz
+
+    gunzip -c Homo_sapiens.${params.genome}.dna.chromosome.* > Homo_sapiens.${params.genome}.${ensembl_version}.all.fa
+    gunzip Homo_sapiens.${params.genome}.${ensembl_version}.gtf.gz
+    gunzip Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf.gz
+
+
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        wget: \$(echo wget -V 2>&1 | grep "GNU Wget" | cut -d" " -f3 > versions.yml)
+    END_VERSIONS
+    """
+ 
+  00c7c646a986ea5502fb404ea15e7443 [java.lang.String] quay.io/biocontainers/gnu-wget:1.18--h5bf99c6_5 
+  fee0e11be1152749b19f3d19542d3901 [java.lang.String] ensembl_version 
+  f56f0c2893db292d86b93804fe80b6ac [java.lang.Integer] 102 
+  d9c152f5939e0f93a25dbd62b7c4d0a5 [java.lang.String] genome 
+  6b15613e5b490261f4ffe786a92c5825 [java.lang.String] GRCh38 
+  22a9e5e0e97f0475e310f04c56b1393a [java.lang.String] meta 
+  cb0f105a57d4145f7acb92ca9cf2ea12 [java.util.LinkedHashMap] [id:Homo_sapiens.GRCh38.102] 
+  4f9d4b0d22865056c37fb6d9c2a04a67 [java.lang.String] $ 
+  16fe7483905cce7a85670e43e4678877 [java.lang.Boolean] true 
+  c877f2c88b6ad8c3dbe3236a80f57755 [java.util.HashMap$EntrySet] [task.process=NFCORE_RNAFUSION:BUILD_REFERENCES:ENSEMBL_DOWNLOAD, params.genome=GRCh38] 
+
+Mar-08 14:13:30.754 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Mar-08 14:13:30.756 [Task submitter] INFO  nextflow.Session - [81/2c2c1f] Submitted process > NFCORE_RNAFUSION:BUILD_REFERENCES:HGNC_DOWNLOAD (hgnc)
+Mar-08 14:13:30.864 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Mar-08 14:13:30.865 [Task submitter] INFO  nextflow.Session - [52/33e328] Submitted process > NFCORE_RNAFUSION:BUILD_REFERENCES:ENSEMBL_DOWNLOAD (ensembl)
+Mar-08 14:14:06.817 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 1; name: NFCORE_RNAFUSION:BUILD_REFERENCES:HGNC_DOWNLOAD (hgnc); status: COMPLETED; exit: 0; error: -; workDir: /Users/annick.renevey/Projects/rnafusion/.nf-test/tests/818076bdee20d7e7df39ccd4d6617997/work/81/2c2c1f77cfe71f861687ce1e2e35ba]
+Mar-08 14:14:06.983 [Task monitor] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'PublishDir' minSize=10; maxSize=24; workQueue=LinkedBlockingQueue[10000]; allowCoreThreadTimeout=false
+Mar-08 14:14:10.653 [SIGINT handler] DEBUG nextflow.Session - Session aborted -- Cause: SIGINT
+Mar-08 14:14:10.717 [SIGINT handler] DEBUG nextflow.Session - The following nodes are still active:
+[process] NFCORE_RNAFUSION:BUILD_REFERENCES:SAMTOOLS_FAIDX
+  status=ACTIVE
+  port 0: (value) OPEN  ; channel: -
+  port 1: (value) bound ; channel: -
+  port 2: (cntrl) -     ; channel: $
+
+[process] NFCORE_RNAFUSION:BUILD_REFERENCES:GATK4_CREATESEQUENCEDICTIONARY
+  status=ACTIVE
+  port 0: (value) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+[process] NFCORE_RNAFUSION:BUILD_REFERENCES:RRNA_TRANSCRIPTS
+  status=ACTIVE
+  port 0: (value) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+[process] NFCORE_RNAFUSION:BUILD_REFERENCES:CONVERT2BED
+  status=ACTIVE
+  port 0: (value) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+[process] NFCORE_RNAFUSION:BUILD_REFERENCES:GATK4_BEDTOINTERVALLIST
+  status=ACTIVE
+  port 0: (value) OPEN  ; channel: -
+  port 1: (value) OPEN  ; channel: -
+  port 2: (cntrl) -     ; channel: $
+
+[process] NFCORE_RNAFUSION:BUILD_REFERENCES:GTF_TO_REFFLAT
+  status=ACTIVE
+  port 0: (value) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+Mar-08 14:14:10.812 [main] DEBUG nextflow.Session - Session await > all processes finished
+Mar-08 14:14:10.813 [main] DEBUG nextflow.Session - Session await > all barriers passed
+Mar-08 14:14:10.829 [main] INFO  nextflow.Nextflow - -[0;35m[nf-core/rnafusion][0;31m Pipeline completed with errors[0m-
+Mar-08 14:14:10.840 [main] WARN  n.processor.TaskPollingMonitor - Killing running tasks (1)
+Mar-08 14:14:10.874 [main] DEBUG nextflow.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=1; failedCount=0; ignoredCount=0; cachedCount=0; pendingCount=0; submittedCount=0; runningCount=1; retriesCount=0; abortedCount=0; succeedDuration=52s; failedDuration=0ms; cachedDuration=0ms;loadCpus=0; loadMemory=0; peakRunning=2; peakCpus=4; peakMemory=6 GB; ]
+Mar-08 14:14:10.875 [main] DEBUG nextflow.trace.TraceFileObserver - Workflow completed -- saving trace file
+Mar-08 14:14:10.897 [main] DEBUG nextflow.cache.CacheDB - Closing CacheDB done
+Mar-08 14:14:10.897 [main] INFO  org.pf4j.AbstractPluginManager - Stop plugin 'nf-validation@1.1.3'
+Mar-08 14:14:10.898 [main] DEBUG nextflow.plugin.BasePlugin - Plugin stopped nf-validation
+Mar-08 14:14:11.002 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye
