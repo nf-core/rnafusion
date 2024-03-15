@@ -12,6 +12,7 @@ import groovy.json.JsonSlurper
 
 include { UTILS_NFVALIDATION_PLUGIN } from '../../nf-core/utils_nfvalidation_plugin'
 include { paramsSummaryMap          } from 'plugin/nf-validation'
+include { fromSamplesheet           } from 'plugin/nf-validation'
 include { UTILS_NEXTFLOW_PIPELINE   } from '../../nf-core/utils_nextflow_pipeline'
 include { completionEmail           } from '../../nf-core/utils_nfcore_pipeline'
 include { completionSummary         } from '../../nf-core/utils_nfcore_pipeline'
@@ -36,8 +37,11 @@ workflow PIPELINE_INITIALISATION {
     monochrome_logs   // boolean: Do not use coloured log outputs
     nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
+    input             //  string: Path to input samplesheet
 
     main:
+
+    ch_versions = Channel.empty()
 
     //
     // Print version and exit if required and dump pipeline parameters to JSON file
@@ -55,6 +59,7 @@ workflow PIPELINE_INITIALISATION {
     pre_help_text = nfCoreLogo(monochrome_logs)
     post_help_text = '\n' + workflowCitation() + '\n' + dashedLine(monochrome_logs)
     def String workflow_command = "nextflow run ${workflow.manifest.name} -profile <docker/singularity/.../institute> --input samplesheet.csv --genome_base <REFDIR>} --outdir <OUTDIR>"
+
     UTILS_NFVALIDATION_PLUGIN (
         help,
         workflow_command,
@@ -93,7 +98,6 @@ workflow PIPELINE_COMPLETION {
     outdir          //    path: Path to output directory where results will be published
     monochrome_logs // boolean: Disable ANSI colour codes in log output
     hook_url        //  string: hook URL for notifications
-    multiqc_report  //  string: Path to MultiQC report
 
     main:
 
@@ -104,7 +108,7 @@ workflow PIPELINE_COMPLETION {
     //
     workflow.onComplete {
         if (email || email_on_fail) {
-            completionEmail(summary_params, email, email_on_fail, plaintext_email, outdir, monochrome_logs, multiqc_report.toList())
+            completionEmail(summary_params, email, email_on_fail, plaintext_email, outdir, monochrome_logs, null)
         }
 
         completionSummary(monochrome_logs)
@@ -122,7 +126,14 @@ workflow PIPELINE_COMPLETION {
 */
 
 //
-// Function to validate channels from input samplesheet
+// Check and validate pipeline parameters
+//
+def validateInputParameters() {
+    genomeExistsError()
+}
+
+//
+// Validate channels from input samplesheet
 //
 def validateInputSamplesheet(input) {
     def (metas, fastqs) = input[1..2]
@@ -140,14 +151,6 @@ def validateInputSamplesheet(input) {
     }
 
     return [ metas[0], fastqs ]
-}
-
-//
-// Check and validate pipeline parameters
-//
-def validateInputParameters() {
-
-    genomeExistsError()
 }
 
 //
@@ -222,6 +225,7 @@ def methodsDescriptionText(mqc_methods_yaml) {
     // TODO nf-core: Only uncomment below if logic in toolCitationText/toolBibliographyText has been filled!
     // meta["tool_citations"] = toolCitationText().replaceAll(", \\.", ".").replaceAll("\\. \\.", ".").replaceAll(", \\.", ".")
     // meta["tool_bibliography"] = toolBibliographyText()
+
     def methods_text = mqc_methods_yaml.text
 
     def engine =  new groovy.text.SimpleTemplateEngine()
@@ -252,35 +256,3 @@ def checkMaxContigSize(fai_file) {
     }
 }
 
-//
-// Create MultiQC tsv custom content from a list of values
-//
-def multiqcTsvFromList(tsv_data, header) {
-    def tsv_string = ""
-    if (tsv_data.size() > 0) {
-        tsv_string += "${header.join('\t')}\n"
-        tsv_string += tsv_data.join('\n')
-    }
-    return tsv_string
-}
-
-
-//
-// Function that parses and returns the alignment rate from the STAR log output
-//
-def getStarPercentMapped(params, align_log) {
-    def percent_aligned = 0
-    def pattern = /Uniquely mapped reads %\s*\|\s*([\d\.]+)%/
-    align_log.eachLine { line ->
-        def matcher = line =~ pattern
-        if (matcher) {
-            percent_aligned = matcher[0][1].toFloat()
-        }
-    }
-
-    def pass = false
-    if (percent_aligned >= params.min_mapped_reads.toFloat()) {
-        pass = true
-    }
-    return [ percent_aligned, pass ]
-}
