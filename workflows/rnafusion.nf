@@ -68,6 +68,11 @@ include { CAT_FASTQ                   } from '../modules/nf-core/cat/fastq/main'
 
 workflow RNAFUSION {
 
+    take:
+    ch_samplesheet
+
+    main:
+
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
@@ -77,7 +82,7 @@ workflow RNAFUSION {
     Channel
         .fromSamplesheet("input")
         .map {
-            meta, fastq_1, fastq_2 ->
+            meta, fastq_1, fastq_2, strandedness ->
                 if (!fastq_2) {
                     return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
                 } else {
