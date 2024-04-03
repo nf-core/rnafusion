@@ -30,6 +30,7 @@ workflow STARFUSION_WORKFLOW {
                 SAMTOOLS_INDEX_FOR_STARFUSION(STAR_FOR_STARFUSION.out.bam_sorted)
                 ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FOR_STARFUSION.out.versions)
                 bam_sorted_indexed = STAR_FOR_STARFUSION.out.bam_sorted.join(SAMTOOLS_INDEX_FOR_STARFUSION.out.bai)
+                reads_junction = reads.join(STAR_FOR_STARFUSION.out.junction )
 
                 if (params.cram.contains('starfusion')){
                     SAMTOOLS_VIEW_FOR_STARFUSION (bam_sorted_indexed, ch_fasta, [] )
@@ -38,12 +39,12 @@ workflow STARFUSION_WORKFLOW {
                     SAMTOOLS_INDEX_FOR_STARFUSION_CRAM (SAMTOOLS_VIEW_FOR_STARFUSION.out.cram)
                     ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FOR_STARFUSION_CRAM.out.versions)
                 }
-                reads_junction = reads.join(STAR_FOR_STARFUSION.out.junction )
+                if (params.starfusion || params.all){
+                    STARFUSION( reads_junction, params.starfusion_ref)
+                    ch_versions = ch_versions.mix(STARFUSION.out.versions)
+                    ch_starfusion_fusions = STARFUSION.out.fusions
+                }
 
-                STARFUSION( reads_junction, params.starfusion_ref)
-                ch_versions = ch_versions.mix(STARFUSION.out.versions)
-
-                ch_starfusion_fusions = STARFUSION.out.fusions
                 ch_star_stats = STAR_FOR_STARFUSION.out.log_final
                 ch_star_gene_count = STAR_FOR_STARFUSION.out.read_per_gene_tab
             }
