@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Update to nf-tools 2.11.1 [#457] (https://github.com/nf-core/rnafusion/pull/457)
+- Update picard collectrnaseqmetrics memory requirements to 0.8x what is provided [#474](https://github.com/nf-core/rnafusion/pull/474)
 
 ### Fixed
 
