@@ -132,7 +132,6 @@ workflow RNAFUSION {
     //
     // SUBWORKFLOW:  Run STAR alignment and Arriba
     //
-
     ARRIBA_WORKFLOW (
         ch_reads_all,
         ch_gtf,
