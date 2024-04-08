@@ -1,4 +1,0 @@
-Mar-06 08:33:23.861 [main] INFO  com.askimed.nf.test.App - nf-test 0.8.1
-Mar-06 08:33:23.919 [main] INFO  com.askimed.nf.test.App - Arguments: [test, --profile, debug,test,docker, --verbose]
-Mar-06 08:33:23.924 [main] INFO  com.askimed.nf.test.commands.RunTestsCommand - Load config from file /Users/annick.renevey/Projects/rnafusion/nf-test.config...
-Mar-06 08:33:24.984 [main] ERROR com.askimed.nf.test.commands.RunTestsCommand - No tests ot directories found containing test files.
