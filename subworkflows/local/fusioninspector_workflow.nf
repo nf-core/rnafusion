@@ -29,8 +29,6 @@ workflow FUSIONINSPECTOR_WORKFLOW {
             fusions: it[1].size() > 0
         }
 
-        ch_fusion_list.fusions.dump(tag:'before_cat')
-
         if (params.whitelist)  {
             ch_whitelist = ch_fusion_list.fusions.combine(Channel.value(file(params.whitelist, checkIfExists:true)))
                             .map { meta, fusions, whitelist -> [ meta, [fusions, whitelist] ] }
