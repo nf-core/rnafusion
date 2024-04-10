@@ -32,6 +32,8 @@
                 "input": {
                     "type": "string",
                     "format": "file-path",
+                    "exists": false,
+                    "schema": "assets/schema_input.json",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
@@ -80,7 +82,7 @@
                     "type": "integer",
                     "fa_icon": "far fa-file-code",
                     "description": "ensembl version",
-                    "default": 105
+                    "default": 102
                 },
                 "starfusion_build": {
                     "type": "boolean",

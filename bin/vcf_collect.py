@@ -43,14 +43,18 @@ def vcf_collect(
         .reset_index()
     )
     hgnc_df = build_hgnc_dataframe(hgnc)
-
     df_symbol = merged_df[merged_df["Left_ensembl_gene_id"].isna()]
     df_not_symbol = merged_df[merged_df["Left_ensembl_gene_id"].notna()]
 
     df_not_symbol = hgnc_df.merge(
-        df_not_symbol, how="right", left_on="ensembl_gene_id", right_on="Left_ensembl_gene_id"
+        df_not_symbol,
+        how="right",
+        left_on="ensembl_gene_id",
+        right_on="Left_ensembl_gene_id",
     )
-    df_symbol = hgnc_df.merge(df_symbol, how="right", left_on="symbol", right_on="GeneA")
+    df_symbol = hgnc_df.merge(
+        df_symbol, how="right", left_on="symbol", right_on="GeneA"
+    )
     df = pd.concat([df_not_symbol, df_symbol])
     df = df.rename(columns={"hgnc_id": "Left_hgnc_id"})
 
@@ -58,32 +62,46 @@ def vcf_collect(
     df_not_symbol = df[df["Right_ensembl_gene_id"].notna()]
 
     df_not_symbol = hgnc_df.merge(
-        df_not_symbol, how="right", left_on="ensembl_gene_id", right_on="Right_ensembl_gene_id"
+        df_not_symbol,
+        how="right",
+        left_on="ensembl_gene_id",
+        right_on="Right_ensembl_gene_id",
     )
-    df_symbol = hgnc_df.merge(df_symbol, how="right", left_on="symbol", right_on="GeneB")
+    df_symbol = hgnc_df.merge(
+        df_symbol, how="right", left_on="symbol", right_on="GeneB"
+    )
     df = pd.concat([df_not_symbol, df_symbol])
     df = df.rename(columns={"hgnc_id": "Right_hgnc_id"})
 
     gtf_df = build_gtf_dataframe(gtf)
-    all_df = df.merge(gtf_df, how="left", left_on="CDS_LEFT_ID", right_on="Transcript_id")
-    all_df[["PosA", "orig_start", "orig_end"]] = all_df[["PosA", "orig_start", "orig_end"]].fillna(0).astype(int)
+    all_df = df.merge(
+        gtf_df, how="left", left_on="CDS_LEFT_ID", right_on="Transcript_id"
+    )
+    all_df[["PosA", "orig_start", "orig_end"]] = (
+        all_df[["PosA", "orig_start", "orig_end"]].fillna(0).astype(int)
+    )
 
     all_df = all_df[
-        ((all_df["PosA"] >= all_df["orig_start"]) & (all_df["PosA"] <= all_df["orig_end"]))
+        (
+            (all_df["PosA"] >= all_df["orig_start"])
+            & (all_df["PosA"] <= all_df["orig_end"])
+        )
         | ((all_df["orig_start"] == 0) & (all_df["orig_end"] == 0))
     ]
 
     all_df.replace("", np.nan, inplace=True)
     all_df = all_df.drop_duplicates()
 
-    all_df[["exon_number", "transcript_version"]] = all_df[["exon_number", "transcript_version"]].replace(0, np.nan)
+    all_df[["exon_number", "transcript_version"]] = all_df[
+        ["exon_number", "transcript_version"]
+    ].replace(0, np.nan)
     # Fill non-empty values within each group for 'exon_number' and 'transcript_version'
     all_df["exon_number"] = all_df.groupby("PosA")["exon_number"].transform(
         lambda x: x.fillna(method="ffill").fillna(method="bfill")
     )
-    all_df["transcript_version"] = all_df.groupby("PosA")["transcript_version"].transform(
-        lambda x: x.fillna(method="ffill").fillna(method="bfill")
-    )
+    all_df["transcript_version"] = all_df.groupby("PosA")[
+        "transcript_version"
+    ].transform(lambda x: x.fillna(method="ffill").fillna(method="bfill"))
 
     all_df = all_df.rename(columns={"transcript_version": "Left_transcript_version"})
     all_df = all_df.rename(columns={"exon_number": "Left_exon_number"})
@@ -115,25 +133,37 @@ def vcf_collect(
             "annots",
         ]
     ].drop_duplicates()
-    all_df = all_df.merge(gtf_df, how="left", left_on="CDS_RIGHT_ID", right_on="Transcript_id")
-    all_df[["PosB", "orig_start", "orig_end"]] = all_df[["PosB", "orig_start", "orig_end"]].fillna(0)
-    all_df[["PosB", "orig_start", "orig_end"]] = all_df[["PosB", "orig_start", "orig_end"]].astype(int)
+    all_df["CDS_RIGHT_ID"] = all_df["CDS_RIGHT_ID"].astype("str")
+    all_df = all_df.merge(
+        gtf_df, how="left", left_on="CDS_RIGHT_ID", right_on="Transcript_id"
+    )
+    all_df[["PosB", "orig_start", "orig_end"]] = all_df[
+        ["PosB", "orig_start", "orig_end"]
+    ].fillna(0)
+    all_df[["PosB", "orig_start", "orig_end"]] = all_df[
+        ["PosB", "orig_start", "orig_end"]
+    ].astype(int)
     all_df = all_df[
-        ((all_df["PosB"] >= all_df["orig_start"]) & (all_df["PosB"] <= all_df["orig_end"]))
+        (
+            (all_df["PosB"] >= all_df["orig_start"])
+            & (all_df["PosB"] <= all_df["orig_end"])
+        )
         | ((all_df["orig_start"] == 0) & (all_df["orig_end"] == 0))
     ]
 
     all_df[["PosA", "PosB"]] = all_df[["PosA", "PosB"]].replace(0, np.nan)
     all_df = all_df.replace("", np.nan)
 
-    all_df[["exon_number", "transcript_version"]] = all_df[["exon_number", "transcript_version"]].replace(0, np.nan)
+    all_df[["exon_number", "transcript_version"]] = all_df[
+        ["exon_number", "transcript_version"]
+    ].replace(0, np.nan)
     # Fill non-empty values within each group for 'exon_number' and 'transcript_version'
     all_df["exon_number"] = all_df.groupby("PosB")["exon_number"].transform(
         lambda x: x.fillna(method="ffill").fillna(method="bfill")
     )
-    all_df["transcript_version"] = all_df.groupby("PosB")["transcript_version"].transform(
-        lambda x: x.fillna(method="ffill").fillna(method="bfill")
-    )
+    all_df["transcript_version"] = all_df.groupby("PosB")[
+        "transcript_version"
+    ].transform(lambda x: x.fillna(method="ffill").fillna(method="bfill"))
 
     all_df = all_df.rename(columns={"transcript_version": "Right_transcript_version"})
     all_df = all_df.rename(columns={"exon_number": "Right_exon_number"})
@@ -212,7 +242,9 @@ def parse_args(argv=None):
         type=Path,
         help="HGNC database.",
     )
-    parser.add_argument("--sample", metavar="SAMPLE", type=Path, help="Sample name.", default="Sample")
+    parser.add_argument(
+        "--sample", metavar="SAMPLE", type=Path, help="Sample name.", default="Sample"
+    )
     parser.add_argument(
         "--out",
         metavar="OUT",
@@ -272,19 +304,55 @@ def build_fusioninspector_dataframe(file: str) -> pd.DataFrame:
     """
     df = pd.read_csv(file, sep="\t")
     df = df.rename(columns={"#FusionName": "FUSION"})
-    df[["ChromosomeA", "PosA", "Strand1"]] = df["LeftBreakpoint"].str.split(":", expand=True)
-    df[["ChromosomeB", "PosB", "Strand2"]] = df["RightBreakpoint"].str.split(":", expand=True)
-    df[["LeftGeneName", "Left_ensembl_gene_id"]] = df["LeftGene"].str.split("^", expand=True)
-    df[["RightGeneName", "Right_ensembl_gene_id"]] = df["RightGene"].str.split("^", expand=True)
-    df["annots"] = (
-        df["annots"]
-        .apply(convert_to_list)
-        .apply(lambda x: ",".join(map(str, x)) if isinstance(x, list) else str(x) if pd.notna(x) else "")
-    )
+    if not (df.empty):
+        df[["ChromosomeA", "PosA", "Strand1"]] = df["LeftBreakpoint"].str.split(
+            ":", expand=True
+        )
+        df[["ChromosomeB", "PosB", "Strand2"]] = df["RightBreakpoint"].str.split(
+            ":", expand=True
+        )
+        df[["LeftGeneName", "Left_ensembl_gene_id"]] = df["LeftGene"].str.split(
+            "^", expand=True
+        )
+        df[["RightGeneName", "Right_ensembl_gene_id"]] = df["RightGene"].str.split(
+            "^", expand=True
+        )
+        df["annots"] = (
+            df["annots"]
+            .apply(convert_to_list)
+            .apply(
+                lambda x: (
+                    ",".join(map(str, x))
+                    if isinstance(x, list)
+                    else str(x) if pd.notna(x) else ""
+                )
+            )
+        )
+    else:
+        for i in [
+            "ChromosomeA",
+            "Strand1",
+            "ChromosomeB",
+            "Strand2",
+            "LeftGeneName",
+            "Left_ensembl_gene_id",
+            "RightGeneName",
+            "Right_ensembl_gene_id",
+            "annots",
+        ]:
+            df[i] = ""
+        for j in [
+            "PosA",
+            "PosB",
+        ]:
+            df[j] = np.nan
+
     return df.set_index(["FUSION"])
 
 
-def replace_value_with_column_name(row: pd.Series, value_to_replace: str, column_name: str) -> str:
+def replace_value_with_column_name(
+    row: pd.Series, value_to_replace: str, column_name: str
+) -> str:
     """
     Replace a specific value in a row with the corresponding column name.
     """
@@ -314,9 +382,12 @@ def read_build_fusionreport(fusionreport_file: str) -> pd.DataFrame:
     Make all column headers uppercase.
     """
     with open(fusionreport_file) as f:
-        from_html = [line.split('rows": [')[1] for line in f if 'name="fusion_list' in line]
-        expression = from_html[0].split('], "tool')[0]
-    fusion_report = pd.DataFrame.from_dict(ast.literal_eval(expression))
+        from_html = [
+            line.split('rows": ')[1] for line in f if 'name="fusion_list' in line
+        ]
+        tmp = str(from_html)[2:]
+        tmp2 = tmp.split(', "tools": ')[0]
+        fusion_report = pd.DataFrame(ast.literal_eval(tmp2))
     if not "arriba" in fusion_report.columns:
         fusion_report["arriba"] = ""
     if not "fusioncatcher" in fusion_report.columns:
@@ -332,22 +403,31 @@ def read_build_fusionreport(fusionreport_file: str) -> pd.DataFrame:
     fusion_report["starfusion"] = fusion_report[["starfusion"]].apply(
         replace_value_with_column_name, args=("true", "starfusion"), axis=1
     )
-    fusion_report["FOUND_IN"] = fusion_report[["arriba", "starfusion", "fusioncatcher"]].apply(
-        concatenate_columns, axis=1
-    )
+    fusion_report["FOUND_IN"] = fusion_report[
+        ["arriba", "starfusion", "fusioncatcher"]
+    ].apply(concatenate_columns, axis=1)
     fusion_report.columns = fusion_report.columns.str.upper()
-    fusion_report["FOUND_DB"] = fusion_report["FOUND_DB"].apply(lambda x: ",".join(x))
-    fusion_report[["GeneA", "GeneB"]] = fusion_report["FUSION"].str.split("--", expand=True)
-
-    return fusion_report[["FUSION", "GeneA", "GeneB", "TOOLS_HITS", "SCORE", "FOUND_DB", "FOUND_IN"]].set_index(
-        ["FUSION"]
+    fusion_report["FOUND_DB"] = fusion_report["FOUND_DB"].apply(
+        lambda x: ",".join(x) if len(x) > 0 else ""
     )
+    fusion_report[["GeneA", "GeneB"]] = fusion_report["FUSION"].str.split(
+        "--", expand=True
+    )
+
+    return fusion_report[
+        ["FUSION", "GeneA", "GeneB", "TOOLS_HITS", "SCORE", "FOUND_DB", "FOUND_IN"]
+    ].set_index(["FUSION"])
 
 
 def read_fusionreport_csv(file: str) -> pd.DataFrame:
     df = pd.read_csv(file)
-    df[["starfusion", "arriba", "fusioncatcher"]] = df[["starfusion", "arriba", "fusioncatcher"]].astype("str")
     columns_to_iterate = ["starfusion", "arriba", "fusioncatcher"]
+    for column in columns_to_iterate:
+        if column not in df.columns:
+            df[column] = ""
+    df[["starfusion", "arriba", "fusioncatcher"]] = df[
+        ["starfusion", "arriba", "fusioncatcher"]
+    ].astype("str")
     for index, row in df.iterrows():
         for column in columns_to_iterate:
             cell_value = row[column]
@@ -375,7 +455,18 @@ def read_fusionreport_csv(file: str) -> pd.DataFrame:
     df[["GeneA", "GeneB"]] = df["Fusion"].str.split("--", expand=True)
     df = df.set_index("Fusion")
     df.to_csv("tmp.csv")
-    return df[["GeneA", "GeneB", "ChromosomeA", "PosA", "StrandA", "ChromosomeB", "PosB", "StrandB"]]
+    return df[
+        [
+            "GeneA",
+            "GeneB",
+            "ChromosomeA",
+            "PosA",
+            "StrandA",
+            "ChromosomeB",
+            "PosB",
+            "StrandB",
+        ]
+    ]
 
 
 def column_manipulation(df: pd.DataFrame) -> pd.DataFrame:
@@ -401,8 +492,12 @@ def column_manipulation(df: pd.DataFrame) -> pd.DataFrame:
     df["Right_hgnc_id"] = df["Right_hgnc_id"].fillna(0).astype(int).astype(str)
     df["Left_exon_number"] = df["Left_exon_number"].fillna(0).astype(int).astype(str)
     df["Right_exon_number"] = df["Right_exon_number"].fillna(0).astype(int).astype(str)
-    df["Left_transcript_version"] = df["Left_transcript_version"].fillna(0).astype(int).astype(str)
-    df["Right_transcript_version"] = df["Right_transcript_version"].fillna(0).astype(int).astype(str)
+    df["Left_transcript_version"] = (
+        df["Left_transcript_version"].fillna(0).astype(int).astype(str)
+    )
+    df["Right_transcript_version"] = (
+        df["Right_transcript_version"].fillna(0).astype(int).astype(str)
+    )
     df["PosA"] = df["PosA"].fillna(0).astype(int).astype(str)
     df["PosB"] = df["PosB"].fillna(0).astype(int).astype(str)
     df["PROT_FUSION_TYPE"] = df["PROT_FUSION_TYPE"].replace(".", "nan")
@@ -429,7 +524,9 @@ def column_manipulation(df: pd.DataFrame) -> pd.DataFrame:
             f"EXON_NUMBER_A={row['Left_exon_number']};EXON_NUMBER_B={row['Right_exon_number']};"
             f"ANNOTATIONS={row['annots']}"
         )
-        df.loc[index, "Sample"] = f"./1:{row['JunctionReadCount']}:{row['SpanningFragCount']}:{row['FFPM']}"
+        df.loc[index, "Sample"] = (
+            f"./1:{row['JunctionReadCount']}:{row['SpanningFragCount']}:{row['FFPM']}"
+        )
 
     return df
 
@@ -451,7 +548,9 @@ def write_vcf(df_to_print: pd.DataFrame, header: str, out_file: str) -> None:
             "FORMAT",
             "Sample",
         ]
-    ].to_csv(path_or_buf=out_file, sep="\t", header=None, index=False, quoting=csv.QUOTE_NONE)
+    ].to_csv(
+        path_or_buf=out_file, sep="\t", header=None, index=False, quoting=csv.QUOTE_NONE
+    )
 
     with open(out_file, "r+") as f:
         content = f.read()
@@ -473,9 +572,15 @@ def build_gtf_dataframe(file: str) -> pd.DataFrame:
     Build a DataFrame from GTF file converted in TSV, extracting relevant columns.
     """
     df = pd.read_csv(file, sep="\t")
-    df[["fusion_dump", "Transcript_id"]] = df["transcript_id"].str.split("^", expand=True)
-    df[["orig_chromosome", "orig_start", "orig_end", "orig_dir"]] = df["orig_coord_info"].str.split(",", expand=True)
-    return df[["Transcript_id", "transcript_version", "exon_number", "orig_start", "orig_end"]]
+    df[["fusion_dump", "Transcript_id"]] = df["transcript_id"].str.split(
+        "^", expand=True
+    )
+    df[["orig_chromosome", "orig_start", "orig_end", "orig_dir"]] = df[
+        "orig_coord_info"
+    ].str.split(",", expand=True)
+    return df[
+        ["Transcript_id", "transcript_version", "exon_number", "orig_start", "orig_end"]
+    ]
 
 
 def main(argv=None):
@@ -488,7 +593,9 @@ def main(argv=None):
         or not args.fusionreport_csv
         or not args.hgnc
     ):
-        logger.error(f"The given input file {args.fusioninspector} or {args.fusionreport} was not found!")
+        logger.error(
+            f"The given input file {args.fusioninspector} or {args.fusionreport} was not found!"
+        )
         sys.exit(2)
     vcf_collect(
         args.fusioninspector,

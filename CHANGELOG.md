@@ -3,6 +3,26 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v3.0.2 - [2024-04-10]
+
+### Added
+
+### Changed
+
+- Update to nf-tools 2.11.1 [#457] (https://github.com/nf-core/rnafusion/pull/457)
+- Update picard collectrnaseqmetrics memory requirements to 0.8x what is provided [#474](https://github.com/nf-core/rnafusion/pull/474)
+
+### Fixed
+
+- fix bug when using parameter "whitelist" [#466](https://github.com/nf-core/rnafusion/pull/466)
+- fix VCF_COLLECT handling when a tool is absent from FUSIONREPORT report [#458](https://github.com/nf-core/rnafusion/pull/458)
+- fix VCF_COLLECT when fusioninspector output is empty but fusionreport is not [#465](https://github.com/nf-core/rnafusion/pull/465)
+- fix VCF_COLLECT bug [#481](https://github.com/nf-core/rnafusion/pull/481)
+- fix conda package for starfusion/detect[#482](https://github.com/nf-core/rnafusion/pull/482)
+- fix logical gate so when stringtie should run but not starfusion, starfusion will not run[#482](https://github.com/nf-core/rnafusion/pull/482)
+
+### Removed
+
 ## v3.0.1 - [2023-11-29]
 
 ### Added

@@ -9,13 +9,16 @@
 The pipeline is divided into two parts:
 
 1. Download and build references
-   - specified with `--build_references` parameter
-   - required only once before running the pipeline
-   - **Important**: has to be run with each new release
+
+- specified with `--build_references` parameter
+- required only once before running the pipeline
+- **Important**: has to be run with each new release
+
 2. Detecting fusions
-   - Supported tools: `Arriba`, `FusionCatcher`, `STAR-Fusion`, and `StringTie`
-   - QC: `Fastqc`, `MultiQC`, and `Picard CollectInsertSize`, `Picard CollectWgsMetrics`, `Picard Markduplicates`
-   - Fusions visualization: `Arriba`, `fusion-report`, `FusionInspector`, and `vcf_collect`
+
+- Supported tools: `Arriba`, `FusionCatcher`, `STAR-Fusion`, and `StringTie`
+- QC: `Fastqc`, `MultiQC`, and `Picard CollectInsertSize`, `Picard CollectWgsMetrics`, `Picard Markduplicates`
+- Fusions visualization: `Arriba`, `fusion-report`, `FusionInspector`, and `vcf_collect`
 
 ## Download and build references
 
@@ -105,7 +108,7 @@ The references are only built based on ensembl version 102. It is not possible c
 You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. The pipeline will detect whether a sample is single- or paired-end from the samplesheet - the `fastq_2` column is empty for single-end. The samplesheet has to be a comma-separated file (.csv) but can have as many columns as you desire. There is a strict requirement for the first 4 columns to match those defined in the table below with the header row included.
 A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
 
-```console
+```csv title="samplesheet.csv"
 sample,fastq_1,fastq_2,strandedness
 CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,forward
 CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz,forward
