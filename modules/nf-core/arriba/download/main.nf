@@ -1,15 +1,18 @@
 process ARRIBA_DOWNLOAD {
     tag "arriba"
-    label 'process_low'
+    label 'process_single'
 
-    conda "bioconda::gnu-wget=1.18"
+    conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/gnu-wget:1.18--h5bf99c6_5' :
-        'quay.io/biocontainers/gnu-wget:1.18--h5bf99c6_5' }"
+        'https://depot.galaxyproject.org/singularity/arriba:2.4.0--h0033a41_2' :
+        'biocontainers/arriba:2.4.0--h0033a41_2' }"
 
     output:
-    path "versions.yml"   , emit: versions
     path "*"              , emit: reference
+    path "versions.yml"           , emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
     """
@@ -21,7 +24,7 @@ process ARRIBA_DOWNLOAD {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        wget: \$(echo wget -V 2>&1 | grep "GNU Wget" | cut -d" " -f3 > versions.yml)
+        arriba_download: \$(arriba -h | grep 'Version:' 2>&1 |  sed 's/Version:\s//')
     END_VERSIONS
     """
 
@@ -35,7 +38,7 @@ process ARRIBA_DOWNLOAD {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        wget: \$(echo wget -V 2>&1 | grep "GNU Wget" | cut -d" " -f3 > versions.yml)
+        arriba_download: \$(arriba -h | grep 'Version:' 2>&1 |  sed 's/Version:\s//')
     END_VERSIONS
     """
 }
