@@ -25,7 +25,7 @@ ch_hgnc_ref = Channel.fromPath(params.hgnc_ref).map { it -> [[id:it.Name], it] }
 ch_hgnc_date = Channel.fromPath(params.hgnc_date).map { it -> [[id:it.Name], it] }.collect()
 ch_fasta = Channel.fromPath(params.fasta).map { it -> [[id:it.Name], it] }.collect()
 ch_gtf = Channel.fromPath(params.gtf).map { it -> [[id:it.Name], it] }.collect()
-ch_transcript = Channel.fromPath(params.transcript).map { it -> [[id:it.Name], it] }.collect()
+// ch_transcript = Channel.fromPath(params.transcript).map { it -> [[id:it.Name], it] }.collect()
 ch_fai = Channel.fromPath(params.fai).map { it -> [[id:it.Name], it] }.collect()
 
 

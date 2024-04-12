@@ -11,7 +11,7 @@ include { FUSIONREPORT_DOWNLOAD }           from '../modules/local/fusionreport/
 include { HGNC_DOWNLOAD }                   from '../modules/local/hgnc/main'
 include { STARFUSION_BUILD }                from '../modules/local/starfusion/build/main'
 include { STARFUSION_DOWNLOAD }             from '../modules/local/starfusion/download/main'
-include { GTF_TO_REFFLAT }                  from '../modules/local/uscs/custom_gtftogenepred/main'
+include { UCSC_GTFTOGENEPRED }              from '../modules/nf-core/ucsc/gtftogenepred/main'
 include { RRNA_TRANSCRIPTS }                from '../modules/local/rrnatranscripts/main'
 include { CONVERT2BED }                     from '../modules/local/convert2bed/main'
 /*
@@ -69,9 +69,9 @@ workflow BUILD_REFERENCES {
     }
 
     if (params.starfusion_build){
-        GTF_TO_REFFLAT(ENSEMBL_DOWNLOAD.out.chrgtf)
+        UCSC_GTFTOGENEPRED(ENSEMBL_DOWNLOAD.out.chrgtf)
     } else {
-        GTF_TO_REFFLAT(STARFUSION_DOWNLOAD.out.chrgtf)
+        UCSC_GTFTOGENEPRED(STARFUSION_DOWNLOAD.out.chrgtf)
     }
 
     if (params.fusionreport || params.all) {
