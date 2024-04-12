@@ -18,7 +18,7 @@ workflow QC_WORKFLOW {
     main:
         ch_versions = Channel.empty()
 
-        PICARD_COLLECTRNASEQMETRICS(ch_bam_sorted, ch_refflat.map { meta, refflat -> [refflat]}, ch_rrna_interval.map { meta, rrna_interval -> [rrna_interval]})
+        PICARD_COLLECTRNASEQMETRICS(ch_bam_sorted, ch_refflat.map { meta, refflat -> [refflat]},  ch_fasta.map { meta, fasta -> [fasta]}, ch_rrna_interval.map { meta, rrna_interval -> [rrna_interval]})
         ch_versions = ch_versions.mix(PICARD_COLLECTRNASEQMETRICS.out.versions)
         ch_rnaseq_metrics = Channel.empty().mix(PICARD_COLLECTRNASEQMETRICS.out.metrics)
 
