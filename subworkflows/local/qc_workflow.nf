@@ -2,14 +2,13 @@
 // Check input samplesheet and get read channels
 //
 
-include { PICARD_COLLECTRNASEQMETRICS }                from '../../modules/local/picard/collectrnaseqmetrics/main'
+include { PICARD_COLLECTRNASEQMETRICS }                from '../../modules/nf-core/picard/collectrnaseqmetrics/main'
 include { GATK4_MARKDUPLICATES }                       from '../../modules/nf-core/gatk4/markduplicates/main'
 include { PICARD_COLLECTINSERTSIZEMETRICS }            from '../../modules/nf-core/picard/collectinsertsizemetrics/main'
 
 workflow QC_WORKFLOW {
     take:
         ch_bam_sorted
-        ch_bam_sorted_indexed
         ch_chrgtf
         ch_refflat
         ch_fasta
@@ -19,7 +18,7 @@ workflow QC_WORKFLOW {
     main:
         ch_versions = Channel.empty()
 
-        PICARD_COLLECTRNASEQMETRICS(ch_bam_sorted_indexed, ch_refflat, ch_rrna_interval)
+        PICARD_COLLECTRNASEQMETRICS(ch_bam_sorted, ch_refflat.map { meta, refflat -> [refflat]}, ch_rrna_interval.map { meta, rrna_interval -> [rrna_interval]})
         ch_versions = ch_versions.mix(PICARD_COLLECTRNASEQMETRICS.out.versions)
         ch_rnaseq_metrics = Channel.empty().mix(PICARD_COLLECTRNASEQMETRICS.out.metrics)
 

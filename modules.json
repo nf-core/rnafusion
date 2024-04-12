@@ -7,17 +7,12 @@
                 "nf-core": {
                     "agat/convertspgff2tsv": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["modules"]
-                    },
-                    "arriba": {
-                        "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "9198082dcec6d8374c0bf3d7e38dd1f79d4601a7",
                         "installed_by": ["modules"]
                     },
                     "arriba/arriba": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "bbaeb3a3149def237b9d0acb9ab749ae98088e29",
                         "installed_by": ["modules"]
                     },
                     "arriba/download": {
@@ -66,6 +61,11 @@
                         "installed_by": ["modules"]
                     },
                     "picard/collectinsertsizemetrics": {
+                        "branch": "master",
+                        "git_sha": "20b0918591d4ba20047d7e13e5094bcceba81447",
+                        "installed_by": ["modules"]
+                    },
+                    "picard/collectrnaseqmetrics": {
                         "branch": "master",
                         "git_sha": "20b0918591d4ba20047d7e13e5094bcceba81447",
                         "installed_by": ["modules"]
