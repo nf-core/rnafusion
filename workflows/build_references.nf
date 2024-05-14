@@ -24,6 +24,7 @@ include { SAMTOOLS_FAIDX }                  from '../modules/nf-core/samtools/fa
 include { STAR_GENOMEGENERATE }             from '../modules/nf-core/star/genomegenerate/main'
 include { GATK4_CREATESEQUENCEDICTIONARY }  from '../modules/nf-core/gatk4/createsequencedictionary/main'
 include { GATK4_BEDTOINTERVALLIST }         from '../modules/nf-core/gatk4/bedtointervallist/main'
+include { SALMON_INDEX }                    from '../modules/nf-core/salmon/index/main'
 
 /*
 ========================================================================================
@@ -47,6 +48,7 @@ workflow BUILD_REFERENCES {
 
     GATK4_BEDTOINTERVALLIST(CONVERT2BED.out.bed, GATK4_CREATESEQUENCEDICTIONARY.out.dict)
 
+    SALMON_INDEX(ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.gtf)
 
     if (params.starindex || params.all || params.starfusion || params.arriba) {
         STAR_GENOMEGENERATE( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.gtf )
