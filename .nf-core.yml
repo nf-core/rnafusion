@@ -1,2 +1,6 @@
 repository_type: pipeline
 nf_core_version: "2.14.1"
+lint:
+  files_unchanged:
+    - .github/CONTRIBUTING.md
+    - .github/PULL_REQUEST_TEMPLATE.md

@@ -17,11 +17,12 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { RNAFUSION  } from './workflows/rnafusion'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_rnafusion_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rnafusion_pipeline'
-
 include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_rnafusion_pipeline'
+include { BUILD_REFERENCES        } from './workflows/build_references'
+include { RNAFUSION               } from './workflows/rnafusion'
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,10 +30,9 @@ include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_rnaf
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// TODO nf-core: Remove this line if you don't need a FASTA file
-//   This is an example of how to use getGenomeAttribute() to fetch parameters
-//   from igenomes.config using `--genome`
-params.fasta = getGenomeAttribute('fasta')
+
+
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,20 +45,17 @@ params.fasta = getGenomeAttribute('fasta')
 //
 workflow NFCORE_RNAFUSION {
 
-    take:
-    samplesheet // channel: samplesheet read in from --input
-
     main:
 
     //
     // WORKFLOW: Run pipeline
     //
-    RNAFUSION (
-        samplesheet
-    )
-
-    emit:
-    multiqc_report = RNAFUSION.out.multiqc_report // channel: /path/to/multiqc_report.html
+    if (params.build_references) {
+        BUILD_REFERENCES ()
+    } else {
+        ch_samplesheet = Channel.value(file(params.input, checkIfExists: true))
+        RNAFUSION(ch_samplesheet)
+    }
 
 }
 /*
@@ -87,9 +84,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_RNAFUSION (
-        PIPELINE_INITIALISATION.out.samplesheet
-    )
+    NFCORE_RNAFUSION ()
 
     //
     // SUBWORKFLOW: Run completion tasks
@@ -101,7 +96,6 @@ workflow {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        NFCORE_RNAFUSION.out.multiqc_report
     )
 }
 
