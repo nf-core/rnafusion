@@ -5,7 +5,7 @@
 include { PICARD_COLLECTRNASEQMETRICS }                from '../../modules/local/picard/collectrnaseqmetrics/main'
 include { GATK4_MARKDUPLICATES }                       from '../../modules/nf-core/gatk4/markduplicates/main'
 include { PICARD_COLLECTINSERTSIZEMETRICS }            from '../../modules/nf-core/picard/collectinsertsizemetrics/main'
- include { SALMON_QUANT }                              from '../../modules/nf-core/salmon/quant/main'
+
 workflow QC_WORKFLOW {
     take:
         ch_reads_all
@@ -32,7 +32,6 @@ workflow QC_WORKFLOW {
         ch_versions = ch_versions.mix(PICARD_COLLECTINSERTSIZEMETRICS.out.versions)
         ch_insertsize_metrics = Channel.empty().mix(PICARD_COLLECTINSERTSIZEMETRICS.out.metrics)
 
-        SALMON_QUANT(ch_reads_all, salmon_index, ch_chrgtf.map { meta, gtf -> [ gtf ]}, transcript_fasta, true, '')
 
 
     emit:
