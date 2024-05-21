@@ -25,9 +25,8 @@ include { STAR_GENOMEGENERATE }             from '../modules/nf-core/star/genome
 include { GATK4_CREATESEQUENCEDICTIONARY }  from '../modules/nf-core/gatk4/createsequencedictionary/main'
 include { GATK4_BEDTOINTERVALLIST }         from '../modules/nf-core/gatk4/bedtointervallist/main'
 include { SALMON_INDEX }                    from '../modules/nf-core/salmon/index/main'
-include { RSEM_PREPAREREFERENCE }           from '../modules/nf-core/rsem/preparereference'
 include { GFFREAD                                      } from '../modules/local/gffread'
- include { GUNZIP } from '../modules/nf-core/gunzip/main'
+include { GUNZIP } from '../modules/nf-core/gunzip/main'
 /*
 ========================================================================================
     RUN MAIN WORKFLOW
