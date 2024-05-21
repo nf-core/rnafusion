@@ -25,8 +25,8 @@ include { STAR_GENOMEGENERATE }             from '../modules/nf-core/star/genome
 include { GATK4_CREATESEQUENCEDICTIONARY }  from '../modules/nf-core/gatk4/createsequencedictionary/main'
 include { GATK4_BEDTOINTERVALLIST }         from '../modules/nf-core/gatk4/bedtointervallist/main'
 include { SALMON_INDEX }                    from '../modules/nf-core/salmon/index/main'
-include { GFFREAD                                      } from '../modules/local/gffread'
-include { GUNZIP } from '../modules/nf-core/gunzip/main'
+include { GFFREAD }                         from '../modules/nf-core/gffread/main'
+
 /*
 ========================================================================================
     RUN MAIN WORKFLOW
@@ -38,54 +38,47 @@ workflow BUILD_REFERENCES {
     def fake_meta = [:]
     fake_meta.id = "Homo_sapiens.${params.genome}.${params.ensembl_version}"
     ENSEMBL_DOWNLOAD( params.ensembl_version, params.genome, fake_meta )
-    // HGNC_DOWNLOAD( )
-    GUNZIP(ENSEMBL_DOWNLOAD.out.primary_assembly)
+    HGNC_DOWNLOAD( )
+    SAMTOOLS_FAIDX(ENSEMBL_DOWNLOAD.out.primary_assembly, [[],[]])
+    GATK4_CREATESEQUENCEDICTIONARY(ENSEMBL_DOWNLOAD.out.primary_assembly)
 
+    RRNA_TRANSCRIPTS(ENSEMBL_DOWNLOAD.out.gtf)
+    CONVERT2BED(RRNA_TRANSCRIPTS.out.rrna_gtf)
 
-    SAMTOOLS_FAIDX(GUNZIP.out.gunzip, [[],[]])
-    // GATK4_CREATESEQUENCEDICTIONARY(ENSEMBL_DOWNLOAD.out.fasta)
+    GATK4_BEDTOINTERVALLIST(CONVERT2BED.out.bed, GATK4_CREATESEQUENCEDICTIONARY.out.dict)
 
-    // RRNA_TRANSCRIPTS(ENSEMBL_DOWNLOAD.out.gtf)
-    // CONVERT2BED(RRNA_TRANSCRIPTS.out.rrna_gtf)
+    GFFREAD(ENSEMBL_DOWNLOAD.out.gtf, ENSEMBL_DOWNLOAD.out.primary_assembly.map { meta, fasta -> [ fasta ] })
+    SALMON_INDEX(ENSEMBL_DOWNLOAD.out.primary_assembly.map{ meta, fasta -> [ fasta ] }, GFFREAD.out.gffread_fasta.map{ meta, gffread_fasta -> [ gffread_fasta ] })
 
-    // GATK4_BEDTOINTERVALLIST(CONVERT2BED.out.bed, GATK4_CREATESEQUENCEDICTIONARY.out.dict)
+    if (params.starindex || params.all || params.starfusion || params.arriba) {
+        STAR_GENOMEGENERATE( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.gtf )
+    }
 
-    ch_fasta_fai =(GUNZIP.out.gunzip).join(SAMTOOLS_FAIDX.out.fai)
-    GFFREAD(ENSEMBL_DOWNLOAD.out.gtf, ch_fasta_fai)
-    SALMON_INDEX(GUNZIP.out.gunzip.map { meta, fasta -> [ fasta ] }, GFFREAD.out.tr_fasta)
+    if (params.arriba || params.all) {
+        ARRIBA_DOWNLOAD()
+    }
 
-    // RSEM_PREPAREREFERENCE(ENSEMBL_DOWNLOAD.out.fasta.map { meta, fasta -> [ fasta ] }, ENSEMBL_DOWNLOAD.out.gtf.map { meta, gtf -> [ gtf ] })
+    if (params.fusioncatcher || params.all) {
+        FUSIONCATCHER_DOWNLOAD()
+    }
 
+    if (params.starfusion || params.all) {
+        if (params.starfusion_build){
+            STARFUSION_BUILD( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.chrgtf )
+        } else {
+            STARFUSION_DOWNLOAD()
+        }
+    }
 
-    // if (params.starindex || params.all || params.starfusion || params.arriba) {
-    //     STAR_GENOMEGENERATE( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.gtf )
-    // }
+    if (params.starfusion_build){
+        GTF_TO_REFFLAT(ENSEMBL_DOWNLOAD.out.chrgtf)
+    } else {
+        GTF_TO_REFFLAT(STARFUSION_DOWNLOAD.out.chrgtf)
+    }
 
-    // if (params.arriba || params.all) {
-    //     ARRIBA_DOWNLOAD()
-    // }
-
-    // if (params.fusioncatcher || params.all) {
-    //     FUSIONCATCHER_DOWNLOAD()
-    // }
-
-    // if (params.starfusion || params.all) {
-    //     if (params.starfusion_build){
-    //         STARFUSION_BUILD( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.chrgtf )
-    //     } else {
-    //         STARFUSION_DOWNLOAD()
-    //     }
-    // }
-
-    // if (params.starfusion_build){
-    //     GTF_TO_REFFLAT(ENSEMBL_DOWNLOAD.out.chrgtf)
-    // } else {
-    //     GTF_TO_REFFLAT(STARFUSION_DOWNLOAD.out.chrgtf)
-    // }
-
-    // if (params.fusionreport || params.all) {
-    //     FUSIONREPORT_DOWNLOAD( params.cosmic_username, params.cosmic_passwd )
-    // }
+    if (params.fusionreport || params.all) {
+        FUSIONREPORT_DOWNLOAD( params.cosmic_username, params.cosmic_passwd )
+    }
 
 }
 

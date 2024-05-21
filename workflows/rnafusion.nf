@@ -6,6 +6,7 @@
 
 include { FASTQC                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
+include { SALMON_QUANT           } from '../modules/nf-core/salmon/quant/main'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_rnafusion_pipeline'
@@ -25,6 +26,7 @@ ch_hgnc_ref = Channel.fromPath(params.hgnc_ref).map { it -> [[id:it.Name], it] }
 ch_hgnc_date = Channel.fromPath(params.hgnc_date).map { it -> [[id:it.Name], it] }.collect()
 ch_fasta = Channel.fromPath(params.fasta).map { it -> [[id:it.Name], it] }.collect()
 ch_gtf = Channel.fromPath(params.gtf).map { it -> [[id:it.Name], it] }.collect()
+ch_salmon_index = Channel.fromPath(params.salmon_index).map { it -> [[id:it.Name], it] }.collect()
 ch_transcript = Channel.fromPath(params.transcript).map { it -> [[id:it.Name], it] }.collect()
 ch_fai = Channel.fromPath(params.fai).map { it -> [[id:it.Name], it] }.collect()
 
@@ -113,6 +115,7 @@ workflow RNAFUSION {
     .set { ch_cat_fastq }
     ch_versions = ch_versions.mix(CAT_FASTQ.out.versions)
 
+
     //
     // MODULE: Run FastQC
     //
@@ -128,6 +131,10 @@ workflow RNAFUSION {
     ch_reads_fusioncatcher = TRIM_WORKFLOW.out.ch_reads_fusioncatcher
     ch_reads_all = TRIM_WORKFLOW.out.ch_reads_all
     ch_versions = ch_versions.mix(TRIM_WORKFLOW.out.versions)
+
+
+    SALMON_QUANT( ch_reads_all, ch_salmon_index, ch_gtf.map{ meta, gtf ->  gtf  }, [], false, 'A')
+
 
     //
     // SUBWORKFLOW:  Run STAR alignment and Arriba

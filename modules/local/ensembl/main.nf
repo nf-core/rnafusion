@@ -13,48 +13,40 @@ process ENSEMBL_DOWNLOAD {
     val meta
 
     output:
-    tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.all.fa")        , emit: fasta
-    tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.gtf")           , emit: gtf
-    tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.chr.gtf")       , emit: chrgtf
-    tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.cdna.all.fa.gz"), emit: transcript
-    tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.dna.primary_assembly.fa.gz"), emit: primary_assembly
-    tuple val(meta), path("gencode.v37.primary_assembly.annotation.gtf"), emit: primary_assembly_gtf
-
-    path "versions.yml"                                            , emit: versions
+    tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.gtf")                       , emit: gtf
+    tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.dna.primary_assembly.fa")   , emit: primary_assembly
+    tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.chr.gtf")                   , emit: chrgtf
+    path "versions.yml"                                                                          , emit: versions
 
 
     script:
     """
-    wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/fasta/homo_sapiens/dna/Homo_sapiens.${params.genome}.dna.chromosome.{1..22}.fa.gz
-    wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/fasta/homo_sapiens/dna/Homo_sapiens.${params.genome}.dna.chromosome.{MT,X,Y}.fa.gz
-
     wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/gtf/homo_sapiens/Homo_sapiens.${params.genome}.${ensembl_version}.gtf.gz
-    wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/gtf/homo_sapiens/Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf.gz
-    wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/fasta/homo_sapiens/cdna/Homo_sapiens.${params.genome}.cdna.all.fa.gz -O Homo_sapiens.${params.genome}.${ensembl_version}.cdna.all.fa.gz
     wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/fasta/homo_sapiens/dna/Homo_sapiens.${params.genome}.dna.primary_assembly.fa.gz -O Homo_sapiens.${params.genome}.${ensembl_version}.dna.primary_assembly.fa.gz
-    wget https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_37/gencode.v37.primary_assembly.annotation.gtf.gz
-    gunzip -c Homo_sapiens.${params.genome}.dna.chromosome.* > Homo_sapiens.${params.genome}.${ensembl_version}.all.fa
-    gunzip Homo_sapiens.${params.genome}.${ensembl_version}.gtf.gz
-    gunzip Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf.gz
+    wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/gtf/homo_sapiens/Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf.gz
 
-    gunzip gencode.v37.primary_assembly.annotation.gtf.gz
+    gunzip Homo_sapiens.${params.genome}.${ensembl_version}.gtf.gz
+    gunzip Homo_sapiens.${params.genome}.${ensembl_version}.dna.primary_assembly.fa.gz
+    gunzip Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         wget: \$(echo wget -V 2>&1 | grep "GNU Wget" | cut -d" " -f3 > versions.yml)
+        gunzip: \$(echo \$(gunzip --version 2>&1) | sed 's/^.*(gzip) //; s/ Copyright.*\$//')
+
     END_VERSIONS
     """
 
     stub:
     """
-    touch "Homo_sapiens.${genome}.${ensembl_version}.all.fa"
     touch "Homo_sapiens.${genome}.${ensembl_version}.gtf"
-    touch "Homo_sapiens.${genome}.${ensembl_version}.chr.gtf"
-    touch "Homo_sapiens.${genome}.${ensembl_version}.cdna.all.fa.gz"
+    touch "Homo_sapiens.${params.genome}.${ensembl_version}.dna.primary_assembly.fa"
+    touch "Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         wget: \$(echo wget -V 2>&1 | grep "GNU Wget" | cut -d" " -f3 > versions.yml)
+        gunzip: \$(echo \$(gunzip --version 2>&1) | sed 's/^.*(gzip) //; s/ Copyright.*\$//')
     END_VERSIONS
     """
 
