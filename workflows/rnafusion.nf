@@ -133,7 +133,7 @@ workflow RNAFUSION {
     ch_versions = ch_versions.mix(TRIM_WORKFLOW.out.versions)
 
 
-    SALMON_QUANT( ch_reads_all, ch_salmon_index, ch_gtf.map{ meta, gtf ->  gtf  }, [], false, 'A')
+    SALMON_QUANT( ch_reads_all, ch_salmon_index.map{ meta, index ->  index  }, ch_gtf.map{ meta, gtf ->  gtf  }, [], false, 'A')
 
 
     //
