@@ -17,7 +17,10 @@ process ENSEMBL_DOWNLOAD {
     tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.gtf")           , emit: gtf
     tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.chr.gtf")       , emit: chrgtf
     tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.cdna.all.fa.gz"), emit: transcript
-    path "versions.yml"                                                                                                                       , emit: versions
+    tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.dna.primary_assembly.fa.gz"), emit: primary_assembly
+    tuple val(meta), path("gencode.v37.primary_assembly.annotation.gtf"), emit: primary_assembly_gtf
+
+    path "versions.yml"                                            , emit: versions
 
 
     script:
@@ -28,12 +31,13 @@ process ENSEMBL_DOWNLOAD {
     wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/gtf/homo_sapiens/Homo_sapiens.${params.genome}.${ensembl_version}.gtf.gz
     wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/gtf/homo_sapiens/Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf.gz
     wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/fasta/homo_sapiens/cdna/Homo_sapiens.${params.genome}.cdna.all.fa.gz -O Homo_sapiens.${params.genome}.${ensembl_version}.cdna.all.fa.gz
-
+    wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/fasta/homo_sapiens/dna/Homo_sapiens.${params.genome}.dna.primary_assembly.fa.gz -O Homo_sapiens.${params.genome}.${ensembl_version}.dna.primary_assembly.fa.gz
+    wget https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_37/gencode.v37.primary_assembly.annotation.gtf.gz
     gunzip -c Homo_sapiens.${params.genome}.dna.chromosome.* > Homo_sapiens.${params.genome}.${ensembl_version}.all.fa
     gunzip Homo_sapiens.${params.genome}.${ensembl_version}.gtf.gz
     gunzip Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf.gz
 
-
+    gunzip gencode.v37.primary_assembly.annotation.gtf.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
