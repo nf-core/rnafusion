@@ -51,7 +51,7 @@ workflow BUILD_REFERENCES {
     SALMON_INDEX(ENSEMBL_DOWNLOAD.out.primary_assembly.map{ meta, fasta -> [ fasta ] }, GFFREAD.out.gffread_fasta.map{ meta, gffread_fasta -> [ gffread_fasta ] })
 
     if (params.starindex || params.all || params.starfusion || params.arriba) {
-        STAR_GENOMEGENERATE( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.gtf )
+        STAR_GENOMEGENERATE( ENSEMBL_DOWNLOAD.out.primary_assembly, ENSEMBL_DOWNLOAD.out.gtf )
     }
 
     if (params.arriba || params.all) {
@@ -64,16 +64,16 @@ workflow BUILD_REFERENCES {
 
     if (params.starfusion || params.all) {
         if (params.starfusion_build){
-            STARFUSION_BUILD( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.chrgtf )
+            STARFUSION_BUILD( ENSEMBL_DOWNLOAD.out.primary_assembly, ENSEMBL_DOWNLOAD.out.gtf )
         } else {
             STARFUSION_DOWNLOAD()
         }
     }
 
     if (params.starfusion_build){
-        GTF_TO_REFFLAT(ENSEMBL_DOWNLOAD.out.chrgtf)
+        GTF_TO_REFFLAT(ENSEMBL_DOWNLOAD.out.gtf)
     } else {
-        GTF_TO_REFFLAT(STARFUSION_DOWNLOAD.out.chrgtf)
+        GTF_TO_REFFLAT(STARFUSION_DOWNLOAD.out.gtf)
     }
 
     if (params.fusionreport || params.all) {
