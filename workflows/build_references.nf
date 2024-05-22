@@ -10,7 +10,7 @@ include { FUSIONREPORT_DOWNLOAD }           from '../modules/local/fusionreport/
 include { HGNC_DOWNLOAD }                   from '../modules/local/hgnc/main'
 include { STARFUSION_BUILD }                from '../modules/local/starfusion/build/main'
 include { STARFUSION_DOWNLOAD }             from '../modules/local/starfusion/download/main'
-include { RRNA_TRANSCRIPTS }                from '../modules/local/rrnatranscripts/main'
+
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -18,9 +18,10 @@ include { RRNA_TRANSCRIPTS }                from '../modules/local/rrnatranscrip
 */
 
 include { ARRIBA_DOWNLOAD }                 from '../modules/nf-core/arriba/download/main'
-include { BEDOPS_CONVERT2BED } from '../modules/nf-core/bedops/convert2bed/main'
+include { BEDOPS_CONVERT2BED }              from '../modules/nf-core/bedops/convert2bed/main'
 include { GATK4_BEDTOINTERVALLIST }         from '../modules/nf-core/gatk4/bedtointervallist/main'
 include { GATK4_CREATESEQUENCEDICTIONARY }  from '../modules/nf-core/gatk4/createsequencedictionary/main'
+include { RRNATRANSCRIPTS }                 from '../modules/nf-core/rrnatranscripts/main'
 include { SAMTOOLS_FAIDX }                  from '../modules/nf-core/samtools/faidx/main'
 include { STAR_GENOMEGENERATE }             from '../modules/nf-core/star/genomegenerate/main'
 include { UCSC_GTFTOGENEPRED }              from '../modules/nf-core/ucsc/gtftogenepred/main'
@@ -36,14 +37,14 @@ workflow BUILD_REFERENCES {
     def fake_meta = [:]
     fake_meta.id = "Homo_sapiens.${params.genome}.${params.ensembl_version}"
     ENSEMBL_DOWNLOAD( params.ensembl_version, params.genome, fake_meta )
-    HGNC_DOWNLOAD( )
+    HGNC_DOWNLOAD()
 
 
     SAMTOOLS_FAIDX(ENSEMBL_DOWNLOAD.out.fasta, [[],[]])
     GATK4_CREATESEQUENCEDICTIONARY(ENSEMBL_DOWNLOAD.out.fasta)
 
-    RRNA_TRANSCRIPTS(ENSEMBL_DOWNLOAD.out.gtf)
-    BEDOPS_CONVERT2BED(RRNA_TRANSCRIPTS.out.rrna_gtf)
+    RRNATRANSCRIPTS(ENSEMBL_DOWNLOAD.out.gtf.map{ meta, gtf -> [ gtf ] })
+    BEDOPS_CONVERT2BED([fake_meta.mix(RRNATRANSCRIPTS.out.rrna_gtf)])
 
     GATK4_BEDTOINTERVALLIST(BEDOPS_CONVERT2BED.out.bed, GATK4_CREATESEQUENCEDICTIONARY.out.dict)
 

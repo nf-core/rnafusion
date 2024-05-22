@@ -7,7 +7,7 @@
                 "nf-core": {
                     "agat/convertspgff2tsv": {
                         "branch": "master",
-                        "git_sha": "9198082dcec6d8374c0bf3d7e38dd1f79d4601a7",
+                        "git_sha": "b1d41826971b91f9649b46a8f3ccb226ee150c85",
                         "installed_by": ["modules"]
                     },
                     "arriba/arriba": {
@@ -32,7 +32,7 @@
                     },
                     "cat/fastq": {
                         "branch": "master",
-                        "git_sha": "0997b47c93c06b49aa7b3fefda87e728312cf2ca",
+                        "git_sha": "4fc983ad0b30e6e32696fa7d980c76c7bfe1c03e",
                         "installed_by": ["modules"]
                     },
                     "fastp": {
@@ -52,7 +52,7 @@
                     },
                     "gatk4/createsequencedictionary": {
                         "branch": "master",
-                        "git_sha": "d742e3143f2ccb8853c29b35cfcf50b5e5026980",
+                        "git_sha": "e6fe277739f5894711405af3e717b2470bd956b5",
                         "installed_by": ["modules"]
                     },
                     "gatk4/markduplicates": {
@@ -78,6 +78,11 @@
                     "picard/collectwgsmetrics": {
                         "branch": "master",
                         "git_sha": "20b0918591d4ba20047d7e13e5094bcceba81447",
+                        "installed_by": ["modules"]
+                    },
+                    "rrnatranscripts": {
+                        "branch": "master",
+                        "git_sha": "7b17de553ee27a17478f6bf9df15acd26b1ef377",
                         "installed_by": ["modules"]
                     },
                     "samtools/faidx": {
@@ -122,7 +127,7 @@
                     },
                     "ucsc/gtftogenepred": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "acb0880789a6ebc2168d3b2d3d42b5bce6a62431",
                         "installed_by": ["modules"]
                     }
                 }
