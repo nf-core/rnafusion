@@ -1,4 +1,4 @@
-include { ARRIBA }                                      from '../../modules/nf-core/arriba/main'
+include { ARRIBA_ARRIBA }                               from '../../modules/nf-core/arriba/arriba/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FOR_ARRIBA}  from '../../modules/nf-core/samtools/index/main'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_FOR_ARRIBA}    from '../../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FOR_ARRIBA}    from '../../modules/nf-core/samtools/view/main'
@@ -28,16 +28,16 @@ workflow ARRIBA_WORKFLOW {
                     .map { meta, reads, fusions -> [ meta, fusions ] }
                 ch_arriba_fusion_fail = ch_dummy_file
             } else {
-                ARRIBA ( STAR_FOR_ARRIBA.out.bam, ch_fasta, ch_gtf, ch_arriba_ref_blacklist, ch_arriba_ref_known_fusions, [[],[]], [[],[]], ch_arriba_ref_protein_domains )
-                ch_versions = ch_versions.mix(ARRIBA.out.versions)
+                ARRIBA_ARRIBA ( STAR_FOR_ARRIBA.out.bam, ch_fasta, ch_gtf, ch_arriba_ref_blacklist, ch_arriba_ref_known_fusions, [[],[]], [[],[]], ch_arriba_ref_protein_domains )
+                ch_versions = ch_versions.mix(ARRIBA_ARRIBA.out.versions)
 
-                ch_arriba_fusions     = ARRIBA.out.fusions
-                ch_arriba_fusion_fail = ARRIBA.out.fusions_fail.map{ meta, file -> return file}
+                ch_arriba_fusions     = ARRIBA_ARRIBA.out.fusions
+                ch_arriba_fusion_fail = ARRIBA_ARRIBA.out.fusions_fail.map{ meta, file -> return file}
             }
 
             if (params.cram.contains('arriba') ){
 
-                SAMTOOLS_SORT_FOR_ARRIBA(STAR_FOR_ARRIBA.out.bam)
+                SAMTOOLS_SORT_FOR_ARRIBA(STAR_FOR_ARRIBA.out.bam, ch_fasta)
                 ch_versions = ch_versions.mix(SAMTOOLS_SORT_FOR_ARRIBA.out.versions )
 
                 SAMTOOLS_VIEW_FOR_ARRIBA(SAMTOOLS_SORT_FOR_ARRIBA.out.bam.map { meta, bam -> [ meta, bam, [] ] }, ch_fasta, [])
