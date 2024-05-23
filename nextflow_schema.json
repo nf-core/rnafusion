@@ -200,6 +200,11 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Use QIAGEN instead of SANGER to download COSMIC database"
                 },
+                "salmon_index": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to salmon index"
+                },
                 "starfusion": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
