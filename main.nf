@@ -20,7 +20,6 @@ nextflow.enable.dsl = 2
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_rnafusion_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rnafusion_pipeline'
 include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_rnafusion_pipeline'
-include { BUILD_REFERENCES        } from './workflows/build_references'
 include { RNAFUSION               } from './workflows/rnafusion'
 
 
@@ -50,12 +49,9 @@ workflow NFCORE_RNAFUSION {
     //
     // WORKFLOW: Run pipeline
     //
-    if (params.build_references) {
-        BUILD_REFERENCES ()
-    } else {
-        ch_samplesheet = Channel.value(file(params.input, checkIfExists: true))
-        RNAFUSION(ch_samplesheet)
-    }
+
+    ch_samplesheet = Channel.value(file(params.input, checkIfExists: true))
+    RNAFUSION(ch_samplesheet)
 
 }
 /*
