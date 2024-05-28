@@ -21,7 +21,7 @@ process FUSIONCATCHER_BUILD {
     """
     fusioncatcher-build \\
         -g homo_sapiens \\
-        -o human_${human_version} \\
+        -o human_v${ensembl_version} \\
         $args
 
     cat <<-END_VERSIONS > versions.yml
