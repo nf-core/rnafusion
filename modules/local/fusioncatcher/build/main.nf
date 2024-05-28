@@ -19,7 +19,7 @@ process FUSIONCATCHER_BUILD {
 
     def args = task.ext.args ?: ''
     """
-    fusioncatcher-build \\
+    fusioncatcher-build.py \\
         -g homo_sapiens \\
         -o human_v${ensembl_version} \\
         $args
