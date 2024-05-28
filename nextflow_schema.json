@@ -105,20 +105,10 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Build or run arriba references/analyses"
                 },
-                "arriba_ref": {
-                    "type": "string",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Path to arriba references"
-                },
                 "arriba_ref_blacklist": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
                     "description": "Path to arriba reference blacklist"
-                },
-                "arriba_ref_cytobands": {
-                    "type": "string",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Path to arriba reference cytobands"
                 },
                 "arriba_ref_known_fusions": {
                     "type": "string",
@@ -134,6 +124,11 @@
                     "type": "string",
                     "fa_icon": "far fa-file-code",
                     "description": "Path to arriba output"
+                },
+                "download_refs": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Download references instead of building them (for fusioncatcher and starfusion)"
                 },
                 "ensembl_ref": {
                     "type": "string",
@@ -160,6 +155,11 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to fusioncatcher references"
                 },
+                "fusioncatcher_ref_stub_check": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to file in fusioncatcher references"
+                },
                 "fusioninspector_limitSjdbInsertNsj": {
                     "type": "integer",
                     "fa_icon": "far fa-file-code",
@@ -185,6 +185,11 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to fusionreport references"
                 },
+                "fusionreport_ref_stub_check": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to file in fusionreport references"
+                },
                 "hgnc_ref": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
@@ -205,6 +210,11 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to salmon index"
                 },
+                "salmon_index_stub_check": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to file in salmon index"
+                },
                 "starfusion": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
@@ -220,6 +230,11 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to starfusion references"
                 },
+                "starfusion_ref_stub_check": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to file in starfusion references"
+                },
                 "starindex": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
@@ -229,6 +244,11 @@
                     "type": "string",
                     "fa_icon": "far fa-file-code",
                     "description": "Path to starindex references"
+                },
+                "starindex_ref_stub_check": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to file in starindex references"
                 },
                 "stringtie": {
                     "type": "boolean",
@@ -323,14 +343,6 @@
                     "format": "file-path",
                     "mimetype": "text/plain",
                     "pattern": "^\\S+\\.gtf?(\\.gz)?$",
-                    "description": "Path to GTF genome file.",
-                    "fa_icon": "far fa-file-code"
-                },
-                "transcript": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/plain",
-                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
                     "description": "Path to GTF genome file.",
                     "fa_icon": "far fa-file-code"
                 },

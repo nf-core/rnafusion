@@ -1,10 +1,9 @@
-process FUSIONCATCHER_DOWNLOAD {
-    tag "fusioncatcher_download"
+process FUSIONCATCHER_BUILD {
+    tag "fusioncatcher_build"
     label 'process_medium'
 
     conda "bioconda::fusioncatcher=1.33"
     container "docker.io/clinicalgenomics/fusioncatcher:1.33"
-
 
     input:
     val ensembl_version
@@ -19,15 +18,11 @@ process FUSIONCATCHER_DOWNLOAD {
     script:
 
     def args = task.ext.args ?: ''
-    def args2 = task.ext.args2 ?: ''
-    def url =
     """
-    wget $args http://sourceforge.net/projects/fusioncatcher/files/data/human_${ensembl_version}.tar.gz.aa
-    wget $args http://sourceforge.net/projects/fusioncatcher/files/data/human_${ensembl_version}.tar.gz.ab
-    wget $args http://sourceforge.net/projects/fusioncatcher/files/data/human_${ensembl_version}.tar.gz.ac
-    wget $args http://sourceforge.net/projects/fusioncatcher/files/data/human_${ensembl_version}.tar.gz.ad
-    cat human_${ensembl_version}.tar.gz.* | tar xz
-    rm human_${ensembl_version}.tar*
+    fusioncatcher-build \\
+        -g homo_sapiens \\
+        -o human_${human_version} \\
+        $args
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

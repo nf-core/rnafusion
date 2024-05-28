@@ -1,4 +1,5 @@
 process GTF_TO_REFFLAT {
+    tag "$meta.id"
     label 'process_low'
 
     conda "bioconda::ucsc-gtftogenepred=377"
