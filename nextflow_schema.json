@@ -18,7 +18,7 @@
                 "skip_vcf": {
                     "type": "boolean",
                     "description": "Skip vcf creation step"
-                }
+                },
                 "skip_vis": {
                     "type": "boolean",
                     "description": "Skip visualisation steps"

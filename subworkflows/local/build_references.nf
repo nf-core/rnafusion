@@ -58,11 +58,10 @@ workflow BUILD_REFERENCES {
 
 
     if ((!file(params.hgnc_ref).exists() || file(params.hgnc_ref).isEmpty() ||
-                !file(params.hgnc_date).exists() || file(params.hgnc_date).isEmpty()) and not params.skip_vcf){
+            !file(params.hgnc_date).exists() || file(params.hgnc_date).isEmpty()) && !params.skip_vcf){
         HGNC_DOWNLOAD( )
         ch_hgnc_ref = HGNC_DOWNLOAD.out.hgnc_ref
-        ch_hgnc_date =HGNC_DOWNLOAD.out.hgnc_date
-
+        ch_hgnc_date = HGNC_DOWNLOAD.out.hgnc_date
     } else {
         ch_hgnc_ref = Channel.fromPath(params.hgnc_ref).map { that -> [[id:that.Name], that] }
         ch_hgnc_date = Channel.fromPath(params.hgnc_date).map { that -> [[id:that.Name], that] }

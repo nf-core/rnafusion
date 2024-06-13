@@ -3,7 +3,7 @@ process FUSIONCATCHER_BUILD {
     label 'process_medium'
 
     conda "bioconda::fusioncatcher=1.33"
-    container "docker.io/clinicalgenomics/fusioncatcher:1.33"
+    container "docker.io/rannickscilifelab/fusioncatcher:1.33a"
 
     input:
     val ensembl_version
