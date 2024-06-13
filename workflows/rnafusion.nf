@@ -57,11 +57,6 @@ workflow RNAFUSION {
     main:
 
 
-    // Reference channels
-
-
-
-
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
@@ -73,59 +68,60 @@ workflow RNAFUSION {
     BUILD_REFERENCES()
 
 
-//     //
-//     // Create channel from input file provided through params.input
-//     //
-//     Channel
-//         .fromSamplesheet("input")
-//         .map {
-//             meta, fastq_1, fastq_2, strandedness ->
-//                 if (!fastq_2) {
-//                     return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
-//                 } else {
-//                     return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
-//                 }
-//         }
-//         .groupTuple()
-//         .map {
-//             validateInputSamplesheet(it)
-//         }
-//         .branch {
-//             meta, fastqs ->
-//                 single  : fastqs.size() == 1
-//                     return [ meta, fastqs.flatten() ]
-//                 multiple: fastqs.size() > 1
-//                     return [ meta, fastqs.flatten() ]
-//         }
-//         .set { ch_fastq }
+    //
+    // Create channel from input file provided through params.input
+    //
+    Channel
+        .fromSamplesheet("input")
+        .map {
+            meta, fastq_1, fastq_2, strandedness ->
+                if (!fastq_2) {
+                    return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
+                } else {
+                    return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
+                }
+        }
+        .groupTuple()
+        .map {
+            validateInputSamplesheet(it)
+        }
+        .branch {
+            meta, fastqs ->
+                single  : fastqs.size() == 1
+                    return [ meta, fastqs.flatten() ]
+                multiple: fastqs.size() > 1
+                    return [ meta, fastqs.flatten() ]
+        }
+        .set { ch_fastq }
 
-//     //
-//     // MODULE: Concatenate FastQ files from same sample if required
-//     //
-//     CAT_FASTQ (
-//         ch_fastq.multiple
-//     )
-//     .reads
-//     .mix(ch_fastq.single)
-//     .set { ch_cat_fastq }
-//     ch_versions = ch_versions.mix(CAT_FASTQ.out.versions)
+    //
+    // MODULE: Concatenate FastQ files from same sample if required
+    //
+    CAT_FASTQ (
+        ch_fastq.multiple
+    )
+    .reads
+    .mix(ch_fastq.single)
+    .set { ch_cat_fastq }
+    ch_versions = ch_versions.mix(CAT_FASTQ.out.versions)
 
 
-//     //
-//     // MODULE: Run FastQC
-//     //
-//     FASTQC (
-//         ch_cat_fastq
-//     )
-//     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
-//     ch_versions = ch_versions.mix(FASTQC.out.versions)
+    //
+    // MODULE: Run FastQC
+    //
+    FASTQC (
+        ch_cat_fastq
+    )
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
+    ch_versions = ch_versions.mix(FASTQC.out.versions)
 
-//     TRIM_WORKFLOW (
-//         ch_cat_fastq
-//     )
-//     ch_reads_fusioncatcher = TRIM_WORKFLOW.out.ch_reads_fusioncatcher
-//     ch_reads_all = TRIM_WORKFLOW.out.ch_reads_all
-//     ch_versions = ch_versions.mix(TRIM_WORKFLOW.out.versions)
+
+    TRIM_WORKFLOW (
+        ch_cat_fastq
+    )
+    ch_reads_fusioncatcher = TRIM_WORKFLOW.out.ch_reads_fusioncatcher
+    ch_reads_all = TRIM_WORKFLOW.out.ch_reads_all
+    ch_versions = ch_versions.mix(TRIM_WORKFLOW.out.versions)
 
 
 //     SALMON_QUANT( ch_reads_all, ch_salmon_index.map{ meta, index ->  index  }, ch_gtf.map{ meta, gtf ->  gtf  }, [], false, 'A')

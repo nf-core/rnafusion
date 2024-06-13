@@ -46,21 +46,30 @@ workflow BUILD_REFERENCES {
             !file(params.gtf).exists() || file(params.gtf).isEmpty()){
         fake_meta = [:]
         fake_meta.id = "Homo_sapiens.${params.genome}.${params.ensembl_version}"
-        ENSEMBL_DOWNLOAD(params.ensembl_version, params.genome, fake_meta)}
-    ch_fasta = Channel.fromPath(params.fasta).map { that -> [[id:that.Name], that] }
-    ch_chrgtf = Channel.fromPath(params.chrgtf).map { that -> [[id:that.Name], that] }
-    ch_gtf = Channel.fromPath(params.gtf).map { that -> [[id:that.Name], that] }
+        ENSEMBL_DOWNLOAD(params.ensembl_version, params.genome, fake_meta)
+        ch_fasta = ENSEMBL_DOWNLOAD.out.primary_assembly
+        ch_chrgtf = ENSEMBL_DOWNLOAD.out.chrgtf
+        ch_gtf = ENSEMBL_DOWNLOAD.out.gtf
+    } else {
+        ch_fasta = Channel.fromPath(params.fasta).map { that -> [[id:that.Name], that] }
+        ch_chrgtf = Channel.fromPath(params.chrgtf).map { that -> [[id:that.Name], that] }
+        ch_gtf = Channel.fromPath(params.gtf).map { that -> [[id:that.Name], that] }
+    }
 
-    if (!file(params.hgnc_ref).exists() || file(params.hgnc_ref).isEmpty() ||
-                !file(params.hgnc_date).exists() || file(params.hgnc_date).isEmpty()){
-        HGNC_DOWNLOAD( )}
-    ch_hgnc_ref = Channel.fromPath(params.hgnc_ref).map { that -> [[id:that.Name], that] }
-    ch_hgnc_date = Channel.fromPath(params.hgnc_date).map { that -> [[id:that.Name], that] }
+
+    if ((!file(params.hgnc_ref).exists() || file(params.hgnc_ref).isEmpty() ||
+                !file(params.hgnc_date).exists() || file(params.hgnc_date).isEmpty()) and not params.skip_vcf){
+        HGNC_DOWNLOAD( )
+        ch_hgnc_ref = HGNC_DOWNLOAD.out.hgnc_ref
+        ch_hgnc_date =HGNC_DOWNLOAD.out.hgnc_date
+
+    } else {
+        ch_hgnc_ref = Channel.fromPath(params.hgnc_ref).map { that -> [[id:that.Name], that] }
+        ch_hgnc_date = Channel.fromPath(params.hgnc_date).map { that -> [[id:that.Name], that] }
+    }
 
 
-    if (!file(params.fai).exists() || file(params.fai).isEmpty()){
-        SAMTOOLS_FAIDX(ch_fasta, [[],[]])}
-    ch_fai = Channel.fromPath(params.fai).map { that -> [[id:that.Name], that] }
+    ch_fai = (!file(params.fai).exists() || file(params.fai).isEmpty()) ? SAMTOOLS_FAIDX(ch_fasta, [[],[]]).fai : Channel.fromPath(params.fai).map { that -> [[id:that.Name], that] }
 
 
     if (!file(params.rrna_intervals).exists() || file(params.rrna_intervals).isEmpty()){
@@ -68,69 +77,81 @@ workflow BUILD_REFERENCES {
         RRNA_TRANSCRIPTS(ch_gtf)
         CONVERT2BED(RRNA_TRANSCRIPTS.out.rrna_gtf)
         GATK4_BEDTOINTERVALLIST(CONVERT2BED.out.bed, GATK4_CREATESEQUENCEDICTIONARY.out.dict)
-        }
-    ch_rrna_interval = Channel.fromPath(params.rrna_intervals).map { that -> [[id:that.Name], that] }
+        ch_rrna_interval = GATK4_BEDTOINTERVALLIST.out.interval_list
+    } else {
+        ch_rrna_interval = Channel.fromPath(params.rrna_intervals).map { that -> [[id:that.Name], that] }
+    }
 
 
-    if (!file(params.refflat).exists() || file(params.refflat).isEmpty()){
-        GTF_TO_REFFLAT(ch_gtf)}
-    ch_refflat = Channel.fromPath(params.refflat)
+    ch_refflat = (!file(params.refflat).exists() || file(params.refflat).isEmpty()) ? GTF_TO_REFFLAT.refflat : Channel.fromPath(params.refflat)
 
 
     if (!file(params.salmon_index).exists() || file(params.salmon_index).isEmpty() ||
         !file(params.salmon_index_stub_check).exists() || file(params.salmon_index_stub_check).isEmpty()){ // add condition for qc
         GFFREAD(ch_gtf, ch_fasta.map{ meta, fasta -> [ fasta ] })
         SALMON_INDEX(ch_fasta.map{ meta, fasta -> [ fasta ] }, GFFREAD.out.gffread_fasta.map{ meta, gffread_fasta -> [ gffread_fasta ] })
+        ch_salmon_index = SALMON_INDEX.out.index
+    } else {
+        ch_salmon_index = Channel.fromPath(params.salmon_index)
         }
-    ch_salmon_index = Channel.fromPath(params.salmon_index)
 
 
     if ((params.starindex || params.all || params.starfusion || params.arriba) &&
             (!file(params.starindex_ref).exists() || file(params.starindex_ref).isEmpty() ||
             !file(params.starindex_ref_stub_check).exists() || file(params.starindex_ref_stub_check).isEmpty() )) {
         STAR_GENOMEGENERATE(ch_fasta, ch_gtf)
+        ch_starindex_ref = STAR_GENOMEGENERATE.out.index
+    } else {
+        ch_starindex_ref = Channel.fromPath(params.starindex_ref).map { that -> [[id:that.Name], that] }
     }
-    ch_starindex_ref = Channel.fromPath(params.starindex_ref).map { that -> [[id:that.Name], that] }
 
 
-    if ((params.arriba || params.all) &&
-            (!file(params.arriba_ref_blacklist).exists() || file(params.arriba_ref_blacklist).isEmpty() ||
-            !file(params.arriba_ref_known_fusions).exists() || file(params.arriba_ref_known_fusions).isEmpty() ||
-            !file(params.arriba_ref_protein_domains).exists() || file(params.arriba_ref_protein_domains).isEmpty())) {
-        ARRIBA_DOWNLOAD()}
-    ch_arriba_ref_blacklist = Channel.fromPath(params.arriba_ref_blacklist).map { that -> [[id:that.Name], that] }
-    ch_arriba_ref_known_fusions = Channel.fromPath(params.arriba_ref_known_fusions).map { that -> [[id:that.Name], that] }
-    ch_arriba_ref_protein_domains = Channel.fromPath(params.arriba_ref_protein_domains).map { that -> [[id:that.Name], that] }
+//     if ((params.arriba || params.all) &&
+//             (!file(params.arriba_ref_blacklist).exists() || file(params.arriba_ref_blacklist).isEmpty() ||
+//             !file(params.arriba_ref_known_fusions).exists() || file(params.arriba_ref_known_fusions).isEmpty() ||
+//             !file(params.arriba_ref_protein_domains).exists() || file(params.arriba_ref_protein_domains).isEmpty())) {
+//         ARRIBA_DOWNLOAD()
+//         ch_arriba_ref_blacklist = Channel.fromPath(params.arriba_ref_blacklist).map { that -> [[id:that.Name], that] }
+//         ch_arriba_ref_known_fusions = Channel.fromPath(params.arriba_ref_known_fusions).map { that -> [[id:that.Name], that] }
+//         ch_arriba_ref_protein_domains = Channel.fromPath(params.arriba_ref_protein_domains).map { that -> [[id:that.Name], that] }
+//     } else {
+// // need to update the module to emit blacklist,knownfusions etc
+//     }
 
 
     if ((params.fusioncatcher || params.all) &&
             (!file(params.fusioncatcher_ref).exists() || file(params.fusioncatcher_ref).isEmpty() ||
             !file(params.fusioncatcher_ref_stub_check).exists() || file(params.fusioncatcher_ref_stub_check).isEmpty() )) {
         if (params.download_refs) {
-            FUSIONCATCHER_DOWNLOAD(params.ensembl_version)}
+            FUSIONCATCHER_DOWNLOAD(params.ensembl_version)
+            ch_fusioncatcher_ref = FUSIONCATCHER_DOWNLOAD.out.reference}
         else {
-            FUSIONCATCHER_BUILD(params.ensembl_version)}
-    }
-    ch_fusioncatcher_ref = Channel.fromPath(params.fusioncatcher_ref).map { that -> [[id:that.Name], that] }
+            FUSIONCATCHER_BUILD(params.ensembl_version)
+            ch_fusioncatcher_ref = FUSIONCATCHER_BUILD.out.reference}
+        } else {
+            ch_fusioncatcher_ref = Channel.fromPath(params.fusioncatcher_ref).map { that -> [[id:that.Name], that] }
+        }
 
 
     if ((params.starfusion || params.all) &&
             (!file(params.starfusion_ref).exists() || file(params.starfusion_ref).isEmpty() ||
             !file(params.starfusion_ref_stub_check).exists() || file(params.starfusion_ref_stub_check).isEmpty() )) {
         if (params.download_refs) {
-            STARFUSION_DOWNLOAD( ch_fasta, ch_gtf )}
+            ch_starfusion_ref = STARFUSION_DOWNLOAD( ch_fasta, ch_gtf ).out.reference }
         else {
-            STARFUSION_BUILD( ch_fasta, ch_gtf )}
-    }
-    ch_starfusion_ref = Channel.fromPath(params.starfusion_ref).map { that -> [[id:that.Name], that] }
+            ch_starfusion_ref = STARFUSION_BUILD( ch_fasta, ch_gtf ).out.reference }
+    } else {
+        ch_starfusion_ref = Channel.fromPath(params.starfusion_ref).map { that -> [[id:that.Name], that] }}
 
 
     if ((params.fusionreport || params.all) &&
             (!file(params.fusionreport_ref).exists() || file(params.fusionreport_ref).isEmpty() ||
             !file(params.fusionreport_ref_stub_check).exists() || file(params.fusionreport_ref_stub_check).isEmpty())) {
         if (!params.cosmic_username || !params.cosmic_passwd) { exit 1, 'COSMIC username and/or password missing' }
-        FUSIONREPORT_DOWNLOAD( params.cosmic_username, params.cosmic_passwd )}
-    ch_fusionreport_ref = Channel.fromPath(params.fusionreport_ref).map { that -> [[id:that.Name], that] }
+        ch_fusionreport_ref = FUSIONREPORT_DOWNLOAD( params.cosmic_username, params.cosmic_passwd ).out.reference
+    } else {
+        ch_fusionreport_ref = Channel.fromPath(params.fusionreport_ref).map { that -> [[id:that.Name], that] }
+    }
 
     emit:
     ch_fasta
@@ -143,9 +164,9 @@ workflow BUILD_REFERENCES {
     ch_refflat
     ch_salmon_index
     ch_starindex_ref
-    ch_arriba_ref_blacklist
-    ch_arriba_ref_known_fusions
-    ch_arriba_ref_protein_domains
+    // ch_arriba_ref_blacklist
+    // ch_arriba_ref_known_fusions
+    // ch_arriba_ref_protein_domains
     ch_fusioncatcher_ref
     ch_starfusion_ref
     ch_fusionreport_ref

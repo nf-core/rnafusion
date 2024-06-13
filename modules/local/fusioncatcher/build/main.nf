@@ -9,8 +9,8 @@ process FUSIONCATCHER_BUILD {
     val ensembl_version
 
     output:
-    path "*"                , emit: reference
-    path "versions.yml"     , emit: versions
+    path "human_v${ensembl_version}"  , emit: reference
+    path "versions.yml"               , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

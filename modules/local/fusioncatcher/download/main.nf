@@ -10,7 +10,7 @@ process FUSIONCATCHER_DOWNLOAD {
     val ensembl_version
 
     output:
-    path "*"                , emit: reference
+    path "human_v${ensembl_version}"                , emit: reference
     path "versions.yml"     , emit: versions
 
     when:
