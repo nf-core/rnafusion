@@ -31,6 +31,7 @@ The rnafusion pipeline needs references for the fusion detection tools, so downl
 
 ```bash
 nextflow run nf-core/rnafusion \
+  -profile <docker/singularity/.../institute> \
   --build_references --all \
   --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
   --genomes_base <PATH/TO/REFERENCES> \
@@ -41,6 +42,7 @@ References for each tools can also be downloaded separately with:
 
 ```bash
 nextflow run nf-core/rnafusion \
+  -profile <docker/singularity/.../institute> \
   --build_references --<tool1> --<tool2> ... \
   --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
   --genomes_base <PATH/TO/REFERENCES> \
@@ -59,6 +61,7 @@ Use credentials from QIAGEN and add `--qiagen`
 
 ```bash
 nextflow run nf-core/rnafusion \
+  -profile <docker/singularity/.../institute> \
   --build_references --<tool1> --<tool2> ... \
   --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
   --genomes_base <PATH/TO/REFERENCES> \
@@ -75,6 +78,7 @@ If process `FUSIONREPORT_DOWNLOAD` times out, it could be due to network restric
 
 ```bash
 nextflow run nf-core/rnafusion  \
+  -profile <docker/singularity/.../institute> \
   --build_references \
   --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
   --fusionreport \
@@ -134,6 +138,7 @@ The pipeline can either be run using all fusion detection tools or specifying in
 
 ```bash
 nextflow run nf-core/rnafusion \
+  -profile <docker/singularity/.../institute> \
   --all \
   --input <SAMPLE_SHEET.CSV> \
   --genomes_base <PATH/TO/REFERENCES> \
@@ -144,6 +149,7 @@ To run only a specific detection tool use: `--tool`:
 
 ```bash
 nextflow run nf-core/rnafusion \
+  -profile <docker/singularity/.../institute> \
   --<tool1> --<tool2> ... \
   --input <SAMPLE_SHEET.CSV> \
   --genomes_base <PATH/TO/REFERENCES> \
@@ -200,6 +206,7 @@ When the flag `--fastp_trim` is used, `fastp` is used to provide all tools with 
 
 ```bash
 nextflow run nf-core/rnafusion \
+-profile <docker/singularity/.../institute> \
 --<tool1> --<tool2> ... \
 --input <SAMPLE_SHEET.CSV> \
 --genomes_base <PATH/TO/REFERENCES> \
@@ -213,6 +220,7 @@ nextflow run nf-core/rnafusion \
 
 ```bash
 nextflow run nf-core/rnafusion \
+  -profile <docker/singularity/.../institute> \
   --<tool1> --<tool2> ... \
   --input <SAMPLE_SHEET.CSV> \
   --genomes_base <PATH/TO/REFERENCES> \
@@ -226,6 +234,7 @@ nextflow run nf-core/rnafusion \
 
 ```bash
 nextflow run nf-core/rnafusion \
+  -profile <docker/singularity/.../institute> \
   --<tool1> --<tool2> ... \
   --input <SAMPLE_SHEET.CSV> \
   --genomes_base <PATH/TO/REFERENCES> \
@@ -246,6 +255,7 @@ FusionInspector can be run as a standalone with:
 
 ```bash
 nextflow run nf-core/rnafusion \
+-profile <docker/singularity/.../institute> \
 --fusioninspector_only \
 --fusioninspector_fusions <PATH_TO_CUSTOM_FUSION_FILE> \
 --input <SAMPLE_SHEET.CSV> \
@@ -263,6 +273,7 @@ GENE3--GENE4
 
 ```bash
 nextflow run nf-core/rnafusion \
+-profile <docker/singularity/.../institute> \
 --skip_qc \
 --all OR <--tool>
 --input <SAMPLE_SHEET.CSV> \
@@ -276,6 +287,7 @@ This will skip all QC-related processes (picard metrics collection)
 
 ```bash
 nextflow run nf-core/rnafusion \
+-profile <docker/singularity/.../institute> \
 --skip_vis \
 --all OR <--tool>
 --input <SAMPLE_SHEET.CSV> \
@@ -374,6 +386,8 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
   - A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
 - `apptainer`
   - A generic configuration profile to be used with [Apptainer](https://apptainer.org/)
+- `wave`
+  - A generic configuration profile to enable [Wave](https://seqera.io/wave/) containers. Use together with one of the above (requires Nextflow ` 24.03.0-edge` or later).
 - `conda`
   - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter, Charliecloud, or Apptainer.
 - `test`

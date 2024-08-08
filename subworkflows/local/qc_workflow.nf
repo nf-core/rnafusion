@@ -8,6 +8,7 @@ include { PICARD_COLLECTINSERTSIZEMETRICS }            from '../../modules/nf-co
 
 workflow QC_WORKFLOW {
     take:
+        ch_reads_all
         ch_bam_sorted
         ch_bam_sorted_indexed
         ch_chrgtf
@@ -30,6 +31,7 @@ workflow QC_WORKFLOW {
         PICARD_COLLECTINSERTSIZEMETRICS(ch_bam_sorted)
         ch_versions = ch_versions.mix(PICARD_COLLECTINSERTSIZEMETRICS.out.versions)
         ch_insertsize_metrics = Channel.empty().mix(PICARD_COLLECTINSERTSIZEMETRICS.out.metrics)
+
 
 
     emit:
