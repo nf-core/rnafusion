@@ -3,8 +3,7 @@ process FUSIONREPORT {
     label 'process_medium'
 
     conda "bioconda::star=2.7.9a"
-    container "docker.io/clinicalgenomics/fusion-report:2.1.8"
-
+    container "nf-core/fusion-report:2.1.8"
 
     input:
     tuple val(meta), path(reads), path(arriba_fusions), path(starfusion_fusions),  path(fusioncatcher_fusions)
