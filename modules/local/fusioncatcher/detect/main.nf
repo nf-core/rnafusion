@@ -3,7 +3,7 @@ process FUSIONCATCHER {
     label 'process_high'
 
     conda "bioconda::fusioncatcher=1.33"
-    container "docker.io/clinicalgenomics/fusioncatcher:1.33"
+    container "nf-core/fusioncatcher:1.33"
 
     input:
     tuple val(meta), path(fasta)
