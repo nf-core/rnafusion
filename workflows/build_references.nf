@@ -25,6 +25,10 @@ include { RRNATRANSCRIPTS }                 from '../modules/nf-core/rrnatranscr
 include { SAMTOOLS_FAIDX }                  from '../modules/nf-core/samtools/faidx/main'
 include { STAR_GENOMEGENERATE }             from '../modules/nf-core/star/genomegenerate/main'
 include { UCSC_GTFTOGENEPRED }              from '../modules/nf-core/ucsc/gtftogenepred/main'
+include { GATK4_CREATESEQUENCEDICTIONARY }  from '../modules/nf-core/gatk4/createsequencedictionary/main'
+include { GATK4_BEDTOINTERVALLIST }         from '../modules/nf-core/gatk4/bedtointervallist/main'
+include { SALMON_INDEX }                    from '../modules/nf-core/salmon/index/main'
+include { GFFREAD }                         from '../modules/nf-core/gffread/main'
 
 /*
 ========================================================================================
@@ -38,18 +42,19 @@ workflow BUILD_REFERENCES {
     fake_meta.id = "Homo_sapiens.${params.genome}.${params.ensembl_version}"
     ENSEMBL_DOWNLOAD( params.ensembl_version, params.genome, fake_meta )
     HGNC_DOWNLOAD()
-
-
     SAMTOOLS_FAIDX(ENSEMBL_DOWNLOAD.out.fasta, [[],[]])
     GATK4_CREATESEQUENCEDICTIONARY(ENSEMBL_DOWNLOAD.out.fasta)
+
 
     RRNATRANSCRIPTS(ENSEMBL_DOWNLOAD.out.gtf.map{ meta, gtf -> [ gtf ] })
     BEDOPS_CONVERT2BED(RRNATRANSCRIPTS.out.rrna_gtf.map{ it -> [[id:it.Name], it] })
     GATK4_BEDTOINTERVALLIST(BEDOPS_CONVERT2BED.out.bed, GATK4_CREATESEQUENCEDICTIONARY.out.dict)
 
+    GFFREAD(ENSEMBL_DOWNLOAD.out.gtf, ENSEMBL_DOWNLOAD.out.primary_assembly.map { meta, fasta -> [ fasta ] })
+    SALMON_INDEX(ENSEMBL_DOWNLOAD.out.primary_assembly.map{ meta, fasta -> [ fasta ] }, GFFREAD.out.gffread_fasta.map{ meta, gffread_fasta -> [ gffread_fasta ] })
 
     if (params.starindex || params.all || params.starfusion || params.arriba) {
-        STAR_GENOMEGENERATE( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.gtf )
+        STAR_GENOMEGENERATE( ENSEMBL_DOWNLOAD.out.primary_assembly, ENSEMBL_DOWNLOAD.out.gtf )
     }
 
     if (params.arriba || params.all) {
@@ -62,7 +67,7 @@ workflow BUILD_REFERENCES {
 
     if (params.starfusion || params.all) {
         if (params.starfusion_build){
-            STARFUSION_BUILD( ENSEMBL_DOWNLOAD.out.fasta, ENSEMBL_DOWNLOAD.out.chrgtf )
+            STARFUSION_BUILD( ENSEMBL_DOWNLOAD.out.primary_assembly, ENSEMBL_DOWNLOAD.out.gtf )
         } else {
             STARFUSION_DOWNLOAD()
         }
@@ -72,7 +77,6 @@ workflow BUILD_REFERENCES {
         UCSC_GTFTOGENEPRED(ENSEMBL_DOWNLOAD.out.chrgtf)
     } else {
         UCSC_GTFTOGENEPRED(STARFUSION_DOWNLOAD.out.chrgtf)
-    }
 
     if (params.fusionreport || params.all) {
         FUSIONREPORT_DOWNLOAD( params.cosmic_username, params.cosmic_passwd )
