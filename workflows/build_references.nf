@@ -25,8 +25,6 @@ include { RRNATRANSCRIPTS }                 from '../modules/nf-core/rrnatranscr
 include { SAMTOOLS_FAIDX }                  from '../modules/nf-core/samtools/faidx/main'
 include { STAR_GENOMEGENERATE }             from '../modules/nf-core/star/genomegenerate/main'
 include { UCSC_GTFTOGENEPRED }              from '../modules/nf-core/ucsc/gtftogenepred/main'
-include { GATK4_CREATESEQUENCEDICTIONARY }  from '../modules/nf-core/gatk4/createsequencedictionary/main'
-include { GATK4_BEDTOINTERVALLIST }         from '../modules/nf-core/gatk4/bedtointervallist/main'
 include { SALMON_INDEX }                    from '../modules/nf-core/salmon/index/main'
 include { GFFREAD }                         from '../modules/nf-core/gffread/main'
 
@@ -42,8 +40,8 @@ workflow BUILD_REFERENCES {
     fake_meta.id = "Homo_sapiens.${params.genome}.${params.ensembl_version}"
     ENSEMBL_DOWNLOAD( params.ensembl_version, params.genome, fake_meta )
     HGNC_DOWNLOAD()
-    SAMTOOLS_FAIDX(ENSEMBL_DOWNLOAD.out.fasta, [[],[]])
-    GATK4_CREATESEQUENCEDICTIONARY(ENSEMBL_DOWNLOAD.out.fasta)
+    SAMTOOLS_FAIDX(ENSEMBL_DOWNLOAD.out.primary_assembly, [[],[]])
+    GATK4_CREATESEQUENCEDICTIONARY(ENSEMBL_DOWNLOAD.out.primary_assembly)
 
 
     RRNATRANSCRIPTS(ENSEMBL_DOWNLOAD.out.gtf.map{ meta, gtf -> [ gtf ] })
@@ -77,7 +75,7 @@ workflow BUILD_REFERENCES {
         UCSC_GTFTOGENEPRED(ENSEMBL_DOWNLOAD.out.chrgtf)
     } else {
         UCSC_GTFTOGENEPRED(STARFUSION_DOWNLOAD.out.chrgtf)
-
+    }
     if (params.fusionreport || params.all) {
         FUSIONREPORT_DOWNLOAD( params.cosmic_username, params.cosmic_passwd )
     }
