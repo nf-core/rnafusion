@@ -76,8 +76,7 @@ First, build the references:
 
 ```bash
 nextflow run nf-core/rnafusion \
-   -profile <docker/singularity/.../institute> \
-   -profile test \
+   -profile test,<docker/singularity/.../institute> \
    --outdir <OUTDIR>\
    --build_references \
    -stub
@@ -87,8 +86,7 @@ Then perform the analysis:
 
 ```bash
 nextflow run nf-core/rnafusion \
-   -profile <docker/singularity/.../institute> \
-   -profile test \
+   -profile test,<docker/singularity/.../institute> \
    --outdir <OUTDIR>\
    -stub
 ```
