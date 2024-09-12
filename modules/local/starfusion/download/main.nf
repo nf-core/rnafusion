@@ -9,6 +9,7 @@ process STARFUSION_DOWNLOAD {
     path "ctat_genome_lib_build_dir/ref_annot.gtf", emit: chrgtf
 
 
+    TODO: move to my sourceforge
     script:
     """
     wget https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/__genome_libs_StarFv1.10/GRCh38_gencode_v37_CTAT_lib_Mar012021.plug-n-play.tar.gz --no-check-certificate

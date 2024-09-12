@@ -92,7 +92,7 @@ workflow BUILD_REFERENCES {
         ch_salmon_index = SALMON_INDEX.out.index
     } else {
         ch_salmon_index = Channel.fromPath(params.salmon_index)
-        }
+    }
 
 
     if ((params.starindex || params.all || params.starfusion || params.arriba) &&
@@ -105,17 +105,17 @@ workflow BUILD_REFERENCES {
     }
 
 
-//     if ((params.arriba || params.all) &&
-//             (!file(params.arriba_ref_blacklist).exists() || file(params.arriba_ref_blacklist).isEmpty() ||
-//             !file(params.arriba_ref_known_fusions).exists() || file(params.arriba_ref_known_fusions).isEmpty() ||
-//             !file(params.arriba_ref_protein_domains).exists() || file(params.arriba_ref_protein_domains).isEmpty())) {
-//         ARRIBA_DOWNLOAD()
-//         ch_arriba_ref_blacklist = Channel.fromPath(params.arriba_ref_blacklist).map { that -> [[id:that.Name], that] }
-//         ch_arriba_ref_known_fusions = Channel.fromPath(params.arriba_ref_known_fusions).map { that -> [[id:that.Name], that] }
-//         ch_arriba_ref_protein_domains = Channel.fromPath(params.arriba_ref_protein_domains).map { that -> [[id:that.Name], that] }
-//     } else {
-// // need to update the module to emit blacklist,knownfusions etc
-//     }
+    if ((params.arriba || params.all) &&
+            (!file(params.arriba_ref_blacklist).exists() || file(params.arriba_ref_blacklist).isEmpty() ||
+            !file(params.arriba_ref_known_fusions).exists() || file(params.arriba_ref_known_fusions).isEmpty() ||
+            !file(params.arriba_ref_protein_domains).exists() || file(params.arriba_ref_protein_domains).isEmpty())) {
+        ARRIBA_DOWNLOAD()
+        ch_arriba_ref_blacklist = Channel.fromPath(params.arriba_ref_blacklist).map { that -> [[id:that.Name], that] }
+        ch_arriba_ref_known_fusions = Channel.fromPath(params.arriba_ref_known_fusions).map { that -> [[id:that.Name], that] }
+        ch_arriba_ref_protein_domains = Channel.fromPath(params.arriba_ref_protein_domains).map { that -> [[id:that.Name], that] }
+    } else {
+// TODO need to update the module to emit blacklist,knownfusions etc
+    }
 
 
     if ((params.fusioncatcher || params.all) &&
@@ -163,9 +163,9 @@ workflow BUILD_REFERENCES {
     ch_refflat
     ch_salmon_index
     ch_starindex_ref
-    // ch_arriba_ref_blacklist
-    // ch_arriba_ref_known_fusions
-    // ch_arriba_ref_protein_domains
+    ch_arriba_ref_blacklist
+    ch_arriba_ref_known_fusions
+    ch_arriba_ref_protein_domains
     ch_fusioncatcher_ref
     ch_starfusion_ref
     ch_fusionreport_ref

@@ -107,24 +107,26 @@ workflow RNAFUSION {
 
 
     //
-    // MODULE: Run FastQC
+    // QC from FASTQ files
     //
-    // FASTQC (
-    //     ch_cat_fastq
-    // )
-    // ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
-    // ch_versions = ch_versions.mix(FASTQC.out.versions)
+    FASTQC (
+        ch_cat_fastq
+    )
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
+    ch_versions = ch_versions.mix(FASTQC.out.versions)
 
+    SALMON_QUANT( ch_reads_all, ch_salmon_index.map{ meta, index ->  index  }, ch_gtf.map{ meta, gtf ->  gtf  }, [], false, 'A')
+    ch_multiqc_files = ch_multiqc_files.mix(SALMON_QUANT.out.zip.collect{it[1]})
+    ch_versions = ch_versions.mix(SALMON_QUANT.out.versions)
 
+    //
+    // Trimming
+    //
     TRIM_WORKFLOW (
         ch_cat_fastq
     )
-    ch_reads_fusioncatcher = TRIM_WORKFLOW.out.ch_reads_fusioncatcher
-    ch_reads_all = TRIM_WORKFLOW.out.ch_reads_all
+    ch_reads = TRIM_WORKFLOW.out.trimmed_reads
     ch_versions = ch_versions.mix(TRIM_WORKFLOW.out.versions)
-
-
-//     SALMON_QUANT( ch_reads_all, ch_salmon_index.map{ meta, index ->  index  }, ch_gtf.map{ meta, gtf ->  gtf  }, [], false, 'A')
 
 
 //     //
