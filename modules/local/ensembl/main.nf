@@ -14,20 +14,23 @@ process ENSEMBL_DOWNLOAD {
 
     output:
     tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.gtf")                       , emit: gtf
-    tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.dna.primary_assembly.fa")   , emit: primary_assembly
-    tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.chr.gtf")                   , emit: chrgtf
+    tuple val(meta), path("Homo_sapiens.${genome}.${ensembl_version}.dna.primary_assembly.fa")   , emit: fasta
     path "versions.yml"                                                                          , emit: versions
 
 
     script:
     """
-    wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/gtf/homo_sapiens/Homo_sapiens.${params.genome}.${ensembl_version}.gtf.gz
-    wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/fasta/homo_sapiens/dna/Homo_sapiens.${params.genome}.dna.primary_assembly.fa.gz -O Homo_sapiens.${params.genome}.${ensembl_version}.dna.primary_assembly.fa.gz
-    wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/gtf/homo_sapiens/Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf.gz
+    if [ ${genome} == 'GRCh37' ]; then
+        wget ftp://ftp.ensembl.org/pub/grch37/release-${ensembl_version}/gtf/homo_sapiens/Homo_sapiens.${genome}.87.gtf.gz -O Homo_sapiens.${genome}.${ensembl_version}.gtf.gz
+        wget ftp://ftp.ensembl.org/pub/grch37/release-${ensembl_version}/fasta/homo_sapiens/dna/Homo_sapiens.${genome}.dna.primary_assembly.fa.gz -O Homo_sapiens.${genome}.${ensembl_version}.dna.primary_assembly.fa.gz
 
-    gunzip Homo_sapiens.${params.genome}.${ensembl_version}.gtf.gz
-    gunzip Homo_sapiens.${params.genome}.${ensembl_version}.dna.primary_assembly.fa.gz
-    gunzip Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf.gz
+
+    else:
+        wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/gtf/homo_sapiens/Homo_sapiens.${genome}.${ensembl_version}.gtf.gz
+        wget ftp://ftp.ensembl.org/pub/release-${ensembl_version}/fasta/homo_sapiens/dna/Homo_sapiens.${genome}.dna.primary_assembly.fa.gz -O Homo_sapiens.${genome}.${ensembl_version}.dna.primary_assembly.fa.gz
+
+    gunzip Homo_sapiens.${genome}.${ensembl_version}.gtf.gz
+    gunzip Homo_sapiens.${genome}.${ensembl_version}.dna.primary_assembly.fa.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -40,8 +43,7 @@ process ENSEMBL_DOWNLOAD {
     stub:
     """
     touch "Homo_sapiens.${genome}.${ensembl_version}.gtf"
-    touch "Homo_sapiens.${params.genome}.${ensembl_version}.dna.primary_assembly.fa"
-    touch "Homo_sapiens.${params.genome}.${ensembl_version}.chr.gtf"
+    touch "Homo_sapiens.${genome}.${ensembl_version}.dna.primary_assembly.fa"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

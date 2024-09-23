@@ -35,10 +35,15 @@ include { GFFREAD }                         from '../../modules/nf-core/gffread/
 */
 
 workflow BUILD_REFERENCES {
-
+    take:
+        genome                           // channel: [mandatory]  val(genome)
+        ensembl_version                  // channel: [mandatory]  val(ensembl_version)
 
     main:
     ch_versions = Channel.empty()
+
+
+
 
 
     if (!file(params.fasta).exists() || file(params.fasta).isEmpty() ||
