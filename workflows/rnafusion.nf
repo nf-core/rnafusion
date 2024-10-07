@@ -68,95 +68,95 @@ workflow RNAFUSION {
     BUILD_REFERENCES(params.genome, params.ensembl_version)
     ch_versions = ch_versions.mix(BUILD_REFERENCES.out.versions)
 
-    // Optional
-    ch_fasta                      = params.fasta                        ? Channel.fromPath(params.fasta).map {it -> [[id:it[0].simpleName], it]}.collect()
-                                                                        : BUILD_REFERENCES.out.fasta.map {it -> [[id:it[0].simpleName], it]}.collect()
-    ch_gtf                        = params.gtf                          ? Channel.fromPath(params.gtf).map {it -> [[id:it[0].simpleName], it]}.collect()
-                                                                        : downloads.gtf.map {it -> [[id:it[0].simpleName], it]}.collect()
-    ch_vep_cache_unprocessed      = params.vep_cache                    ? Channel.fromPath(params.vep_cache)
-                                                                        : Channel.empty().mix(downloads.vep_cache)
-    ch_vep_extra_files_unsplit    = params.vep_plugin_files             ? Channel.fromPath(params.vep_plugin_files)
-                                                                        : Channel.empty().mix(downloads.vep_plugin)
-    ch_fai                        = params.fai                          ? Channel.fromPath(params.fai).map {it -> [[id:it[0].simpleName], it]}.collect()
-                                                                        : Channel.empty()
-    ch_gene_panel_clinical_filter = params.gene_panel_clinical_filter   ? Channel.fromPath(params.gene_panel_clinical_filter).collect()
-                                                                        : Channel.empty()
-    ch_ref_drop_annot_file        = params.reference_drop_annot_file    ? Channel.fromPath(params.reference_drop_annot_file).collect()
-                                                                        : Channel.empty()
-    ch_ref_drop_count_file        = params.reference_drop_count_file    ? Channel.fromPath(params.reference_drop_count_file).collect()
-                                                                        : Channel.empty()
-    ch_ref_drop_splice_folder     = params.reference_drop_splice_folder ? Channel.fromPath(params.reference_drop_splice_folder).collect()
-                                                                        : Channel.empty()
-    ch_salmon_index               = params.salmon_index                 ? Channel.fromPath(params.salmon_index)
-                                                                        : Channel.empty()
-    ch_star_index                 = params.star_index                   ? Channel.fromPath(params.star_index).map {it -> [[id:it[0].simpleName], it]}.collect()
-                                                                        : Channel.empty()
-    ch_transcript_fasta           = params.transcript_fasta             ? Channel.fromPath(params.transcript_fasta)
-                                                                        : Channel.empty()
-    ch_sequence_dict              = params.sequence_dict                ? Channel.fromPath(params.sequence_dict).map{ it -> [[id:it[0].simpleName], it] }.collect()
-                                                                        : Channel.empty()
-    ch_subsample_bed              = params.subsample_bed                ? Channel.fromPath(params.subsample_bed).collect()
-                                                                        : Channel.empty()
+    // // Optional
+    // ch_fasta                      = params.fasta                        ? Channel.fromPath(params.fasta).map {it -> [[id:it[0].simpleName], it]}.collect()
+    //                                                                     : BUILD_REFERENCES.out.fasta.map {it -> [[id:it[0].simpleName], it]}.collect()
+    // ch_gtf                        = params.gtf                          ? Channel.fromPath(params.gtf).map {it -> [[id:it[0].simpleName], it]}.collect()
+    //                                                                     : downloads.gtf.map {it -> [[id:it[0].simpleName], it]}.collect()
+    // ch_vep_cache_unprocessed      = params.vep_cache                    ? Channel.fromPath(params.vep_cache)
+    //                                                                     : Channel.empty().mix(downloads.vep_cache)
+    // ch_vep_extra_files_unsplit    = params.vep_plugin_files             ? Channel.fromPath(params.vep_plugin_files)
+    //                                                                     : Channel.empty().mix(downloads.vep_plugin)
+    // ch_fai                        = params.fai                          ? Channel.fromPath(params.fai).map {it -> [[id:it[0].simpleName], it]}.collect()
+    //                                                                     : Channel.empty()
+    // ch_gene_panel_clinical_filter = params.gene_panel_clinical_filter   ? Channel.fromPath(params.gene_panel_clinical_filter).collect()
+    //                                                                     : Channel.empty()
+    // ch_ref_drop_annot_file        = params.reference_drop_annot_file    ? Channel.fromPath(params.reference_drop_annot_file).collect()
+    //                                                                     : Channel.empty()
+    // ch_ref_drop_count_file        = params.reference_drop_count_file    ? Channel.fromPath(params.reference_drop_count_file).collect()
+    //                                                                     : Channel.empty()
+    // ch_ref_drop_splice_folder     = params.reference_drop_splice_folder ? Channel.fromPath(params.reference_drop_splice_folder).collect()
+    //                                                                     : Channel.empty()
+    // ch_salmon_index               = params.salmon_index                 ? Channel.fromPath(params.salmon_index)
+    //                                                                     : Channel.empty()
+    // ch_star_index                 = params.star_index                   ? Channel.fromPath(params.star_index).map {it -> [[id:it[0].simpleName], it]}.collect()
+    //                                                                     : Channel.empty()
+    // ch_transcript_fasta           = params.transcript_fasta             ? Channel.fromPath(params.transcript_fasta)
+    //                                                                     : Channel.empty()
+    // ch_sequence_dict              = params.sequence_dict                ? Channel.fromPath(params.sequence_dict).map{ it -> [[id:it[0].simpleName], it] }.collect()
+    //                                                                     : Channel.empty()
+    // ch_subsample_bed              = params.subsample_bed                ? Channel.fromPath(params.subsample_bed).collect()
+    //                                                                     : Channel.empty()
 
     //
     // Create channel from input file provided through params.input
     //
-    Channel
-        .fromSamplesheet("input")
-        .map {
-            meta, fastq_1, fastq_2, strandedness ->
-                if (!fastq_2) {
-                    return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
-                } else {
-                    return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
-                }
-        }
-        .groupTuple()
-        .map {
-            validateInputSamplesheet(it)
-        }
-        .branch {
-            meta, fastqs ->
-                single  : fastqs.size() == 1
-                    return [ meta, fastqs.flatten() ]
-                multiple: fastqs.size() > 1
-                    return [ meta, fastqs.flatten() ]
-        }
-        .set { ch_fastq }
+    // Channel
+    //     .fromSamplesheet("input")
+    //     .map {
+    //         meta, fastq_1, fastq_2, strandedness ->
+    //             if (!fastq_2) {
+    //                 return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
+    //             } else {
+    //                 return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
+    //             }
+    //     }
+    //     .groupTuple()
+    //     .map {
+    //         validateInputSamplesheet(it)
+    //     }
+    //     .branch {
+    //         meta, fastqs ->
+    //             single  : fastqs.size() == 1
+    //                 return [ meta, fastqs.flatten() ]
+    //             multiple: fastqs.size() > 1
+    //                 return [ meta, fastqs.flatten() ]
+    //     }
+    //     .set { ch_fastq }
 
-    //
-    // MODULE: Concatenate FastQ files from same sample if required
-    //
-    CAT_FASTQ (
-        ch_fastq.multiple
-    )
-    .reads
-    .mix(ch_fastq.single)
-    .set { ch_cat_fastq }
-    ch_versions = ch_versions.mix(CAT_FASTQ.out.versions)
+    // //
+    // // MODULE: Concatenate FastQ files from same sample if required
+    // //
+    // CAT_FASTQ (
+    //     ch_fastq.multiple
+    // )
+    // .reads
+    // .mix(ch_fastq.single)
+    // .set { ch_cat_fastq }
+    // ch_versions = ch_versions.mix(CAT_FASTQ.out.versions)
 
 
-    //
-    // QC from FASTQ files
-    //
-    FASTQC (
-        ch_cat_fastq
-    )
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
-    ch_versions = ch_versions.mix(FASTQC.out.versions)
+    // //
+    // // QC from FASTQ files
+    // //
+    // FASTQC (
+    //     ch_cat_fastq
+    // )
+    // ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
+    // ch_versions = ch_versions.mix(FASTQC.out.versions)
 
-    SALMON_QUANT( ch_reads_all, ch_salmon_index.map{ meta, index ->  index  }, ch_gtf.map{ meta, gtf ->  gtf  }, [], false, 'A')
-    ch_multiqc_files = ch_multiqc_files.mix(SALMON_QUANT.out.zip.collect{it[1]})
-    ch_versions = ch_versions.mix(SALMON_QUANT.out.versions)
+    // SALMON_QUANT( ch_reads_all, BUILD_REFERENCES.out.ch_salmon_index.map{ meta, index ->  index  }, BUILD_REFERENCES.out.ch_gtf.map{ meta, gtf ->  gtf  }, [], false, 'A')
+    // ch_multiqc_files = ch_multiqc_files.mix(SALMON_QUANT.out.zip.collect{it[1]})
+    // ch_versions = ch_versions.mix(SALMON_QUANT.out.versions)
 
-    //
-    // Trimming
-    //
-    TRIM_WORKFLOW (
-        ch_cat_fastq
-    )
-    ch_reads = TRIM_WORKFLOW.out.trimmed_reads
-    ch_versions = ch_versions.mix(TRIM_WORKFLOW.out.versions)
+    // //
+    // // Trimming
+    // //
+    // TRIM_WORKFLOW (
+    //     ch_cat_fastq
+    // )
+    // ch_reads = TRIM_WORKFLOW.out.trimmed_reads
+    // ch_versions = ch_versions.mix(TRIM_WORKFLOW.out.versions)
 
 
 //     //

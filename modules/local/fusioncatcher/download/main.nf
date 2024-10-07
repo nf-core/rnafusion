@@ -20,9 +20,10 @@ process FUSIONCATCHER_DOWNLOAD {
 
     def args = task.ext.args ?: ''
     def args2 = task.ext.args2 ?: ''
-    def url =
+        // TODO: move to my sourceforge
+
+    // def url =
     """
-    TODO: move to my sourceforge
     wget $args http://sourceforge.net/projects/fusioncatcher/files/data/human_${ensembl_version}.tar.gz.aa
     wget $args http://sourceforge.net/projects/fusioncatcher/files/data/human_${ensembl_version}.tar.gz.ab
     wget $args http://sourceforge.net/projects/fusioncatcher/files/data/human_${ensembl_version}.tar.gz.ac

@@ -42,25 +42,26 @@ workflow BUILD_REFERENCES {
     main:
     ch_versions = Channel.empty()
 
-
-
-
-
     if (!file(params.fasta).exists() || file(params.fasta).isEmpty() ||
-            !file(params.chrgtf).exists() || file(params.chrgtf).isEmpty() ||
             !file(params.gtf).exists() || file(params.gtf).isEmpty()){
         fake_meta = [:]
         fake_meta.id = "Homo_sapiens.${params.genome}.${params.ensembl_version}"
         ENSEMBL_DOWNLOAD(params.ensembl_version, params.genome, fake_meta)
+        ch_versions = ENSEMBL_DOWNLOAD.out.versions
         ch_fasta = ENSEMBL_DOWNLOAD.out.primary_assembly
-        ch_chrgtf = ENSEMBL_DOWNLOAD.out.chrgtf
         ch_gtf = ENSEMBL_DOWNLOAD.out.gtf
     } else {
         ch_fasta = Channel.fromPath(params.fasta).map { that -> [[id:that.Name], that] }
-        ch_chrgtf = Channel.fromPath(params.chrgtf).map { that -> [[id:that.Name], that] }
         ch_gtf = Channel.fromPath(params.gtf).map { that -> [[id:that.Name], that] }
     }
 
+    if (!file(params.fai).exists() || file(params.fai).isEmpty()){
+        SAMTOOLS_FAIDX(ch_fasta, [[],[]]).fai
+        ch_versions = SAMTOOLS_FAIDX.out.versions
+        ch_fai = SAMTOOLS_FAIDX.out.fai
+    } else {
+        ch_fai = Channel.fromPath(params.fai).map { that -> [[id:that.Name], that] }
+    }
 
     if ((!file(params.hgnc_ref).exists() || file(params.hgnc_ref).isEmpty() ||
             !file(params.hgnc_date).exists() || file(params.hgnc_date).isEmpty()) && !params.skip_vcf){
@@ -72,10 +73,6 @@ workflow BUILD_REFERENCES {
         ch_hgnc_date = Channel.fromPath(params.hgnc_date).map { that -> [[id:that.Name], that] }
     }
 
-
-    ch_fai = (!file(params.fai).exists() || file(params.fai).isEmpty()) ? SAMTOOLS_FAIDX(ch_fasta, [[],[]]).fai : Channel.fromPath(params.fai).map { that -> [[id:that.Name], that] }
-
-
     if (!file(params.rrna_intervals).exists() || file(params.rrna_intervals).isEmpty()){
         GATK4_CREATESEQUENCEDICTIONARY(ch_fasta)
         RRNA_TRANSCRIPTS(ch_gtf)
@@ -86,9 +83,12 @@ workflow BUILD_REFERENCES {
         ch_rrna_interval = Channel.fromPath(params.rrna_intervals).map { that -> [[id:that.Name], that] }
     }
 
-
-    ch_refflat = (!file(params.refflat).exists() || file(params.refflat).isEmpty()) ? GTF_TO_REFFLAT.refflat : Channel.fromPath(params.refflat)
-
+    if (!file(params.refflat).exists() || file(params.refflat).isEmpty()){
+        GTF_TO_REFFLAT(ch_gtf)
+        ch_refflat = GTF_TO_REFFLAT.out.refflat
+    } else {
+        ch_refflat = Channel.fromPath(params.refflat).map { that -> [[id:that.Name], that] }
+    }
 
     if (!file(params.salmon_index).exists() || file(params.salmon_index).isEmpty() ||
         !file(params.salmon_index_stub_check).exists() || file(params.salmon_index_stub_check).isEmpty()){ // add condition for qc
@@ -99,7 +99,6 @@ workflow BUILD_REFERENCES {
         ch_salmon_index = Channel.fromPath(params.salmon_index)
     }
 
-
     if ((params.starindex || params.all || params.starfusion || params.arriba) &&
             (!file(params.starindex_ref).exists() || file(params.starindex_ref).isEmpty() ||
             !file(params.starindex_ref_stub_check).exists() || file(params.starindex_ref_stub_check).isEmpty() )) {
@@ -109,18 +108,17 @@ workflow BUILD_REFERENCES {
         ch_starindex_ref = Channel.fromPath(params.starindex_ref).map { that -> [[id:that.Name], that] }
     }
 
-
-    if ((params.arriba || params.all) &&
-            (!file(params.arriba_ref_blacklist).exists() || file(params.arriba_ref_blacklist).isEmpty() ||
-            !file(params.arriba_ref_known_fusions).exists() || file(params.arriba_ref_known_fusions).isEmpty() ||
-            !file(params.arriba_ref_protein_domains).exists() || file(params.arriba_ref_protein_domains).isEmpty())) {
-        ARRIBA_DOWNLOAD()
-        ch_arriba_ref_blacklist = Channel.fromPath(params.arriba_ref_blacklist).map { that -> [[id:that.Name], that] }
-        ch_arriba_ref_known_fusions = Channel.fromPath(params.arriba_ref_known_fusions).map { that -> [[id:that.Name], that] }
-        ch_arriba_ref_protein_domains = Channel.fromPath(params.arriba_ref_protein_domains).map { that -> [[id:that.Name], that] }
-    } else {
-// TODO need to update the module to emit blacklist,knownfusions etc
-    }
+//     if ((params.arriba || params.all) &&
+//             (!file(params.arriba_ref_blacklist).exists() || file(params.arriba_ref_blacklist).isEmpty() ||
+//             !file(params.arriba_ref_known_fusions).exists() || file(params.arriba_ref_known_fusions).isEmpty() ||
+//             !file(params.arriba_ref_protein_domains).exists() || file(params.arriba_ref_protein_domains).isEmpty())) {
+//         ARRIBA_DOWNLOAD()
+//         ch_arriba_ref_blacklist = Channel.fromPath(params.arriba_ref_blacklist).map { that -> [[id:that.Name], that] }
+//         ch_arriba_ref_known_fusions = Channel.fromPath(params.arriba_ref_known_fusions).map { that -> [[id:that.Name], that] }
+//         ch_arriba_ref_protein_domains = Channel.fromPath(params.arriba_ref_protein_domains).map { that -> [[id:that.Name], that] }
+//     } else {
+// // TODO need to update the module to emit blacklist,knownfusions etc
+//     }
 
 
     if ((params.fusioncatcher || params.all) &&
@@ -159,21 +157,22 @@ workflow BUILD_REFERENCES {
 
     emit:
     ch_fasta
-    ch_chrgtf
     ch_gtf
+    ch_fai
+
     ch_hgnc_ref
     ch_hgnc_date
-    ch_fai
     ch_rrna_interval
     ch_refflat
     ch_salmon_index
     ch_starindex_ref
-    ch_arriba_ref_blacklist
-    ch_arriba_ref_known_fusions
-    ch_arriba_ref_protein_domains
+    // ch_arriba_ref_blacklist
+    // ch_arriba_ref_known_fusions
+    // ch_arriba_ref_protein_domains
     ch_fusioncatcher_ref
     ch_starfusion_ref
     ch_fusionreport_ref
+    versions        = ch_versions
 }
 
 /*
