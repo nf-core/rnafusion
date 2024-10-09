@@ -1,0 +1,56 @@
+name: ucsc_gtftogenepred
+description: compute average score of bigwig over bed file
+keywords:
+  - gtf
+  - genepred
+  - refflat
+  - ucsc
+  - gtftogenepred
+tools:
+  - ucsc:
+      description: Convert GTF files to GenePred format
+      homepage: http://hgdownload.cse.ucsc.edu/admin/exe/
+      licence: ["varies; see http://genome.ucsc.edu/license"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - gtf:
+        type: file
+        description: GTF file
+        pattern: "*.{gtf}"
+output:
+  - genepred:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.genepred":
+          type: file
+          description: genepred file
+          pattern: "*.{genepred}"
+  - refflat:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.refflat":
+          type: file
+          description: refflat file
+          pattern: "*.{refflat}"
+  - versions:
+      - versions.yml:
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+  - "@BarryDigby"
+  - "@anoronh4"
+maintainers:
+  - "@BarryDigby"
+  - "@anoronh4"
