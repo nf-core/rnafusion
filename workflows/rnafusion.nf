@@ -80,7 +80,7 @@ workflow RNAFUSION {
     // Create channel from input file provided through params.input
     //
     Channel
-        .fromSamplesheet("input")
+        .samplesheetToList("input")
         .map {
             meta, fastq_1, fastq_2, strandedness ->
                 if (!fastq_2) {

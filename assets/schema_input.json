@@ -29,9 +29,9 @@
             },
             "strandedness": {
                 "type": "string",
-                "format": "string",
                 "exists": true,
-                "pattern": "forward|reverse|unstranded|unknown",
+                "default": "forward",
+                "enum": ["forward", "reverse", "unstranded", "unknown"],
                 "errorMessage": "Strandedness has to be forward, reverse, unstranded or unknown"
             }
         },
