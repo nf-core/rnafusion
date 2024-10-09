@@ -41,7 +41,7 @@ jobs:
 
       - name: Disk space cleanup
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
-        
+
       - name: Dry test build
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker -stub --build_references \
@@ -49,7 +49,7 @@ jobs:
           --genomes_base /home/runner/work/rnafusion/rnafusion/results/references \
           --cosmic_username ${{ secrets.COSMIC_USERNAME }} --cosmic_passwd ${{ secrets.COSMIC_PASSWD }}
         if: "${{ github.base_ref == 'master' }}"
-        
+
       - name: Dry test run
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker -stub \
