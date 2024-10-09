@@ -230,6 +230,24 @@
                 }
             }
         },
+        "skip_steps": {
+            "title": "Skipping steps options",
+            "type": "object",
+            "fa_icon": "fas fa-cut",
+            "description": "Options to skip steps.",
+            "properties": {
+                "skip_vis": {
+                    "type": "boolean",
+                    "description": "Skip visualisation steps, default: false",
+                    "fa_icon": "fas fa-cut"
+                },
+                "skip_qc": {
+                    "type": "integer",
+                    "description": "Skip QC steps, default: false",
+                    "fa_icon": "fas fa-cut"
+                }
+            }
+        },
         "read_trimming_options": {
             "title": "Read trimming options",
             "type": "object",
@@ -501,19 +519,13 @@
             "$ref": "#/$defs/input_output_options"
         },
         {
-            "$ref": "#/definitions/skip_steps"
+            "$ref": "#/$defs/skip_steps"
         },
         {
-            "$ref": "#/definitions/input_output_options"
+            "$ref": "#/$defs/read_trimming_options"
         },
         {
-            "$ref": "#/definitions/read_trimming_options"
-        },
-        {
-            "$ref": "#/definitions/compression_options"
-        },
-        {
-            "$ref": "#/definitions/reference_genome_options"
+            "$ref": "#/$defs/compression_options"
         },
         {
             "$ref": "#/$defs/reference_genome_options"
