@@ -2,12 +2,11 @@ process RRNA_TRANSCRIPTS {
     tag "$meta.id"
     label 'process_single'
 
-    conda "conda-forge::python=3.8.3"
+    conda "conda-forge::python=3.12.2"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/python:3.9--1' :
-        'quay.io/biocontainers/python:3.9--1' }"
-
+        'https://depot.galaxyproject.org/singularity/python:3.12' :
+        'quay.io/biocontainers/python:3.12' }"
 
     input:
         tuple val(meta), path(gtf)

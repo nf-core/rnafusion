@@ -208,7 +208,6 @@ workflow RNAFUSION {
     QC_WORKFLOW (
         ch_reads_all,
         STARFUSION_WORKFLOW.out.ch_bam_sorted,
-        STARFUSION_WORKFLOW.out.ch_bam_sorted_indexed,
         ch_chrgtf,
         ch_refflat,
         ch_fasta,
@@ -275,7 +274,9 @@ workflow RNAFUSION {
         ch_multiqc_files.collect(),
         ch_multiqc_config.toList(),
         ch_multiqc_custom_config.toList(),
-        ch_multiqc_logo.toList()
+        ch_multiqc_logo.toList(),
+        [],
+        []
     )
 
     emit:

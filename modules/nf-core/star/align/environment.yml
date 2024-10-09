@@ -1,9 +1,9 @@
-name: star_align
 channels:
   - conda-forge
   - bioconda
-  - defaults
+
 dependencies:
+  - bioconda::htslib=1.18
+  - bioconda::samtools=1.18
   - bioconda::star=2.7.10a
-  - bioconda::samtools=1.16.1
   - conda-forge::gawk=5.1.0
