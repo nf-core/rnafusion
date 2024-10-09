@@ -48,7 +48,7 @@ workflow NFCORE_RNAFUSION {
     //
     // WORKFLOW: Run pipeline
     //
-    
+
     if (params.build_references) {
         BUILD_REFERENCES ()
     } else {
@@ -56,7 +56,7 @@ workflow NFCORE_RNAFUSION {
         emit:
         multiqc_report = RNAFUSION.out.multiqc_report // channel: /path/to/multiqc_report.html
     }
-    
+
 }
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -78,7 +78,7 @@ workflow {
         params.outdir,
         params.input
     )
-    
+
     //
     // WORKFLOW: Run main workflow
     //
