@@ -28,7 +28,6 @@ process FUSIONREPORT_DOWNLOAD {
     """
     touch cosmic.db
     touch fusiongdb2.db
-    touch fusiongdb.db
     touch mitelman.db
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
