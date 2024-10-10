@@ -43,18 +43,18 @@ include { RNAFUSION               } from './workflows/rnafusion'
 //
 workflow NFCORE_RNAFUSION {
 
+    take:
+        samplesheet
+
     main:
 
     //
     // WORKFLOW: Run pipeline
     //
-
     if (params.build_references) {
         BUILD_REFERENCES ()
     } else {
         RNAFUSION(samplesheet)
-        emit:
-        multiqc_report = RNAFUSION.out.multiqc_report // channel: /path/to/multiqc_report.html
     }
 
 }

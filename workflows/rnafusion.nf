@@ -79,8 +79,7 @@ workflow RNAFUSION {
     //
     // Create channel from input file provided through params.input
     //
-    Channel
-        .samplesheetToList("input")
+    ch_samplesheet
         .map {
             meta, fastq_1, fastq_2, strandedness ->
                 if (!fastq_2) {
@@ -278,7 +277,8 @@ workflow RNAFUSION {
         []
     )
 
-    emit:multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
+    emit:
+    multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
     versions       = ch_versions                 // channel: [ path(versions.yml) ]
 
 }
