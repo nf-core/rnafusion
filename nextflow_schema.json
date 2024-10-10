@@ -241,7 +241,7 @@
                     "fa_icon": "fas fa-cut"
                 },
                 "skip_qc": {
-                    "type": "integer",
+                    "type": "boolean",
                     "description": "Skip QC steps, default: false",
                     "fa_icon": "fas fa-cut"
                 }
