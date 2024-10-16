@@ -3,6 +3,8 @@ lint:
   files_unchanged:
     - .github/CONTRIBUTING.md
     - .github/PULL_REQUEST_TEMPLATE.md
+    - conf/igenomes.config
+    - conf/igenomes_ignored.config
 nf_core_version: 3.0.2
 org_path: null
 repository_type: pipeline
