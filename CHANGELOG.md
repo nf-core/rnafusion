@@ -3,6 +3,23 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v4.0.0dev - [date]
+
+### Added
+
+- Normalized gene expression calculated [#488](https://github.com/nf-core/rnafusion/pull/488)
+- Primary assembly now used as main reference genome FASTA file, as recommended by the STAR manual [#488](https://github.com/nf-core/rnafusion/pull/488)
+- Use of only ensembl GTF file, not chr.gtf file as GTF reference file [#488](https://github.com/nf-core/rnafusion/pull/488)
+
+### Changed
+
+### Fixed
+
+- Fixed some Nextflow run-commands in the docs [#491](https://github.com/nf-core/rnafusion/pull/491)
+- Fixed bug when trying to build indices behind a proxy and wget was unable to download arriba indices [#495](https://github.com/nf-core/rnafusion/issues/495)
+
+### Removed
+
 ## v3.0.2 - [2024-04-10]
 
 ### Added
@@ -14,12 +31,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- fix bug when using parameter "whitelist" [#466](https://github.com/nf-core/rnafusion/pull/466)
-- fix VCF_COLLECT handling when a tool is absent from FUSIONREPORT report [#458](https://github.com/nf-core/rnafusion/pull/458)
-- fix VCF_COLLECT when fusioninspector output is empty but fusionreport is not [#465](https://github.com/nf-core/rnafusion/pull/465)
-- fix VCF_COLLECT bug [#481](https://github.com/nf-core/rnafusion/pull/481)
-- fix conda package for starfusion/detect[#482](https://github.com/nf-core/rnafusion/pull/482)
-- fix logical gate so when stringtie should run but not starfusion, starfusion will not run[#482](https://github.com/nf-core/rnafusion/pull/482)
+- Fix bug when using parameter "whitelist" [#466](https://github.com/nf-core/rnafusion/pull/466)
+- Fix VCF_COLLECT handling when a tool is absent from FUSIONREPORT report [#458](https://github.com/nf-core/rnafusion/pull/458)
+- Fix VCF_COLLECT when fusioninspector output is empty but fusionreport is not [#465](https://github.com/nf-core/rnafusion/pull/465)
+- Fix VCF_COLLECT bug [#481](https://github.com/nf-core/rnafusion/pull/481)
+- Fix conda package for starfusion/detect[#482](https://github.com/nf-core/rnafusion/pull/482)
+- Fix logical gate so when stringtie should run but not starfusion, starfusion will not run[#482](https://github.com/nf-core/rnafusion/pull/482)
 
 ### Removed
 
@@ -29,7 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- python3 explicit in vcf_collect [#452](https://github.com/nf-core/rnafusion/pull/452)
+- Python3 explicit in vcf_collect [#452](https://github.com/nf-core/rnafusion/pull/452)
 
 ### Fixed
 

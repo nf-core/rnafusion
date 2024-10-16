@@ -7,7 +7,7 @@ include { STARFUSION }                                           from '../../mod
 workflow STARFUSION_WORKFLOW {
     take:
         reads
-        ch_chrgtf
+        ch_gtf
         ch_starindex_ref
         ch_fasta
 
@@ -23,7 +23,7 @@ workflow STARFUSION_WORKFLOW {
                 ch_starfusion_fusions = reads.combine(Channel.value(file(params.starfusion_fusions, checkIfExists:true)))
                                         .map { meta, reads, fusions -> [ meta, fusions ] }
             } else {
-                STAR_FOR_STARFUSION( reads, ch_starindex_ref, ch_chrgtf, params.star_ignore_sjdbgtf, '', params.seq_center ?: '')
+                STAR_FOR_STARFUSION( reads, ch_starindex_ref, ch_gtf, params.star_ignore_sjdbgtf, '', params.seq_center ?: '')
                 ch_versions = ch_versions.mix(STAR_FOR_STARFUSION.out.versions)
                 ch_align = STAR_FOR_STARFUSION.out.bam_sorted
 

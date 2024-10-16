@@ -5,14 +5,14 @@ include { STRINGTIE_MERGE }        from '../../modules/nf-core/stringtie/merge/m
 workflow STRINGTIE_WORKFLOW {
     take:
         bam_sorted
-        ch_chrgtf
+        ch_gtf
 
     main:
         ch_versions = Channel.empty()
         ch_stringtie_gtf = Channel.empty()
 
         if ((params.stringtie || params.all) && !params.fusioninspector_only) {
-            STRINGTIE_STRINGTIE(bam_sorted, ch_chrgtf.map { meta, gtf -> [ gtf ]})
+            STRINGTIE_STRINGTIE(bam_sorted, ch_gtf.map { meta, gtf -> [ gtf ]})
             ch_versions = ch_versions.mix(STRINGTIE_STRINGTIE.out.versions)
 
             STRINGTIE_STRINGTIE
@@ -23,7 +23,7 @@ workflow STRINGTIE_WORKFLOW {
             ch_versions = ch_versions.mix(STRINGTIE_STRINGTIE.out.versions)
 
 
-            STRINGTIE_MERGE (stringtie_gtf, ch_chrgtf.map { meta, gtf -> [ gtf ]})
+            STRINGTIE_MERGE (stringtie_gtf, ch_gtf.map { meta, gtf -> [ gtf ]})
             ch_versions = ch_versions.mix(STRINGTIE_MERGE.out.versions)
             ch_stringtie_gtf = STRINGTIE_MERGE.out.gtf
         }

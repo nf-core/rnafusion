@@ -12,7 +12,12 @@
                     },
                     "arriba": {
                         "branch": "master",
-                        "git_sha": "ea9e2892a9d12e8769402f12096219942bcf6536",
+                        "git_sha": "bbaeb3a3149def237b9d0acb9ab749ae98088e29",
+                        "installed_by": ["modules"]
+                    },
+                    "arriba/download": {
+                        "branch": "master",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
                         "installed_by": ["modules"]
                     },
                     "cat/cat": {
@@ -22,7 +27,7 @@
                     },
                     "cat/fastq": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "02fd5bd7275abad27aad32d5c852e0a9b1b98882",
                         "installed_by": ["modules"]
                     },
                     "fastp": {
@@ -32,7 +37,7 @@
                     },
                     "fastqc": {
                         "branch": "master",
-                        "git_sha": "f4ae1d942bd50c5c0b9bd2de1393ce38315ba57c",
+                        "git_sha": "285a50500f9e02578d90b3ce6382ea3c30216acd",
                         "installed_by": ["modules"]
                     },
                     "gatk4/bedtointervallist": {
@@ -50,6 +55,16 @@
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": ["modules"]
                     },
+                    "gffread": {
+                        "branch": "master",
+                        "git_sha": "6c996d7fbe0816dcbb68ce587ad5f873313682a1",
+                        "installed_by": ["modules"]
+                    },
+                    "gunzip": {
+                        "branch": "master",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "installed_by": ["modules"]
+                    },
                     "multiqc": {
                         "branch": "master",
                         "git_sha": "b7ebe95761cd389603f9cc0e0dc384c0f663815a",
@@ -63,6 +78,16 @@
                     "picard/collectwgsmetrics": {
                         "branch": "master",
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "installed_by": ["modules"]
+                    },
+                    "salmon/index": {
+                        "branch": "master",
+                        "git_sha": "cb6b2b94fc40dea58f0b1e3dd095f3dd24f2ac8a",
+                        "installed_by": ["modules"]
+                    },
+                    "salmon/quant": {
+                        "branch": "master",
+                        "git_sha": "cb6b2b94fc40dea58f0b1e3dd095f3dd24f2ac8a",
                         "installed_by": ["modules"]
                     },
                     "samtools/faidx": {
@@ -97,12 +122,12 @@
                     },
                     "stringtie/merge": {
                         "branch": "master",
-                        "git_sha": "b0dcb44b018d9b2bcb35b1abb7bcd34061bc5a6d",
+                        "git_sha": "5756b12b1fab0c07f05b9ad2d5d5c262b1a2c1ef",
                         "installed_by": ["modules"]
                     },
                     "stringtie/stringtie": {
                         "branch": "master",
-                        "git_sha": "b0dcb44b018d9b2bcb35b1abb7bcd34061bc5a6d",
+                        "git_sha": "b1b959609bda44341120aed1766329909f54b8d0",
                         "installed_by": ["modules"]
                     }
                 }
@@ -116,7 +141,7 @@
                     },
                     "utils_nfcore_pipeline": {
                         "branch": "master",
-                        "git_sha": "5caf7640a9ef1d18d765d55339be751bb0969dfa",
+                        "git_sha": "92de218a329bfc9a9033116eb5f65fd270e72ba3",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nfvalidation_plugin": {

@@ -23,6 +23,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [Arriba visualisation](#arriba-visualisation) - Arriba visualisation report for FusionInspector fusions
 - [Picard](#picard) - Collect QC metrics
 - [FastQC](#fastqc) - Raw read quality control
+- [Salmon](#salmon) - Normalized gene expression calculation
 - [MultiQC](#multiqc) - Aggregate reports describing QC results from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
@@ -233,6 +234,18 @@ score = 0.5 * \sum_{tool}^{tools} f(fusion, tool)*w(tool) + 0.5 * \sum_{db}^{dbs
 $$
 
 All tools have the same weight.
+
+### Salmon
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `salmon`
+  - `<sample>`
+
+</details>
+
+Folder containing the quantification results
 
 ### Kallisto
 
