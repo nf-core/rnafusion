@@ -1,0 +1,39 @@
+name: vcf_collect
+description: vcf_collect
+keywords:
+  - sort
+tools:
+  - fusionreport:
+      description: Converts RNA fusion files to SV VCF and collects statistics and metrics in a VCF file.
+      homepage: Adapted from https://github.com/J35P312/MegaFusion
+      documentation: https://github.com/J35P312/MegaFusion
+      doi: ""
+      licence: [""]
+
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - tsv:
+      type: path
+      description: Path to FusionInspector tsv output
+      pattern: "*"
+  - report:
+      type: path
+      description: Path to fusionreport report
+      pattern: "*.fusions.tsv"
+
+output:
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+  - vcf:
+      type: file
+      description: File containing the summary of all fusions as compressed vcf file
+      pattern: "*.vcf.gz"
+
+authors:
+  - "@rannick"

@@ -2,6 +2,8 @@
 // Subworkflow with functionality specific to the nf-core/rnafusion pipeline
 //
 
+import groovy.json.JsonSlurper
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS
@@ -112,7 +114,6 @@ workflow PIPELINE_COMPLETION {
     outdir          //    path: Path to output directory where results will be published
     monochrome_logs // boolean: Disable ANSI colour codes in log output
     hook_url        //  string: hook URL for notifications
-    multiqc_report  //  string: Path to MultiQC report
 
     main:
     summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
@@ -149,6 +150,7 @@ workflow PIPELINE_COMPLETION {
     FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+
 //
 // Check and validate pipeline parameters
 //
@@ -162,6 +164,12 @@ def validateInputParameters() {
 def validateInputSamplesheet(input) {
     def (metas, fastqs) = input[1..2]
 
+    // Check that multiple runs of the same sample are of the same strandedness
+    def strandedness_ok = metas.collect{ it.strandedness }.unique().size == 1
+    if (!strandedness_ok) {
+        error("Please check input samplesheet -> Multiple runs of a sample must have the same strandedness!: ${metas[0].id}")
+    }
+
     // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
     def endedness_ok = metas.collect{ meta -> meta.single_end }.unique().size == 1
     if (!endedness_ok) {
@@ -170,6 +178,7 @@ def validateInputSamplesheet(input) {
 
     return [ metas[0], fastqs ]
 }
+
 //
 // Get attribute from genome config file e.g. fasta
 //
@@ -199,7 +208,6 @@ def genomeExistsError() {
 // Generate methods description for MultiQC
 //
 def toolCitationText() {
-    // TODO nf-core: Optionally add in-text citation tools to this list.
     // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "Tool (Foo et al. 2023)" : "",
     // Uncomment function in methodsDescriptionText to render in MultiQC report
     def citation_text = [
@@ -213,7 +221,6 @@ def toolCitationText() {
 }
 
 def toolBibliographyText() {
-    // TODO nf-core: Optionally add bibliographic entries to this list.
     // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "<li>Author (2023) Pub name, Journal, DOI</li>" : "",
     // Uncomment function in methodsDescriptionText to render in MultiQC report
     def reference_text = [
@@ -248,10 +255,9 @@ def methodsDescriptionText(mqc_methods_yaml) {
     meta["tool_citations"] = ""
     meta["tool_bibliography"] = ""
 
-    // TODO nf-core: Only uncomment below if logic in toolCitationText/toolBibliographyText has been filled!
+    // nf-core: Only uncomment below if logic in toolCitationText/toolBibliographyText has been filled!
     // meta["tool_citations"] = toolCitationText().replaceAll(", \\.", ".").replaceAll("\\. \\.", ".").replaceAll(", \\.", ".")
     // meta["tool_bibliography"] = toolBibliographyText()
-
 
     def methods_text = mqc_methods_yaml.text
 
@@ -261,3 +267,24 @@ def methodsDescriptionText(mqc_methods_yaml) {
     return description_html.toString()
 }
 
+//
+// Function to generate an error if contigs in genome fasta file > 512 Mbp
+//
+def checkMaxContigSize(fai_file) {
+    def max_size = 512000000
+    fai_file.eachLine { line ->
+        def lspl  = line.split('\t')
+        def chrom = lspl[0]
+        def size  = lspl[1]
+        if (size.toInteger() > max_size) {
+            def error_string = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
+                "  Contig longer than ${max_size}bp found in reference genome!\n\n" +
+                "  ${chrom}: ${size}\n\n" +
+                "  Provide the '--bam_csi_index' parameter to use a CSI instead of BAI index.\n\n" +
+                "  Please see:\n" +
+                "  https://github.com/nf-core/rnaseq/issues/744\n" +
+                "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+            error(error_string)
+        }
+    }
+}
