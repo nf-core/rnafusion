@@ -65,7 +65,7 @@ workflow RNAFUSION {
     // Create references if necessary
     //
 
-    BUILD_REFERENCES(params.genome, params.ensembl_version)
+    BUILD_REFERENCES(params.genome, params.genome_gencode_version)
     ch_versions = ch_versions.mix(BUILD_REFERENCES.out.versions)
 
     // // Optional
@@ -177,7 +177,7 @@ workflow RNAFUSION {
 // //Run STAR fusion
 //     STARFUSION_WORKFLOW (
 //         ch_reads_all,
-//         ch_chrgtf,
+//         ch_gtf,
 //         ch_starindex_ref,
 //         ch_fasta
 //     )
@@ -194,7 +194,7 @@ workflow RNAFUSION {
 // //Run stringtie
 //     STRINGTIE_WORKFLOW (
 //         STARFUSION_WORKFLOW.out.ch_bam_sorted,
-//         ch_chrgtf
+//         ch_gtf
 //     )
 //     ch_versions = ch_versions.mix(STRINGTIE_WORKFLOW.out.versions)
 
@@ -218,7 +218,7 @@ workflow RNAFUSION {
 //         FUSIONREPORT_WORKFLOW.out.report,
 //         FUSIONREPORT_WORKFLOW.out.csv,
 //         STARFUSION_WORKFLOW.out.ch_bam_sorted_indexed,
-//         ch_chrgtf,
+//         ch_gtf,
 //         ch_arriba_ref_protein_domains,
 //         ch_arriba_ref_cytobands,
 //         ch_hgnc_ref,
@@ -232,7 +232,7 @@ workflow RNAFUSION {
 //         ch_reads_all,
 //         STARFUSION_WORKFLOW.out.ch_bam_sorted,
 //         STARFUSION_WORKFLOW.out.ch_bam_sorted_indexed,
-//         ch_chrgtf,
+//         ch_gtf,
 //         ch_refflat,
 //         ch_fasta,
 //         ch_fai,

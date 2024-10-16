@@ -62,11 +62,6 @@
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
                 },
-                "build_references": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Specifies which analysis type for the pipeline - either build references or analyse data"
-                },
                 "cosmic_username": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
@@ -82,7 +77,7 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to reference folder"
                 },
-                "ensembl_version": {
+                "genome_gencode_version": {
                     "type": "integer",
                     "fa_icon": "far fa-file-code",
                     "description": "ensembl version",
@@ -134,10 +129,10 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Download references instead of building them (for fusioncatcher and starfusion)"
                 },
-                "ensembl_ref": {
+                "gencode_ref": {
                     "type": "string",
                     "fa_icon": "far fa-file-code",
-                    "description": "Path to ensembl references"
+                    "description": "Path to gencode references"
                 },
                 "fusioncatcher": {
                     "type": "boolean",
@@ -335,14 +330,6 @@
                     "fa_icon": "far fa-file-code"
                 },
                 "gtf": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/plain",
-                    "pattern": "^\\S+\\.gtf?(\\.gz)?$",
-                    "description": "Path to GTF genome file.",
-                    "fa_icon": "far fa-file-code"
-                },
-                "chrgtf": {
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/plain",

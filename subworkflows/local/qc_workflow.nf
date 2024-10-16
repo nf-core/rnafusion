@@ -11,7 +11,7 @@ workflow QC_WORKFLOW {
         ch_reads_all
         ch_bam_sorted
         ch_bam_sorted_indexed
-        ch_chrgtf
+        ch_gtf
         ch_refflat
         ch_fasta
         ch_fai

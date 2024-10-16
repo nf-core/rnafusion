@@ -5,7 +5,7 @@
 */
 
 include { ARRIBA_DOWNLOAD }                 from '../../modules/local/arriba/download/main'
-include { ENSEMBL_DOWNLOAD }                from '../../modules/local/ensembl/main'
+include { GENCODE_DOWNLOAD }                from '../../modules/local/gencode_download/main'
 include { FUSIONCATCHER_DOWNLOAD }          from '../../modules/local/fusioncatcher/download/main'
 include { FUSIONCATCHER_BUILD }             from '../../modules/local/fusioncatcher/build/main'
 include { FUSIONREPORT_DOWNLOAD }           from '../../modules/local/fusionreport/download/main'
@@ -37,26 +37,24 @@ include { GFFREAD }                         from '../../modules/nf-core/gffread/
 workflow BUILD_REFERENCES {
     take:
         genome                           // channel: [mandatory]  val(genome)
-        ensembl_version                  // channel: [mandatory]  val(ensembl_version)
+        genome_gencode_version           // channel: [mandatory]  val(genome_gencode_version)
 
     main:
     ch_versions = Channel.empty()
 
     if (!file(params.fasta).exists() || file(params.fasta).isEmpty() ||
             !file(params.gtf).exists() || file(params.gtf).isEmpty()){
-        fake_meta = [:]
-        fake_meta.id = "Homo_sapiens.${params.genome}.${params.ensembl_version}"
-        ENSEMBL_DOWNLOAD(params.ensembl_version, params.genome, fake_meta)
-        ch_versions = ENSEMBL_DOWNLOAD.out.versions
-        ch_fasta = ENSEMBL_DOWNLOAD.out.primary_assembly
-        ch_gtf = ENSEMBL_DOWNLOAD.out.gtf
+        GENCODE_DOWNLOAD(params.genome_gencode_version, params.genome)
+        ch_versions = GENCODE_DOWNLOAD.out.versions
+        ch_fasta = GENCODE_DOWNLOAD.out.fasta.map { that -> [[id:that.Name], that] }
+        ch_gtf = GENCODE_DOWNLOAD.out.gtf.map { that -> [[id:that.Name], that] }
     } else {
         ch_fasta = Channel.fromPath(params.fasta).map { that -> [[id:that.Name], that] }
         ch_gtf = Channel.fromPath(params.gtf).map { that -> [[id:that.Name], that] }
     }
 
     if (!file(params.fai).exists() || file(params.fai).isEmpty()){
-        SAMTOOLS_FAIDX(ch_fasta, [[],[]]).fai
+        SAMTOOLS_FAIDX(ch_fasta, [[],[]])
         ch_versions = SAMTOOLS_FAIDX.out.versions
         ch_fai = SAMTOOLS_FAIDX.out.fai
     } else {
@@ -121,39 +119,39 @@ workflow BUILD_REFERENCES {
 //     }
 
 
-    if ((params.fusioncatcher || params.all) &&
-            (!file(params.fusioncatcher_ref).exists() || file(params.fusioncatcher_ref).isEmpty() ||
-            !file(params.fusioncatcher_ref_stub_check).exists() || file(params.fusioncatcher_ref_stub_check).isEmpty() )) {
-        if (params.download_refs) {
-            FUSIONCATCHER_DOWNLOAD(params.ensembl_version)
-            ch_fusioncatcher_ref = FUSIONCATCHER_DOWNLOAD.out.reference}
-        else {
-            FUSIONCATCHER_BUILD(params.ensembl_version)
-            ch_fusioncatcher_ref = FUSIONCATCHER_BUILD.out.reference}
-        } else {
-            ch_fusioncatcher_ref = Channel.fromPath(params.fusioncatcher_ref).map { that -> [[id:that.Name], that] }
-        }
+    // if ((params.fusioncatcher || params.all) &&
+    //         (!file(params.fusioncatcher_ref).exists() || file(params.fusioncatcher_ref).isEmpty() ||
+    //         !file(params.fusioncatcher_ref_stub_check).exists() || file(params.fusioncatcher_ref_stub_check).isEmpty() )) {
+    //     if (params.download_refs) {
+    //         FUSIONCATCHER_DOWNLOAD(params.genome_gencode_version)
+    //         ch_fusioncatcher_ref = FUSIONCATCHER_DOWNLOAD.out.reference}
+    //     else {
+    //         FUSIONCATCHER_BUILD(params.genome_gencode_version)
+    //         ch_fusioncatcher_ref = FUSIONCATCHER_BUILD.out.reference}
+    //     } else {
+    //         ch_fusioncatcher_ref = Channel.fromPath(params.fusioncatcher_ref).map { that -> [[id:that.Name], that] }
+    //     }
 
 
-    if ((params.starfusion || params.all) &&
-            (!file(params.starfusion_ref).exists() || file(params.starfusion_ref).isEmpty() ||
-            !file(params.starfusion_ref_stub_check).exists() || file(params.starfusion_ref_stub_check).isEmpty() )) {
-        if (params.download_refs) {
-            ch_starfusion_ref = STARFUSION_DOWNLOAD( ch_fasta, ch_gtf ).out.reference }
-        else {
-            ch_starfusion_ref = STARFUSION_BUILD( ch_fasta, ch_gtf ).out.reference }
-    } else {
-        ch_starfusion_ref = Channel.fromPath(params.starfusion_ref).map { that -> [[id:that.Name], that] }}
+    // if ((params.starfusion || params.all) &&
+    //         (!file(params.starfusion_ref).exists() || file(params.starfusion_ref).isEmpty() ||
+    //         !file(params.starfusion_ref_stub_check).exists() || file(params.starfusion_ref_stub_check).isEmpty() )) {
+    //     if (params.download_refs) {
+    //         ch_starfusion_ref = STARFUSION_DOWNLOAD( ch_fasta, ch_gtf ).out.reference }
+    //     else {
+    //         ch_starfusion_ref = STARFUSION_BUILD( ch_fasta, ch_gtf ).out.reference }
+    // } else {
+    //     ch_starfusion_ref = Channel.fromPath(params.starfusion_ref).map { that -> [[id:that.Name], that] }}
 
 
-    if ((params.fusionreport || params.all) &&
-            (!file(params.fusionreport_ref).exists() || file(params.fusionreport_ref).isEmpty() ||
-            !file(params.fusionreport_ref_stub_check).exists() || file(params.fusionreport_ref_stub_check).isEmpty())) {
-        if (!params.cosmic_username || !params.cosmic_passwd) { exit 1, 'COSMIC username and/or password missing' }
-        ch_fusionreport_ref = FUSIONREPORT_DOWNLOAD( params.cosmic_username, params.cosmic_passwd ).out.reference
-    } else {
-        ch_fusionreport_ref = Channel.fromPath(params.fusionreport_ref).map { that -> [[id:that.Name], that] }
-    }
+    // if ((params.fusionreport || params.all) &&
+    //         (!file(params.fusionreport_ref).exists() || file(params.fusionreport_ref).isEmpty() ||
+    //         !file(params.fusionreport_ref_stub_check).exists() || file(params.fusionreport_ref_stub_check).isEmpty())) {
+    //     if (!params.cosmic_username || !params.cosmic_passwd) { exit 1, 'COSMIC username and/or password missing' }
+    //     ch_fusionreport_ref = FUSIONREPORT_DOWNLOAD( params.cosmic_username, params.cosmic_passwd ).out.reference
+    // } else {
+    //     ch_fusionreport_ref = Channel.fromPath(params.fusionreport_ref).map { that -> [[id:that.Name], that] }
+    // }
 
     emit:
     ch_fasta
@@ -162,16 +160,16 @@ workflow BUILD_REFERENCES {
 
     ch_hgnc_ref
     ch_hgnc_date
-    ch_rrna_interval
-    ch_refflat
-    ch_salmon_index
-    ch_starindex_ref
+    // ch_rrna_interval
+    // ch_refflat
+    // ch_salmon_index
+    // ch_starindex_ref
     // ch_arriba_ref_blacklist
     // ch_arriba_ref_known_fusions
     // ch_arriba_ref_protein_domains
-    ch_fusioncatcher_ref
-    ch_starfusion_ref
-    ch_fusionreport_ref
+    // ch_fusioncatcher_ref
+    // ch_starfusion_ref
+    // ch_fusionreport_ref
     versions        = ch_versions
 }
 

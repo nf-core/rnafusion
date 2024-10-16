@@ -6,7 +6,6 @@ process STARFUSION_DOWNLOAD {
 
     output:
     path "ctat_genome_lib_build_dir/*"            , emit: reference
-    path "ctat_genome_lib_build_dir/ref_annot.gtf", emit: chrgtf
 
 
     // TODO: move to my sourceforge
