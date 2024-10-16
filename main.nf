@@ -54,7 +54,6 @@ workflow NFCORE_RNAFUSION {
     if (params.build_references) {
         BUILD_REFERENCES ()
     } else {
-        ch_samplesheet = Channel.value(file(params.input, checkIfExists: true))
         RNAFUSION(samplesheet)
     }
 
