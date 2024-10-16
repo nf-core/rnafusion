@@ -32,7 +32,6 @@
                 "input": {
                     "type": "string",
                     "format": "file-path",
-                    "exists": false,
                     "schema": "assets/schema_input.json",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
