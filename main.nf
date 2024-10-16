@@ -42,6 +42,8 @@ include { RNAFUSION               } from './workflows/rnafusion'
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
 workflow NFCORE_RNAFUSION {
+    take:
+    samplesheet
 
     main:
 
