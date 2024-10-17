@@ -1,5 +1,5 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/nf-core/rnafusion/master/assets/schema_input.json",
     "title": "nf-core/rnafusion pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
@@ -29,9 +29,7 @@
             },
             "strandedness": {
                 "type": "string",
-                "format": "string",
-                "exists": true,
-                "pattern": "forward|reverse|unstranded|unknown",
+                "enum": ["forward", "reverse", "unstranded", "unknown"],
                 "errorMessage": "Strandedness has to be forward, reverse, unstranded or unknown"
             }
         },
