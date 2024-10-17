@@ -18,7 +18,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [StringTie](#stringtie) - StringTie assembly
 - [FusionCatcher](#fusioncatcher) - Fusion catcher fusion detection
 - [Samtools](#samtools) - SAM/BAM file manipulation
-- [Fusion-report](#fusion-report) - Summary of the findings of each tool and comparison to COSMIC, Mitelman, FusionGBD and FusionGDB2 databases
+- [Fusion-report](#fusion-report) - Summary of the findings of each tool and comparison to COSMIC, Mitelman, and FusionGDB2 databases
 - [FusionInspector](#fusionInspector) - Supervised analysis of fusion predictions from fusion-report, recover and re-score evidence for such predictions
 - [Arriba visualisation](#arriba-visualisation) - Arriba visualisation report for FusionInspector fusions
 - [Picard](#picard) - Collect QC metrics
@@ -50,7 +50,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
     - `human_v<version>` - dir with all references for fusioncatcher
   - `fusion_report_db`
     - `cosmic.db`
-    - `fusiongdb.db`
     - `fusiongdb2.db`
     - `mitelman.db`
   - `star` - dir with STAR index

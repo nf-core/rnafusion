@@ -98,7 +98,7 @@ process {
 }
 ```
 
-The four `fusion-report` files: `cosmic.db`, `fusiongdb.db`, `fusiongdb2.db`, `mitelman.db`
+The four `fusion-report` files: `cosmic.db`, `fusiongdb2.db`, `mitelman.db`
 should then be copied into the HPC `<REFERENCE_PATH>/references/fusion_report_db`.
 
 #### Note about fusioncatcher references
