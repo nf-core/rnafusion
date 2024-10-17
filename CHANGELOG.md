@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated modules and migrated non-specific modules to nf-core/modules [#484](https://github.com/nf-core/rnafusion/pull/484)
+- Updated to nf-core/tools 3.0.2 [#504](https://github.com/nf-core/rnafusion/pull/504)
 
 ### Fixed
 
