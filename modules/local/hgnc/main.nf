@@ -5,7 +5,7 @@ process HGNC_DOWNLOAD {
     conda "bioconda::gnu-wget=1.18"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/gnu-wget:1.18--h5bf99c6_5' :
-        'quay.io/biocontainers/gnu-wget:1.18--h5bf99c6_5' }"
+        'biocontainers/gnu-wget:1.18--h5bf99c6_5' }"
 
     input:
 

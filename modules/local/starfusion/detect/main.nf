@@ -3,7 +3,7 @@ process STARFUSION {
     label 'process_high'
 
     conda "bioconda::dfam=3.7 bioconda::hmmer=3.4 bioconda::star-fusion=1.13.0 bioconda::trinity=2.15.1 bioconda::samtools=1.19.2 bioconda::star=2.7.11b"
-    container 'docker.io/trinityctat/starfusion:1.13.0'
+    container "nf-core/starfusion:1.13.0"
 
     input:
     tuple val(meta), path(reads), path(junction)
