@@ -31,7 +31,7 @@ process ENSEMBL_DOWNLOAD {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        wget: \$(echo wget -V 2>&1 | grep "GNU Wget" | cut -d" " -f3 > versions.yml)
+        wget: \$(echo wget -V 2>&1 | grep "GNU Wget" | cut -d" " -f3)
         gunzip: \$(echo \$(gunzip --version 2>&1) | sed 's/^.*(gzip) //; s/ Copyright.*\$//')
 
     END_VERSIONS
@@ -45,7 +45,7 @@ process ENSEMBL_DOWNLOAD {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        wget: \$(echo wget -V 2>&1 | grep "GNU Wget" | cut -d" " -f3 > versions.yml)
+        wget: \$(echo wget -V 2>&1 | grep "GNU Wget" | cut -d" " -f3)
         gunzip: \$(echo \$(gunzip --version 2>&1) | sed 's/^.*(gzip) //; s/ Copyright.*\$//')
     END_VERSIONS
     """
