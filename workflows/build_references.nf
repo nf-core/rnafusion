@@ -67,7 +67,7 @@ workflow BUILD_REFERENCES {
         if (params.starfusion_build){
             STARFUSION_BUILD( ENSEMBL_DOWNLOAD.out.primary_assembly, ENSEMBL_DOWNLOAD.out.gtf )
         } else {
-            STARFUSION_DOWNLOAD()
+            STARFUSION_DOWNLOAD( fake_meta )
         }
     }
 
