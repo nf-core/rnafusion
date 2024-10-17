@@ -9,8 +9,6 @@
 ----------------------------------------------------------------------------------------
 */
 
-nextflow.enable.dsl = 2
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
@@ -44,17 +42,19 @@ include { RNAFUSION               } from './workflows/rnafusion'
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
 workflow NFCORE_RNAFUSION {
+    take:
+    samplesheet
 
     main:
 
     //
     // WORKFLOW: Run pipeline
     //
+
     if (params.build_references) {
         BUILD_REFERENCES ()
     } else {
-        ch_samplesheet = Channel.value(file(params.input, checkIfExists: true))
-        RNAFUSION(ch_samplesheet)
+        RNAFUSION(samplesheet)
     }
 
 }
@@ -67,13 +67,11 @@ workflow NFCORE_RNAFUSION {
 workflow {
 
     main:
-
     //
     // SUBWORKFLOW: Run initialisation tasks
     //
     PIPELINE_INITIALISATION (
         params.version,
-        params.help,
         params.validate_params,
         params.monochrome_logs,
         args,
@@ -84,7 +82,9 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_RNAFUSION ()
+    NFCORE_RNAFUSION (
+        PIPELINE_INITIALISATION.out.samplesheet
+    )
 
     //
     // SUBWORKFLOW: Run completion tasks

@@ -1,6 +1,21 @@
-repository_type: pipeline
-nf_core_version: "2.14.1"
+bump_version: null
 lint:
   files_unchanged:
     - .github/CONTRIBUTING.md
     - .github/PULL_REQUEST_TEMPLATE.md
+    - conf/igenomes.config
+    - conf/igenomes_ignored.config
+nf_core_version: 3.0.2
+org_path: null
+repository_type: pipeline
+template:
+  author: Martin Proks, Annick Renevey
+  description: Nextflow rnafusion analysis pipeline, part of the nf-core community.
+  force: false
+  is_nfcore: true
+  name: rnafusion
+  org: nf-core
+  outdir: .
+  skip_features: null
+  version: 4.0.0dev
+update: null
