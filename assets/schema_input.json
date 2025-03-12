@@ -33,6 +33,6 @@
                 "errorMessage": "Strandedness has to be forward, reverse, unstranded or unknown"
             }
         },
-        "required": ["sample", "fastq_1", "fastq_2", "strandedness"]
+        "required": ["sample", "fastq_1", "strandedness"]
     }
 }
