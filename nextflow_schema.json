@@ -135,6 +135,12 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to arriba output"
                 },
+                "ctatsplicing_ref": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to ctatsplicing references"
+                },
                 "download_refs": {
                     "type": "boolean",
                     "fa_icon": "far fa-file-code",
