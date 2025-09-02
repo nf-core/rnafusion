@@ -1,8 +1,8 @@
 include { AGAT_CONVERTSPGFF2TSV     }                     from '../../../modules/nf-core/agat/convertspgff2tsv/main'
-include { ARRIBA_VISUALISATION     }                      from '../../../modules/local/arriba/visualisation/main'
+include { ARRIBA_VISUALISATION     }                      from '../../../modules/nf-core/arriba/visualisation/main'
 include { CAT_CAT }                                       from '../../../modules/nf-core/cat/cat/main'
 include { VCF_COLLECT }                                   from '../../../modules/local/vcf_collect/main'
-include { FUSIONINSPECTOR     }                           from '../../../modules/local/fusioninspector/main'
+include { FUSIONINSPECTOR     }                           from '../../../modules/nf-core/fusioninspector/main'
 
 workflow FUSIONINSPECTOR_WORKFLOW {
     take:

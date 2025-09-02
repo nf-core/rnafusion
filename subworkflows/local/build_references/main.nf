@@ -24,7 +24,6 @@ include { SALMON_INDEX }                    from '../../../modules/nf-core/salmo
 include { FUSIONREPORT_DOWNLOAD }           from '../../../modules/nf-core/fusionreport/download/main'
 include { STARFUSION_BUILD }                from '../../../modules/nf-core/starfusion/build/main'
 include { GFFREAD }                         from '../../../modules/nf-core/gffread/main'
-include { getFileSuffix } from '../../../modules/nf-core/cat/cat/main.nf'
 
 /*
 ========================================================================================
