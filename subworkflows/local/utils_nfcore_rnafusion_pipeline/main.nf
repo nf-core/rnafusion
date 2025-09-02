@@ -162,6 +162,42 @@ def validateInputParameters() {
         log.warn("Skipping COSMIC DB download from `FUSIONREPORT_DOWNLOAD` and skip using it in `FUSIONREPORT`")
     }
 
+    def dfamParams = ['dfam_hmm', 'dfam_h3p', 'dfam_h3m', 'dfam_h3i', 'dfam_h3f']
+
+    if (params.dfam_version) {
+        def dfamPattern = "https://www.dfam.org/releases/Dfam_${params.dfam_version}/infrastructure/dfamscan/${params.species}_dfam"
+
+        def setDfamParams = dfamParams.findAll { params[it] }
+
+        if (setDfamParams) {
+            def customParams = setDfamParams.findAll { paramName ->
+                !params[paramName]?.startsWith(dfamPattern)
+            }
+            if (customParams) {
+                def paramDetails = customParams.collect { paramName ->
+                    "   --${paramName}: ${params[paramName]}"
+                }.join('\n')
+                def dfam_warn = "Both custom DFAM paths as well as `--dfam_version` (${params.dfam_version}) and `--species` (${params.species}) were provided.\n" +
+                    "Custom DFAM paths parameters provided:\n${paramDetails}\n" +
+                    "The pipeline will prioritize these custom files specified with `--${customParams}` and **will NOT** construct these URLs based on `--dfam_version` nor `--species`.\n" +
+                    "   - If you intend to use custom DFAM files, please ensure that all `--dfam_h*` parameters point to full and valid paths.\n" +
+                    "   - If you prefer to let the pipeline build the DFAM URLs automatically, omit `--dfam_h*` and instead provide only `--dfam_version` and `--species`."
+                log.warn(dfam_warn)
+            }
+        }
+    }
+
+    if (params.pfam_version){
+        def pfamPattern = "http://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam${params.pfam_version}/Pfam-A"
+
+        if (!(params.pfam_file?.startsWith(pfamPattern))) {
+            def pfam_warn = "Both `--pfam_file` (${params.pfam_file}) and `--pfam_version` (${params.pfam_version}) were provided.\n" +
+                    "The pipeline will prioritize the custom file from `--pfam_file` and **will NOT** construct the URL based on `--pfam_version`.\n" +
+                    "   - If you intend to use a custom PFAM file, please ensure that `--pfam_file` points to a full and valid path.\n" +
+                    "   - If you prefer to let the pipeline build the PFAM URL automatically, omit `--pfam_file` and instead provide only `--pfam_version`."
+            log.warn(pfam_warn)
+        }
+    }
 }
 
 //
@@ -289,26 +325,4 @@ def methodsDescriptionText(mqc_methods_yaml) {
     def description_html = engine.createTemplate(methods_text).make(meta)
 
     return description_html.toString()
-}
-
-//
-// Function to generate an error if contigs in genome fasta file > 512 Mbp
-//
-def checkMaxContigSize(fai_file) {
-    def max_size = 512000000
-    fai_file.eachLine { line ->
-        def lspl  = line.split('\t')
-        def chrom = lspl[0]
-        def size  = lspl[1]
-        if (size.toInteger() > max_size) {
-            def error_string = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
-                "  Contig longer than ${max_size}bp found in reference genome!\n\n" +
-                "  ${chrom}: ${size}\n\n" +
-                "  Provide the '--bam_csi_index' parameter to use a CSI instead of BAI index.\n\n" +
-                "  Please see:\n" +
-                "  https://github.com/nf-core/rnaseq/issues/744\n" +
-                "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-            error(error_string)
-        }
-    }
 }

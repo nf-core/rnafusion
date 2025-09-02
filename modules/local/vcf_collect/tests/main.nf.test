@@ -1,0 +1,56 @@
+nextflow_process {
+
+    name "Test Process VCF_COLLECT"
+    script "../main.nf"
+    process "VCF_COLLECT"
+
+    test("VCF_COLLECT - human - fusionreport - fusioninspector") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([ id:'test_sample' ])
+                    .combine(Channel.of(file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/test.FusionInspector.fusions.abridged.tsv", checkIfExists: true)))
+                    .combine(Channel.of(file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/test.tsv", checkIfExists: true)))
+                    .combine(Channel.of(file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/fusionreport/test_sample_fusionreport_index.html", checkIfExists: true)))
+                    .combine(Channel.of(file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/test.fusions.csv", checkIfExists: true)))
+                input[1] = [[ id:'hgnc' ], file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/reference/hgnc/hgnc_complete_set.txt")]
+                input[2] = [[ id:'hgnc_timestamp' ], file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/reference/hgnc/HGNC-DB-timestamp.txt")]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("VCF_COLLECT - human - fusionreport - fusioninspector - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([ id:'test_sample' ])
+                    .combine(Channel.of(file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/test.FusionInspector.fusions.abridged.tsv", checkIfExists: true)))
+                    .combine(Channel.of(file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/test.tsv", checkIfExists: true)))
+                    .combine(Channel.of(file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/fusionreport/test_sample_fusionreport_index.html", checkIfExists: true)))
+                    .combine(Channel.of(file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/test.fusions.csv", checkIfExists: true)))
+                input[1] = [[ id:'hgnc' ], file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/reference/hgnc/hgnc_complete_set.txt")]
+                input[2] = [[ id:'hgnc_timestamp' ], file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/reference/hgnc/HGNC-DB-timestamp.txt")]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

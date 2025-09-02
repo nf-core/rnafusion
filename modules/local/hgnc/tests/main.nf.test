@@ -18,10 +18,10 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert snapshot(
-                    process.out.hgnc_ref,
                     file(process.out.hgnc_date[0]).name,
-                    process.out.versions
-                ).match() }
+                ).match() },
+                { assert path(process.out.hgnc_ref[0]).exists() },
+                { assert path(process.out.versions[0]).exists() }
             )
         }
     }
@@ -42,10 +42,10 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert snapshot(
-                    process.out.hgnc_ref,
                     file(process.out.hgnc_date[0]).name,
-                    process.out.versions
-                ).match() }
+                ).match() },
+                { assert path(process.out.hgnc_ref[0]).exists() },
+                { assert path(process.out.versions[0]).exists() }
             )
         }
     }

@@ -1,6 +1,0 @@
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - bioconda::pirate=1.0.5
-  - bioconda::perl-bioperl=1.7.8

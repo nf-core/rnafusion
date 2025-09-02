@@ -22,14 +22,14 @@ jobs:
           parameters: |
             {
               "outdir": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}",
-              "genomes_base": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/results-${{ github.sha }}/references",
-              "cosmic_username": "${{ secrets.cosmic_username }}",
-              "cosmic_passwd": "${{ secrets.cosmic_passwd }}",
-              "all": true,
+              "genomes_base": "s3://${{ secrets.AWS_S3_BUCKET }}/rnafusion/references",
+              "tools": "all",
               "stub": true
+              "no_cosmic": true"
             }
-          profiles: test,aws_tower
-      - uses: actions/upload-artifact@v4
+          profiles: test
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: Tower debug log file
           path: |

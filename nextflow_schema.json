@@ -13,15 +13,18 @@
             "properties": {
                 "skip_qc": {
                     "type": "boolean",
-                    "description": "Skip QC steps"
+                    "description": "Skip QC steps",
+                    "fa_icon": "fas fa-forward"
                 },
                 "skip_vcf": {
                     "type": "boolean",
-                    "description": "Skip vcf creation step"
+                    "description": "Skip vcf creation step",
+                    "fa_icon": "fas fa-forward"
                 },
                 "skip_vis": {
                     "type": "boolean",
-                    "description": "Skip visualisation steps"
+                    "description": "Skip visualisation steps",
+                    "fa_icon": "fas fa-forward"
                 }
             },
             "fa_icon": "fas fa-fast-forward"
@@ -77,6 +80,11 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to reference folder"
                 },
+                "genomes_ignore": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Don't automatically assign reference parameters to the correct references in --genomes_base"
+                },
                 "genome_gencode_version": {
                     "type": "integer",
                     "fa_icon": "far fa-file-code",
@@ -98,7 +106,7 @@
                 "arriba_ref_blacklist": {
                     "type": "string",
                     "format": "file-path",
-                    "pattern": "\\S+\\.tsv$",
+                    "pattern": "\\S+\\.tsv(\\.gz)?$",
                     "fa_icon": "far fa-file-code",
                     "description": "Path to arriba reference blacklist"
                 },
@@ -112,7 +120,7 @@
                 "arriba_ref_known_fusions": {
                     "type": "string",
                     "format": "file-path",
-                    "pattern": "\\S+\\.tsv$",
+                    "pattern": "\\S+\\.tsv(\\.gz)?$",
                     "fa_icon": "far fa-file-code",
                     "description": "Path to arriba reference known fusions"
                 },
@@ -130,11 +138,6 @@
                     "pattern": "\\S+\\.tsv$",
                     "fa_icon": "far fa-file-code",
                     "description": "Path to arriba output"
-                },
-                "download_refs": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-file-code",
-                    "description": "Download references instead of building them (for fusioncatcher and starfusion)"
                 },
                 "fusioncatcher_fusions": {
                     "type": "string",
@@ -156,12 +159,6 @@
                     "format": "directory-path",
                     "fa_icon": "far fa-file-code",
                     "description": "Path to fusioncatcher references"
-                },
-                "fusioncatcher_download_link": {
-                    "type": "string",
-                    "description": "Fusioncatcher download link",
-                    "fa_icon": "far fa-file-code",
-                    "pattern": "^https?://.*$"
                 },
                 "fusioninspector_limitSjdbInsertNsj": {
                     "type": "integer",
@@ -231,6 +228,63 @@
                     "description": "Path to the cancer introns CSV file to create the CTAT-SPLICING reference with",
                     "default": "https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/CANCER_SPLICING_LIB_SUPPLEMENT/cancer_introns.GRCh38.Jun232020.tsv.gz"
                 },
+                "dfam_hmm": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.hmm$",
+                    "description": "Path to Dfam HMM database file",
+                    "help_text": "Provide a valid path pointing to the Dfam HMM database file. Leave as null if using the automatical filling with `--dfam_version` and `--species`.",
+                    "fa_icon": "fas fa-link"
+                },
+                "dfam_h3f": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.h3f$",
+                    "description": "Path to Dfam H3F database file",
+                    "help_text": "Provide a valid path pointing to the Dfam H3F database file. Leave as null if using the automatical filling with `--dfam_version` and `--species`.",
+                    "fa_icon": "fas fa-link"
+                },
+                "dfam_h3i": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.h3i$",
+                    "description": "Path to Dfam H3I database file",
+                    "help_text": "Provide a valid path pointing to the Dfam H3I database file. Leave as null if using the automatical filling with `--dfam_version` and `--species`.",
+                    "fa_icon": "fas fa-link"
+                },
+                "dfam_h3m": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.h3m$",
+                    "description": "Path to Dfam H3M database file",
+                    "help_text": "Provide a valid path pointing to the Dfam H3M database file. Leave as null if using the automatical filling with `--dfam_version` and `--species`.",
+                    "fa_icon": "fas fa-link"
+                },
+                "dfam_h3p": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.h3p$",
+                    "description": "Path to Dfam H3P database file",
+                    "help_text": "Provide a valid path pointing to the Dfam H3P database file. Leave as null if using the automatical filling with `--dfam_version` and `--species`.",
+                    "fa_icon": "fas fa-link"
+                },
+                "pfam_file": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.hmm(\\.gz)?$",
+                    "description": "Path to Pfam database file",
+                    "help_text": "Provide a valid path pointing to the Pfam database file. Leave as null if using the automatical filling with `--pfam_version`.",
+                    "fa_icon": "fas fa-link"
+                },
+                "annot_filter_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https?://.*",
+                    "description": "URL to annotation filter rule file",
+                    "help_text": "Provide a valid HTTP/HTTPS URL pointing to the annotation filter rule file (typically a Perl module).",
+                    "default": "https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/AnnotFilterRule.pm",
+                    "fa_icon": "fas fa-filter"
+                },
                 "starindex_ref": {
                     "type": "string",
                     "format": "directory-path",
@@ -279,6 +333,19 @@
                     "pattern": "\\S+\\.f(n|ast)?a$",
                     "description": "Path to adapter fasta file: default: []",
                     "fa_icon": "fas fa-cut"
+                },
+                "save_trimmed_fail": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-times-circle"
+                },
+                "min_trimmed_reads": {
+                    "type": "integer",
+                    "default": 1,
+                    "fa_icon": "fas fa-search-minus"
+                },
+                "save_merged": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-download"
                 }
             }
         },
@@ -368,12 +435,14 @@
                     "default": "homo_sapiens"
                 },
                 "dfam_version": {
-                    "type": "string",
-                    "description": "Version of dfam to use"
+                    "type": ["number", "null"],
+                    "description": "Version of dfam to use",
+                    "fa_icon": "fas fa-code-branch"
                 },
                 "pfam_version": {
-                    "type": "string",
-                    "description": "Version of pfam to use"
+                    "type": ["number", "null"],
+                    "description": "Version of pfam to use",
+                    "fa_icon": "fas fa-code-branch"
                 }
             }
         },

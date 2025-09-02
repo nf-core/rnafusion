@@ -17,7 +17,12 @@ nextflow_pipeline {
                 input            = "${projectDir}/tests/yml/bam.yml"
                 tools            = "all"
                 no_cosmic        = true
-
+                genomes_base     = "${outputDir}/references"
+                arriba_ref_protein_domains  = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3"
+                arriba_ref_known_fusions    = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/known_fusions_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_blacklist        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/blacklist_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_cytobands        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv"
+                fusioncatcher_ref           = "${projectDir}/assets" // This is a placeholder until a small reference can be created
             }
         }
 
@@ -52,7 +57,12 @@ nextflow_pipeline {
                 fusion_annot_lib = 'https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/master/CTAT_HumanFusionLib.mini.dat.gz'
                 input            = "${projectDir}/tests/yml/bam.yml"
                 no_cosmic        = true
-
+                genomes_base     = "${outputDir}/references"
+                arriba_ref_protein_domains  = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3"
+                arriba_ref_known_fusions    = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/known_fusions_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_blacklist        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/blacklist_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_cytobands        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv"
+                fusioncatcher_ref           = "${projectDir}/assets" // This is a placeholder until a small reference can be created
             }
         }
 
@@ -86,6 +96,12 @@ nextflow_pipeline {
                 tools            = "ctatsplicing"
                 fusion_annot_lib = 'https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/master/CTAT_HumanFusionLib.mini.dat.gz'
                 input            = "${projectDir}/tests/yml/bam.yml"
+                genomes_base     = "${outputDir}/references"
+                arriba_ref_protein_domains  = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3"
+                arriba_ref_known_fusions    = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/known_fusions_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_blacklist        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/blacklist_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_cytobands        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv"
+                fusioncatcher_ref           = "${projectDir}/assets" // This is a placeholder until a small reference can be created
             }
         }
 
@@ -119,6 +135,12 @@ nextflow_pipeline {
                 tools            = "fusioncatcher"
                 fusion_annot_lib = 'https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/master/CTAT_HumanFusionLib.mini.dat.gz'
                 input            = "${projectDir}/tests/yml/bam.yml"
+                genomes_base     = "${outputDir}/references"
+                arriba_ref_protein_domains  = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3"
+                arriba_ref_known_fusions    = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/known_fusions_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_blacklist        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/blacklist_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_cytobands        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv"
+                fusioncatcher_ref           = "${projectDir}/assets" // This is a placeholder until a small reference can be created
             }
         }
 
@@ -146,12 +168,21 @@ nextflow_pipeline {
 
     test("stub test starfusion") {
 
+        tag "starfusion"
+
         when {
             params {
                 outdir           = "$outputDir"
                 tools            = "starfusion"
                 fusion_annot_lib = 'https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/master/CTAT_HumanFusionLib.mini.dat.gz'
                 input            = "${projectDir}/tests/yml/bam.yml"
+                genomes_base     = "${outputDir}/references"
+                pfam_file        = "http://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam37.4/Pfam-A.hmm.gz"
+                arriba_ref_protein_domains  = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3"
+                arriba_ref_known_fusions    = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/known_fusions_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_blacklist        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/blacklist_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_cytobands        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv"
+                fusioncatcher_ref           = "${projectDir}/assets" // This is a placeholder until a small reference can be created
             }
         }
 
@@ -185,6 +216,12 @@ nextflow_pipeline {
                 tools            = "stringtie"
                 fusion_annot_lib = 'https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/master/CTAT_HumanFusionLib.mini.dat.gz'
                 input            = "${projectDir}/tests/yml/bam.yml"
+                genomes_base     = "${outputDir}/references"
+                arriba_ref_protein_domains  = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3"
+                arriba_ref_known_fusions    = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/known_fusions_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_blacklist        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/blacklist_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_cytobands        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv"
+                fusioncatcher_ref           = "${projectDir}/assets" // This is a placeholder until a small reference can be created
             }
         }
 
@@ -211,6 +248,7 @@ nextflow_pipeline {
     }
 
     test("stub test fusionreport") {
+        tag "fusionreport"
 
         when {
             params {
@@ -219,6 +257,12 @@ nextflow_pipeline {
                 fusion_annot_lib = 'https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/master/CTAT_HumanFusionLib.mini.dat.gz'
                 input            = "${projectDir}/tests/yml/bam.yml"
                 no_cosmic        = true
+                genomes_base     = "${outputDir}/references"
+                arriba_ref_protein_domains  = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3"
+                arriba_ref_known_fusions    = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/known_fusions_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_blacklist        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/blacklist_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_cytobands        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv"
+                fusioncatcher_ref           = "${projectDir}/assets" // This is a placeholder until a small reference can be created
             }
         }
 
@@ -252,6 +296,12 @@ nextflow_pipeline {
                 tools            = "fastp"
                 fusion_annot_lib = 'https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/master/CTAT_HumanFusionLib.mini.dat.gz'
                 input            = "${projectDir}/tests/yml/bam.yml"
+                genomes_base     = "${outputDir}/references"
+                arriba_ref_protein_domains  = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3"
+                arriba_ref_known_fusions    = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/known_fusions_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_blacklist        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/blacklist_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_cytobands        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv"
+                fusioncatcher_ref           = "${projectDir}/assets" // This is a placeholder until a small reference can be created
             }
         }
 
@@ -285,6 +335,12 @@ nextflow_pipeline {
                 tools            = "salmon"
                 fusion_annot_lib = 'https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/master/CTAT_HumanFusionLib.mini.dat.gz'
                 input            = "${projectDir}/tests/yml/bam.yml"
+                genomes_base     = "${outputDir}/references"
+                arriba_ref_protein_domains  = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3"
+                arriba_ref_known_fusions    = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/known_fusions_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_blacklist        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/blacklist_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_cytobands        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv"
+                fusioncatcher_ref           = "${projectDir}/assets" // This is a placeholder until a small reference can be created
             }
         }
 
@@ -319,6 +375,12 @@ nextflow_pipeline {
                 fusion_annot_lib = 'https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/master/CTAT_HumanFusionLib.mini.dat.gz'
                 input            = "${projectDir}/tests/yml/bam.yml"
                 no_cosmic        = true
+                genomes_base     = "${outputDir}/references"
+                arriba_ref_protein_domains  = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3"
+                arriba_ref_known_fusions    = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/known_fusions_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_blacklist        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/blacklist_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_cytobands        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv"
+                fusioncatcher_ref           = "${projectDir}/assets" // This is a placeholder until a small reference can be created
             }
         }
 

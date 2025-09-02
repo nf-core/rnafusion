@@ -11,13 +11,37 @@
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    GENOME PARAMETER VALUES
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_rnafusion_pipeline'
+
+params.fasta                        = getGenomeAttribute("fasta")
+params.fai                          = getGenomeAttribute("fai")
+params.gtf                          = getGenomeAttribute("gtf")
+params.refflat                      = getGenomeAttribute("refflat")
+params.rrna_intervals               = getGenomeAttribute("rrna_intervals")
+params.arriba_ref_blacklist         = getGenomeAttribute("arriba_ref_blacklist")
+params.arriba_ref_cytobands         = getGenomeAttribute("arriba_ref_cytobands")
+params.arriba_ref_known_fusions     = getGenomeAttribute("arriba_ref_known_fusions")
+params.arriba_ref_protein_domains   = getGenomeAttribute("arriba_ref_protein_domains")
+params.fusioncatcher_ref            = getGenomeAttribute("fusioncatcher_ref")
+params.hgnc_ref                     = getGenomeAttribute("hgnc_ref")
+params.hgnc_date                    = getGenomeAttribute("hgnc_date")
+params.salmon_index                 = getGenomeAttribute("salmon_index")
+params.starfusion_ref               = getGenomeAttribute("starfusion_ref")
+params.starindex_ref                = getGenomeAttribute("starindex_ref")
+params.fusionreport_ref             = getGenomeAttribute("fusionreport_ref")
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_rnafusion_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rnafusion_pipeline'
-include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_rnafusion_pipeline'
 include { RNAFUSION               } from './workflows/rnafusion'
 
 /*
@@ -48,10 +72,30 @@ workflow {
         }
         tools = pattern.replace('^((', "").replace(')?,?)*(?<!,)$', "").tokenize("|") - "all"
     }
+    log.debug("Rnafusion tools to run: ${tools}")
 
     def profiles = workflow.profile
     if ((profiles.contains("conda") || profiles.contains("mamba")) && (tools.contains("ctatsplicing"))) {
         error("Conda or Mamba runs are not supported when ctatsplicing is in `--tools`")
+    }
+
+    if (tools.contains("fusioncatcher") && (!params.fusioncatcher_ref || !file(params.fusioncatcher_ref).exists())) {
+        error("You have selected `fusioncatcher` in `--tools`, but did not provide an existing path to the fusioncatcher reference files with `--fusioncatcher_ref`.")
+    }
+
+    if (tools.contains("arriba")) {
+        if (!params.arriba_ref_blacklist || !file(params.arriba_ref_blacklist).exists()) {
+            error("You have selected `arriba` in `--tools`, but did not provide an existing path to the arriba reference blacklist file with `--arriba_ref_blacklist`.")
+        }
+        if (!params.arriba_ref_cytobands || !file(params.arriba_ref_cytobands).exists()) {
+            error("You have selected `arriba` in `--tools`, but did not provide an existing path to the arriba reference cytobands file with `--arriba_ref_cytobands`.")
+        }
+        if (!params.arriba_ref_known_fusions || !file(params.arriba_ref_known_fusions).exists()) {
+            error("You have selected `arriba` in `--tools`, but did not provide an existing path to the arriba reference known fusions file with `--arriba_ref_known_fusions`.")
+        }
+        if (!params.arriba_ref_protein_domains || !file(params.arriba_ref_protein_domains).exists()) {
+            error("You have selected `arriba` in `--tools`, but did not provide an existing path to the arriba reference protein domains file with `--arriba_ref_protein_domains`.")
+        }
     }
 
     //

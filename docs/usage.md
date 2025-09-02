@@ -24,10 +24,19 @@ The pipeline is divided into two parts:
 
 The rnafusion pipeline needs references for the fusion detection tools, so downloading these is a **requirement**.
 
-> **IMPORTANT**
->
-> - Note that this step takes about 24 hours to complete on HPC.
-> - Do not provide a samplesheet via the `input` parameter, otherwise the pipeline will run the analysis directly after downloading the references (except if that is what you want).
+The references for the pipeline can be downloaded from the nf-core AWS megatests S3 bucket using the following command for the [AWS CLI tool](https://github.com/aws/aws-cli):
+
+```bash
+aws --no-sign-request s3 sync s3://nf-core-awsmegatests/rnafusion/references/ <path_to_references>
+```
+
+The path to the downloaded references can then be provided to the pipeline with the `--genomes_base` parameter.
+
+:warning: **Please note that the references are large and can take a long time to download, so it is recommended to download them once and use them for all future runs of the pipeline.**
+
+The fusion report references available on the S3 bucket do not contain information from cosmic due to licensing issues. If you want to use the cosmic database, you will need to build the fusion report references yourself by either deleting the `fusion_report_db` folder in the references directory or by specifying a different location for the fusion report directory with `--fusionreport_ref <PATH/TO/REFERENCES>`. The cosmic username and password should also be given in this case using `--cosmic_username <EMAIL>` and `--cosmic_passwd <PASSWORD>`.
+
+Additionally, the references can be built by the pipeline using the following command:
 
 ```bash
 nextflow run nf-core/rnafusion \
@@ -37,6 +46,10 @@ nextflow run nf-core/rnafusion \
   --genomes_base <PATH/TO/REFERENCES> \
   --outdir <PATH/TO/REFERENCES>
 ```
+
+> **IMPORTANT**
+>
+> - Note that this step takes about 24 hours to complete on HPC.
 
 References for each tools can also be downloaded separately with:
 

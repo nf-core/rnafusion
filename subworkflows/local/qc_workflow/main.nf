@@ -47,4 +47,3 @@ workflow QC_WORKFLOW {
         insertsize_metrics  = ch_insertsize_metrics  // channel [ meta, path ]
 
 }
-

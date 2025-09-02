@@ -20,15 +20,17 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         ch_starfusion_ref
         skip_vis
         skip_vcf
+        tools_cutoff
+        whitelist
 
     main:
         ch_versions = Channel.empty()
         ch_arriba_visualisation = Channel.empty()
 
-        ch_fusion_list = ( params.tools_cutoff > 1 ? fusion_list_filtered : fusion_list )
+        ch_fusion_list = ( tools_cutoff > 1 ? fusion_list_filtered : fusion_list )
 
-        if (params.whitelist)  {
-            ch_whitelist = ch_fusion_list.combine(Channel.value(file(params.whitelist, checkIfExists:true)))
+        if (whitelist)  {
+            ch_whitelist = ch_fusion_list.combine(Channel.value(file(whitelist, checkIfExists:true)))
                             .map { meta, fusions, whitelist -> [ meta, [fusions, whitelist] ] }
 
             CAT_CAT(ch_whitelist) // fusioninspector takes care of possible duplicates
@@ -68,4 +70,3 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         ch_arriba_visualisation
         versions             = ch_versions
 }
-

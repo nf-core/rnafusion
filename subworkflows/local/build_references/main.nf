@@ -5,26 +5,24 @@
 */
 
 include { GENCODE_DOWNLOAD }                from '../../../modules/local/gencode_download/main'
-include { FUSIONCATCHER_DOWNLOAD }          from '../../../modules/local/fusioncatcher/download/main'
-include { FUSIONREPORT_DOWNLOAD }           from '../../../modules/nf-core/fusionreport/download/main'
 include { HGNC_DOWNLOAD }                   from '../../../modules/local/hgnc/main'
-include { STARFUSION_BUILD }                from '../../../modules/local/starfusion/build/main'
 include { GTF_TO_REFFLAT }                  from '../../../modules/local/uscs/custom_gtftogenepred/main'
-include { GET_RRNA_TRANSCRIPTS }            from '../../../modules/local/get_rrna_transcript/main'
-include { CTATSPLICING_PREPGENOMELIB }      from '../../../modules/local/ctatsplicing/prepgenomelib/main.nf'
 
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
 ========================================================================================
 */
-
-include { ARRIBA_DOWNLOAD }                 from '../../../modules/nf-core/arriba/download/main'
+include { CTATSPLICING_PREPGENOMELIB }      from '../../../modules/nf-core/ctatsplicing/prepgenomelib/main.nf'
+include { BIOAWK                          } from '../../../modules/nf-core/bioawk/main'
+include { AGAT_CONVERTGFF2BED             } from '../../../modules/nf-core/agat/convertgff2bed/main'
 include { SAMTOOLS_FAIDX }                  from '../../../modules/nf-core/samtools/faidx/main'
 include { STAR_GENOMEGENERATE }             from '../../../modules/nf-core/star/genomegenerate/main'
 include { GATK4_CREATESEQUENCEDICTIONARY }  from '../../../modules/nf-core/gatk4/createsequencedictionary/main'
 include { GATK4_BEDTOINTERVALLIST }         from '../../../modules/nf-core/gatk4/bedtointervallist/main'
 include { SALMON_INDEX }                    from '../../../modules/nf-core/salmon/index/main'
+include { FUSIONREPORT_DOWNLOAD }           from '../../../modules/nf-core/fusionreport/download/main'
+include { STARFUSION_BUILD }                from '../../../modules/nf-core/starfusion/build/main'
 include { GFFREAD }                         from '../../../modules/nf-core/gffread/main'
 include { getFileSuffix } from '../../../modules/nf-core/cat/cat/main.nf'
 
@@ -83,10 +81,16 @@ workflow BUILD_REFERENCES {
         if (!exists_not_empty(params.rrna_intervals)){
             GATK4_CREATESEQUENCEDICTIONARY(ch_fasta)
             ch_versions = ch_versions.mix(GATK4_CREATESEQUENCEDICTIONARY.out.versions)
-            GET_RRNA_TRANSCRIPTS(ch_gtf)
-            ch_versions = ch_versions.mix(GET_RRNA_TRANSCRIPTS.out.versions)
-            GATK4_BEDTOINTERVALLIST(GET_RRNA_TRANSCRIPTS.out.bed, GATK4_CREATESEQUENCEDICTIONARY.out.dict )
+
+            BIOAWK(ch_gtf)
+            ch_versions = ch_versions.mix(BIOAWK.out.versions)
+
+            AGAT_CONVERTGFF2BED(BIOAWK.out.output)
+            ch_versions = ch_versions.mix(AGAT_CONVERTGFF2BED.out.versions)
+
+            GATK4_BEDTOINTERVALLIST(AGAT_CONVERTGFF2BED.out.bed, GATK4_CREATESEQUENCEDICTIONARY.out.dict )
             ch_versions = ch_versions.mix(GATK4_BEDTOINTERVALLIST.out.versions)
+
             ch_rrna_interval = GATK4_BEDTOINTERVALLIST.out.interval_list
         } else {
             ch_rrna_interval = Channel.fromPath(params.rrna_intervals).map { that -> [[id:that.Name], that] }
@@ -132,37 +136,12 @@ workflow BUILD_REFERENCES {
         }
     }
 
-    def ch_arriba_ref_blacklist       = Channel.empty()
-    def ch_arriba_ref_cytobands       = Channel.empty()
-    def ch_arriba_ref_known_fusions   = Channel.empty()
-    def ch_arriba_ref_protein_domains = Channel.empty()
-    if (tools.contains("arriba")) {
-        if (!exists_not_empty(params.arriba_ref_blacklist) || !exists_not_empty(params.arriba_ref_known_fusions) || !exists_not_empty(params.arriba_ref_protein_domains) || !exists_not_empty(params.arriba_ref_cytobands)) {
-            ARRIBA_DOWNLOAD(params.genome)
-            ch_versions = ch_versions.mix(ARRIBA_DOWNLOAD.out.versions)
-            ch_arriba_ref_blacklist       = ARRIBA_DOWNLOAD.out.blacklist
-            ch_arriba_ref_cytobands       = ARRIBA_DOWNLOAD.out.cytobands
-            ch_arriba_ref_known_fusions   = ARRIBA_DOWNLOAD.out.known_fusions
-            ch_arriba_ref_protein_domains = ARRIBA_DOWNLOAD.out.protein_domains
-        } else {
-            ch_arriba_ref_blacklist       = Channel.fromPath(params.arriba_ref_blacklist)
-            ch_arriba_ref_cytobands       = Channel.fromPath(params.arriba_ref_cytobands)
-            ch_arriba_ref_known_fusions   = Channel.fromPath(params.arriba_ref_known_fusions)
-            ch_arriba_ref_protein_domains = Channel.fromPath(params.arriba_ref_protein_domains)
-        }
-    }
+    def ch_arriba_ref_blacklist       = params.arriba_ref_blacklist ? Channel.fromPath(params.arriba_ref_blacklist) : Channel.empty()
+    def ch_arriba_ref_cytobands       = params.arriba_ref_cytobands ? Channel.fromPath(params.arriba_ref_cytobands) : Channel.empty()
+    def ch_arriba_ref_known_fusions   = params.arriba_ref_known_fusions ? Channel.fromPath(params.arriba_ref_known_fusions) : Channel.empty()
+    def ch_arriba_ref_protein_domains = params.arriba_ref_protein_domains ? Channel.fromPath(params.arriba_ref_protein_domains) : Channel.empty()
 
-    def ch_fusioncatcher_ref = Channel.empty()
-    if (tools.contains("fusioncatcher")) {
-        if (!exists_not_empty(params.fusioncatcher_ref)) {
-            FUSIONCATCHER_DOWNLOAD(params.genome_gencode_version)
-            ch_versions = ch_versions.mix(FUSIONCATCHER_DOWNLOAD.out.versions)
-            ch_fusioncatcher_ref = FUSIONCATCHER_DOWNLOAD.out.reference
-        }
-        else {
-            ch_fusioncatcher_ref = Channel.fromPath(params.fusioncatcher_ref).map { it -> [[id:it.name], it] }
-        }
-    }
+    def ch_fusioncatcher_ref = params.fusioncatcher_ref ? Channel.fromPath(params.fusioncatcher_ref).map { it -> [[id:it.name], it] } : Channel.empty()
 
     def ch_starfusion_ref = Channel.empty()
     if (tools.intersect(["starfusion", "ctatsplicing", "fusioninspector"])) {
@@ -170,7 +149,33 @@ workflow BUILD_REFERENCES {
             if(!params.fusion_annot_lib) {
                 error("Expected --fusion_annot_lib to be specified when using StarFusion or any tools that depend on it")
             }
-            STARFUSION_BUILD(ch_fasta, ch_gtf, params.fusion_annot_lib, params.species, params.dfam_version, params.pfam_version)
+
+            if(params.pfam_file) {
+                pfam_file = Channel.fromPath(params.pfam_file, checkIfExists: true)
+            } else {
+                error("Expected `--pfam_version` to be specified when using StarFusion to automatically fill in Pfam database or specify `--pfam_file` for custom input")
+            }
+
+            if(params.dfam_hmm && params.dfam_h3p && params.dfam_h3m && params.dfam_h3i && params.dfam_h3f) {
+                dfam_hmm = Channel.fromPath(params.dfam_hmm, checkIfExists: true)
+                dfam_h3f = Channel.fromPath(params.dfam_h3f, checkIfExists: true)
+                dfam_h3i = Channel.fromPath(params.dfam_h3i, checkIfExists: true)
+                dfam_h3m = Channel.fromPath(params.dfam_h3m, checkIfExists: true)
+                dfam_h3p = Channel.fromPath(params.dfam_h3p, checkIfExists: true)
+            } else {
+                error("Expected `--dfam_version` and `--species` to be specified when using StarFusion to automatically fill in Dfam database or specify `--dfam_{hmm,h3f,h3i,h3m,h3p}` for custom input")
+            }
+
+            dfam_urls_ch = dfam_hmm
+                .concat(
+                    dfam_h3f,
+                    dfam_h3i,
+                    dfam_h3m,
+                    dfam_h3p
+                )
+                .collect()
+
+            STARFUSION_BUILD(ch_fasta, ch_gtf, params.fusion_annot_lib, params.species, pfam_file, dfam_urls_ch, params.annot_filter_url)
             ch_versions = ch_versions.mix(STARFUSION_BUILD.out.versions)
             if (tools.contains("ctatsplicing")) {
                 CTATSPLICING_PREPGENOMELIB(
@@ -228,7 +233,17 @@ workflow BUILD_REFERENCES {
 ========================================================================================
 */
 
+//
+// A function to test if a file exists and is not empty.
+//   Input: A string that represents a file path
+//   Output: A boolean
+//
 def exists_not_empty(path) {
+    // Return false for invalid values
+    if(!path) {
+        return false
+    }
+
     def path_to_check = file(path as String)
     // Return false if the path does not exist
     if(!path_to_check.exists()) {

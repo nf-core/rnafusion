@@ -34,4 +34,3 @@ workflow STRINGTIE_WORKFLOW {
         versions      = ch_versions                    // channel: [ path(versions.yml) ]
 
     }
-

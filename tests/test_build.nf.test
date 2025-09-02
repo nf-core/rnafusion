@@ -3,13 +3,11 @@ nextflow_pipeline {
     name "Test pipeline"
     script "../main.nf"
     profile "test_build"
-    options "-stub"
     tag "pipeline"
     tag "pipeline_rnafusion"
     tag "test_build"
 
     test("Test build references") {
-
         when {
             params {
                 config_profile_name        = 'Test build references profile'
@@ -18,13 +16,19 @@ nextflow_pipeline {
                 // Input data
                 references_only            = true
                 input                      = "${projectDir}/tests/csv/fastq.csv"
+                genomes_base               = "${outputDir}/references"
+                arriba_ref_protein_domains = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3"
+                arriba_ref_known_fusions   = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/known_fusions_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_blacklist       = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/blacklist_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_cytobands       = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv"
+                fusioncatcher_ref          = "${projectDir}/assets" // This is a placeholder until a small reference can be created
                 no_cosmic                  = true
-                tools                      = "arriba,starfusion,fusionreport,salmon,fusioninspector"
+                tools                      = "all"
                 fasta                      = 'https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/master/minigenome.fa'
                 gtf                        = 'https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/master/minigenome.gtf'
                 fusion_annot_lib           = 'https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/master/CTAT_HumanFusionLib.mini.dat.gz'
                 species                    = 'homo_sapiens'
-                dfam_version               = '3.4'
+                dfam_version               = 3.4
                 outdir                     = "$outputDir"
             }
         }

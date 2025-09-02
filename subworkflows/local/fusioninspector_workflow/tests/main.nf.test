@@ -1,0 +1,234 @@
+nextflow_workflow {
+
+    name "Test Workflow FUSIONINSPECTOR_WORKFLOW"
+    script "../main.nf"
+    workflow "FUSIONINSPECTOR_WORKFLOW"
+    config './nextflow.config'
+    tag 'subworkflows'
+    tag 'subworkflows/fusioninspector_workflow'
+    tag 'cat/cat'
+    tag 'subworkflows_nfcore'
+    tag 'fusionreport/detect'
+    tag 'fusioninspector'
+    tag 'starfusion/build'
+    tag 'fusionreport/download'
+    tag 'arriba/visualisation'
+    tag 'subworkflows/../../modules/local/vcf_collect'
+    tag 'agat/convertspgff2tsv'
+
+    test("FUSIONINSPECTOR_WORKFLOW - human") {
+
+        setup {
+            run("STARFUSION_BUILD") {
+                script "../../../../modules/nf-core/starfusion/build/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id:'minigenome_fasta' ],
+                        file('https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/minigenome.fa')
+                    ]
+                    input[1] = [
+                        [ id:'minigenome_gtf' ],
+                        file('https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/minigenome.gtf')
+                    ]
+                    input[2] = file('https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/CTAT_HumanFusionLib.mini.dat.gz')
+                    input[3] = "homo_sapiens"
+                    input[4] = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/human/Pfam-A.hmm.gz"
+                    input[5] = [
+                        "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/human/test_starfusion_dfam.hmm",
+                        "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/human/test_starfusion_dfam.hmm.h3f",
+                        "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/human/test_starfusion_dfam.hmm.h3i",
+                        "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/human/test_starfusion_dfam.hmm.h3m",
+                        "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/human/test_starfusion_dfam.hmm.h3p"
+                    ]
+                    input[6] = "https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/AnnotFilterRule.pm"
+                    """
+                }
+            }
+
+            run("FUSIONREPORT_DOWNLOAD") {
+                script "../../../../modules/nf-core/fusionreport/download/main.nf"
+                process {
+                    """
+                    """
+                }
+            }
+
+            run("FUSIONREPORT_DETECT") {
+                script "../../../../modules/nf-core/fusionreport/detect/main.nf"
+                process {
+                    """
+                    input[0] = Channel.of([
+                        [ id:'test_sample' ], // meta map
+                        file('https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/arriba.tsv', checkIfExists: true),
+                        file('https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/starfusion.tsv', checkIfExists: true),
+                        file('https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/fusioncatcher.txt', checkIfExists: true)
+                    ])
+                    input[1] = FUSIONREPORT_DOWNLOAD.out.fusionreport_ref
+                    input[2] = 1
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                no_cosmic                  = true
+                whitelist                  = []
+                outdir                     = "test"
+                genomes_base               = "test"
+                fusionreport_download_args = '--no-cosmic'
+                fusionreport_detect_args   = {params.no_cosmic} ? "--no-cosmic" : ""
+                fusionreport_detect_args2  = "--export csv"
+            }
+            workflow {
+                """
+                input[0] = Channel.of(
+                    [ [ id:'test_sample' ],
+                    [
+                        file("https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/v0.0.1/rnaseq_1.fastq.gz"),
+                        file("https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/v0.0.1/rnaseq_2.fastq.gz")
+                    ]
+                ])
+                input[1] = Channel.of([ [id:'test_sample'], file("https://github.com/FusionInspector/FusionInspector/raw/master/test/fusion_targets.A.txt")])
+                input[2] = Channel.of([ [id:'test_sample'], file("https://github.com/FusionInspector/FusionInspector/raw/master/test/fusion_targets.A.txt")])
+                input[3] = FUSIONREPORT_DETECT.out.report
+                input[4] = FUSIONREPORT_DETECT.out.csv
+                input[5] = Channel.of([
+                    [id:'test_sample'],
+                    [],
+                    []
+                ])
+                input[6] = Channel.of(
+                    [ [ id:'test_gtf' ],
+                    file('https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/minigenome.gtf')])
+                input[7] = Channel.of(file("https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3"))
+                input[8] = Channel.of(file("https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv"))
+                input[9] = Channel.of([[ id:'hgnc' ], file("https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/hgnc/hgnc_complete_set.txt")] )
+                input[10] = Channel.of([[ id:'hgnc_timestamp' ], file("https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/hgnc/HGNC-DB-timestamp.txt")] )
+                input[11] = STARFUSION_BUILD.out.reference
+                input[12] = false
+                input[13] = true
+                input[14] = 1
+                input[15] = params.whitelist
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(file(workflow.out.ch_arriba_visualisation[0][1]).length()) },
+                { assert snapshot(workflow.out.versions).match() }
+            )
+        }
+    }
+
+    test("FUSIONINSPECTOR_WORKFLOW - human - stub") {
+        options "-stub"
+
+        setup {
+            run("STARFUSION_BUILD") {
+                script "../../../../modules/nf-core/starfusion/build/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id:'minigenome_fasta' ],
+                        file('https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/minigenome.fa')
+                    ]
+                    input[1] = [
+                        [ id:'minigenome_gtf' ],
+                        file('https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/minigenome.gtf')
+                    ]
+                    input[2] = file('https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/CTAT_HumanFusionLib.mini.dat.gz')
+                    input[3] = "homo_sapiens"
+                    input[4] = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/human/Pfam-A.hmm.gz"
+                    input[5] = [
+                        "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/human/test_starfusion_dfam.hmm",
+                        "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/human/test_starfusion_dfam.hmm.h3f",
+                        "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/human/test_starfusion_dfam.hmm.h3i",
+                        "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/human/test_starfusion_dfam.hmm.h3m",
+                        "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/human/test_starfusion_dfam.hmm.h3p"
+                    ]
+                    input[6] = "https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/AnnotFilterRule.pm"
+                    """
+                }
+            }
+
+            run("FUSIONREPORT_DOWNLOAD") {
+                script "../../../../modules/nf-core/fusionreport/download/main.nf"
+                process {
+                    """
+                    """
+                }
+            }
+
+            run("FUSIONREPORT_DETECT") {
+                script "../../../../modules/nf-core/fusionreport/detect/main.nf"
+                process {
+                    """
+                    input[0] = Channel.of([
+                        [ id:'test_sample' ], // meta map
+                        file('https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/arriba.tsv', checkIfExists: true),
+                        file('https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/starfusion.tsv', checkIfExists: true),
+                        file('https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/fusioncatcher.txt', checkIfExists: true)
+                    ])
+                    input[1] = FUSIONREPORT_DOWNLOAD.out.fusionreport_ref
+                    input[2] = 1
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                no_cosmic                  = true
+                whitelist                  = []
+                outdir                     = "test"
+                genomes_base               = "test"
+                fusionreport_download_args = '--no-cosmic'
+                fusionreport_detect_args   = {params.no_cosmic} ? "--no-cosmic" : ""
+                fusionreport_detect_args2  = "--export csv"
+            }
+            workflow {
+                """
+                input[0] = Channel.of(
+                    [ [ id:'test_sample' ],
+                    [
+                        file("https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/v0.0.1/rnaseq_1.fastq.gz"),
+                        file("https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/v0.0.1/rnaseq_2.fastq.gz")
+                    ]
+                ])
+                input[1] = Channel.of([ [id:'test_sample'], file("https://github.com/FusionInspector/FusionInspector/raw/master/test/fusion_targets.A.txt")])
+                input[2] = Channel.of([ [id:'test_sample'], file("https://github.com/FusionInspector/FusionInspector/raw/master/test/fusion_targets.A.txt")])
+                input[3] = FUSIONREPORT_DETECT.out.report
+                input[4] = FUSIONREPORT_DETECT.out.csv
+                input[5] = Channel.of([
+                    [id:'test_sample'],
+                    [],
+                    []
+                ])
+                input[6] = Channel.of(
+                    [ [ id:'test_gtf' ],
+                    file('https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/minigenome.gtf')])
+                input[7] = Channel.of(file("https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3"))
+                input[8] = Channel.of(file("https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv"))
+                input[9] = Channel.of([[ id:'hgnc' ], file("https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/hgnc/hgnc_complete_set.txt")] )
+                input[10] = Channel.of([[ id:'hgnc_timestamp' ], file("https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/hgnc/HGNC-DB-timestamp.txt")] )
+                input[11] = STARFUSION_BUILD.out.reference
+                input[12] = false
+                input[13] = true
+                input[14] = 1
+                input[15] = params.whitelist
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+    }
+}

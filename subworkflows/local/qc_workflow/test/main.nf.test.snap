@@ -1,36 +1,34 @@
 {
-    "duplicate_metrics": {
-        "content": "651d8a4702f9f9871e94afbce3e50e34",
-        "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "24.10.2"
-        },
-        "timestamp": "2024-12-04T19:29:09.711230835"
-    },
-    "versions": {
+    "QC_WORKFLOW - Homo sapiens chr22": {
         "content": [
-            "versions.yml:md5,3f13b395c67e317f74194b3b6c89f139"
+            [
+                "## METRICS CLASS\tpicard.analysis.RnaSeqMetrics",
+                "PF_BASES\tPF_ALIGNED_BASES\tRIBOSOMAL_BASES\tCODING_BASES\tUTR_BASES\tINTRONIC_BASES\tINTERGENIC_BASES\tIGNORED_READS\tCORRECT_STRAND_READS\tINCORRECT_STRAND_READS\tNUM_R1_TRANSCRIPT_STRAND_READS\tNUM_R2_TRANSCRIPT_STRAND_READS\tNUM_UNEXPLAINED_READS\tPCT_R1_TRANSCRIPT_STRAND_READS\tPCT_R2_TRANSCRIPT_STRAND_READS\tPCT_RIBOSOMAL_BASES\tPCT_CODING_BASES\tPCT_UTR_BASES\tPCT_INTRONIC_BASES\tPCT_INTERGENIC_BASES\tPCT_MRNA_BASES\tPCT_USABLE_BASES\tPCT_CORRECT_STRAND_READS\tMEDIAN_CV_COVERAGE\tMEDIAN_5PRIME_BIAS\tMEDIAN_3PRIME_BIAS\tMEDIAN_5PRIME_TO_3PRIME_BIAS\tSAMPLE\tLIBRARY\tREAD_GROUP",
+                "672131\t670989\t0\t0\t323630\t84236\t263123\t0\t1324\t1328\t664\t661\t1\t0.501132\t0.498868\t0\t0\t0.482318\t0.12554\t0.392142\t0.482318\t0.481498\t0.499246\t4.318717\t0\t0.529614\t0\t\t\t",
+                ""
+            ],
+            [
+                "## METRICS CLASS\tpicard.sam.DuplicationMetrics",
+                "LIBRARY\tUNPAIRED_READS_EXAMINED\tREAD_PAIRS_EXAMINED\tSECONDARY_OR_SUPPLEMENTARY_RDS\tUNMAPPED_READS\tUNPAIRED_READ_DUPLICATES\tREAD_PAIR_DUPLICATES\tREAD_PAIR_OPTICAL_DUPLICATES\tPERCENT_DUPLICATION\tESTIMATED_LIBRARY_SIZE",
+                "testN\t0\t2820\t2\t2\t0\t828\t0\t0.293617\t3807",
+                ""
+            ],
+            [
+                "## METRICS CLASS\tpicard.analysis.InsertSizeMetrics",
+                "MEDIAN_INSERT_SIZE\tMODE_INSERT_SIZE\tMEDIAN_ABSOLUTE_DEVIATION\tMIN_INSERT_SIZE\tMAX_INSERT_SIZE\tMEAN_INSERT_SIZE\tSTANDARD_DEVIATION\tREAD_PAIRS\tPAIR_ORIENTATION\tWIDTH_OF_10_PERCENT\tWIDTH_OF_20_PERCENT\tWIDTH_OF_30_PERCENT\tWIDTH_OF_40_PERCENT\tWIDTH_OF_50_PERCENT\tWIDTH_OF_60_PERCENT\tWIDTH_OF_70_PERCENT\tWIDTH_OF_80_PERCENT\tWIDTH_OF_90_PERCENT\tWIDTH_OF_95_PERCENT\tWIDTH_OF_99_PERCENT\tSAMPLE\tLIBRARY\tREAD_GROUP",
+                "123\t96\t23\t32\t300\t125.684397\t32.447863\t2820\tFR\t11\t17\t27\t37\t47\t57\t69\t83\t103\t125\t169\t\t\t",
+                ""
+            ],
+            [
+                "versions.yml:md5,43d6a3cb756a214f3956bd5c740cb26a",
+                "versions.yml:md5,5c0ffe79bb7206c2652cf7f477f9b53f",
+                "versions.yml:md5,9951386776792bef3fd644ef9da67e7a"
+            ]
         ],
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "24.10.2"
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2024-12-04T19:29:09.686297468"
-    },
-    "rnaseq_metrics": {
-        "content": "84a348c3735ed2f6c47f346eeed661f4",
-        "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "24.10.2"
-        },
-        "timestamp": "2024-12-04T19:29:09.704632753"
-    },
-    "insertsize_metrics": {
-        "content": "160db81b19843c4d46fe74ac61f9f013",
-        "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "24.10.2"
-        },
-        "timestamp": "2024-12-04T19:29:09.717929716"
+        "timestamp": "2025-08-28T17:08:08.334459479"
     }
 }

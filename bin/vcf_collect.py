@@ -89,21 +89,22 @@ def vcf_collect(
         | ((all_df["orig_start"] == 0) & (all_df["orig_end"] == 0))
     ]
 
+    all_df["Left_transcript_version"] = all_df["CDS_LEFT_ID"].astype(str).str.split(".").str[-1]
+
     all_df.replace("", np.nan, inplace=True)
     all_df = all_df.drop_duplicates()
 
-    all_df[["exon_number", "transcript_version"]] = all_df[
-        ["exon_number", "transcript_version"]
+    all_df[["exon_number", "Left_transcript_version"]] = all_df[
+        ["exon_number", "Left_transcript_version"]
     ].replace(0, np.nan)
     # Fill non-empty values within each group for 'exon_number' and 'transcript_version'
     all_df["exon_number"] = all_df.groupby("PosA")["exon_number"].transform(
         lambda x: x.fillna(method="ffill").fillna(method="bfill")
     )
-    all_df["transcript_version"] = all_df.groupby("PosA")[
-        "transcript_version"
+    all_df["Left_transcript_version"] = all_df.groupby("PosA")[
+        "Left_transcript_version"
     ].transform(lambda x: x.fillna(method="ffill").fillna(method="bfill"))
 
-    all_df = all_df.rename(columns={"transcript_version": "Left_transcript_version"})
     all_df = all_df.rename(columns={"exon_number": "Left_exon_number"})
     all_df = all_df[
         [
@@ -154,18 +155,20 @@ def vcf_collect(
     all_df[["PosA", "PosB"]] = all_df[["PosA", "PosB"]].replace(0, np.nan)
     all_df = all_df.replace("", np.nan)
 
-    all_df[["exon_number", "transcript_version"]] = all_df[
-        ["exon_number", "transcript_version"]
+    all_df["Right_transcript_version"] = all_df["CDS_RIGHT_ID"].astype(str).str.split(".").str[-1]
+
+
+    all_df[["exon_number", "Right_transcript_version"]] = all_df[
+        ["exon_number", "Right_transcript_version"]
     ].replace(0, np.nan)
     # Fill non-empty values within each group for 'exon_number' and 'transcript_version'
     all_df["exon_number"] = all_df.groupby("PosB")["exon_number"].transform(
         lambda x: x.fillna(method="ffill").fillna(method="bfill")
     )
-    all_df["transcript_version"] = all_df.groupby("PosB")[
-        "transcript_version"
+    all_df["Right_transcript_version"] = all_df.groupby("PosB")[
+        "Right_transcript_version"
     ].transform(lambda x: x.fillna(method="ffill").fillna(method="bfill"))
 
-    all_df = all_df.rename(columns={"transcript_version": "Right_transcript_version"})
     all_df = all_df.rename(columns={"exon_number": "Right_exon_number"})
 
     all_df = all_df[
@@ -493,10 +496,10 @@ def column_manipulation(df: pd.DataFrame) -> pd.DataFrame:
     df["Left_exon_number"] = df["Left_exon_number"].fillna(0).astype(int).astype(str)
     df["Right_exon_number"] = df["Right_exon_number"].fillna(0).astype(int).astype(str)
     df["Left_transcript_version"] = (
-        df["Left_transcript_version"].fillna(0).astype(int).astype(str)
+        pd.to_numeric(df["Left_transcript_version"], errors="coerce").fillna(0).astype(int).astype(str)
     )
     df["Right_transcript_version"] = (
-        df["Right_transcript_version"].fillna(0).astype(int).astype(str)
+        pd.to_numeric(df["Right_transcript_version"], errors="coerce").fillna(0).astype(int).astype(str)
     )
     df["PosA"] = df["PosA"].fillna(0).astype(int).astype(str)
     df["PosB"] = df["PosB"].fillna(0).astype(int).astype(str)
@@ -579,7 +582,7 @@ def build_gtf_dataframe(file: str) -> pd.DataFrame:
         "orig_coord_info"
     ].str.split(",", expand=True)
     return df[
-        ["Transcript_id", "transcript_version", "exon_number", "orig_start", "orig_end"]
+        ["Transcript_id", "exon_number", "orig_start", "orig_end"]
     ]
 
 

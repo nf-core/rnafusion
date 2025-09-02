@@ -13,50 +13,55 @@ nextflow_workflow {
         setup {
 
             // Create refflat reference
-            run("UCSC_GTFTOGENEPRED") {
-                script "../../../../modules/nf-core/ucsc/gtftogenepred/main.nf"
+            run("GTF_TO_REFFLAT") {
+                script "../../../../modules/local/uscs/custom_gtftogenepred/main.nf"
                 process {
                     """
-                    input[0] =
-                        Channel.fromPath(
-                            "https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/genome.gtf",
-                            checkIfExists: true
-                        )
-                        .map{ [ [id:it.Name], it ] }
+                    input[0] =Channel.of(
+                        [
+                            [id: 'gtf'],
+                            file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/genome.gtf", checkIfExists: true)
+                        ]
+                    )
                     """
                 }
             }
 
             // Filter GTF to extract rRNA genes
-            run("RRNATRANSCRIPTS") {
-                script "../../../../modules/nf-core/rrnatranscripts/main.nf"
+            run("BIOAWK") {
+                script "../../../../modules/nf-core/bioawk/main.nf"
                 process {
                     """
-                    input[0] = Channel.fromPath("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/genome.gtf", checkIfExists: true)
+                    input[0] = Channel.of(
+                        [
+                            [id: 'fasta'],
+                            file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/genome.gtf", checkIfExist: true)
+                        ]
+                    )
                     """
                 }
             }
 
-            // Convert rRNA GTF to BED
-            run("BEDOPS_CONVERT2BED") {
-                script "../../../../modules/nf-core/bedops/convert2bed/main.nf"
+            run("AGAT_CONVERTGFF2BED") {
+                script "../../../../modules/nf-core/agat/convertgff2bed/main.nf"
                 process {
                     """
-                    input[0] = RRNATRANSCRIPTS.out.rrna_gtf.map{ it -> [ [id:it.Name], it ] }
+                    input[0] = BIOAWK.out.output
                     """
                 }
             }
+
 
             // Convert rRNA BED to interval list (the necessary file)
             run("GATK4_BEDTOINTERVALLIST") {
                 script "../../../../modules/nf-core/gatk4/bedtointervallist/main.nf"
                 process {
                     """
-                    input[0] = BEDOPS_CONVERT2BED.out.bed
+                    input[0] = AGAT_CONVERTGFF2BED.out.bed
                     input[1] = Channel.of(
                         [
                             [id: 'chr22_dic'],
-                            file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/genome.dic", checkIfExist: true)
+                            file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/genome.dict", checkIfExist: true)
                         ]
                     )
                     """
@@ -83,32 +88,25 @@ nextflow_workflow {
                         file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/illumina/bam/test.paired_end.sorted.bam", checkIfExists: true)
                     ])
 
-                // ch_chrgtf
-                input[1] = Channel.of(
-                    [
-                        [ id: "chr22_gtf" ],
-                        file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/genome.gtf", checkIfExists: true)
-                    ])
-
                 // ch_refflat
-                input[2] = UCSC_GTFTOGENEPRED.out.refflat
-
+                input[1] = GTF_TO_REFFLAT.out.refflat.map { that -> [[id:that.Name], that] }
                 // ch_fasta
-                input[3] = Channel.of(
+                input[2] = Channel.of(
                     [
                         [ id: "test_ref" ],
                         file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/genome.fasta", checkIfExist: true)
-                    ] )
+                    ]
+                )
 
                 // ch_fai
-                input[4] = Channel.of(
+                input[3] = Channel.of(
                     [
                         [ id: "test_ref" ],
                         file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/genome.fasta.fai", checkIfExist: true)
                     ] )
 
                 // ch rRNA interval list
-                input[5] = GATK4_BEDTOINTERVALLIST.out.interval_list
+                input[4] = GATK4_BEDTOINTERVALLIST.out.interval_list
                 """
             }
         }
@@ -116,10 +114,12 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert snapshot(file( workflow.out.versions[0] )).match('versions' )                                                },
-                { assert snapshot(file( workflow.out.rnaseq_metrics[0][1]     ).readLines()[4..-1]).md5().match('rnaseq_metrics'    ) },
-                { assert snapshot(file( workflow.out.duplicate_metrics[0][1]  ).readLines()[4..-1]).md5().match('duplicate_metrics' ) },
-                { assert snapshot(file( workflow.out.insertsize_metrics[0][1] ).readLines()[4..-1]).md5().match('insertsize_metrics') }
+                { assert snapshot(
+					file(workflow.out.rnaseq_metrics[0][1]).readLines()[5..8],
+					file(workflow.out.duplicate_metrics[0][1]).readLines()[5..8],
+					file(workflow.out.insertsize_metrics[0][1]).readLines()[5..8],
+                    workflow.out.versions
+                ).match() }
             )
         }
     }
