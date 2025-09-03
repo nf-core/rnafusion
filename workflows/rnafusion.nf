@@ -9,7 +9,7 @@ include { CAT_FASTQ                     }   from '../modules/nf-core/cat/fastq/m
 include { FASTQ_FASTQC_UMITOOLS_FASTP   }   from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp/main'
 include { QC_WORKFLOW                   }   from '../subworkflows/local/qc_workflow'
 include { STARFUSION_DETECT             }   from '../modules/nf-core/starfusion/detect/main'
-include { STRINGTIE_WORKFLOW            }   from '../subworkflows/local/stringtie_workflow/main'
+include { BAM_STRINGTIE_MERGE           }   from '../subworkflows/nf-core/bam_stringtie_merge/main'
 include { FUSIONCATCHER_WORKFLOW        }   from '../subworkflows/local/fusioncatcher_workflow'
 include { FUSIONINSPECTOR_WORKFLOW      }   from '../subworkflows/local/fusioninspector_workflow'
 include { FUSIONREPORT_DETECT           }   from '../modules/nf-core/fusionreport/detect/main'
@@ -312,11 +312,11 @@ workflow RNAFUSION {
         //
 
         if(tools.contains("stringtie")) {
-            STRINGTIE_WORKFLOW (
+            BAM_STRINGTIE_MERGE (
                 ch_aligned_reads.map { meta, bam, _bai -> [meta, bam]},
                 BUILD_REFERENCES.out.gtf
             )
-            ch_versions = ch_versions.mix(STRINGTIE_WORKFLOW.out.versions)
+            ch_versions = ch_versions.mix(BAM_STRINGTIE_MERGE.out.versions)
         }
 
         //

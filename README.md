@@ -20,7 +20,7 @@
 
 ## Introduction
 
-**nf-core/rnafusion** is a bioinformatics best-practice analysis pipeline for RNA sequencing consisting of several tools designed for detecting and visualizing fusion genes. Results from up to 5 fusion callers tools are created, and are also aggregated, most notably in a pdf visualisation document, a vcf data collection file, and html and tsv reports.
+**nf-core/rnafusion** is a bioinformatics best-practice analysis pipeline for RNA sequencing consisting of several tools designed for detecting and visualizing fusion genes. Results from up to 3 fusion callers tools are created, and are also aggregated, most notably in a pdf visualisation document, a vcf data collection file, and html and tsv reports.
 
 On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/rnafusion/results).
 
@@ -40,39 +40,40 @@ aws --no-sign-request s3 sync s3://nf-core-awsmegatests/rnafusion/references/ <p
 
 The path to the downloaded references can then be provided to the pipeline with the `--genomes_base` parameter.
 
-:warning: **Please note that the references are large and can take a long time to download, so it is recommended to download them once and use them for all future runs of the pipeline.**
+⚠️ **Please note that the references are large and can take a long time to download, so it is recommended to download them once and use them for all future runs of the pipeline.**
 
-The pipeline is also able to build the references in case files from a specific gencode version are missing (Note: only genocode 46 is available for fusioncatcher). This is done automatically when the expected references are not found and these files will be automatically published in the directory specified by the `--genomes_base` parameter. Use the `--references_only` parameter to trigger the reference building workflow only, without running the rest of the pipeline.
+The pipeline is also able to build the references in case files from a specific gencode version are missing (Note: only gencode 46 is available for fusioncatcher). This is done automatically when the expected references are not found and these files will be automatically published in the directory specified by the `--genomes_base` parameter. Use the `--references_only` parameter to trigger the reference building workflow only, without running the rest of the pipeline.
 
 1. Download gencode fasta and gtf files
-2. Create [STAR](https://github.com/alexdobin/STAR) index
-3. Download [Arriba](https://github.com/suhrig/arriba) references
-4. Download [FusionCatcher](https://github.com/ndaniel/fusioncatcher) references
-5. Download and build [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) references
-6. Download [Fusion-report](https://github.com/Clinical-Genomics/fusion-report) DBs
+2. Download the HGNC nomenclature file
+3. Create files needed for QC (Sequence Dictionary and RRNA intervals)
+4. Convert the gtf file to a refflat file
+5. Create the [Salmon](https://salmon.readthedocs.io/en/latest/) index
+6. Create [STAR](https://github.com/alexdobin/STAR) index
+7. Build [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) and [CTAT-SPLICING](https://github.com/TrinityCTAT/CTAT-SPLICING) references
+8. Download [Fusion-report](https://github.com/Clinical-Genomics/fusion-report) DBs
+
+> [!WARNING]
+> References for Fusioncatcher and Arriba cannot be automatically created by the pipeline and should be downloaded from the S3 bucket or another source. See the [References](#references) section for more information.
 
 #### Main workflow
 
 1. Input samplesheet check
-2. Concatenate fastq files per sample ([cat](http://www.linfo.org/cat.html))
-3. Reads quality control ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-4. Optional trimming with [fastp](https://github.com/OpenGene/fastp)
-5. Arriba subworkflow
-   - [STAR](https://github.com/alexdobin/STAR) alignment
-   - [Arriba](https://github.com/suhrig/arriba) fusion detection
-6. STAR-fusion subworkflow
-   - [STAR](https://github.com/alexdobin/STAR) alignment
-   - [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion) fusion detection
-7. Fusioncatcher subworkflow
-   - [FusionCatcher](https://github.com/ndaniel/fusioncatcher) fusion detection
-8. StringTie subworkflow
-   - [StringTie](https://ccb.jhu.edu/software/stringtie/)
-9. Fusion-report
-   - Merge all fusions detected by the selected tools with [Fusion-report](https://github.com/Clinical-Genomics/fusion-report)
+2. Reads quality control ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
+3. Optional trimming with [fastp](https://github.com/OpenGene/fastp)
+4. Align FASTQs to BAM with [STAR](https://github.com/alexdobin/STAR)
+5. Run fusion detection with [Arriba](https://github.com/suhrig/arriba)
+6. Run fusion detection with [STAR-Fusion](https://github.com/STAR-Fusion/STAR-Fusion)
+   7a. Optional trimming of 3' end with [fastp](https://github.com/OpenGene/fastp) to feed into fusioncatcher (other tools not affected)
+   7b. Run fusion detection with [FusionCatcher](https://github.com/ndaniel/fusioncatcher)
+7. Run transcript assembly and quantification with [StringTie](https://ccb.jhu.edu/software/stringtie/)
+8. Run cancer splicing aberrations detection with [CTAT-SPLICING](https://github.com/TrinityCTAT/CTAT-SPLICING)
+9. Merge all fusions detected by the selected tools with [Fusion-report](https://github.com/Clinical-Genomics/fusion-report)
 10. Post-processing and analysis of data
     - [FusionInspector](https://github.com/FusionInspector/FusionInspector)
+    - Summarize information into a VCF file
     - [Arriba](https://github.com/suhrig/arriba) visualisation
-    - Collect metrics ([`picard CollectRnaSeqMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037057492-CollectRnaSeqMetrics-Picard-), [`picard CollectInsertSizeMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037055772-CollectInsertSizeMetrics-Picard-) and ([`picard MarkDuplicates`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-))
+    - Collect metrics ([`picard CollectRnaSeqMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037057492-CollectRnaSeqMetrics-Picard-)), [`picard CollectInsertSizeMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037055772-CollectInsertSizeMetrics-Picard-) and ([`GATK MarkDuplicates`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-))
 11. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 12. Compress bam files to cram with [samtools view](http://www.htslib.org/)
 
@@ -81,24 +82,12 @@ The pipeline is also able to build the references in case files from a specific 
 > [!NOTE]
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
 
-As the reference building is computationally heavy (> 24h on HPC), it is recommended to test the pipeline with the `-stub` parameter (creation of empty files):
-
-First, build the references:
+As the reference building is computationally heavy (> 24h on HPC), we had to use dummy reference files in the test profile. Therefore, it is recommended to run the test profile with the `-stub` option.
 
 ```bash
 nextflow run nf-core/rnafusion \
    -profile test,<docker/singularity/.../institute> \
-   --outdir <OUTDIR>\
-   --references_only \
-   -stub
-```
-
-Then perform the analysis:
-
-```bash
-nextflow run nf-core/rnafusion \
-   -profile test,<docker/singularity/.../institute> \
-   --outdir <OUTDIR>\
+   --outdir <OUTDIR> \
    -stub
 ```
 

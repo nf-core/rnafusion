@@ -24,9 +24,6 @@
                 "GFFREAD": {
                     "gffread": "0.12.7"
                 },
-                "GTF_TO_REFFLAT": {
-                    "gtfToGenePred": 377
-                },
                 "HGNC_DOWNLOAD": {
                     "wget": "1.21.4"
                 },
@@ -45,6 +42,9 @@
                     "star": "2.7.11b",
                     "samtools": 1.21,
                     "gawk": "5.1.0"
+                },
+                "UCSC_GTFTOGENEPRED": {
+                    "ucsc": 447
                 },
                 "Workflow": {
                     "nf-core/rnafusion": "v4.0.0dev"
@@ -70,6 +70,7 @@
                 "references/GRCh38/gencode_v46/gencode",
                 "references/GRCh38/gencode_v46/gencode/minigenome.fa.fai",
                 "references/GRCh38/gencode_v46/gencode/minigenome.gtf.fasta",
+                "references/GRCh38/gencode_v46/gencode/minigenome.gtf.genepred",
                 "references/GRCh38/gencode_v46/gencode/minigenome.gtf.interval_list",
                 "references/GRCh38/gencode_v46/gencode/minigenome.gtf.refflat",
                 "references/GRCh38/gencode_v46/salmon",
@@ -197,6 +198,7 @@
                 "fusion_report.log:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "minigenome.fa.fai:md5,e3f74a27219b33ae80fd5de5cbeaf32b",
                 "minigenome.gtf.fasta:md5,349d42b5dbd73e163cdbad3453d8cd3a",
+                "minigenome.gtf.genepred:md5,c5b0d2118efd89f7a2831e2dc486b999",
                 "minigenome.gtf.interval_list:md5,6496748a0994cb8a9764761ae74f8004",
                 "minigenome.gtf.refflat:md5,ed76bc063c98087f1100a928923758c7",
                 "complete_ref_lens.bin:md5,3b6d71ddb3eb8239be6623ab350a636d",
@@ -285,6 +287,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-08-21T16:53:43.678975494"
+        "timestamp": "2025-09-02T08:18:01.248835367"
     }
 }

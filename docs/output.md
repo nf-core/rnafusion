@@ -11,8 +11,7 @@ The directories listed below will be created in the results directory after the 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
 - [Download and build references](#references) - Build references needed to run the rest of the pipeline
-- [STAR](#star) - Alignment for arriba, and STAR-fusion
-- [Cat](#cat) - Concatenate fastq files per sample ID
+- [STAR](#star) - Alignment of FASTQ files
 - [Arriba](#arriba) - Arriba fusion detection
 - [STAR-fusion](#starfusion) - STAR-fusion fusion detection
 - [StringTie](#stringtie) - StringTie assembly
@@ -35,28 +34,33 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 ### References directory structure
 
-- `references/`
-  - `arriba`
-    - `blacklist_hg38_GRCh38_v2.1.0.tsv.gz`
-    - `protein_domains_hg38_GRCh38_v2.1.0.gff3`
-    - `cytobands_hg38_GRCh38_v2.1.0.tsv`
-  - `ensembl`
-    - `Homo_sapiens.GRCh38.{ensembl_version}.all.fa`
-    - `Homo_sapiens.GRCh38.{ensembl_version}.cdna.all.fa.gz`
-    - `Homo_sapiens.GRCh38.{ensembl_version}.gtf`
-    - `Homo_sapiens.GRCh38.{ensembl_version}.chr.gtf`
-    - `Homo_sapiens.GRCh38.{ensembl_version}.chr.gtf.refflat`
-    - `Homo_sapiens.GRCh38.{ensembl_version}.interval_list`
-  - `fusioncatcher`
-    - `human_v<version>` - dir with all references for fusioncatcher
-  - `fusion_report_db`
-    - `cosmic.db`
-    - `fusiongdb2.db`
-    - `mitelman.db`
-  - `star` - dir with STAR index
-  - `starfusion`
-    - files and dirs used to build the index
-    - `ctat_genome_lib_build_dir` - dir containing the index
+- `<genomes_base>/`
+  - `<genome>/`
+    - `arriba/`
+      - `blacklist_hg38_GRCh38_v<gencode_version>.tsv.gz`
+      - `cytobands_hg38_GRCh38_v<gencode_version>.tsv`
+      - `known_fusions_hg38_GRCh38_v<gencode_version>.tsv.gz`
+      - `protein_domains_hg38_GRCh38_v<gencode_version>.gff3`
+    - `fusion_report_db/`
+      - `cosmic.db`
+      - `fusiongdb2.db`
+      - `mitelman.db`
+    - `gencode_v<gencode_version>/`
+      - `fusioncatcher/`
+      - `gencode/`
+        - `Homo_sapiens.GRCh38.<gencode_version>.all.fa`
+        - `Homo_sapiens.GRCh38.<gencode_version>.cdna.all.fa.gz`
+        - `Homo_sapiens.GRCh38.<gencode_version>.gtf`
+        - `Homo_sapiens.GRCh38.<gencode_version>.chr.gtf`
+        - `Homo_sapiens.GRCh38.<gencode_version>.chr.gtf.refflat`
+        - `Homo_sapiens.GRCh38.<gencode_version>.interval_list`
+      - `salmon/`
+      - `star/`
+      - `starfusion/`
+        - `ctat_genome_lib_build_dir/`
+      - `hgnc/`
+        - `hgnc_complete_set.txt`
+        - `HGNC-DB-timestamp.txt`
 
 (Only files or folders used by the pipeline are mentioned explicitly.)
 
@@ -70,26 +74,40 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 ```text
 {outdir}
+├── agat
 ├── arriba
 ├── arriba_visualisation
+├── ctatsplicing
 ├── fastp
 ├── fastqc
+├── fastqc_for_fastp
 ├── fusioncatcher
 ├── fusioninspector
 ├── fusionreport
-├── kallisto_quant
-├── megafusion
 ├── multiqc
 ├── picard
 ├── pipeline_info
-├── samtools_sort_for_arriba
+├── salmon
 ├── star
 ├── starfusion
-└── work
+├── stringtie
+└── vcf
 .nextflow.log
 ```
 
 If no parameters are specified, the default is applied.
+
+### Agat
+
+[Agat](https://github.com/NBISweden/AGAT) is to convert the GFF file to a TSV file, which is then used in the VCF creation.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `arriba/`
+  - `<sample>.tsv`
+
+</details>
 
 ### Arriba
 
@@ -118,22 +136,35 @@ If no parameters are specified, the default is applied.
 
 The visualisation displays the fusions that fusioninspector outputs. That means that fusions from all callers are aggregated (by fusion-report) and then analyzed through fusioninspector (Note: Fusioninspecor contains a filtering step!).
 
-### Cat
+### CTAT-SPLICING
+
+If `--tools ctatsplicing` is present, [CTAT-SPLICING](https://github.com/TrinityCTAT/CTAT-SPLICING) will detect cancer splicing aberrations.
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `cat/`
-  - `<sample>_1.merged.fastq.gz`
-  - `<sample>_2.merged.fastq.gz`
+- `ctatsplicing/`
+  - `<sample>.cancer_intron_reads.sorted.bam`
+  - `<sample>.cancer_intron_reads.sorted.bam.bai`
+  - `<sample>.cancer.introns`
+  - `<sample>.cancer.introns.prelim`
+  - `<sample>.chckpts`
+  - `<sample>.ctat-splicing.igv.html`
+  - `<sample>.gene_reads.sorted.sifted.bam`
+  - `<sample>.gene_reads.sorted.sifted.bam.bai`
+  - `<sample>.igv.tracks`
+  - `<sample>.introns`
+  - `<sample>.introns.for_IGV.bed`
 
 </details>
 
-If multiple libraries or runs have been provided for the same sample in the input samplesheet (e.g. to increase sequencing depth) then these will be merged at the very beginning of the pipeline in order to have consistent sample naming throughout the pipeline. Please refer to the [usage](https://nf-co.re/rnafusion/usage#samplesheet-input) documentation to see how to specify these samples in the input samplesheet.
+[CTAT-SPLICING](https://github.com/TrinityCTAT/CTAT-SPLICING/wiki) detects and annotates of aberrant splicing isoforms in cancer. This is run on the input files for `arriba` and/or `starfusion`.
 
 ### Fastp
 
 If `--tools fastp` is present, [fastp](https://github.com/OpenGene/fastp) will filter low quality reads as well as bases at the 5' and 3' ends, trim adapters (automatically detected, but input with parameter `--adapter_fasta` is possible). 3' trimming is also possible via parameter `--trim_tail`.
+
+As fusioncatcher is especially sensitive to read length, 100 bp being the recommended length, an additional parameter `--trim_tail_fusioncatcher` triggers an extra fastp process with 3' trimming of the length given, these triggered reads are then fed to fusioncatcher but the non-extra trimmed ones are still used for arriba and STAR-Fusion.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -169,24 +200,25 @@ If `trim_tail_fusioncatcher` has any value other than 0, [fastp](https://github.
 <summary>Output files</summary>
 
 - `fastqc/`
-  - `*_fastqc.html`: FastQC report containing quality metrics.
-  - `*_fastqc.zip`: Zip archive containing the FastQC report, tab-delimited data file and plot images.
+  - `*.html`: FastQC report containing quality metrics.
+  - `*.zip`: Zip archive containing the FastQC report, tab-delimited data file and plot images.
 
 </details>
 
 [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your sequenced reads. It provides information about the quality score distribution across your reads, per base sequence content (%A/T/G/C), adapter contamination and overrepresented sequences. For further reading and documentation see the [FastQC help pages](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
 
-### MultiQC
+### FastQC for fastp
 
-![MultiQC - FastQC sequence counts plot](images/mqc_fastqc_counts.png)
+<details markdown="1">
+<summary>Output files</summary>
 
-![MultiQC - FastQC mean quality scores plot](images/mqc_fastqc_quality.png)
+- `fastqc_for_fastp/`
+  - `*.html`: FastQC report containing quality metrics.
+  - `*.zip`: Zip archive containing the FastQC report, tab-delimited data file and plot images.
 
-![MultiQC - FastQC adapter content plot](images/mqc_fastqc_adapter.png)
+</details>
 
-:::note
-The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
-:::
+This directory contains FastQC reports for the fastp trimmed reads.
 
 ### FusionCatcher
 
@@ -194,48 +226,13 @@ The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They m
 <summary>Output files</summary>
 
 - `fusioncatcher`
-  - `<sample>.fusioncatcher.fusion-genes.txt`
-  - `<sample>.fusioncatcher.summary.txt`
-  - `<sample>.fusioncatcher.log`
+  - `<sample>.fusion-genes.txt`
+  - `<sample>.summary.txt`
+  - `<sample>.log`
 
 </details>
 
 [FusionCatcher](https://github.com/ndaniel/fusioncatcher) searches for novel/known somatic fusion genes translocations, and chimeras in RNA-seq data. Possibility to use parameter `--fusioncatcher_limitSjdbInsertNsj` to modify limitSjdbInsertNsj.
-
-### CTAT-SPLICING
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `ctatsplicing`
-  - `arriba`
-    - `<sample>.cancer_intron_reads.sorted.bam`
-    - `<sample>.cancer_intron_reads.sorted.bam.bai`
-    - `<sample>.cancer.introns`
-    - `<sample>.cancer.introns.prelim`
-    - `<sample>.chckpts`
-    - `<sample>.ctat-splicing.igv.html`
-    - `<sample>.gene_reads.sorted.sifted.bam`
-    - `<sample>.gene_reads.sorted.sifted.bam.bai`
-    - `<sample>.igv.tracks`
-    - `<sample>.introns`
-    - `<sample>.introns.for_IGV.bed`
-  - `starfusion`
-    - `<sample>.cancer_intron_reads.sorted.bam`
-    - `<sample>.cancer_intron_reads.sorted.bam.bai`
-    - `<sample>.cancer.introns`
-    - `<sample>.cancer.introns.prelim`
-    - `<sample>.chckpts`
-    - `<sample>.ctat-splicing.igv.html`
-    - `<sample>.gene_reads.sorted.sifted.bam`
-    - `<sample>.gene_reads.sorted.sifted.bam.bai`
-    - `<sample>.igv.tracks`
-    - `<sample>.introns`
-    - `<sample>.introns.for_IGV.bed`
-
-</details>
-
-[CTAT-SPLICING](https://github.com/TrinityCTAT/CTAT-SPLICING/wiki) detects and annotates of aberrant splicing isoforms in cancer. This is run on the input files for `arriba` and/or `starfusion`.
 
 ### FusionInspector
 
@@ -243,9 +240,14 @@ The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They m
 <summary>Output files</summary>
 
 - `fusioninspector`
-  - `<sample>.fusion_inspector_web.html` - visualisation report described in details [here](https://github.com/FusionInspector/FusionInspector/wiki/FusionInspector-Visualizations)
-  - `FusionInspector.log`
-  - `<sample>.FusionInspector.fusions.abridged.tsv`
+  - `<sample>/`
+    - `chckpts_dir/` - contains checkpoints for FusionInspector
+    - `fi_workdir/` - The working directory for FusionInspector
+    - `FusionInspector.log`
+    - `IGV_inputs/` - contains IGV input files
+    - `<sample>.FusionInspector.fusions.abridged.tsv`
+    - `<sample>.FusionInspector.fusions.tsv`
+    - `<sample>.fusion_inspector_web.html` - visualisation report described in details [here](https://github.com/FusionInspector/FusionInspector/wiki/FusionInspector-Visualizations)
 
 </details>
 
@@ -260,10 +262,11 @@ Please note that fusion-report is executed from fork https://github.com/Clinical
 
 - `fusionreport`
   - <sample>
-    - `<sample>.fusionreport.tsv`
     - `<sample>.fusionreport_filtered.tsv`
     - `<sample>_fusionreport_index.html` - general report for all filtered fusions
+    - `<sample>.fusionreport.tsv`
     - `<sample>.fusions.csv` - index in csv format
+    - `<sample>.fusions.json` - index in json format
     - `<fusion>_<pair>.html` - specific report for each filtered fusion
 
 </details>
@@ -289,61 +292,17 @@ The Fusion Indication Index FII is calculated using two components:
 
 Final score = (0.5 × Tool Detection Score) + (0.5 × Database Hits Score)
 
-### Salmon
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `salmon`
-  - `<sample>`
-
-</details>
-
-Folder containing the quantification results
-
-### Kallisto
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `kallisto`
-  - `<sample>.kallisto_quant.fusions.txt`
-
-</details>
-
-Quantifying abundances of transcripts from bulk and single-cell RNA-Seq data, or more generally of target sequences using high-throughput sequencing reads.
-
-### Vcf_collect
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `vcf_collect`
-  - `<sample>_fusion_data.vcf` - contains the fusions in vcf format with collected statistics.
-
-Vcf-collect takes as input the results of fusion-report and fusioninspector. That means fusions from all tools are aggregated. Fusioninspector applies a filter so it is possible some fusions detected by a caller are not filtered out by fusioninspector. In those cases, vcf-collect will display the fusions, but a lot of data will be missing as fusioninspector performs the analysis for each fusion.
-
-</details>
-
-[Megafusion](https://github.com/J35P312/MegaFusion) converts RNA fusion files to SV VCF and collects statistics and metrics in a VCF file.
-
 ### MultiQC
 
-<details markdown="1">
-<summary>Output files</summary>
+![MultiQC - FastQC sequence counts plot](images/mqc_fastqc_counts.png)
 
-- `multiqc/`
-  - `multiqc_report.html`: a standalone HTML file that can be viewed in your web browser.
-  - `multiqc_data/`: directory containing parsed statistics from the different tools used in the pipeline.
-  - `multiqc_plots/`: directory containing static images from the report in various formats.
+![MultiQC - FastQC mean quality scores plot](images/mqc_fastqc_quality.png)
 
-</details>
+![MultiQC - FastQC adapter content plot](images/mqc_fastqc_adapter.png)
 
-[MultiQC](http://multiqc.info) is a visualization tool that generates a single HTML report summarizing all samples in your project. Most of the pipeline QC results are visualized in the report and further statistics are available in the report data directory.
-
-Results generated by MultiQC collate pipeline QC from supported tools e.g. FastQC. The pipeline has special steps which also allow the software versions to be reported in the MultiQC output for future traceability. For more information about how to use MultiQC reports, see <http://multiqc.info>.
-
-### Pipeline information
+:::note
+The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
+:::
 
 ### Picard
 
@@ -359,6 +318,32 @@ Picard CollectRnaMetrics and picard MarkDuplicates share the same output directo
   - `<sample>.bam` - BAM file with marked duplicates
 
 </details>
+
+### Pipeline information
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `pipeline_info/`
+  - Reports generated by Nextflow: `execution_report_<timestamp>.html`, `execution_timeline_<timestamp>.html`, `execution_trace_<timestamp>.txt`, `pipeline_dag_<timestamp>.dot`/`pipeline_dag_<timestamp>.svg` and `manifest_<timestamp>.bco.json`.
+  - Reports generated by the pipeline: `pipeline_report.html`, `pipeline_report.txt` and `software_versions.yml`. The `pipeline_report*` files will only be present if the `--email` / `--email_on_fail` parameter's are used when running the pipeline.
+  - Parameters used by the pipeline run: `params_<timestamp>.json`.
+
+</details>
+
+[Nextflow](https://www.nextflow.io/docs/latest/tracing.html) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.
+
+### Salmon
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `salmon`
+  - `<sample>`
+
+</details>
+
+Folder containing the quantification results
 
 ### STAR
 
@@ -406,17 +391,14 @@ The STAR index is generated with `--sjdbOverhang ${params.read_length - 1}`, `pa
 - `stringtie/<sample>/stringtie.merged.gtf` - merged gtf from annotation and stringtie output gtfs
 </details>
 
-### Pipeline information
+### Vcf_collect
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `pipeline_info/`
-  - Reports generated by Nextflow: `execution_report.html`, `execution_timeline.html`, `execution_trace.txt` and `pipeline_dag.dot`/`pipeline_dag.svg`.
-  - Reports generated by the pipeline: `pipeline_report.html`, `pipeline_report.txt` and `software_versions.yml`. The `pipeline_report*` files will only be present if the `--email` / `--email_on_fail` parameter's are used when running the pipeline.
-  - Reformatted samplesheet files used as input to the pipeline: `samplesheet.valid.csv`.
-  - Parameters used by the pipeline run: `params.json`.
+- `vcf`
+  - `<sample>_fusion_data.vcf` - contains the fusions in vcf format with collected statistics.
+
+Vcf-collect takes as input the results of fusion-report and fusioninspector. That means fusions from all tools are aggregated. Fusioninspector applies a filter so it is possible some fusions detected by a caller are not filtered out by fusioninspector. In those cases, vcf-collect will display the fusions, but a lot of data will be missing as fusioninspector performs the analysis for each fusion.
 
 </details>
-
-[Nextflow](https://www.nextflow.io/docs/latest/tracing.html) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.

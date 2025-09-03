@@ -6,13 +6,13 @@
 
 include { GENCODE_DOWNLOAD }                from '../../../modules/local/gencode_download/main'
 include { HGNC_DOWNLOAD }                   from '../../../modules/local/hgnc/main'
-include { GTF_TO_REFFLAT }                  from '../../../modules/local/uscs/custom_gtftogenepred/main'
 
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
 ========================================================================================
 */
+include { UCSC_GTFTOGENEPRED              } from '../../../modules/nf-core/ucsc/gtftogenepred/main'
 include { CTATSPLICING_PREPGENOMELIB }      from '../../../modules/nf-core/ctatsplicing/prepgenomelib/main.nf'
 include { BIOAWK                          } from '../../../modules/nf-core/bioawk/main'
 include { AGAT_CONVERTGFF2BED             } from '../../../modules/nf-core/agat/convertgff2bed/main'
@@ -99,9 +99,9 @@ workflow BUILD_REFERENCES {
     def ch_refflat = Channel.empty()
     if (!params.skip_qc) {
         if (!exists_not_empty(params.refflat)){
-            GTF_TO_REFFLAT(ch_gtf)
-            ch_versions = ch_versions.mix(GTF_TO_REFFLAT.out.versions)
-            ch_refflat = GTF_TO_REFFLAT.out.refflat.map { that -> [[id:that.Name], that] }
+            UCSC_GTFTOGENEPRED(ch_gtf)
+            ch_versions = ch_versions.mix(UCSC_GTFTOGENEPRED.out.versions)
+            ch_refflat = UCSC_GTFTOGENEPRED.out.refflat.map { meta, rf -> [[id: meta.id], rf] }
         } else {
             ch_refflat = Channel.fromPath(params.refflat).map { that -> [[id:that.Name], that] }
         }
