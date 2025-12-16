@@ -19,6 +19,7 @@ include { STAR_ALIGN                    }   from '../modules/nf-core/star/align/
 include { SALMON_QUANT                  }   from '../modules/nf-core/salmon/quant/main'
 include { SAMTOOLS_CONVERT              }   from '../modules/nf-core/samtools/convert/main'
 include { SAMTOOLS_INDEX                }   from '../modules/nf-core/samtools/index/main'
+include { SAMTOOLS_COLLATEFASTQ         }   from '../modules/nf-core/samtools/collatefastq/main'
 include { paramsSummaryMap              }   from 'plugin/nf-schema'
 include { FASTQ_ALIGN_STAR              }   from '../subworkflows/nf-core/fastq_align_star'
 include { paramsSummaryMultiqc          }   from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -80,23 +81,35 @@ workflow RNAFUSION {
             return [ new_meta, fastqs, bam, bai, cram, crai, junctions, splice_junctions ]
         }
         .tap { ch_samplesheet }
-        .multiMap { meta, fastqs, bam, bai, cram, crai, junctions, splice_junctions ->
-            fastqs:             [ meta, fastqs ]
+        .multiMap { meta, _fastqs, bam, bai, cram, crai, junctions, splice_junctions ->
             bam:                [ meta, bam, bai ]
             cram:               [ meta, cram, crai ]
             junctions:          [ meta, junctions ]
             splice_junctions:   [ meta, splice_junctions ]
         }
 
-        // Define which fastqs need to be processes (all analysis that's not aligning)
+        // Transform BAM/CRAM to fastq if needed
         def fastq_tools = ["salmon", "fusioninspector", "fusioncatcher"]
         selected_fastq_tools = tools.intersect(fastq_tools)
-        def ch_fastqs_to_process = ch_input.fastqs.branch { meta, fastqs ->
-            if (!fastqs && selected_fastq_tools) {
-                log.warn("Fastq files not found for sample '${meta.id}'. Skipping the following tools for this sample: ${selected_fastq_tools.join(', ')}")
+        def ch_fastq_branch = ch_samplesheet.branch { meta, fastqs, bam, _bai, cram, _crai, _junctions, _splice_junctions ->
+            if (!(fastqs || bam || cram) && selected_fastq_tools) {
+                log.warn("Fastq files not found or unable to create them for sample '${meta.id}'. Skipping the following tools for this sample: ${selected_fastq_tools.join(', ')}. Provide a FASTQ, BAM or CRAM file to run these tools.")
             }
             found: fastqs
-            not_found: !fastqs
+                return [ meta, fastqs ]
+            alignment: !fastqs && (bam || cram)
+                return [ meta, bam ?: cram ]
+        }
+
+        def ch_fastqs = ch_fastq_branch.found
+        if(selected_fastq_tools) {
+            SAMTOOLS_COLLATEFASTQ(
+                ch_fastq_branch.alignment,
+                BUILD_REFERENCES.out.fasta,
+                false
+            )
+            ch_versions = ch_versions.mix(SAMTOOLS_COLLATEFASTQ.out.versions.first())
+            ch_fastqs = ch_fastqs.mix(SAMTOOLS_COLLATEFASTQ.out.fastq)
         }
 
         // Convert CRAM to BAM when needed (when tools that don't support CRAM are used and when the sample isn't aligned)
@@ -138,7 +151,7 @@ workflow RNAFUSION {
         def min_trimmed_reads = (params.min_trimmed_reads ?: 1) as Integer
 
         FASTQ_FASTQC_UMITOOLS_FASTP(
-            ch_fastqs_to_process.found,  // reads: [ val(meta), [fastqs] ]
+            ch_fastqs,                   // reads: [ val(meta), [fastqs] ]
             params.skip_qc,              // skip_fastqc
             with_umi,                    // with_umi
             skip_umi_extract,            // skip_umi_extract
@@ -301,7 +314,7 @@ workflow RNAFUSION {
         )
             ch_versions = ch_versions.mix(FUSIONCATCHER_WORKFLOW.out.versions)
             // Add output of fusioncatcher to a channel + add empty entries for the samples that could not be run
-            ch_fusioncatcher_fusions = FUSIONCATCHER_WORKFLOW.out.fusions.mix(ch_fastqs_to_process.not_found)
+            ch_fusioncatcher_fusions = FUSIONCATCHER_WORKFLOW.out.fusions.mix(ch_fastqs)
         }
 
         //
