@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added a BAM/CRAM conversion to FASTQ step to run tools that depend on FASTQ files. It still is advised to supply a FASTQ file if possible to reduce runtime of the pipeline. [#XXX]()
+- Added a BAM/CRAM conversion to FASTQ step to run tools that depend on FASTQ files. It still is advised to supply a FASTQ file if possible to reduce runtime of the pipeline. [#783](https://github.com/nf-core/rnafusion/pull/783)
 
 ## v4.0.0 - [2025-09-10]
 

@@ -99,6 +99,8 @@ workflow RNAFUSION {
                 return [ meta, fastqs ]
             alignment: !fastqs && (bam || cram)
                 return [ meta, bam ?: cram ]
+            not_found: true
+                return [ meta, [] ]
         }
 
         def ch_fastqs = ch_fastq_branch.found
@@ -314,7 +316,7 @@ workflow RNAFUSION {
         )
             ch_versions = ch_versions.mix(FUSIONCATCHER_WORKFLOW.out.versions)
             // Add output of fusioncatcher to a channel + add empty entries for the samples that could not be run
-            ch_fusioncatcher_fusions = FUSIONCATCHER_WORKFLOW.out.fusions.mix(ch_fastqs)
+            ch_fusioncatcher_fusions = FUSIONCATCHER_WORKFLOW.out.fusions.mix(ch_fastq_branch.not_found)
         }
 
         //
