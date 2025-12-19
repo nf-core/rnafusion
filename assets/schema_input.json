@@ -32,7 +32,7 @@
                 "format": "file-path",
                 "exists": true,
                 "pattern": "^\\S+\\.bam$",
-                "description": "BAM file created with STAR. This file should be created from paired-end reads.",
+                "description": "BAM file created with STAR. This file should be created from paired-end reads and junctions should be written out separately.",
                 "errorMessage": "BAM file cannot contain spaces, has to exist and must have extension '.bam'"
             },
             "bai": {
@@ -47,7 +47,7 @@
                 "format": "file-path",
                 "exists": true,
                 "pattern": "^\\S+\\.cram$",
-                "description": "CRAM file created with STAR. This file should be created from paired-end reads.",
+                "description": "CRAM file created with STAR. This file should be created from paired-end reads and junctions should be written out separately.",
                 "errorMessage": "CRAM file cannot contain spaces, has to exist and must have extension '.cram'"
             },
             "crai": {
