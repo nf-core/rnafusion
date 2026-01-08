@@ -84,9 +84,6 @@ def vcf_collect(
     all_df = df.merge(
         gtf_df, how="left", left_on="CDS_LEFT_ID", right_on="Transcript_id"
     )
-    all_df[["PosA", "orig_start", "orig_end"]] = (
-        all_df[["PosA", "orig_start", "orig_end"]].fillna(0).astype(int)
-    )
 
     all_df = all_df[
         (
@@ -94,6 +91,7 @@ def vcf_collect(
             & (all_df["PosA"] <= all_df["orig_end"])
         )
         | ((all_df["orig_start"] == 0) & (all_df["orig_end"] == 0))
+        | ((all_df["PosA"].isna()))
     ]
 
     all_df["Left_transcript_version"] = all_df["CDS_LEFT_ID"].astype(str).str.split(".").str[-1]
