@@ -91,8 +91,9 @@ def vcf_collect(
             & (all_df["PosA"] <= all_df["orig_end"])
         )
         | ((all_df["orig_start"].isna()) & (all_df["orig_end"].isna()))
-        | ((all_df["PosA"].isna()))
+        | (all_df["PosA"].isna() & (all_df["ChromosomeA"].isna() == False) & (all_df["ChromosomeB"].isna() == False))
     ]
+
 
     all_df["Left_transcript_version"] = all_df["CDS_LEFT_ID"].astype(str).str.split(".").str[-1]
 
@@ -150,7 +151,7 @@ def vcf_collect(
             & (all_df["PosB"] <= all_df["orig_end"])
         )
         | ((all_df["orig_start"].isna()) & (all_df["orig_end"].isna()))
-        | ((all_df["PosB"].isna()))
+        | (all_df["PosB"].isna() & (all_df["ChromosomeA"].isna() == False) & (all_df["ChromosomeB"].isna() == False))
     ]
 
     all_df = all_df.replace("", np.nan)
