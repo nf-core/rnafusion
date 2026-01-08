@@ -143,21 +143,16 @@ def vcf_collect(
     all_df = all_df.merge(
         gtf_df, how="left", left_on="CDS_RIGHT_ID", right_on="Transcript_id"
     )
-    all_df[["PosB", "orig_start", "orig_end"]] = all_df[
-        ["PosB", "orig_start", "orig_end"]
-    ].fillna(0)
-    all_df[["PosB", "orig_start", "orig_end"]] = all_df[
-        ["PosB", "orig_start", "orig_end"]
-    ].astype(int)
+
     all_df = all_df[
         (
             (all_df["PosB"] >= all_df["orig_start"])
             & (all_df["PosB"] <= all_df["orig_end"])
         )
         | ((all_df["orig_start"] == 0) & (all_df["orig_end"] == 0))
+        | ((all_df["PosB"].isna()))
     ]
 
-    all_df[["PosA", "PosB"]] = all_df[["PosA", "PosB"]].replace(0, np.nan)
     all_df = all_df.replace("", np.nan)
 
     all_df["Right_transcript_version"] = all_df["CDS_RIGHT_ID"].astype(str).str.split(".").str[-1]
