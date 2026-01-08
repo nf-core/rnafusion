@@ -90,7 +90,7 @@ def vcf_collect(
             (all_df["PosA"] >= all_df["orig_start"])
             & (all_df["PosA"] <= all_df["orig_end"])
         )
-        | ((all_df["orig_start"] == 0) & (all_df["orig_end"] == 0))
+        | ((all_df["orig_start"].isna()) & (all_df["orig_end"].isna()))
         | ((all_df["PosA"].isna()))
     ]
 
@@ -149,7 +149,7 @@ def vcf_collect(
             (all_df["PosB"] >= all_df["orig_start"])
             & (all_df["PosB"] <= all_df["orig_end"])
         )
-        | ((all_df["orig_start"] == 0) & (all_df["orig_end"] == 0))
+        | ((all_df["orig_start"].isna()) & (all_df["orig_end"].isna()))
         | ((all_df["PosB"].isna()))
     ]
 
