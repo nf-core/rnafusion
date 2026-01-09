@@ -84,16 +84,14 @@ def vcf_collect(
     all_df = df.merge(
         gtf_df, how="left", left_on="CDS_LEFT_ID", right_on="Transcript_id"
     )
-    all_df[["PosA", "orig_start", "orig_end"]] = (
-        all_df[["PosA", "orig_start", "orig_end"]].fillna(0).astype(int)
-    )
 
     all_df = all_df[
         (
             (all_df["PosA"] >= all_df["orig_start"])
             & (all_df["PosA"] <= all_df["orig_end"])
         )
-        | ((all_df["orig_start"] == 0) & (all_df["orig_end"] == 0))
+        | ((all_df["orig_start"].isna()) & (all_df["orig_end"].isna()))
+        | (all_df["PosA"].isna())
     ]
 
     all_df["Left_transcript_version"] = all_df["CDS_LEFT_ID"].astype(str).str.split(".").str[-1]
@@ -145,21 +143,16 @@ def vcf_collect(
     all_df = all_df.merge(
         gtf_df, how="left", left_on="CDS_RIGHT_ID", right_on="Transcript_id"
     )
-    all_df[["PosB", "orig_start", "orig_end"]] = all_df[
-        ["PosB", "orig_start", "orig_end"]
-    ].fillna(0)
-    all_df[["PosB", "orig_start", "orig_end"]] = all_df[
-        ["PosB", "orig_start", "orig_end"]
-    ].astype(int)
+
     all_df = all_df[
         (
             (all_df["PosB"] >= all_df["orig_start"])
             & (all_df["PosB"] <= all_df["orig_end"])
         )
-        | ((all_df["orig_start"] == 0) & (all_df["orig_end"] == 0))
+        | ((all_df["orig_start"].isna()) & (all_df["orig_end"].isna()))
+        | (all_df["PosB"].isna())
     ]
 
-    all_df[["PosA", "PosB"]] = all_df[["PosA", "PosB"]].replace(0, np.nan)
     all_df = all_df.replace("", np.nan)
 
     all_df["Right_transcript_version"] = all_df["CDS_RIGHT_ID"].astype(str).str.split(".").str[-1]
@@ -212,6 +205,9 @@ def vcf_collect(
     all_df = all_df.set_index("Fusion")
 
     all_df = all_df.combine_first(read_fusionreport_csv(fusionreport_csv))
+
+    # Filter out invalid entries with missing positional values
+    all_df = all_df[all_df["PosA"].notna() & all_df["PosB"].notna() & all_df["ChromosomeA"].notna() & all_df["ChromosomeB"].notna()]
 
     return write_vcf(column_manipulation(all_df), header_def(sample), out_file)
 
