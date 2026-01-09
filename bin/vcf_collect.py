@@ -91,9 +91,8 @@ def vcf_collect(
             & (all_df["PosA"] <= all_df["orig_end"])
         )
         | ((all_df["orig_start"].isna()) & (all_df["orig_end"].isna()))
-        | (all_df["PosA"].isna() & (all_df["ChromosomeA"].isna() == False) & (all_df["ChromosomeB"].isna() == False))
+        | (all_df["PosA"].isna())
     ]
-
 
     all_df["Left_transcript_version"] = all_df["CDS_LEFT_ID"].astype(str).str.split(".").str[-1]
 
@@ -151,7 +150,7 @@ def vcf_collect(
             & (all_df["PosB"] <= all_df["orig_end"])
         )
         | ((all_df["orig_start"].isna()) & (all_df["orig_end"].isna()))
-        | (all_df["PosB"].isna() & (all_df["ChromosomeA"].isna() == False) & (all_df["ChromosomeB"].isna() == False))
+        | (all_df["PosB"].isna())
     ]
 
     all_df = all_df.replace("", np.nan)
@@ -206,6 +205,9 @@ def vcf_collect(
     all_df = all_df.set_index("Fusion")
 
     all_df = all_df.combine_first(read_fusionreport_csv(fusionreport_csv))
+
+    # Filter out invalid entries with missing positional values
+    all_df = all_df[all_df["PosA"].notna() & all_df["PosB"].notna() & all_df["ChromosomeA"].notna() & all_df["ChromosomeB"].notna()]
 
     return write_vcf(column_manipulation(all_df), header_def(sample), out_file)
 
