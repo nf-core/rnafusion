@@ -405,4 +405,44 @@ nextflow_pipeline {
             )
         }
     }
+
+    test("default no fastqs provided") {
+
+        when {
+            params {
+                outdir           = "$outputDir"
+                fusion_annot_lib = 'https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/master/CTAT_HumanFusionLib.mini.dat.gz'
+                input            = "${projectDir}/tests/yml/cram_only.yml"
+                tools            = "all"
+                no_cosmic        = true
+                genomes_base     = "${outputDir}/references"
+                arriba_ref_protein_domains  = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3"
+                arriba_ref_known_fusions    = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/known_fusions_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_blacklist        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/blacklist_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_cytobands        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv"
+                fusioncatcher_ref           = "${projectDir}/assets" // This is a placeholder until a small reference can be created
+            }
+        }
+
+        then {
+            // stable_name: All files + folders in ${params.outdir}/ with a stable name
+            // Ignore files with timestamps in their names
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+            // stable_path: All files in ${params.outdir}/ with stable content
+            // def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore') //TODO uncomment once -stub is removed
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    // Number of successful tasks
+                    workflow.trace.succeeded().size(),
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we tests pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_rnafusion_software_mqc_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_name,
+                    // All files with stable contents
+                    // stable_path // TODO uncomment once -stub is removed
+                ).match() }
+            )
+        }
+    }
 }

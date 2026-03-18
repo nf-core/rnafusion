@@ -32,6 +32,7 @@
                 "format": "file-path",
                 "exists": true,
                 "pattern": "^\\S+\\.bam$",
+                "description": "BAM file created with STAR. This file should be created from paired-end reads and junctions should be written out separately.",
                 "errorMessage": "BAM file cannot contain spaces, has to exist and must have extension '.bam'"
             },
             "bai": {
@@ -46,6 +47,7 @@
                 "format": "file-path",
                 "exists": true,
                 "pattern": "^\\S+\\.cram$",
+                "description": "CRAM file created with STAR. This file should be created from paired-end reads and junctions should be written out separately.",
                 "errorMessage": "CRAM file cannot contain spaces, has to exist and must have extension '.cram'"
             },
             "crai": {
@@ -60,6 +62,7 @@
                 "format": "file-path",
                 "exists": true,
                 "pattern": "^\\S+\\.junction$",
+                "description": "Junctions file created with STAR. This file should be created from paired-end reads.",
                 "errorMessage": "Junctions file cannot contain spaces, has to exist and must have extension '.junction'"
             },
             "splice_junctions": {
@@ -67,6 +70,7 @@
                 "format": "file-path",
                 "exists": true,
                 "pattern": "^\\S+\\.SJ.out.tab$",
+                "description": "Splice junctions file created with STAR. This file should be created from paired-end reads.",
                 "errorMessage": "Split junctions file cannot contain spaces, has to exist and must have extension '.SJ.out.tab'"
             },
             "strandedness": {
