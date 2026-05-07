@@ -59,7 +59,7 @@
                     },
                     "fastqc": {
                         "branch": "master",
-                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
                         "installed_by": ["fastq_fastqc_umitools_fastp", "modules"]
                     },
                     "fusioncatcher/fusioncatcher": {
@@ -105,7 +105,7 @@
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "a4488d3d09244f29fb4606ba4eef85d59dcc6ad8",
+                        "git_sha": "008f9d3e61209bf995edac3ba531f54e269e1215",
                         "installed_by": ["modules"]
                     },
                     "picard/collectinsertsizemetrics": {
