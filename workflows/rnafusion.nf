@@ -169,10 +169,10 @@ workflow RNAFUSION {
         ch_reads    = FASTQ_FASTQC_UMITOOLS_FASTP.out.reads
 
         ch_sbwf_fastp_mqc = channel.empty()
-            .mix(FASTQ_FASTQC_UMITOOLS_FASTP.out.fastqc_raw_zip.map { it[1] })
-            .mix(FASTQ_FASTQC_UMITOOLS_FASTP.out.fastqc_trim_zip.map { it[1] })
-            .mix(FASTQ_FASTQC_UMITOOLS_FASTP.out.trim_html.map { it[1] })
-            .mix(FASTQ_FASTQC_UMITOOLS_FASTP.out.trim_json.map { it[1] })
+            .mix(FASTQ_FASTQC_UMITOOLS_FASTP.out.fastqc_raw_zip.map { fastqc_raw_zip -> fastqc_raw_zip[1] })
+            .mix(FASTQ_FASTQC_UMITOOLS_FASTP.out.fastqc_trim_zip.map { fastqc_trim_zip -> fastqc_trim_zip[1] })
+            .mix(FASTQ_FASTQC_UMITOOLS_FASTP.out.trim_html.map { trim_html -> trim_html[1] })
+            .mix(FASTQ_FASTQC_UMITOOLS_FASTP.out.trim_json.map { trim_json -> trim_json[1] })
             .ifEmpty([])
 
         ch_multiqc_files = ch_multiqc_files.mix(ch_sbwf_fastp_mqc)
@@ -185,12 +185,12 @@ workflow RNAFUSION {
             SALMON_QUANT(
                 ch_reads,
                 BUILD_REFERENCES.out.salmon_index,
-                BUILD_REFERENCES.out.gtf.map{ it -> it[1] },
+                BUILD_REFERENCES.out.gtf.map{ gtf -> gtf[1] },
                 [],
                 false,
                 'A'
             )
-            ch_multiqc_files = ch_multiqc_files.mix(SALMON_QUANT.out.json_info.collect{it[1]})
+            ch_multiqc_files = ch_multiqc_files.mix(SALMON_QUANT.out.json_info.collect{ json_info -> json_info[1] })
             ch_versions      = ch_versions.mix(SALMON_QUANT.out.versions)
         }
 
@@ -226,8 +226,8 @@ workflow RNAFUSION {
             ch_aligned_reads        = ch_aligned_reads.mix(ch_bam_bai)
             ch_star_junctions       = ch_star_junctions.mix(FASTQ_ALIGN_STAR.out.junctions)
             ch_star_splice_junctions = ch_star_splice_junctions.mix(FASTQ_ALIGN_STAR.out.spl_junc_tabs)
-            ch_multiqc_files        = ch_multiqc_files.mix(FASTQ_ALIGN_STAR.out.log_final.collect{it[1]}.ifEmpty([]))
-            ch_multiqc_files        = ch_multiqc_files.mix(FASTQ_ALIGN_STAR.out.gene_count.collect{it[1]}.ifEmpty([]))
+            ch_multiqc_files        = ch_multiqc_files.mix(FASTQ_ALIGN_STAR.out.log_final.collect{ log_final -> log_final[1] }.ifEmpty([]))
+            ch_multiqc_files        = ch_multiqc_files.mix(FASTQ_ALIGN_STAR.out.gene_count.collect{ gene_count -> gene_count[1] }.ifEmpty([]))
         }
 
         //
@@ -254,7 +254,7 @@ workflow RNAFUSION {
         // TODO: improve how params.arriba_fusions would avoid running arriba module. Maybe imputed from samplesheet?
 
         def fusions_created = false
-        def ch_arriba_fusions = ch_samplesheet.map { it -> [it[0], []] } // Set arriba fusions to empty by default
+        def ch_arriba_fusions = ch_samplesheet.map { sample -> [sample[0], []] } // Set arriba fusions to empty by default
 
         if (tools.contains("arriba")) {
             fusions_created = true
@@ -283,7 +283,7 @@ workflow RNAFUSION {
         // MODULE: Run StarFusion
         //
 
-        def ch_starfusion_fusions = ch_samplesheet.map { it -> [it[0], []] } // Set starfusion fusions to empty by default
+        def ch_starfusion_fusions = ch_samplesheet.map { sample -> [sample[0], []] } // Set starfusion fusions to empty by default
         if (tools.contains("starfusion")) {
             fusions_created = true
 
@@ -293,7 +293,7 @@ workflow RNAFUSION {
             } else {
                 STARFUSION_DETECT(
                     ch_star_junctions.map { meta, junc -> [ meta, [], junc ] },
-                    BUILD_REFERENCES.out.starfusion_ref.map { it -> it[1] }
+                    BUILD_REFERENCES.out.starfusion_ref.map { starfusion_ref -> starfusion_ref[1] }
                 )
                 ch_versions = ch_versions.mix(STARFUSION_DETECT.out.versions)
                 ch_starfusion_fusions = STARFUSION_DETECT.out.fusions
@@ -305,7 +305,7 @@ workflow RNAFUSION {
         // SUBWORKFLOW: Run FusionCatcher
         //
 
-        def ch_fusioncatcher_fusions = ch_samplesheet.map { it -> [it[0], []] } // Set fusioncatcher fusions to empty by default
+        def ch_fusioncatcher_fusions = ch_samplesheet.map { sample -> [sample[0], []] } // Set fusioncatcher fusions to empty by default
         if(tools.contains("fusioncatcher")) {
             fusions_created = true
         fusioncatcher_trimming = params.trim_tail_fusioncatcher != 0
@@ -363,7 +363,7 @@ workflow RNAFUSION {
             ch_fusionreport_csv     = FUSIONREPORT_DETECT.out.csv
         } else if(params.fusioninspector_fusions) {
             def input_fusions       = file(params.fusioninspector_fusions, checkIfExists:true)
-            ch_fusion_list          = ch_reads.map { it -> [ it[0], input_fusions ] }
+            ch_fusion_list          = ch_reads.map { reads -> [ reads[0], input_fusions ] }
             ch_fusion_list_filtered = ch_fusion_list
             ch_fusionreport_csv     = null
             ch_fusionreport_report  = null
@@ -395,7 +395,7 @@ workflow RNAFUSION {
                 params.whitelist
             )
             ch_versions      = ch_versions.mix(FUSIONINSPECTOR_WORKFLOW.out.versions)
-            ch_multiqc_files = ch_multiqc_files.mix(FUSIONINSPECTOR_WORKFLOW.out.ch_arriba_visualisation.collect{it[1]}.ifEmpty([]))
+            ch_multiqc_files = ch_multiqc_files.mix(FUSIONINSPECTOR_WORKFLOW.out.ch_arriba_visualisation.collect{ visualisation -> visualisation[1] }.ifEmpty([]))
         }
 
         //
@@ -411,9 +411,9 @@ workflow RNAFUSION {
                 BUILD_REFERENCES.out.rrna_interval
             )
             ch_versions      = ch_versions.mix(QC_WORKFLOW.out.versions)
-            ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.rnaseq_metrics.collect{it[1]})
-            ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.duplicate_metrics.collect{it[1]})
-            ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.insertsize_metrics.collect{it[1]})
+            ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.rnaseq_metrics.collect{ rnaseq_metrics -> rnaseq_metrics[1] })
+            ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.duplicate_metrics.collect{ duplicate_metrics -> duplicate_metrics[1] })
+            ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.insertsize_metrics.collect{ insertsize_metrics -> insertsize_metrics[1] })
         }
     }
     //

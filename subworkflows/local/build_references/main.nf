@@ -112,10 +112,10 @@ workflow BUILD_REFERENCES {
     if (tools.contains("salmon")) {
         if (!params.skip_qc) {
             if (!exists_not_empty(params.salmon_index)){
-                GFFREAD(ch_gtf, ch_fasta.map{ it -> it[1] })
+                GFFREAD(ch_gtf, ch_fasta.map{ fasta -> fasta[1] })
                 ch_versions = ch_versions.mix(GFFREAD.out.versions)
 
-                SALMON_INDEX(ch_fasta.map{ it -> it[1] }, GFFREAD.out.gffread_fasta.map{ it -> it[1] })
+                SALMON_INDEX(ch_fasta.map{ fasta -> fasta[1] }, GFFREAD.out.gffread_fasta.map{ gffread_fasta -> gffread_fasta[1] })
                 ch_versions = ch_versions.mix(SALMON_INDEX.out.versions)
                 ch_salmon_index = SALMON_INDEX.out.index
             } else {
@@ -141,7 +141,7 @@ workflow BUILD_REFERENCES {
     def ch_arriba_ref_known_fusions   = params.arriba_ref_known_fusions ? channel.fromPath(params.arriba_ref_known_fusions) : channel.empty()
     def ch_arriba_ref_protein_domains = params.arriba_ref_protein_domains ? channel.fromPath(params.arriba_ref_protein_domains) : channel.empty()
 
-    def ch_fusioncatcher_ref = params.fusioncatcher_ref ? channel.fromPath(params.fusioncatcher_ref).map { it -> [[id:it.name], it] } : channel.empty()
+    def ch_fusioncatcher_ref = params.fusioncatcher_ref ? channel.fromPath(params.fusioncatcher_ref).map { fusioncatcher_ref -> [[id:fusioncatcher_ref.name], fusioncatcher_ref] } : channel.empty()
 
     def ch_starfusion_ref = channel.empty()
     if (tools.intersect(["starfusion", "ctatsplicing", "fusioninspector"])) {
@@ -189,7 +189,7 @@ workflow BUILD_REFERENCES {
             }
         }
         else {
-            ch_starfusion_ref = channel.fromPath(params.starfusion_ref).map { it -> [[id:it.name], it] }
+            ch_starfusion_ref = channel.fromPath(params.starfusion_ref).map { starfusion_ref -> [[id:starfusion_ref.name], starfusion_ref] }
         }
     }
 
