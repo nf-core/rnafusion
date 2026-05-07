@@ -6,7 +6,7 @@ lint:
     - conf/igenomes_ignored.config
   files_exist:
     - tests/default.nf.test
-nf_core_version: 3.3.2
+nf_core_version: 4.0.2
 repository_type: pipeline
 template:
   author: Martin Proks, Annick Renevey
