@@ -22,12 +22,15 @@ workflow FUSIONCATCHER_WORKFLOW {
                                         .map { meta, _reads, fusions -> [ meta, fusions ] }
         } else {
             if (fusioncatcher_trimming) {
+                reads_with_adapters = reads.map { meta, reads_files ->
+                    [ meta, reads_files, adapter_fasta ? file(adapter_fasta, checkIfExists: true) : [] ]
+                }
+
                 FASTP_FOR_FUSIONCATCHER(
-                    reads,
-                    adapter_fasta,
+                    reads_with_adapters,
                     false, // discard_trimmed_pass
                     false, // save_trimmed_fail
-                    false  // skip_qc
+                    false  // save_merged
                 )
                 ch_versions = ch_versions.mix(FASTP_FOR_FUSIONCATCHER.out.versions)
                 reads = FASTP_FOR_FUSIONCATCHER.out.reads

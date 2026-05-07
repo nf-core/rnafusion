@@ -136,8 +136,10 @@ workflow RNAFUSION {
 
         def ch_reads = Channel.empty()
 
-        // adapter_fasta as a channel (or empty if not provided)
-        def ch_adapter_fasta = params.adapter_fasta ? Channel.fromPath(params.adapter_fasta).collect() : []
+        // Add optional adapter FASTA to the reads tuple expected by FASTP.
+        def ch_fastqs_with_adapters = ch_fastqs.map { meta, fastqs ->
+            [ meta, fastqs, params.adapter_fasta ? file(params.adapter_fasta, checkIfExists: true) : [] ]
+        }
 
         // disable umi usage in this subworkflow for this pipeline
         def with_umi         = false
@@ -153,20 +155,18 @@ workflow RNAFUSION {
         def min_trimmed_reads = (params.min_trimmed_reads ?: 1) as Integer
 
         FASTQ_FASTQC_UMITOOLS_FASTP(
-            ch_fastqs,                   // reads: [ val(meta), [fastqs] ]
+            ch_fastqs_with_adapters,     // reads: [ val(meta), [fastqs], adapter_fasta ]
             params.skip_qc,              // skip_fastqc
             with_umi,                    // with_umi
             skip_umi_extract,            // skip_umi_extract
             umi_discard_read,            // umi_discard_read (0,1,2)
             skip_trimming,               // skip_trimming
-            //ch_adapter_fasta,            // adapter_fasta
             save_trimmed_fail,           // save_trimmed_fail
             save_merged,                 // save_merged
             min_trimmed_reads            // min_trimmed_reads
         )
 
         ch_reads    = FASTQ_FASTQC_UMITOOLS_FASTP.out.reads
-        ch_versions = ch_versions.mix(FASTQ_FASTQC_UMITOOLS_FASTP.out.versions)
 
         ch_sbwf_fastp_mqc = Channel.empty()
             .mix(FASTQ_FASTQC_UMITOOLS_FASTP.out.fastqc_raw_zip.map { it[1] })
@@ -207,6 +207,8 @@ workflow RNAFUSION {
         def ch_star_junctions        = ch_input.junctions.filter { meta, file -> file && !meta.align }
         def ch_star_splice_junctions = ch_input.splice_junctions.filter { meta, file -> file && !meta.align }
         if(tools.intersect(["ctatsplicing", "arriba", "starfusion", "stringtie"])) {
+            def ch_fasta_fai = BUILD_REFERENCES.out.fasta.join(BUILD_REFERENCES.out.fai, failOnMismatch:true, failOnDuplicate:true)
+
             FASTQ_ALIGN_STAR(
                 ch_fastqs_to_align,
                 BUILD_REFERENCES.out.starindex_ref,
@@ -214,12 +216,12 @@ workflow RNAFUSION {
                 params.star_ignore_sjdbgtf,
                 ch_fastqs_to_align.map { meta, _fastqs -> meta.seq_platform },
                 ch_fastqs_to_align.map { meta, _fastqs -> meta.seq_center },
-                BUILD_REFERENCES.out.fasta,
-                [[:], []]
+                ch_fasta_fai,
+                ch_fasta_fai
             )
             SAMTOOLS_INDEX(FASTQ_ALIGN_STAR.out.bam_sorted_aligned)
             ch_bam_bai = FASTQ_ALIGN_STAR.out.bam_sorted_aligned
-                .join(SAMTOOLS_INDEX.out.bai, failOnMismatch:true, failOnDuplicate:true)
+                .join(SAMTOOLS_INDEX.out.index, failOnMismatch:true, failOnDuplicate:true)
             ch_versions             = ch_versions.mix(FASTQ_ALIGN_STAR.out.versions)
             ch_aligned_reads        = ch_aligned_reads.mix(ch_bam_bai)
             ch_star_junctions       = ch_star_junctions.mix(FASTQ_ALIGN_STAR.out.junctions)

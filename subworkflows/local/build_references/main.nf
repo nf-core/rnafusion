@@ -151,7 +151,7 @@ workflow BUILD_REFERENCES {
             }
 
             if(params.pfam_file) {
-                pfam_file = Channel.fromPath(params.pfam_file, checkIfExists: true)
+                pfam_file = Channel.value(file(params.pfam_file, checkIfExists: true))
             } else {
                 error("Expected `--pfam_version` to be specified when using StarFusion to automatically fill in Pfam database or specify `--pfam_file` for custom input")
             }
