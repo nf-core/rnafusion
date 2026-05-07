@@ -159,7 +159,7 @@ workflow RNAFUSION {
             skip_umi_extract,            // skip_umi_extract
             umi_discard_read,            // umi_discard_read (0,1,2)
             skip_trimming,               // skip_trimming
-            ch_adapter_fasta,            // adapter_fasta
+            //ch_adapter_fasta,            // adapter_fasta
             save_trimmed_fail,           // save_trimmed_fail
             save_merged,                 // save_merged
             min_trimmed_reads            // min_trimmed_reads
