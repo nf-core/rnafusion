@@ -222,7 +222,6 @@ workflow RNAFUSION {
             SAMTOOLS_INDEX(FASTQ_ALIGN_STAR.out.bam_sorted_aligned)
             ch_bam_bai = FASTQ_ALIGN_STAR.out.bam_sorted_aligned
                 .join(SAMTOOLS_INDEX.out.index, failOnMismatch:true, failOnDuplicate:true)
-            ch_versions             = ch_versions.mix(FASTQ_ALIGN_STAR.out.versions)
             ch_aligned_reads        = ch_aligned_reads.mix(ch_bam_bai)
             ch_star_junctions       = ch_star_junctions.mix(FASTQ_ALIGN_STAR.out.junctions)
             ch_star_splice_junctions = ch_star_splice_junctions.mix(FASTQ_ALIGN_STAR.out.spl_junc_tabs)
