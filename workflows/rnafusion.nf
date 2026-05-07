@@ -44,8 +44,8 @@ workflow RNAFUSION {
 
     main:
 
-    def ch_versions = Channel.empty()
-    def ch_multiqc_files = Channel.empty()
+    def ch_versions = channel.empty()
+    def ch_multiqc_files = channel.empty()
 
     //
     // Create references if necessary
@@ -134,7 +134,7 @@ workflow RNAFUSION {
         // SUBWORKFLOW: Read QC and trimming (nf-core)
         //
 
-        def ch_reads = Channel.empty()
+        def ch_reads = channel.empty()
 
         // Add optional adapter FASTA to the reads tuple expected by FASTP.
         def ch_fastqs_with_adapters = ch_fastqs.map { meta, fastqs ->
@@ -168,7 +168,7 @@ workflow RNAFUSION {
 
         ch_reads    = FASTQ_FASTQC_UMITOOLS_FASTP.out.reads
 
-        ch_sbwf_fastp_mqc = Channel.empty()
+        ch_sbwf_fastp_mqc = channel.empty()
             .mix(FASTQ_FASTQC_UMITOOLS_FASTP.out.fastqc_raw_zip.map { it[1] })
             .mix(FASTQ_FASTQC_UMITOOLS_FASTP.out.fastqc_trim_zip.map { it[1] })
             .mix(FASTQ_FASTQC_UMITOOLS_FASTP.out.trim_html.map { it[1] })
@@ -261,7 +261,7 @@ workflow RNAFUSION {
 
             if (params.arriba_fusions) {
                 ch_arriba_fusions = ch_aligned_reads.map { meta, _bam, _bai -> meta }
-                    .combine(Channel.value(file(params.arriba_fusions, checkIfExists: true)))
+                    .combine(channel.value(file(params.arriba_fusions, checkIfExists: true)))
                     .map { meta, fusion_file -> [meta, fusion_file] }
             } else {
                 ARRIBA_ARRIBA(
@@ -337,10 +337,10 @@ workflow RNAFUSION {
         // SUBWORKFLOW: Run FusionReport
         //
 
-        def ch_fusion_list = Channel.empty()
-        def ch_fusion_list_filtered = Channel.empty()
-        def ch_fusionreport_report = Channel.empty()
-        def ch_fusionreport_csv = Channel.empty()
+        def ch_fusion_list = channel.empty()
+        def ch_fusion_list_filtered = channel.empty()
+        def ch_fusionreport_report = channel.empty()
+        def ch_fusionreport_csv = channel.empty()
         if (!params.skip_vis && tools.contains("fusionreport")) {
             if (!fusions_created) {
                 error("Could not find any fusion files. Please generate some with `--tools arriba`, `--tools starfusion` and/or `--tools fusioncatcher`")
@@ -449,26 +449,26 @@ workflow RNAFUSION {
     // MODULE: MultiQC
     //
 
-    def ch_multiqc_output = Channel.empty()
+    def ch_multiqc_output = channel.empty()
     if(!params.skip_qc && !params.references_only) {
-        ch_multiqc_config        = Channel.fromPath(
+        ch_multiqc_config        = channel.fromPath(
             "$projectDir/assets/multiqc_config.yml", checkIfExists: true)
         ch_multiqc_custom_config = params.multiqc_config ?
-            Channel.fromPath(params.multiqc_config, checkIfExists: true) :
-            Channel.empty()
+            channel.fromPath(params.multiqc_config, checkIfExists: true) :
+            channel.empty()
         ch_multiqc_logo          = params.multiqc_logo ?
-            Channel.fromPath(params.multiqc_logo, checkIfExists: true) :
-            Channel.empty()
+            channel.fromPath(params.multiqc_logo, checkIfExists: true) :
+            channel.empty()
 
         summary_params      = paramsSummaryMap(
             workflow, parameters_schema: "nextflow_schema.json")
-        ch_workflow_summary = Channel.value(paramsSummaryMultiqc(summary_params))
+        ch_workflow_summary = channel.value(paramsSummaryMultiqc(summary_params))
         ch_multiqc_files = ch_multiqc_files.mix(
             ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
         ch_multiqc_custom_methods_description = params.multiqc_methods_description ?
             file(params.multiqc_methods_description, checkIfExists: true) :
             file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-        ch_methods_description                = Channel.value(
+        ch_methods_description                = channel.value(
             methodsDescriptionText(ch_multiqc_custom_methods_description))
 
         ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
