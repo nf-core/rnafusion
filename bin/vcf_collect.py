@@ -44,6 +44,7 @@ def vcf_collect(
 
     Adapted from: https://github.com/J35P312/MegaFusion
     """
+    fusionreport_csv_df = read_fusionreport_csv(fusionreport_csv)
     merged_df = (
         build_fusioninspector_dataframe(fusioninspector_in_file)
         .join(read_build_fusionreport(fusionreport_in_file), how="outer", on="FUSION")
@@ -84,6 +85,10 @@ def vcf_collect(
     all_df = df.merge(
         gtf_df, how="left", left_on="CDS_LEFT_ID", right_on="Transcript_id"
     )
+
+    all_df[["PosA", "orig_start", "orig_end"]] = all_df[
+        ["PosA", "orig_start", "orig_end"]
+    ].apply(pd.to_numeric, errors="coerce")
 
     all_df = all_df[
         (
@@ -143,6 +148,10 @@ def vcf_collect(
     all_df = all_df.merge(
         gtf_df, how="left", left_on="CDS_RIGHT_ID", right_on="Transcript_id"
     )
+
+    all_df[["PosB", "orig_start", "orig_end"]] = all_df[
+        ["PosB", "orig_start", "orig_end"]
+    ].apply(pd.to_numeric, errors="coerce")
 
     all_df = all_df[
         (
@@ -204,7 +213,7 @@ def vcf_collect(
     all_df = all_df.rename(columns={"FUSION": "Fusion"})
     all_df = all_df.set_index("Fusion")
 
-    all_df = all_df.combine_first(read_fusionreport_csv(fusionreport_csv))
+    all_df = all_df.combine_first(fusionreport_csv_df)
 
     # Filter out invalid entries with missing positional values
     all_df = all_df[all_df["PosA"].notna() & all_df["PosB"].notna() & all_df["ChromosomeA"].notna() & all_df["ChromosomeB"].notna()]
@@ -292,9 +301,7 @@ def header_def(sample: str) -> str:
 ##FORMAT=<ID=DV,Number=1,Type=Integer,Description="Number of paired-ends that support the event">\n\
 ##FORMAT=<ID=RV,Number=1,Type=Integer,Description="Number of split reads that support the event">\n\
 ##FORMAT=<ID=FFPM,Number=1,Type=Float,Description="Fusion fragments per million total RNA-seq fragments">\n\
-#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{}'.format(
-        sample
-    )
+#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{}'.format(sample)
 
 
 def convert_to_list(annots_str: str) -> list:
@@ -394,6 +401,18 @@ def read_build_fusionreport(fusionreport_file: str) -> pd.DataFrame:
         tmp = str(from_html)[2:]
         tmp2 = tmp.split(', "tools": ')[0]
         fusion_report = pd.DataFrame(ast.literal_eval(tmp2))
+    if fusion_report.empty:
+        return pd.DataFrame(
+            columns=[
+                "FUSION",
+                "GeneA",
+                "GeneB",
+                "TOOLS_HITS",
+                "SCORE",
+                "FOUND_DB",
+                "FOUND_IN",
+            ]
+        ).set_index(["FUSION"])
     if not "arriba" in fusion_report.columns:
         fusion_report["arriba"] = ""
     if not "fusioncatcher" in fusion_report.columns:
@@ -427,6 +446,19 @@ def read_build_fusionreport(fusionreport_file: str) -> pd.DataFrame:
 
 def read_fusionreport_csv(file: str) -> pd.DataFrame:
     df = pd.read_csv(file)
+    if df.empty:
+        return pd.DataFrame(
+            columns=[
+                "GeneA",
+                "GeneB",
+                "ChromosomeA",
+                "PosA",
+                "StrandA",
+                "ChromosomeB",
+                "PosB",
+                "StrandB",
+            ]
+        ).rename_axis("Fusion")
     columns_to_iterate = ["starfusion", "arriba", "fusioncatcher"]
     for column in columns_to_iterate:
         if column not in df.columns:
@@ -499,10 +531,16 @@ def column_manipulation(df: pd.DataFrame) -> pd.DataFrame:
     df["Left_exon_number"] = df["Left_exon_number"].fillna(0).astype(int).astype(str)
     df["Right_exon_number"] = df["Right_exon_number"].fillna(0).astype(int).astype(str)
     df["Left_transcript_version"] = (
-        pd.to_numeric(df["Left_transcript_version"], errors="coerce").fillna(0).astype(int).astype(str)
+        pd.to_numeric(df["Left_transcript_version"], errors="coerce")
+        .fillna(0)
+        .astype(int)
+        .astype(str)
     )
     df["Right_transcript_version"] = (
-        pd.to_numeric(df["Right_transcript_version"], errors="coerce").fillna(0).astype(int).astype(str)
+        pd.to_numeric(df["Right_transcript_version"], errors="coerce")
+        .fillna(0)
+        .astype(int)
+        .astype(str)
     )
     df["PosA"] = df["PosA"].fillna(0).astype(int).astype(str)
     df["PosB"] = df["PosB"].fillna(0).astype(int).astype(str)
@@ -578,15 +616,17 @@ def build_gtf_dataframe(file: str) -> pd.DataFrame:
     Build a DataFrame from GTF file converted in TSV, extracting relevant columns.
     """
     df = pd.read_csv(file, sep="\t")
+    if df.empty:
+        return pd.DataFrame(
+            columns=["Transcript_id", "exon_number", "orig_start", "orig_end"]
+        )
     df[["fusion_dump", "Transcript_id"]] = df["transcript_id"].str.split(
         "^", expand=True
     )
     df[["orig_chromosome", "orig_start", "orig_end", "orig_dir"]] = df[
         "orig_coord_info"
     ].str.split(",", expand=True)
-    return df[
-        ["Transcript_id", "exon_number", "orig_start", "orig_end"]
-    ]
+    return df[["Transcript_id", "exon_number", "orig_start", "orig_end"]]
 
 
 def main(argv=None):
