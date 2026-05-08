@@ -23,7 +23,7 @@ nextflow_workflow {
 
                 input[1] = true
 
-                input[2] = []
+                input[2] = Channel.value([])
 
                 input[3] = [
                     [ id:'fusioncatcher_ref' ],
