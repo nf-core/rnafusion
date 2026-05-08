@@ -33,7 +33,7 @@ workflow FUSIONCATCHER_WORKFLOW {
                     false, // save_trimmed_fail
                     false  // save_merged
                 )
-                
+
                 reads = FASTP_FOR_FUSIONCATCHER.out.reads
             }
 
