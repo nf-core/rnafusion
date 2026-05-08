@@ -34,14 +34,14 @@
                     "samtools": 1.21
                 },
                 "STARFUSION_BUILD": {
+                    "STAR-Fusion": "1.15.1",
                     "gunzip": 1.12,
-                    "hmmer": 3.4,
-                    "STAR-Fusion": "1.15.1"
+                    "hmmer": 3.4
                 },
                 "STAR_GENOMEGENERATE": {
-                    "star": "2.7.11b",
+                    "gawk": "5.1.0",
                     "samtools": 1.21,
-                    "gawk": "5.1.0"
+                    "star": "2.7.11b"
                 },
                 "UCSC_GTFTOGENEPRED": {
                     "ucsc": 447
@@ -282,10 +282,10 @@
                 "trans.blast.dat.gz:md5,85ba5ea96c566f751ad83a3e4b8ab128"
             ]
         ],
+        "timestamp": "2026-05-08T22:13:25.423950839",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.7"
-        },
-        "timestamp": "2025-09-10T15:15:36.32959"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
     }
 }
