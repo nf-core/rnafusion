@@ -32,7 +32,7 @@ workflow FUSIONCATCHER_WORKFLOW {
                     false, // save_trimmed_fail
                     false  // save_merged
                 )
-                ch_versions = ch_versions.mix(FASTP_FOR_FUSIONCATCHER.out.versions)
+                
                 reads = FASTP_FOR_FUSIONCATCHER.out.reads
             }
 
