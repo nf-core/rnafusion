@@ -17,8 +17,10 @@ nextflow_workflow {
                 // Input channels
                 input[0] = Channel.of(
                     [ [ id:'test_sample' ],
-                    file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/reads_1.fq.gz"),
-                    file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/reads_2.fq.gz") ]
+                    [
+                        file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/reads_1.fq.gz"),
+                        file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/reads_2.fq.gz")
+                    ] ]
                 )
 
                 input[1] = true
