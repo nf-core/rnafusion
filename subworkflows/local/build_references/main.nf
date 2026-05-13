@@ -57,7 +57,7 @@ workflow BUILD_REFERENCES {
         ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
         ch_fai = SAMTOOLS_FAIDX.out.fai
     } else {
-        ch_fai = channel.fromPath(params.fai).map { that -> [[id:that.Name], that] }
+        ch_fai = channel.fromPath(params.fai).map { that -> [[id:that.Name.replaceFirst(/\.fai$/, '')], that] }
     }
 
     def ch_hgnc_date = channel.empty()
