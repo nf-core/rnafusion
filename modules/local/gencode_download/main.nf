@@ -14,7 +14,7 @@ process GENCODE_DOWNLOAD {
     output:
     path "*.fa"        , emit: fasta
     path "*.gtf"       , emit: gtf
-    path "versions.yml", emit: versions
+    tuple val("${task.process}"), val('wget'), eval("wget --version | head -1 | cut -d ' ' -f 3"), topic: versions, emit: versions_wget
 
 
     when:
@@ -28,22 +28,12 @@ process GENCODE_DOWNLOAD {
     gunzip Homo_sapiens_${genome}_${genome_gencode_version}_dna_primary_assembly.fa.gz
     wget --no-check-certificate ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_${genome_gencode_version}/${folder_gencode}${gtf_file_name} -O Homo_sapiens_${genome}_${genome_gencode_version}.gtf.gz
     gunzip  Homo_sapiens_${genome}_${genome_gencode_version}.gtf.gz
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        wget: \$(wget --version | head -1 | cut -d ' ' -f 3)
-    END_VERSIONS
     """
 
     stub:
     """
     touch Homo_sapiens.${genome}.${genome_gencode_version}_dna_primary_assembly.fa
     touch Homo_sapiens.${genome}.${genome_gencode_version}.gtf
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        wget: \$(wget --version | head -1 | cut -d ' ' -f 3)
-    END_VERSIONS
     """
 
 }

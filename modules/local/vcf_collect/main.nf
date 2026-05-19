@@ -13,7 +13,8 @@ process VCF_COLLECT {
     tuple val(meta3),  path(hgnc_date)
 
     output:
-    path "versions.yml"              , emit: versions
+    tuple val("${task.process}"), val('python'), eval("python --version | sed 's/Python //g'"), topic: versions, emit: versions_python
+    tuple val("${task.process}"), val('vcf_collect'), val('0.1'), topic: versions, emit: versions_vcf_collect
     tuple val(meta), path("*vcf")    , emit: vcf
 
     when:
@@ -23,24 +24,11 @@ process VCF_COLLECT {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     vcf_collect.py --fusioninspector $fusioninspector_tsv --fusionreport $fusionreport_report --fusioninspector_gtf $fusioninspector_gtf_tsv --fusionreport_csv $fusionreport_csv --hgnc $hgnc_ref --sample ${prefix} --out ${prefix}_fusion_data.vcf
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version | sed 's/Python //g')
-        vcf_collect: 0.1
-        HGNC DB retrieval: \$(cat $hgnc_date)
-    END_VERSIONS
     """
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}_fusion_data.vcf
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version | sed 's/Python //g')
-        vcf_collect: 0.1
-    END_VERSIONS
     """
 }

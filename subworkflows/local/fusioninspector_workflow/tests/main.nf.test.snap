@@ -6,32 +6,32 @@
                     
                 ],
                 "1": [
-                    "versions.yml:md5,3be8e23309ed0bacebcad3d2fb30642a"
+                    
                 ],
                 "ch_arriba_visualisation": [
                     
                 ],
                 "versions": [
-                    "versions.yml:md5,3be8e23309ed0bacebcad3d2fb30642a"
+                    
                 ]
             }
         ],
+        "timestamp": "2026-05-19T12:31:22.239413823",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2025-09-08T17:38:59.895142"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.1"
+        }
     },
     "FUSIONINSPECTOR_WORKFLOW - human": {
         "content": [
             [
-                "versions.yml:md5,3be8e23309ed0bacebcad3d2fb30642a"
+                
             ]
         ],
+        "timestamp": "2026-05-19T12:30:59.587105674",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
-        },
-        "timestamp": "2025-09-08T17:14:05.797063"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.1"
+        }
     }
 }

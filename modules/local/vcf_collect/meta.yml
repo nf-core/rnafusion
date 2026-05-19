@@ -27,7 +27,8 @@ input:
 
 output:
   - versions:
-      type: file
+      type: map
+      description: Software versions published via topic channel (process, tool, version)
       description: File containing software versions
       pattern: "versions.yml"
   - vcf:
