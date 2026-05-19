@@ -6,7 +6,7 @@
                     [
                         "VCF_COLLECT",
                         "python",
-                        "3.13.12"
+                        "3.11.0"
                     ]
                 ],
                 "1": [
@@ -36,7 +36,7 @@
                     [
                         "VCF_COLLECT",
                         "python",
-                        "3.13.12"
+                        "3.11.0"
                     ]
                 ],
                 "versions_vcf_collect": [
@@ -61,7 +61,7 @@
                     [
                         "VCF_COLLECT",
                         "python",
-                        "3.13.12"
+                        "3.11.0"
                     ]
                 ],
                 "1": [
@@ -91,7 +91,7 @@
                     [
                         "VCF_COLLECT",
                         "python",
-                        "3.13.12"
+                        "3.11.0"
                     ]
                 ],
                 "versions_vcf_collect": [
