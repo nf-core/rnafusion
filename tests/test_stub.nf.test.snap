@@ -578,7 +578,7 @@
                     "fastqc": "0.12.1"
                 },
                 "FUSIONINSPECTOR": {
-                    "FusionInspector": "2.11.5"
+                    "fusion-inspector": "2.11.5"
                 },
                 "FUSIONREPORT_DETECT": {
                     "fusion_report": "4.0.1"
@@ -1732,7 +1732,7 @@
                     "fusioncatcher": "1.35"
                 },
                 "FUSIONINSPECTOR": {
-                    "FusionInspector": "2.11.5"
+                    "fusion-inspector": "2.11.5"
                 },
                 "FUSIONREPORT_DETECT": {
                     "fusion_report": "4.0.1"
