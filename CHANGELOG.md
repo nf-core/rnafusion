@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix channel join mismatch between `fa` and `fai` [#806](https://github.com/nf-core/rnafusion/pull/806)
 - Update FusionInspector to 2.11.5 to fix issue with empty BAM files [#807](https://github.com/nf-core/rnafusion/issues/807)
+- Updated local modules (`gencode_download`, `hgnc`, `vcf_collect`) and subworkflows (`build_references`, `fusioninspector_workflow`) to use version topic channels
 
 ### Changed
 
