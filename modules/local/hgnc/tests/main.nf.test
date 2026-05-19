@@ -21,7 +21,7 @@ nextflow_process {
                     file(process.out.hgnc_date[0]).name,
                 ).match() },
                 { assert path(process.out.hgnc_ref[0]).exists() },
-                { assert path(process.out.versions[0]).exists() }
+                { assert process.out.versions_wget }
             )
         }
     }
@@ -45,7 +45,7 @@ nextflow_process {
                     file(process.out.hgnc_date[0]).name,
                 ).match() },
                 { assert path(process.out.hgnc_ref[0]).exists() },
-                { assert path(process.out.versions[0]).exists() }
+                { assert process.out.versions_wget }
             )
         }
     }

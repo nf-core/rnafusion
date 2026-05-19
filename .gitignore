@@ -9,3 +9,4 @@ testing*
 null/
 .lineage/
 .nf-test*
+.vscode/settings.json

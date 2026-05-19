@@ -10,29 +10,19 @@ process HGNC_DOWNLOAD {
     output:
     path "hgnc_complete_set.txt"        , emit: hgnc_ref
     path "HGNC-DB-timestamp.txt"        , emit: hgnc_date
-    path "versions.yml"                 , emit: versions
+    tuple val("${task.process}"), val('wget'), eval("wget --version | head -1 | cut -d ' ' -f 3"), topic: versions, emit: versions_wget
 
 
     script:
     """
     wget --no-check-certificate https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/hgnc_complete_set.txt
     date +%Y-%m-%d/%H:%M  > HGNC-DB-timestamp.txt
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        wget: \$(wget --version | head -1 | cut -d ' ' -f 3)
-    END_VERSIONS
     """
 
     stub:
     """
     touch "hgnc_complete_set.txt"
     touch "HGNC-DB-timestamp.txt"
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        wget: \$(wget --version | head -1 | cut -d ' ' -f 3)
-    END_VERSIONS
     """
 
 }

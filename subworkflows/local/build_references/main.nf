@@ -43,7 +43,6 @@ workflow BUILD_REFERENCES {
     def ch_gtf   = channel.empty()
     if (!exists_not_empty(params.fasta) || !exists_not_empty(params.gtf)){
         GENCODE_DOWNLOAD(params.genome_gencode_version, params.genome)
-        ch_versions = ch_versions.mix(GENCODE_DOWNLOAD.out.versions)
         ch_fasta = GENCODE_DOWNLOAD.out.fasta.map { that -> [[id:that.Name], that] }
         ch_gtf = GENCODE_DOWNLOAD.out.gtf.map { that -> [[id:that.Name], that] }
     } else {
@@ -67,7 +66,6 @@ workflow BUILD_REFERENCES {
     if(run_fusioninspector && !params.skip_vcf) {
         if ((!exists_not_empty(params.hgnc_ref) || !exists_not_empty(params.hgnc_date)) && !params.skip_vcf){
             HGNC_DOWNLOAD( )
-            ch_versions = ch_versions.mix(HGNC_DOWNLOAD.out.versions)
             ch_hgnc_ref = HGNC_DOWNLOAD.out.hgnc_ref.map { that -> [[id:that.Name], that] }
             ch_hgnc_date = HGNC_DOWNLOAD.out.hgnc_date.map { that -> [[id:that.Name], that] }
         } else {
