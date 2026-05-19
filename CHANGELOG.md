@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix channel join mismatch between `fa` and `fai` [#806](https://github.com/nf-core/rnafusion/pull/806)
+- Update FusionInspector to 2.11.5 to fix issue with empty BAM files [#807](https://github.com/nf-core/rnafusion/issues/807)
 
 ### Changed
 
