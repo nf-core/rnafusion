@@ -29,8 +29,6 @@ output:
   - versions:
       type: map
       description: Software versions published via topic channel (process, tool, version)
-      description: File containing software versions
-      pattern: "versions.yml"
   - vcf:
       type: file
       description: File containing the summary of all fusions as compressed vcf file
