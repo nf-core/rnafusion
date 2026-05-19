@@ -79,6 +79,6 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         }
 
     emit:
-        ch_arriba_visualisation
+        ch_arriba_visualisation = ch_arriba_visualisation
         versions             = ch_versions
 }
