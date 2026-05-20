@@ -42,7 +42,6 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         }
 
         FUSIONINSPECTOR( ch_reads_fusion, ch_starfusion_ref)
-        ch_versions = ch_versions.mix(FUSIONINSPECTOR.out.versions)
 
         def tsv_nonempty = FUSIONINSPECTOR.out.tsv.filter { _meta, file -> file.exists() && file.size() > 0 }
         def tsv_abridged_nonempty = FUSIONINSPECTOR.out.abridged_tsv.filter { _meta, file -> file.exists() && file.size() > 0 }
@@ -62,7 +61,6 @@ workflow FUSIONINSPECTOR_WORKFLOW {
                 .join(fusionreport_csv)
 
             VCF_COLLECT(fusion_data, ch_hgnc_ref, ch_hgnc_date)
-            ch_versions = ch_versions.mix(VCF_COLLECT.out.versions)
         }
         if (
             !skip_vis
@@ -79,6 +77,6 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         }
 
     emit:
-        ch_arriba_visualisation
+        ch_arriba_visualisation = ch_arriba_visualisation
         versions             = ch_versions
 }

@@ -37,46 +37,44 @@ workflow BUILD_REFERENCES {
     tools // list of all the tools to create references for
 
     main:
-    def ch_versions = Channel.empty()
+    def ch_versions = channel.empty()
 
-    def ch_fasta = Channel.empty()
-    def ch_gtf   = Channel.empty()
+    def ch_fasta = channel.empty()
+    def ch_gtf   = channel.empty()
     if (!exists_not_empty(params.fasta) || !exists_not_empty(params.gtf)){
         GENCODE_DOWNLOAD(params.genome_gencode_version, params.genome)
-        ch_versions = ch_versions.mix(GENCODE_DOWNLOAD.out.versions)
         ch_fasta = GENCODE_DOWNLOAD.out.fasta.map { that -> [[id:that.Name], that] }
         ch_gtf = GENCODE_DOWNLOAD.out.gtf.map { that -> [[id:that.Name], that] }
     } else {
-        ch_fasta = Channel.fromPath(params.fasta).map { that -> [[id:that.Name], that] }
-        ch_gtf = Channel.fromPath(params.gtf).map { that -> [[id:that.Name], that] }
+        ch_fasta = channel.fromPath(params.fasta).map { that -> [[id:that.Name], that] }
+        ch_gtf = channel.fromPath(params.gtf).map { that -> [[id:that.Name], that] }
     }
 
-    def ch_fai = Channel.empty()
+    def ch_fai = channel.empty()
     if (!exists_not_empty(params.fai)){
         SAMTOOLS_FAIDX(ch_fasta, [[],[]], false)
         ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
         ch_fai = SAMTOOLS_FAIDX.out.fai
     } else {
-        ch_fai = Channel.fromPath(params.fai).map { that -> [[id:that.Name], that] }
+        ch_fai = channel.fromPath(params.fai).map { that -> [[id:that.Name.replaceFirst(/\.fai$/, '')], that] }
     }
 
-    def ch_hgnc_date = Channel.empty()
-    def ch_hgnc_ref  = Channel.empty()
+    def ch_hgnc_date = channel.empty()
+    def ch_hgnc_ref  = channel.empty()
     //TODO: unify as if(tools.contains("fusioninspector")) once nextflow bug fixed
     def run_fusioninspector = tools.contains("fusioninspector")
     if(run_fusioninspector && !params.skip_vcf) {
         if ((!exists_not_empty(params.hgnc_ref) || !exists_not_empty(params.hgnc_date)) && !params.skip_vcf){
             HGNC_DOWNLOAD( )
-            ch_versions = ch_versions.mix(HGNC_DOWNLOAD.out.versions)
             ch_hgnc_ref = HGNC_DOWNLOAD.out.hgnc_ref.map { that -> [[id:that.Name], that] }
             ch_hgnc_date = HGNC_DOWNLOAD.out.hgnc_date.map { that -> [[id:that.Name], that] }
         } else {
-            ch_hgnc_ref = Channel.fromPath(params.hgnc_ref).map { that -> [[id:that.Name], that] }
-            ch_hgnc_date = Channel.fromPath(params.hgnc_date).map { that -> [[id:that.Name], that] }
+            ch_hgnc_ref = channel.fromPath(params.hgnc_ref).map { that -> [[id:that.Name], that] }
+            ch_hgnc_date = channel.fromPath(params.hgnc_date).map { that -> [[id:that.Name], that] }
         }
     }
 
-    def ch_rrna_interval = Channel.empty()
+    def ch_rrna_interval = channel.empty()
     if (!params.skip_qc) {
         if (!exists_not_empty(params.rrna_intervals)){
             GATK4_CREATESEQUENCEDICTIONARY(ch_fasta)
@@ -93,38 +91,38 @@ workflow BUILD_REFERENCES {
 
             ch_rrna_interval = GATK4_BEDTOINTERVALLIST.out.interval_list
         } else {
-            ch_rrna_interval = Channel.fromPath(params.rrna_intervals).map { that -> [[id:that.Name], that] }
+            ch_rrna_interval = channel.fromPath(params.rrna_intervals).map { that -> [[id:that.Name], that] }
         }
     }
 
-    def ch_refflat = Channel.empty()
+    def ch_refflat = channel.empty()
     if (!params.skip_qc) {
         if (!exists_not_empty(params.refflat)){
             UCSC_GTFTOGENEPRED(ch_gtf)
             ch_versions = ch_versions.mix(UCSC_GTFTOGENEPRED.out.versions)
             ch_refflat = UCSC_GTFTOGENEPRED.out.refflat.map { meta, rf -> [[id: meta.id], rf] }
         } else {
-            ch_refflat = Channel.fromPath(params.refflat).map { that -> [[id:that.Name], that] }
+            ch_refflat = channel.fromPath(params.refflat).map { that -> [[id:that.Name], that] }
         }
     }
 
-    def ch_salmon_index = Channel.empty()
+    def ch_salmon_index = channel.empty()
     if (tools.contains("salmon")) {
         if (!params.skip_qc) {
             if (!exists_not_empty(params.salmon_index)){
-                GFFREAD(ch_gtf, ch_fasta.map{ it -> it[1] })
+                GFFREAD(ch_gtf, ch_fasta.map{ fasta -> fasta[1] })
                 ch_versions = ch_versions.mix(GFFREAD.out.versions)
 
-                SALMON_INDEX(ch_fasta.map{ it -> it[1] }, GFFREAD.out.gffread_fasta.map{ it -> it[1] })
+                SALMON_INDEX(ch_fasta.map{ fasta -> fasta[1] }, GFFREAD.out.gffread_fasta.map{ gffread_fasta -> gffread_fasta[1] })
                 ch_versions = ch_versions.mix(SALMON_INDEX.out.versions)
                 ch_salmon_index = SALMON_INDEX.out.index
             } else {
-                ch_salmon_index = Channel.fromPath(params.salmon_index)
+                ch_salmon_index = channel.fromPath(params.salmon_index)
             }
         }
     }
 
-    def ch_starindex_ref = Channel.empty()
+    def ch_starindex_ref = channel.empty()
     def star_index_tools = tools.intersect(["starfusion", "arriba", "ctatsplicing", "stringtie"])
     if (star_index_tools) {
         if (!exists_not_empty(params.starindex_ref)) {
@@ -132,18 +130,18 @@ workflow BUILD_REFERENCES {
             ch_versions = ch_versions.mix(STAR_GENOMEGENERATE.out.versions)
             ch_starindex_ref = STAR_GENOMEGENERATE.out.index
         } else {
-            ch_starindex_ref = Channel.fromPath(params.starindex_ref).map { that -> [[id:that.Name], that] }
+            ch_starindex_ref = channel.fromPath(params.starindex_ref).map { that -> [[id:that.Name], that] }
         }
     }
 
-    def ch_arriba_ref_blacklist       = params.arriba_ref_blacklist ? Channel.fromPath(params.arriba_ref_blacklist) : Channel.empty()
-    def ch_arriba_ref_cytobands       = params.arriba_ref_cytobands ? Channel.fromPath(params.arriba_ref_cytobands) : Channel.empty()
-    def ch_arriba_ref_known_fusions   = params.arriba_ref_known_fusions ? Channel.fromPath(params.arriba_ref_known_fusions) : Channel.empty()
-    def ch_arriba_ref_protein_domains = params.arriba_ref_protein_domains ? Channel.fromPath(params.arriba_ref_protein_domains) : Channel.empty()
+    def ch_arriba_ref_blacklist       = params.arriba_ref_blacklist ? channel.fromPath(params.arriba_ref_blacklist) : channel.empty()
+    def ch_arriba_ref_cytobands       = params.arriba_ref_cytobands ? channel.fromPath(params.arriba_ref_cytobands) : channel.empty()
+    def ch_arriba_ref_known_fusions   = params.arriba_ref_known_fusions ? channel.fromPath(params.arriba_ref_known_fusions) : channel.empty()
+    def ch_arriba_ref_protein_domains = params.arriba_ref_protein_domains ? channel.fromPath(params.arriba_ref_protein_domains) : channel.empty()
 
-    def ch_fusioncatcher_ref = params.fusioncatcher_ref ? Channel.fromPath(params.fusioncatcher_ref).map { it -> [[id:it.name], it] } : Channel.empty()
+    def ch_fusioncatcher_ref = params.fusioncatcher_ref ? channel.fromPath(params.fusioncatcher_ref).map { fusioncatcher_ref -> [[id:fusioncatcher_ref.name], fusioncatcher_ref] } : channel.empty()
 
-    def ch_starfusion_ref = Channel.empty()
+    def ch_starfusion_ref = channel.empty()
     if (tools.intersect(["starfusion", "ctatsplicing", "fusioninspector"])) {
         if (!exists_not_empty(params.starfusion_ref)) {
             if(!params.fusion_annot_lib) {
@@ -151,17 +149,17 @@ workflow BUILD_REFERENCES {
             }
 
             if(params.pfam_file) {
-                pfam_file = Channel.fromPath(params.pfam_file, checkIfExists: true)
+                pfam_file = channel.value(file(params.pfam_file, checkIfExists: true))
             } else {
                 error("Expected `--pfam_version` to be specified when using StarFusion to automatically fill in Pfam database or specify `--pfam_file` for custom input")
             }
 
             if(params.dfam_hmm && params.dfam_h3p && params.dfam_h3m && params.dfam_h3i && params.dfam_h3f) {
-                dfam_hmm = Channel.fromPath(params.dfam_hmm, checkIfExists: true)
-                dfam_h3f = Channel.fromPath(params.dfam_h3f, checkIfExists: true)
-                dfam_h3i = Channel.fromPath(params.dfam_h3i, checkIfExists: true)
-                dfam_h3m = Channel.fromPath(params.dfam_h3m, checkIfExists: true)
-                dfam_h3p = Channel.fromPath(params.dfam_h3p, checkIfExists: true)
+                dfam_hmm = channel.fromPath(params.dfam_hmm, checkIfExists: true)
+                dfam_h3f = channel.fromPath(params.dfam_h3f, checkIfExists: true)
+                dfam_h3i = channel.fromPath(params.dfam_h3i, checkIfExists: true)
+                dfam_h3m = channel.fromPath(params.dfam_h3m, checkIfExists: true)
+                dfam_h3p = channel.fromPath(params.dfam_h3p, checkIfExists: true)
             } else {
                 error("Expected `--dfam_version` and `--species` to be specified when using StarFusion to automatically fill in Dfam database or specify `--dfam_{hmm,h3f,h3i,h3m,h3p}` for custom input")
             }
@@ -189,11 +187,11 @@ workflow BUILD_REFERENCES {
             }
         }
         else {
-            ch_starfusion_ref = Channel.fromPath(params.starfusion_ref).map { it -> [[id:it.name], it] }
+            ch_starfusion_ref = channel.fromPath(params.starfusion_ref).map { starfusion_ref -> [[id:starfusion_ref.name], starfusion_ref] }
         }
     }
 
-    def ch_fusionreport_ref = Channel.empty()
+    def ch_fusionreport_ref = channel.empty()
     if (tools.contains("fusionreport")) {
         if (!exists_not_empty(params.fusionreport_ref)) {
             if (!params.no_cosmic && (!params.cosmic_username || !params.cosmic_passwd)) {
@@ -203,7 +201,7 @@ workflow BUILD_REFERENCES {
             ch_versions = ch_versions.mix(FUSIONREPORT_DOWNLOAD.out.versions)
             ch_fusionreport_ref = FUSIONREPORT_DOWNLOAD.out.fusionreport_ref
         } else {
-            ch_fusionreport_ref = Channel.fromPath(params.fusionreport_ref).map { that -> [[id:that.Name], that] }
+            ch_fusionreport_ref = channel.fromPath(params.fusionreport_ref).map { that -> [[id:that.Name], that] }
         }
     }
 

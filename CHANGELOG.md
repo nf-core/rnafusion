@@ -3,6 +3,20 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v4.1.1 - [2026-05-19]
+
+### Added
+
+### Fixed
+
+- Fix channel join mismatch between `fa` and `fai` [#806](https://github.com/nf-core/rnafusion/pull/806)
+- Update FusionInspector to 2.11.5 to fix issue with empty BAM files [#807](https://github.com/nf-core/rnafusion/issues/807)
+- Updated local modules (`gencode_download`, `hgnc`, `vcf_collect`) and subworkflows (`build_references`, `fusioninspector_workflow`) to use version topic channels
+
+### Changed
+
+- Template update to v4.0.2 [#804](https://github.com/nf-core/rnafusion/pull/804)
+
 ## v4.1.0 - [2026-02-09]
 
 ### Added
