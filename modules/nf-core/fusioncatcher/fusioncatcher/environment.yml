@@ -4,4 +4,4 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - "bioconda::fusioncatcher=1.33b"
+  - bioconda::fusioncatcher=1.33

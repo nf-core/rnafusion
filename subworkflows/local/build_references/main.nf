@@ -43,16 +43,16 @@ workflow BUILD_REFERENCES {
     def ch_gtf   = channel.empty()
     if (!exists_not_empty(params.fasta) || !exists_not_empty(params.gtf)){
         GENCODE_DOWNLOAD(params.genome_gencode_version, params.genome)
-        ch_fasta = GENCODE_DOWNLOAD.out.fasta.map { that -> [[id:that.Name], that] }
+        ch_fasta = GENCODE_DOWNLOAD.out.fasta.map { that -> [[id:that.Name], that, []] }
         ch_gtf = GENCODE_DOWNLOAD.out.gtf.map { that -> [[id:that.Name], that] }
     } else {
-        ch_fasta = channel.fromPath(params.fasta).map { that -> [[id:that.Name], that] }
+        ch_fasta = channel.fromPath(params.fasta).map { that -> [[id:that.Name], that, []] }
         ch_gtf = channel.fromPath(params.gtf).map { that -> [[id:that.Name], that] }
     }
 
     def ch_fai = channel.empty()
     if (!exists_not_empty(params.fai)){
-        SAMTOOLS_FAIDX(ch_fasta, [[],[]], false)
+        SAMTOOLS_FAIDX(ch_fasta, false)
         ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
         ch_fai = SAMTOOLS_FAIDX.out.fai
     } else {
@@ -80,7 +80,12 @@ workflow BUILD_REFERENCES {
             GATK4_CREATESEQUENCEDICTIONARY(ch_fasta)
             ch_versions = ch_versions.mix(GATK4_CREATESEQUENCEDICTIONARY.out.versions)
 
-            BIOAWK(ch_gtf)
+            BIOAWK(
+                ch_gtf,
+                [],
+                false,
+                "gff"
+            )
             ch_versions = ch_versions.mix(BIOAWK.out.versions)
 
             AGAT_CONVERTGFF2BED(BIOAWK.out.output)
@@ -197,7 +202,7 @@ workflow BUILD_REFERENCES {
             if (!params.no_cosmic && (!params.cosmic_username || !params.cosmic_passwd)) {
                 error('COSMIC username and/or password missing, this is needed to download the fusionreport reference')
             }
-            FUSIONREPORT_DOWNLOAD()
+            FUSIONREPORT_DOWNLOAD(channel.value([id:'fusionreport']))
             ch_versions = ch_versions.mix(FUSIONREPORT_DOWNLOAD.out.versions)
             ch_fusionreport_ref = FUSIONREPORT_DOWNLOAD.out.fusionreport_ref
         } else {

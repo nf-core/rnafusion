@@ -120,8 +120,7 @@ workflow RNAFUSION {
         if(tools.intersect(only_bam_tools)) {
             SAMTOOLS_CONVERT(
                 ch_input.cram.filter { meta, file, _crai -> file && !meta.align },
-                BUILD_REFERENCES.out.fasta,
-                BUILD_REFERENCES.out.fai
+                BUILD_REFERENCES.out.fasta.join(BUILD_REFERENCES.out.fai, failOnMismatch:true, failOnDuplicate:true)
             )
             ch_aligned_inputs = ch_aligned_inputs.mix(
                 SAMTOOLS_CONVERT.out.bam.join(SAMTOOLS_CONVERT.out.bai, failOnMismatch:true, failOnDuplicate:true)
@@ -447,51 +446,37 @@ workflow RNAFUSION {
     //
     // MODULE: MultiQC
     //
+    ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
 
-    def ch_multiqc_output = channel.empty()
-    if(!params.skip_qc && !params.references_only) {
-        ch_multiqc_config        = channel.fromPath(
-            "$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-        ch_multiqc_custom_config = params.multiqc_config ?
-            channel.fromPath(params.multiqc_config, checkIfExists: true) :
-            channel.empty()
-        ch_multiqc_logo          = params.multiqc_logo ?
-            channel.fromPath(params.multiqc_logo, checkIfExists: true) :
-            channel.empty()
+    def ch_summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+    def ch_workflow_summary = channel.value(paramsSummaryMultiqc(ch_summary_params))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
 
-        summary_params      = paramsSummaryMap(
-            workflow, parameters_schema: "nextflow_schema.json")
-        ch_workflow_summary = channel.value(paramsSummaryMultiqc(summary_params))
-        ch_multiqc_files = ch_multiqc_files.mix(
-            ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-        ch_multiqc_custom_methods_description = params.multiqc_methods_description ?
-            file(params.multiqc_methods_description, checkIfExists: true) :
-            file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-        ch_methods_description                = channel.value(
-            methodsDescriptionText(ch_multiqc_custom_methods_description))
+    def ch_multiqc_custom_methods_description = params.multiqc_methods_description
+        ? file(params.multiqc_methods_description, checkIfExists: true)
+        : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
+    def ch_methods_description = channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
 
-        ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
-        ch_multiqc_files = ch_multiqc_files.mix(
-            ch_methods_description.collectFile(
-                name: 'methods_description_mqc.yaml',
-                sort: true
-            )
-        )
-
-        MULTIQC (
-            ch_multiqc_files.collect(),
-            ch_multiqc_config.toList(),
-            ch_multiqc_custom_config.toList(),
-            ch_multiqc_logo.toList(),
-            [],
-            []
-        )
-        ch_multiqc_output = MULTIQC.out.report.toList()
-    }
+    MULTIQC(
+        ch_multiqc_files.flatten().collect().map { files ->
+            [
+                [id: 'exomecnv'],
+                files,
+                params.multiqc_config
+                    ? file(params.multiqc_config, checkIfExists: true)
+                    : file("${projectDir}/assets/multiqc_config.yml", checkIfExists: true),
+                params.multiqc_logo ? file(params.multiqc_logo, checkIfExists: true) : [],
+                [],
+                [],
+            ]
+        }
+    )
+    ch_multiqc_output = MULTIQC.out.report.toList()
 
 
     emit:
-    multiqc_report =  ch_multiqc_output // channel: /path/to/multiqc_report.html
+    multiqc_report = ch_multiqc_output // channel: /path/to/multiqc_report.html
     versions       = ch_versions        // channel: [ path(versions.yml) ]
 
 }
