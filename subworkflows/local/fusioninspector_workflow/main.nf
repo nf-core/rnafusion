@@ -24,13 +24,13 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         whitelist
 
     main:
-        ch_versions = Channel.empty()
-        ch_arriba_visualisation = Channel.empty()
+        ch_versions = channel.empty()
+        ch_arriba_visualisation = channel.empty()
 
         ch_fusion_list = ( tools_cutoff > 1 ? fusion_list_filtered : fusion_list )
 
         if (whitelist)  {
-            ch_whitelist = ch_fusion_list.combine(Channel.value(file(whitelist, checkIfExists:true)))
+            ch_whitelist = ch_fusion_list.combine(channel.value(file(whitelist, checkIfExists:true)))
                             .map { meta, fusions, whitelist_file -> [ meta, [fusions, whitelist_file] ] }
 
             CAT_CAT(ch_whitelist) // fusioninspector takes care of possible duplicates

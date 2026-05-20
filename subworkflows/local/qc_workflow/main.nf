@@ -15,7 +15,7 @@ workflow QC_WORKFLOW {
         ch_rrna_interval        // channel [ meta, interval   ]
 
     main:
-        ch_versions = Channel.empty()
+        ch_versions = channel.empty()
 
         PICARD_COLLECTRNASEQMETRICS(
             ch_bam_sorted,

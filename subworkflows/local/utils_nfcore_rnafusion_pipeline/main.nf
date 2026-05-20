@@ -108,7 +108,7 @@ workflow PIPELINE_INITIALISATION {
     // Create channel from input file provided through params.input
     //
 
-    Channel
+    channel
         .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
         .map { meta, fastq_1, fastq_2, bam, bai, cram, crai, junctions, splice_junctions, strandedness ->
             def meta_fastqs = []
@@ -202,7 +202,7 @@ def validateInputParameters() {
     if (params.dfam_version) {
         def dfamPattern = "https://www.dfam.org/releases/Dfam_${params.dfam_version}/infrastructure/dfamscan/${params.species}_dfam"
 
-        def setDfamParams = dfamParams.findAll { params[it] }
+        def setDfamParams = dfamParams.findAll { dfParam -> params[dfParam] }
 
         if (setDfamParams) {
             def customParams = setDfamParams.findAll { paramName ->
@@ -260,7 +260,7 @@ def validateInputSamplesheet(input) {
     }
 
     // Check that multiple runs of the same sample are of the same strandedness
-    def strandedness_ok = metas.collect{ it.strandedness }.unique().size == 1
+    def strandedness_ok = metas.collect{ meta -> meta.strandedness }.unique().size == 1
     if (!strandedness_ok) {
         error("Please check input samplesheet -> Multiple runs of a sample must have the same strandedness!: ${metas[0].id}")
     }
