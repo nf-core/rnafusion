@@ -24,7 +24,6 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         whitelist
 
     main:
-        ch_versions = channel.empty()
         ch_arriba_visualisation = channel.empty()
 
         ch_fusion_list = ( tools_cutoff > 1 ? fusion_list_filtered : fusion_list )
@@ -34,7 +33,6 @@ workflow FUSIONINSPECTOR_WORKFLOW {
                             .map { meta, fusions, whitelist_file -> [ meta, [fusions, whitelist_file] ] }
 
             CAT_CAT(ch_whitelist) // fusioninspector takes care of possible duplicates
-            ch_versions = ch_versions.mix(CAT_CAT.out.versions)
             ch_reads_fusion = reads.join(CAT_CAT.out.file_out )
         }
         else {
@@ -53,7 +51,6 @@ workflow FUSIONINSPECTOR_WORKFLOW {
             !skip_vcf
         ) {
             AGAT_CONVERTSPGFF2TSV(gtf_nonempty)
-            ch_versions = ch_versions.mix(AGAT_CONVERTSPGFF2TSV.out.versions)
 
             fusion_data = tsv_abridged_nonempty
                 .join(AGAT_CONVERTSPGFF2TSV.out.tsv)
@@ -72,11 +69,9 @@ workflow FUSIONINSPECTOR_WORKFLOW {
                 ch_arriba_ref_protein_domains.map { it -> [[id:it.name], it]},
                 ch_arriba_ref_cytobands.map { it -> [[id:it.name], it]}
             )
-            ch_versions = ch_versions.mix(ARRIBA_VISUALISATION.out.versions)
             ch_arriba_visualisation = ARRIBA_VISUALISATION.out.pdf
         }
 
     emit:
         ch_arriba_visualisation = ch_arriba_visualisation
-        versions             = ch_versions
 }

@@ -585,6 +585,10 @@
                     "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
                     "hidden": true
                 },
+                "help": {
+                    "type": ["boolean", "string"],
+                    "description": "Display a short help message. Give a parameter name to get detailed help for that parameter."
+                },
                 "help_full": {
                     "type": "boolean",
                     "description": "Display the full detailed help message."

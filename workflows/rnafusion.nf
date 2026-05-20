@@ -110,7 +110,6 @@ workflow RNAFUSION {
                 BUILD_REFERENCES.out.fasta,
                 false
             )
-            ch_versions = ch_versions.mix(SAMTOOLS_COLLATEFASTQ.out.versions.first())
             ch_fastqs = ch_fastqs.mix(SAMTOOLS_COLLATEFASTQ.out.fastq)
         }
 
@@ -190,7 +189,6 @@ workflow RNAFUSION {
                 'A'
             )
             ch_multiqc_files = ch_multiqc_files.mix(SALMON_QUANT.out.json_info.collect{ json_info -> json_info[1] })
-            ch_versions      = ch_versions.mix(SALMON_QUANT.out.versions)
         }
 
         //
@@ -241,8 +239,6 @@ workflow RNAFUSION {
                 ch_ctatsplicing_input,
                 BUILD_REFERENCES.out.starfusion_ref
             )
-
-            ch_versions = ch_versions.mix(CTATSPLICING_STARTOCANCERINTRONS.out.versions.first())
         }
 
         //
@@ -272,7 +268,6 @@ workflow RNAFUSION {
                     BUILD_REFERENCES.out.arriba_ref_protein_domains
                 )
                 ch_arriba_fusions = ARRIBA_ARRIBA.out.fusions
-                ch_versions = ch_versions.mix(ARRIBA_ARRIBA.out.versions)
             }
         }
 
@@ -314,7 +309,6 @@ workflow RNAFUSION {
             BUILD_REFERENCES.out.fusioncatcher_ref,       // channel [ meta, path       ]
             params.fusioncatcher_fusions
         )
-            ch_versions = ch_versions.mix(FUSIONCATCHER_WORKFLOW.out.versions)
             // Add output of fusioncatcher to a channel + add empty entries for the samples that could not be run
             ch_fusioncatcher_fusions = FUSIONCATCHER_WORKFLOW.out.fusions.mix(ch_fastq_branch.not_found)
         }
@@ -328,7 +322,6 @@ workflow RNAFUSION {
                 ch_aligned_reads.map { meta, bam, _bai -> [meta, bam]},
                 BUILD_REFERENCES.out.gtf
             )
-            ch_versions = ch_versions.mix(BAM_STRINGTIE_MERGE.out.versions)
         }
 
         //
@@ -354,7 +347,6 @@ workflow RNAFUSION {
                 params.tools_cutoff
             )
 
-            ch_versions             = ch_versions.mix(FUSIONREPORT_DETECT.out.versions)
             ch_fusion_list          = FUSIONREPORT_DETECT.out.fusion_list
             ch_fusion_list_filtered = FUSIONREPORT_DETECT.out.fusion_list_filtered
             ch_fusionreport_report  = FUSIONREPORT_DETECT.out.report
@@ -392,7 +384,6 @@ workflow RNAFUSION {
                 params.tools_cutoff,
                 params.whitelist
             )
-            ch_versions      = ch_versions.mix(FUSIONINSPECTOR_WORKFLOW.out.versions)
             ch_multiqc_files = ch_multiqc_files.mix(FUSIONINSPECTOR_WORKFLOW.out.ch_arriba_visualisation.collect{ visualisation -> visualisation[1] }.ifEmpty([]))
         }
 
@@ -408,7 +399,6 @@ workflow RNAFUSION {
                 BUILD_REFERENCES.out.fai,
                 BUILD_REFERENCES.out.rrna_interval
             )
-            ch_versions      = ch_versions.mix(QC_WORKFLOW.out.versions)
             ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.rnaseq_metrics.collect{ rnaseq_metrics -> rnaseq_metrics[1] })
             ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.duplicate_metrics.collect{ duplicate_metrics -> duplicate_metrics[1] })
             ch_multiqc_files = ch_multiqc_files.mix(QC_WORKFLOW.out.insertsize_metrics.collect{ insertsize_metrics -> insertsize_metrics[1] })

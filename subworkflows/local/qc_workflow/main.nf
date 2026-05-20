@@ -15,15 +15,12 @@ workflow QC_WORKFLOW {
         ch_rrna_interval        // channel [ meta, interval   ]
 
     main:
-        ch_versions = channel.empty()
-
         PICARD_COLLECTRNASEQMETRICS(
             ch_bam_sorted,
             ch_refflat.map{ _meta, refflat -> refflat },
             ch_fasta.map{ _meta, fasta -> fasta  },
             ch_rrna_interval.map{ _meta, intervals -> intervals }
         ) // Some chromosome or annotation may not have rRNA genes
-        ch_versions = ch_versions.mix(PICARD_COLLECTRNASEQMETRICS.out.versions)
         ch_rnaseq_metrics = PICARD_COLLECTRNASEQMETRICS.out.metrics
 
         GATK4_MARKDUPLICATES(
@@ -31,17 +28,14 @@ workflow QC_WORKFLOW {
             ch_fasta.map { _meta, fasta -> [ fasta ]},
             ch_fai.map { _meta, fasta_fai -> [ fasta_fai ]}
         )
-        ch_versions = ch_versions.mix(GATK4_MARKDUPLICATES.out.versions)
         ch_duplicate_metrics = GATK4_MARKDUPLICATES.out.metrics
 
         PICARD_COLLECTINSERTSIZEMETRICS(
             ch_bam_sorted
         )
-        ch_versions = ch_versions.mix(PICARD_COLLECTINSERTSIZEMETRICS.out.versions)
         ch_insertsize_metrics = PICARD_COLLECTINSERTSIZEMETRICS.out.metrics
 
     emit:
-        versions            = ch_versions            // channel [ path       ]
         rnaseq_metrics      = ch_rnaseq_metrics      // channel [ meta, path ]
         duplicate_metrics   = ch_duplicate_metrics   // channel [ meta, path ]
         insertsize_metrics  = ch_insertsize_metrics  // channel [ meta, path ]

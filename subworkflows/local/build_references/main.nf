@@ -43,20 +43,19 @@ workflow BUILD_REFERENCES {
     def ch_gtf   = channel.empty()
     if (!exists_not_empty(params.fasta) || !exists_not_empty(params.gtf)){
         GENCODE_DOWNLOAD(params.genome_gencode_version, params.genome)
-        ch_fasta = GENCODE_DOWNLOAD.out.fasta.map { that -> [[id:that.Name], that, []] }
+        ch_fasta = GENCODE_DOWNLOAD.out.fasta.map { that -> [[id:that.Name], that] }
         ch_gtf = GENCODE_DOWNLOAD.out.gtf.map { that -> [[id:that.Name], that] }
     } else {
-        ch_fasta = channel.fromPath(params.fasta).map { that -> [[id:that.Name], that, []] }
+        ch_fasta = channel.fromPath(params.fasta).map { that -> [[id:that.Name], that] }
         ch_gtf = channel.fromPath(params.gtf).map { that -> [[id:that.Name], that] }
     }
 
     def ch_fai = channel.empty()
     if (!exists_not_empty(params.fai)){
-        SAMTOOLS_FAIDX(ch_fasta, false)
-        ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
+        SAMTOOLS_FAIDX(ch_fasta.map { meta, fasta -> tuple(meta, fasta, [])}, false)
         ch_fai = SAMTOOLS_FAIDX.out.fai
     } else {
-        ch_fai = channel.fromPath(params.fai).map { that -> [[id:that.Name.replaceFirst(/\.fai$/, '')], that] }
+        ch_fai = channel.fromPath(params.fai).map { that -> [[id:that.name.replaceFirst(/\.fai$/, '')], that] }
     }
 
     def ch_hgnc_date = channel.empty()
@@ -66,11 +65,11 @@ workflow BUILD_REFERENCES {
     if(run_fusioninspector && !params.skip_vcf) {
         if ((!exists_not_empty(params.hgnc_ref) || !exists_not_empty(params.hgnc_date)) && !params.skip_vcf){
             HGNC_DOWNLOAD( )
-            ch_hgnc_ref = HGNC_DOWNLOAD.out.hgnc_ref.map { that -> [[id:that.Name], that] }
-            ch_hgnc_date = HGNC_DOWNLOAD.out.hgnc_date.map { that -> [[id:that.Name], that] }
+            ch_hgnc_ref = HGNC_DOWNLOAD.out.hgnc_ref.map { that -> [[id:that.name], that] }
+            ch_hgnc_date = HGNC_DOWNLOAD.out.hgnc_date.map { that -> [[id:that.name], that] }
         } else {
-            ch_hgnc_ref = channel.fromPath(params.hgnc_ref).map { that -> [[id:that.Name], that] }
-            ch_hgnc_date = channel.fromPath(params.hgnc_date).map { that -> [[id:that.Name], that] }
+            ch_hgnc_ref = channel.fromPath(params.hgnc_ref).map { that -> [[id:that.name], that] }
+            ch_hgnc_date = channel.fromPath(params.hgnc_date).map { that -> [[id:that.name], that] }
         }
     }
 
@@ -78,7 +77,6 @@ workflow BUILD_REFERENCES {
     if (!params.skip_qc) {
         if (!exists_not_empty(params.rrna_intervals)){
             GATK4_CREATESEQUENCEDICTIONARY(ch_fasta)
-            ch_versions = ch_versions.mix(GATK4_CREATESEQUENCEDICTIONARY.out.versions)
 
             BIOAWK(
                 ch_gtf,
@@ -86,17 +84,14 @@ workflow BUILD_REFERENCES {
                 false,
                 "gff"
             )
-            ch_versions = ch_versions.mix(BIOAWK.out.versions)
 
             AGAT_CONVERTGFF2BED(BIOAWK.out.output)
-            ch_versions = ch_versions.mix(AGAT_CONVERTGFF2BED.out.versions)
 
             GATK4_BEDTOINTERVALLIST(AGAT_CONVERTGFF2BED.out.bed, GATK4_CREATESEQUENCEDICTIONARY.out.dict )
-            ch_versions = ch_versions.mix(GATK4_BEDTOINTERVALLIST.out.versions)
 
             ch_rrna_interval = GATK4_BEDTOINTERVALLIST.out.interval_list
         } else {
-            ch_rrna_interval = channel.fromPath(params.rrna_intervals).map { that -> [[id:that.Name], that] }
+            ch_rrna_interval = channel.fromPath(params.rrna_intervals).map { that -> [[id:that.name], that] }
         }
     }
 
@@ -104,10 +99,9 @@ workflow BUILD_REFERENCES {
     if (!params.skip_qc) {
         if (!exists_not_empty(params.refflat)){
             UCSC_GTFTOGENEPRED(ch_gtf)
-            ch_versions = ch_versions.mix(UCSC_GTFTOGENEPRED.out.versions)
             ch_refflat = UCSC_GTFTOGENEPRED.out.refflat.map { meta, rf -> [[id: meta.id], rf] }
         } else {
-            ch_refflat = channel.fromPath(params.refflat).map { that -> [[id:that.Name], that] }
+            ch_refflat = channel.fromPath(params.refflat).map { that -> [[id:that.name], that] }
         }
     }
 
@@ -116,10 +110,8 @@ workflow BUILD_REFERENCES {
         if (!params.skip_qc) {
             if (!exists_not_empty(params.salmon_index)){
                 GFFREAD(ch_gtf, ch_fasta.map{ fasta -> fasta[1] })
-                ch_versions = ch_versions.mix(GFFREAD.out.versions)
 
                 SALMON_INDEX(ch_fasta.map{ fasta -> fasta[1] }, GFFREAD.out.gffread_fasta.map{ gffread_fasta -> gffread_fasta[1] })
-                ch_versions = ch_versions.mix(SALMON_INDEX.out.versions)
                 ch_salmon_index = SALMON_INDEX.out.index
             } else {
                 ch_salmon_index = channel.fromPath(params.salmon_index)
@@ -132,10 +124,9 @@ workflow BUILD_REFERENCES {
     if (star_index_tools) {
         if (!exists_not_empty(params.starindex_ref)) {
             STAR_GENOMEGENERATE(ch_fasta, ch_gtf)
-            ch_versions = ch_versions.mix(STAR_GENOMEGENERATE.out.versions)
             ch_starindex_ref = STAR_GENOMEGENERATE.out.index
         } else {
-            ch_starindex_ref = channel.fromPath(params.starindex_ref).map { that -> [[id:that.Name], that] }
+            ch_starindex_ref = channel.fromPath(params.starindex_ref).map { that -> [[id:that.name], that] }
         }
     }
 
@@ -185,7 +176,6 @@ workflow BUILD_REFERENCES {
                     STARFUSION_BUILD.out.reference,
                     params.ctatsplicing_cancer_introns
                 )
-                ch_versions = ch_versions.mix(CTATSPLICING_PREPGENOMELIB.out.versions)
                 ch_starfusion_ref = CTATSPLICING_PREPGENOMELIB.out.reference
             } else {
                 ch_starfusion_ref = STARFUSION_BUILD.out.reference
@@ -203,10 +193,9 @@ workflow BUILD_REFERENCES {
                 error('COSMIC username and/or password missing, this is needed to download the fusionreport reference')
             }
             FUSIONREPORT_DOWNLOAD(channel.value([id:'fusionreport']))
-            ch_versions = ch_versions.mix(FUSIONREPORT_DOWNLOAD.out.versions)
             ch_fusionreport_ref = FUSIONREPORT_DOWNLOAD.out.fusionreport_ref
         } else {
-            ch_fusionreport_ref = channel.fromPath(params.fusionreport_ref).map { that -> [[id:that.Name], that] }
+            ch_fusionreport_ref = channel.fromPath(params.fusionreport_ref).map { that -> [[id:that.name], that] }
         }
     }
 
