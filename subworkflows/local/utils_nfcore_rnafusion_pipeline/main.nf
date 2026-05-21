@@ -31,10 +31,18 @@ workflow PIPELINE_INITIALISATION {
     monochrome_logs   // boolean: Do not use coloured log outputs
     nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
-    _input            //  string: Path to input samplesheet
+    input            //  string: Path to input samplesheet
     help              // boolean: Display help message and exit
     help_full         // boolean: Show the full help message
     show_hidden       // boolean: Show hidden parameters in the help message
+    no_cosmic
+    dfam_version
+    species
+    setDfamParams
+    pfam_version
+    pfam_file
+    genomes
+    genome
 
     main:
 
@@ -102,14 +110,23 @@ workflow PIPELINE_INITIALISATION {
     //
     // Custom validation for pipeline parameters
     //
-    validateInputParameters()
+    validateInputParameters(
+        no_cosmic,
+        dfam_version,
+        species,
+        setDfamParams,
+        pfam_version,
+        pfam_file,
+        genomes,
+        genome
+    )
 
     //
-    // Create channel from input file provided through params.input
+    // Create channel from input file provided through input
     //
 
     channel
-        .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
+        .fromList(samplesheetToList(input, "${projectDir}/assets/schema_input.json"))
         .map { meta, fastq_1, fastq_2, bam, bai, cram, crai, junctions, splice_junctions, strandedness ->
             def meta_fastqs = []
             if (!fastq_1) {
@@ -151,6 +168,7 @@ workflow PIPELINE_COMPLETION {
     outdir          //    path: Path to output directory where results will be published
     monochrome_logs // boolean: Disable ANSI colour codes in log output
     multiqc_report  //  string: Path to MultiQC report
+    max_multiqc_email_size
 
     main:
     summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
@@ -168,7 +186,8 @@ workflow PIPELINE_COMPLETION {
                 plaintext_email,
                 outdir,
                 monochrome_logs,
-                multiqc_reports.getVal()
+                multiqc_reports.getVal(),
+                max_multiqc_email_size
             )
         }
 
@@ -190,29 +209,34 @@ workflow PIPELINE_COMPLETION {
 //
 // Check and validate pipeline parameters
 //
-def validateInputParameters() {
-    genomeExistsError()
+def validateInputParameters(
+    Boolean no_cosmic,
+    String dfam_version,
+    String species,
+    Map<String,Path> setDfamParams,
+    String pfam_version,
+    String pfam_file,
+    Map genomes,
+    String genome
+) {
+    genomeExistsError(genomes, genome)
 
-    if (params.no_cosmic) {
+    if (no_cosmic) {
         log.warn("Skipping COSMIC DB download from `FUSIONREPORT_DOWNLOAD` and skip using it in `FUSIONREPORT`")
     }
 
-    def dfamParams = ['dfam_hmm', 'dfam_h3p', 'dfam_h3m', 'dfam_h3i', 'dfam_h3f']
-
-    if (params.dfam_version) {
-        def dfamPattern = "https://www.dfam.org/releases/Dfam_${params.dfam_version}/infrastructure/dfamscan/${params.species}_dfam"
-
-        def setDfamParams = dfamParams.findAll { dfParam -> params[dfParam] }
+    if (dfam_version) {
+        def dfamPattern = "https://www.dfam.org/releases/Dfam_${dfam_version}/infrastructure/dfamscan/${species}_dfam"
 
         if (setDfamParams) {
-            def customParams = setDfamParams.findAll { paramName ->
-                !params[paramName]?.startsWith(dfamPattern)
+            def customParams = setDfamParams.findAll { _name, value ->
+                !value?.toUriString().startsWith(dfamPattern)
             }
             if (customParams) {
-                def paramDetails = customParams.collect { paramName ->
-                    "   --${paramName}: ${params[paramName]}"
+                def paramDetails = customParams.collect { name, value ->
+                    "   --${name}: ${value.toUriString()}"
                 }.join('\n')
-                def dfam_warn = "Both custom DFAM paths as well as `--dfam_version` (${params.dfam_version}) and `--species` (${params.species}) were provided.\n" +
+                def dfam_warn = "Both custom DFAM paths as well as `--dfam_version` (${dfam_version}) and `--species` (${species}) were provided.\n" +
                     "Custom DFAM paths parameters provided:\n${paramDetails}\n" +
                     "The pipeline will prioritize these custom files specified with `--${customParams}` and **will NOT** construct these URLs based on `--dfam_version` nor `--species`.\n" +
                     "   - If you intend to use custom DFAM files, please ensure that all `--dfam_h*` parameters point to full and valid paths.\n" +
@@ -222,11 +246,11 @@ def validateInputParameters() {
         }
     }
 
-    if (params.pfam_version){
-        def pfamPattern = "http://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam${params.pfam_version}/Pfam-A"
+    if (pfam_version){
+        def pfamPattern = "http://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam${pfam_version}/Pfam-A"
 
-        if (!(params.pfam_file?.startsWith(pfamPattern))) {
-            def pfam_warn = "Both `--pfam_file` (${params.pfam_file}) and `--pfam_version` (${params.pfam_version}) were provided.\n" +
+        if (!(pfam_file?.startsWith(pfamPattern))) {
+            def pfam_warn = "Both `--pfam_file` (${pfam_file}) and `--pfam_version` (${pfam_version}) were provided.\n" +
                     "The pipeline will prioritize the custom file from `--pfam_file` and **will NOT** construct the URL based on `--pfam_version`.\n" +
                     "   - If you intend to use a custom PFAM file, please ensure that `--pfam_file` points to a full and valid path.\n" +
                     "   - If you prefer to let the pipeline build the PFAM URL automatically, omit `--pfam_file` and instead provide only `--pfam_version`."
@@ -277,10 +301,10 @@ def validateInputSamplesheet(input) {
 //
 // Get attribute from genome config file e.g. fasta
 //
-def getGenomeAttribute(attribute) {
-    if (params.genomes && params.genome && params.genomes.containsKey(params.genome)) {
-        if (params.genomes[ params.genome ].containsKey(attribute)) {
-            return params.genomes[ params.genome ][ attribute ]
+def getGenomeAttribute(String attribute, Map genomes, String genome) {
+    if (genomes && genome && genomes.containsKey(genome)) {
+        if (genomes[ genome ].containsKey(attribute)) {
+            return genomes[ genome ][ attribute ]
         }
     }
     return null
@@ -289,12 +313,12 @@ def getGenomeAttribute(attribute) {
 //
 // Exit pipeline if incorrect --genome key provided
 //
-def genomeExistsError() {
-    if (params.genomes && params.genome && !params.genomes.containsKey(params.genome)) {
+def genomeExistsError(Map genomes, String genome) {
+    if (genomes && genome && !genomes.containsKey(genome)) {
         def error_string = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
-            "  Genome '${params.genome}' not found in any config files provided to the pipeline.\n" +
+            "  Genome '${genome}' not found in any config files provided to the pipeline.\n" +
             "  Currently, the available genome keys are:\n" +
-            "  ${params.genomes.keySet().join(", ")}\n" +
+            "  ${genomes.keySet().join(", ")}\n" +
             "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
         error(error_string)
     }

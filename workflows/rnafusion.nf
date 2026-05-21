@@ -39,9 +39,67 @@ workflow RNAFUSION {
 
 
     take:
+    // channels
     ch_samplesheet_input    // channel: samplesheet read in from --input
+    // lists
     tools                   // list: a list of tools to run
-
+    // strings
+    seq_center
+    seq_platform
+    fasta
+    fai
+    gtf
+    genome_gencode_version
+    genome
+    hgnc_ref
+    hgnc_date
+    rrna_intervals
+    refflat
+    salmon_index
+    starindex_ref
+    arriba_ref_blacklist
+    arriba_ref_cytobands
+    arriba_ref_known_fusions
+    arriba_ref_protein_domains
+    fusioncatcher_ref
+    starfusion_ref
+    fusionreport_ref
+    fusion_annot_lib
+    species
+    cosmic_username
+    cosmic_passwd
+    // numbers
+    min_trimmed_reads
+    trim_tail_fusioncatcher
+    tools_cutoff
+    // booleans
+    references_only
+    save_trimmed_fail
+    save_merged
+    skip_qc
+    star_ignore_sjdbgtf
+    skip_vis
+    skip_vcf
+    no_cosmic
+    // paths
+    adapter_fasta
+    arriba_fusions
+    starfusion_fusions
+    fusioncatcher_fusions
+    fusioninspector_fusions
+    whitelist
+    outdir
+    multiqc_methods_description
+    multiqc_config
+    multiqc_logo
+    pfam_file
+    dfam_hmm
+    dfam_h3f
+    dfam_h3i
+    dfam_h3m
+    dfam_h3p
+    annot_filter_url
+    ctatsplicing_cancer_introns
     main:
 
     def ch_versions = channel.empty()
@@ -51,10 +109,50 @@ workflow RNAFUSION {
     // Create references if necessary
     //
 
-    BUILD_REFERENCES(tools)
+    BUILD_REFERENCES(
+        // lists
+        tools,
+        // strings
+        fasta,
+        fai,
+        gtf,
+        genome_gencode_version,
+        genome,
+        hgnc_ref,
+        hgnc_date,
+        rrna_intervals,
+        refflat,
+        salmon_index,
+        starindex_ref,
+        arriba_ref_blacklist,
+        arriba_ref_cytobands,
+        arriba_ref_known_fusions,
+        arriba_ref_protein_domains,
+        fusioncatcher_ref,
+        starfusion_ref,
+        fusionreport_ref,
+        fusion_annot_lib,
+        species,
+        cosmic_username,
+        cosmic_passwd,
+        // paths
+        pfam_file,
+        dfam_hmm,
+        dfam_h3f,
+        dfam_h3i,
+        dfam_h3m,
+        dfam_h3p,
+        annot_filter_url,
+        ctatsplicing_cancer_introns,
+        // boolean
+        skip_vcf,
+        skip_qc,
+        no_cosmic
+
+    )
     ch_versions = ch_versions.mix(BUILD_REFERENCES.out.versions)
 
-    if (!params.references_only) {
+    if (!references_only) {
 
         def ch_input = ch_samplesheet_input.map { meta, fastqs, bam, bai, cram, crai, junctions, splice_junctions ->
             def align = false
@@ -77,7 +175,7 @@ workflow RNAFUSION {
             if (align && !fastqs) {
                 error("No fastq files found for ${meta.id}. Either provide fastq files to align or provide a BAM/CRAM file, a junctions file and a split junctions file.")
             }
-            def new_meta = meta + [align:align, seq_center:meta.seq_center ?: params.seq_center, seq_platform:meta.seq_platform ?: params.seq_platform]
+            def new_meta = meta + [align:align, seq_center:meta.seq_center ?: seq_center, seq_platform:meta.seq_platform ?: seq_platform]
             return [ new_meta, fastqs, bam, bai, cram, crai, junctions, splice_junctions ]
         }
         .tap { ch_samplesheet }
@@ -136,7 +234,7 @@ workflow RNAFUSION {
 
         // Add optional adapter FASTA to the reads tuple expected by FASTP.
         def ch_fastqs_with_adapters = ch_fastqs.map { meta, fastqs ->
-            [ meta, fastqs, params.adapter_fasta ? file(params.adapter_fasta, checkIfExists: true) : [] ]
+            [ meta, fastqs, adapter_fasta ? file(adapter_fasta, checkIfExists: true) : [] ]
         }
 
         // disable umi usage in this subworkflow for this pipeline
@@ -147,14 +245,9 @@ workflow RNAFUSION {
         // if 'fastp' isn't selected, we still run the subworkflow but skip trimming
         def skip_trimming    = (!tools.contains("fastp"))
 
-        // optional fastp output controls + minimum reads after trimming
-        def save_trimmed_fail = params.save_trimmed_fail ?: false
-        def save_merged       = params.save_merged ?: false
-        def min_trimmed_reads = (params.min_trimmed_reads ?: 1) as Integer
-
         FASTQ_FASTQC_UMITOOLS_FASTP(
             ch_fastqs_with_adapters,     // reads: [ val(meta), [fastqs], adapter_fasta ]
-            params.skip_qc,              // skip_fastqc
+            skip_qc,                     // skip_fastqc
             with_umi,                    // with_umi
             skip_umi_extract,            // skip_umi_extract
             umi_discard_read,            // umi_discard_read (0,1,2)
@@ -179,11 +272,11 @@ workflow RNAFUSION {
         // MODULE: SALMON_QUANT
         //
 
-        if(tools.contains("salmon") && !params.skip_qc) {
+        if(tools.contains("salmon") && !skip_qc) {
             SALMON_QUANT(
                 ch_reads,
                 BUILD_REFERENCES.out.salmon_index,
-                BUILD_REFERENCES.out.gtf.map{ gtf -> gtf[1] },
+                BUILD_REFERENCES.out.gtf.map{ _meta, gtf_ -> gtf_ },
                 [],
                 false,
                 'A'
@@ -210,7 +303,7 @@ workflow RNAFUSION {
                 ch_fastqs_to_align,
                 BUILD_REFERENCES.out.starindex_ref,
                 BUILD_REFERENCES.out.gtf,
-                params.star_ignore_sjdbgtf,
+                star_ignore_sjdbgtf,
                 ch_fastqs_to_align.map { meta, _fastqs -> meta.seq_platform },
                 ch_fastqs_to_align.map { meta, _fastqs -> meta.seq_center },
                 ch_fasta_fai,
@@ -245,7 +338,7 @@ workflow RNAFUSION {
         // MODULE: Run Arriba
         //
 
-        // TODO: improve how params.arriba_fusions would avoid running arriba module. Maybe imputed from samplesheet?
+        // TODO: improve how arriba_fusions would avoid running arriba module. Maybe imputed from samplesheet?
 
         def fusions_created = false
         def ch_arriba_fusions = ch_samplesheet.map { sample -> [sample[0], []] } // Set arriba fusions to empty by default
@@ -253,9 +346,9 @@ workflow RNAFUSION {
         if (tools.contains("arriba")) {
             fusions_created = true
 
-            if (params.arriba_fusions) {
+            if (arriba_fusions) {
                 ch_arriba_fusions = ch_aligned_reads.map { meta, _bam, _bai -> meta }
-                    .combine(channel.value(file(params.arriba_fusions, checkIfExists: true)))
+                    .combine(channel.value(file(arriba_fusions, checkIfExists: true)))
                     .map { meta, fusion_file -> [meta, fusion_file] }
             } else {
                 ARRIBA_ARRIBA(
@@ -280,13 +373,13 @@ workflow RNAFUSION {
         if (tools.contains("starfusion")) {
             fusions_created = true
 
-            if (params.starfusion_fusions) {
-                def fusions = file(params.starfusion_fusions, checkIfExists:true)
+            if (starfusion_fusions) {
+                def fusions = file(starfusion_fusions, checkIfExists:true)
                 ch_starfusion_fusions = ch_star_junctions.map { meta, _junc -> [ meta, fusions ] }
             } else {
                 STARFUSION_DETECT(
                     ch_star_junctions.map { meta, junc -> [ meta, [], junc ] },
-                    BUILD_REFERENCES.out.starfusion_ref.map { starfusion_ref -> starfusion_ref[1] }
+                    BUILD_REFERENCES.out.starfusion_ref.map { _meta, starfusion_ref_ -> starfusion_ref_ }
                 )
                 ch_versions = ch_versions.mix(STARFUSION_DETECT.out.versions)
                 ch_starfusion_fusions = STARFUSION_DETECT.out.fusions
@@ -301,13 +394,13 @@ workflow RNAFUSION {
         def ch_fusioncatcher_fusions = ch_samplesheet.map { sample -> [sample[0], []] } // Set fusioncatcher fusions to empty by default
         if(tools.contains("fusioncatcher")) {
             fusions_created = true
-        fusioncatcher_trimming = params.trim_tail_fusioncatcher != 0
+        fusioncatcher_trimming = trim_tail_fusioncatcher != 0
         FUSIONCATCHER_WORKFLOW (
             ch_reads,
             fusioncatcher_trimming,
-            params.adapter_fasta,
+            adapter_fasta,
             BUILD_REFERENCES.out.fusioncatcher_ref,       // channel [ meta, path       ]
-            params.fusioncatcher_fusions
+            fusioncatcher_fusions
         )
             // Add output of fusioncatcher to a channel + add empty entries for the samples that could not be run
             ch_fusioncatcher_fusions = FUSIONCATCHER_WORKFLOW.out.fusions.mix(ch_fastq_branch.not_found)
@@ -332,7 +425,7 @@ workflow RNAFUSION {
         def ch_fusion_list_filtered = channel.empty()
         def ch_fusionreport_report = channel.empty()
         def ch_fusionreport_csv = channel.empty()
-        if (!params.skip_vis && tools.contains("fusionreport")) {
+        if (!skip_vis && tools.contains("fusionreport")) {
             if (!fusions_created) {
                 error("Could not find any fusion files. Please generate some with `--tools arriba`, `--tools starfusion` and/or `--tools fusioncatcher`")
             }
@@ -344,15 +437,15 @@ workflow RNAFUSION {
             FUSIONREPORT_DETECT(
                 ch_fusions,
                 BUILD_REFERENCES.out.fusionreport_ref,
-                params.tools_cutoff
+                tools_cutoff
             )
 
             ch_fusion_list          = FUSIONREPORT_DETECT.out.fusion_list
             ch_fusion_list_filtered = FUSIONREPORT_DETECT.out.fusion_list_filtered
             ch_fusionreport_report  = FUSIONREPORT_DETECT.out.report
             ch_fusionreport_csv     = FUSIONREPORT_DETECT.out.csv
-        } else if(params.fusioninspector_fusions) {
-            def input_fusions       = file(params.fusioninspector_fusions, checkIfExists:true)
+        } else if(fusioninspector_fusions) {
+            def input_fusions       = file(fusioninspector_fusions, checkIfExists:true)
             ch_fusion_list          = ch_reads.map { reads -> [ reads[0], input_fusions ] }
             ch_fusion_list_filtered = ch_fusion_list
             ch_fusionreport_csv     = null
@@ -379,10 +472,10 @@ workflow RNAFUSION {
                 BUILD_REFERENCES.out.hgnc_ref,
                 BUILD_REFERENCES.out.hgnc_date,
                 BUILD_REFERENCES.out.starfusion_ref,
-                params.skip_vis,
-                params.skip_vcf,
-                params.tools_cutoff,
-                params.whitelist
+                skip_vis,
+                skip_vcf,
+                tools_cutoff,
+                whitelist
             )
             ch_multiqc_files = ch_multiqc_files.mix(FUSIONINSPECTOR_WORKFLOW.out.ch_arriba_visualisation.collect{ visualisation -> visualisation[1] }.ifEmpty([]))
         }
@@ -391,7 +484,7 @@ workflow RNAFUSION {
         // SUBWORKFLOW: Run QC
         //
 
-        if(!params.skip_qc) {
+        if(!skip_qc) {
             QC_WORKFLOW (
                 ch_aligned_reads.map { meta, bam, _bai -> [meta, bam] },
                 BUILD_REFERENCES.out.refflat,
@@ -427,7 +520,7 @@ workflow RNAFUSION {
     def ch_collated_versions = softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
         .mix(topic_versions_string)
         .collectFile(
-            storeDir: "${params.outdir}/pipeline_info",
+            storeDir: "${outdir.toUriString()}/pipeline_info",
             name: 'nf_core_'  +  'rnafusion_software_'  + 'mqc_'  + 'versions.yml',
             sort: true,
             newLine: true
@@ -442,8 +535,8 @@ workflow RNAFUSION {
     def ch_workflow_summary = channel.value(paramsSummaryMultiqc(ch_summary_params))
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
 
-    def ch_multiqc_custom_methods_description = params.multiqc_methods_description
-        ? file(params.multiqc_methods_description, checkIfExists: true)
+    def ch_multiqc_custom_methods_description = multiqc_methods_description
+        ? multiqc_methods_description
         : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
     def ch_methods_description = channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
@@ -453,10 +546,10 @@ workflow RNAFUSION {
             [
                 [id: 'exomecnv'],
                 files,
-                params.multiqc_config
-                    ? file(params.multiqc_config, checkIfExists: true)
+                multiqc_config
+                    ? multiqc_config
                     : file("${projectDir}/assets/multiqc_config.yml", checkIfExists: true),
-                params.multiqc_logo ? file(params.multiqc_logo, checkIfExists: true) : [],
+                multiqc_logo ? multiqc_logo : [],
                 [],
                 [],
             ]

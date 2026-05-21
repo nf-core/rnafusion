@@ -86,7 +86,7 @@
                     "description": "Don't automatically assign reference parameters to the correct references in --genomes_base"
                 },
                 "genome_gencode_version": {
-                    "type": "integer",
+                    "type": "string",
                     "fa_icon": "far fa-file-code",
                     "description": "gencode version"
                 },
@@ -438,12 +438,12 @@
                     "default": "homo_sapiens"
                 },
                 "dfam_version": {
-                    "type": ["number", "null"],
+                    "type": "string",
                     "description": "Version of dfam to use",
                     "fa_icon": "fas fa-code-branch"
                 },
                 "pfam_version": {
-                    "type": ["number", "null"],
+                    "type": "string",
                     "description": "Version of pfam to use",
                     "fa_icon": "fas fa-code-branch"
                 }
@@ -534,10 +534,9 @@
                     "hidden": true
                 },
                 "max_multiqc_email_size": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "File size limit when attaching MultiQC reports to summary emails.",
-                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
-                    "default": "25.MB",
+                    "default": 26214400,
                     "fa_icon": "fas fa-file-upload",
                     "hidden": true
                 },
