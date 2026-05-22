@@ -5,18 +5,12 @@
                 "0": [
                     
                 ],
-                "1": [
-                    
-                ],
                 "ch_arriba_visualisation": [
-                    
-                ],
-                "versions": [
                     
                 ]
             }
         ],
-        "timestamp": "2026-05-19T12:31:22.239413823",
+        "timestamp": "2026-05-22T16:58:59.761050236",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.1"
@@ -24,11 +18,13 @@
     },
     "FUSIONINSPECTOR_WORKFLOW - human": {
         "content": [
-            [
-                
-            ]
+            {
+                "ch_arriba_visualisation": [
+                    
+                ]
+            }
         ],
-        "timestamp": "2026-05-19T12:30:59.587105674",
+        "timestamp": "2026-05-22T16:58:34.581369629",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.1"

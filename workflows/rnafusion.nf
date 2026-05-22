@@ -205,7 +205,7 @@ workflow RNAFUSION {
         if(selected_fastq_tools) {
             SAMTOOLS_COLLATEFASTQ(
                 ch_fastq_branch.alignment,
-                BUILD_REFERENCES.out.fasta,
+                BUILD_REFERENCES.out.fasta.join(BUILD_REFERENCES.out.fai, failOnMismatch:true, failOnDuplicate:true),
                 false
             )
             ch_fastqs = ch_fastqs.mix(SAMTOOLS_COLLATEFASTQ.out.fastq)

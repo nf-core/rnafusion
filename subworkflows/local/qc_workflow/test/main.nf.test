@@ -121,8 +121,7 @@ nextflow_workflow {
                 { assert snapshot(
 					file(workflow.out.rnaseq_metrics[0][1]).readLines()[5..8],
 					file(workflow.out.duplicate_metrics[0][1]).readLines()[5..8],
-					file(workflow.out.insertsize_metrics[0][1]).readLines()[5..8],
-                    workflow.out.versions
+					file(workflow.out.insertsize_metrics[0][1]).readLines()[5..8]
                 ).match() }
             )
         }
