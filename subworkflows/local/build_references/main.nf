@@ -198,7 +198,6 @@ workflow BUILD_REFERENCES {
                 error('COSMIC username and/or password missing, this is needed to download the fusionreport reference')
             }
             FUSIONREPORT_DOWNLOAD()
-            ch_versions = ch_versions.mix(FUSIONREPORT_DOWNLOAD.out.versions)
             ch_fusionreport_ref = FUSIONREPORT_DOWNLOAD.out.fusionreport_ref
         } else {
             ch_fusionreport_ref = channel.fromPath(params.fusionreport_ref).map { that -> [[id:that.Name], that] }
