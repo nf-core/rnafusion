@@ -12,9 +12,9 @@ fastqc/*_fastqc.{html,zip}
 pipeline_info/*.{html,json,txt,yml}
 references/GRCh38/hgnc/HGNC-DB-timestamp.txt
 references/GRCh38/hgnc/hgnc_complete_set.txt
-references/GRCh38/fusion_report/DB-timestamp.txt
-references/GRCh38/fusion_report/fusiongdb2.db
-references/GRCh38/fusion_report/mitelman.db
+references/GRCh38/fusionreport/DB-timestamp.txt
+references/GRCh38/fusionreport/fusiongdb2.db
+references/GRCh38/fusionreport/mitelman.db
 references/GRCh38/gencode_v*/salmon/ctable.bin
 references/GRCh38/gencode_v*/salmon/pos.bin
 references/GRCh38/gencode_v*/salmon/pre_indexing.log
