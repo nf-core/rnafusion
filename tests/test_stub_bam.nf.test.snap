@@ -544,7 +544,11 @@
                 "references",
                 "references/GRCh38",
                 "references/GRCh38/fusionreport",
+                "references/GRCh38/fusionreport/DB-timestamp.txt",
+                "references/GRCh38/fusionreport/cosmic.db",
                 "references/GRCh38/fusionreport/fusion_report.log",
+                "references/GRCh38/fusionreport/fusiongdb2.db",
+                "references/GRCh38/fusionreport/mitelman.db",
                 "references/GRCh38/gencode_v46",
                 "references/GRCh38/gencode_v46/gencode",
                 "references/GRCh38/gencode_v46/gencode/Homo_sapiens.GRCh38.46.gtf",
@@ -655,10 +659,10 @@
                 "star/test.Aligned.sortedByCoord.out.bam.bai"
             ]
         ],
-        "timestamp": "2026-05-08T16:28:13.66983016",
+        "timestamp": "2026-05-28T13:14:08.761052855",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.2"
         }
     },
     "stub test salmon": {
@@ -1099,7 +1103,11 @@
                 "references",
                 "references/GRCh38",
                 "references/GRCh38/fusionreport",
+                "references/GRCh38/fusionreport/DB-timestamp.txt",
+                "references/GRCh38/fusionreport/cosmic.db",
                 "references/GRCh38/fusionreport/fusion_report.log",
+                "references/GRCh38/fusionreport/fusiongdb2.db",
+                "references/GRCh38/fusionreport/mitelman.db",
                 "references/GRCh38/gencode_v46",
                 "references/GRCh38/gencode_v46/gencode",
                 "references/GRCh38/gencode_v46/gencode/Homo_sapiens.GRCh38.46.gtf",
@@ -1208,10 +1216,10 @@
                 "starfusion/test.starfusion.fusion_predictions.tsv"
             ]
         ],
-        "timestamp": "2026-05-08T16:25:06.562473541",
+        "timestamp": "2026-05-28T13:12:37.307869713",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.2"
         }
     },
     "stub test fastp": {
@@ -1579,7 +1587,11 @@
                 "references",
                 "references/GRCh38",
                 "references/GRCh38/fusionreport",
+                "references/GRCh38/fusionreport/DB-timestamp.txt",
+                "references/GRCh38/fusionreport/cosmic.db",
                 "references/GRCh38/fusionreport/fusion_report.log",
+                "references/GRCh38/fusionreport/fusiongdb2.db",
+                "references/GRCh38/fusionreport/mitelman.db",
                 "references/GRCh38/gencode_v46",
                 "references/GRCh38/gencode_v46/gencode",
                 "references/GRCh38/gencode_v46/gencode/Homo_sapiens.GRCh38.46.gtf",
@@ -1726,10 +1738,10 @@
                 "stringtie/test.transcripts.gtf"
             ]
         ],
-        "timestamp": "2026-05-08T16:18:58.733461494",
+        "timestamp": "2026-05-28T13:08:58.515306208",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.2"
         }
     },
     "default no fastqs provided": {
@@ -1908,6 +1920,11 @@
                 "references",
                 "references/GRCh38",
                 "references/GRCh38/fusionreport",
+                "references/GRCh38/fusionreport/DB-timestamp.txt",
+                "references/GRCh38/fusionreport/cosmic.db",
+                "references/GRCh38/fusionreport/fusion_report.log",
+                "references/GRCh38/fusionreport/fusiongdb2.db",
+                "references/GRCh38/fusionreport/mitelman.db",
                 "references/GRCh38/gencode_v46",
                 "references/GRCh38/gencode_v46/gencode",
                 "references/GRCh38/gencode_v46/gencode/Homo_sapiens.GRCh38.46.gtf",
@@ -2059,10 +2076,10 @@
                 "stringtie/test.transcripts.gtf"
             ]
         ],
-        "timestamp": "2026-05-08T16:29:18.231193476",
+        "timestamp": "2026-05-28T13:14:52.675623227",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.2"
         }
     }
 }
