@@ -80,7 +80,7 @@
                     },
                     "fusionreport/download": {
                         "branch": "master",
-                        "git_sha": "6ed53ffdb0d6be9a34de52b9472693397994e6d0",
+                        "git_sha": "b871d05e5c8aab73132a41ede89c40910726df74",
                         "installed_by": ["modules"]
                     },
                     "gatk4/bedtointervallist": {
