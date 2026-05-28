@@ -13,7 +13,7 @@
                     "ctatsplicing": "0.0.2"
                 },
                 "FUSIONREPORT_DOWNLOAD": {
-                    "fusionreport": "4.1.1"
+                    "fusion_report": "4.1.1"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
                     "gatk4": "4.6.1.0"
@@ -60,9 +60,6 @@
                 "references",
                 "references/GRCh38",
                 "references/GRCh38/fusionreport",
-                "references/GRCh38/fusionreport/DB-timestamp.txt",
-                "references/GRCh38/fusionreport/fusiongdb2.db",
-                "references/GRCh38/fusionreport/mitelman.db",
                 "references/GRCh38/gencode_v46",
                 "references/GRCh38/gencode_v46/gencode",
                 "references/GRCh38/gencode_v46/gencode/minigenome.dict",
@@ -192,8 +189,6 @@
             [
                 "minigenome.gtf.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "minigenome.gtf_rrna.gtf.gz:md5,fb03ec66f68bc4becc71c299ed38b62d",
-                "fusiongdb2.db:md5,f249e3759b1556932f472919384d88be",
-                "mitelman.db:md5,0de51547910cd60fde4d262924714706",
                 "minigenome.dict:md5,f2dfb8df1d1f860050fc0dba1399fd9e",
                 "minigenome.fa.fai:md5,e3f74a27219b33ae80fd5de5cbeaf32b",
                 "minigenome.gtf.fasta:md5,349d42b5dbd73e163cdbad3453d8cd3a",
