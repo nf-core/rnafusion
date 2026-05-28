@@ -50,6 +50,8 @@ nextflow_workflow {
                 script "../../../../modules/nf-core/fusionreport/download/main.nf"
                 process {
                     """
+                    input[0] = [
+                        [ id:'fusionreport' ]
                     """
                 }
             }
