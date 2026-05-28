@@ -355,7 +355,6 @@ workflow RNAFUSION {
                 params.tools_cutoff
             )
 
-            ch_versions             = ch_versions.mix(FUSIONREPORT_DETECT.out.versions)
             ch_fusion_list          = FUSIONREPORT_DETECT.out.fusion_list
             ch_fusion_list_filtered = FUSIONREPORT_DETECT.out.fusion_list_filtered
             ch_fusionreport_report  = FUSIONREPORT_DETECT.out.report

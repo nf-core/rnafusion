@@ -71,7 +71,7 @@
                     "ucsc": 447
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.1.2"
+                    "nf-core/rnafusion": "v4.1.3dev"
                 }
             },
             [
@@ -309,7 +309,7 @@
                     "ucsc": 447
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.1.2"
+                    "nf-core/rnafusion": "v4.1.3dev"
                 }
             },
             [
@@ -470,7 +470,7 @@
                     "ucsc": 447
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.1.2"
+                    "nf-core/rnafusion": "v4.1.3dev"
                 }
             },
             [
@@ -581,10 +581,10 @@
                     "fusion-inspector": "2.11.5"
                 },
                 "FUSIONREPORT_DETECT": {
-                    "fusion_report": "4.0.1"
+                    "fusion_report": "4.1.1"
                 },
                 "FUSIONREPORT_DOWNLOAD": {
-                    "fusion_report": "4.0.1"
+                    "fusion_report": "4.1.1"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
                     "gatk4": "4.6.1.0"
@@ -645,7 +645,7 @@
                     "ucsc": 447
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.1.2"
+                    "nf-core/rnafusion": "v4.1.3dev"
                 }
             },
             [
@@ -695,12 +695,12 @@
                 "pipeline_info/nf_core_rnafusion_software_mqc_versions.yml",
                 "references",
                 "references/GRCh38",
-                "references/GRCh38/fusion_report_db",
-                "references/GRCh38/fusion_report_db/DB-timestamp.txt",
-                "references/GRCh38/fusion_report_db/cosmic.db",
-                "references/GRCh38/fusion_report_db/fusion_report.log",
-                "references/GRCh38/fusion_report_db/fusiongdb2.db",
-                "references/GRCh38/fusion_report_db/mitelman.db",
+                "references/GRCh38/fusionreport",
+                "references/GRCh38/fusionreport/DB-timestamp.txt",
+                "references/GRCh38/fusionreport/cosmic.db",
+                "references/GRCh38/fusionreport/fusion_report.log",
+                "references/GRCh38/fusionreport/fusiongdb2.db",
+                "references/GRCh38/fusionreport/mitelman.db",
                 "references/GRCh38/gencode_v46",
                 "references/GRCh38/gencode_v46/gencode",
                 "references/GRCh38/gencode_v46/gencode/Homo_sapiens.GRCh38.46.gtf",
@@ -833,10 +833,10 @@
                 "star/testXd.out.bam"
             ]
         ],
-        "timestamp": "2026-05-08T16:45:16.799996263",
+        "timestamp": "2026-05-28T12:51:09.690773619",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.2"
         }
     },
     "stub test salmon": {
@@ -877,7 +877,7 @@
                     "ucsc": 447
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.1.2"
+                    "nf-core/rnafusion": "v4.1.3dev"
                 }
             },
             [
@@ -1010,7 +1010,7 @@
                     "ucsc": 447
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.1.2"
+                    "nf-core/rnafusion": "v4.1.3dev"
                 }
             },
             [
@@ -1211,10 +1211,10 @@
                     "fusioncatcher": "1.35"
                 },
                 "FUSIONREPORT_DETECT": {
-                    "fusion_report": "4.0.1"
+                    "fusion_report": "4.1.1"
                 },
                 "FUSIONREPORT_DOWNLOAD": {
-                    "fusion_report": "4.0.1"
+                    "fusion_report": "4.1.1"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
                     "gatk4": "4.6.1.0"
@@ -1275,7 +1275,7 @@
                     "ucsc": 447
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.1.2"
+                    "nf-core/rnafusion": "v4.1.3dev"
                 }
             },
             [
@@ -1319,12 +1319,12 @@
                 "pipeline_info/nf_core_rnafusion_software_mqc_versions.yml",
                 "references",
                 "references/GRCh38",
-                "references/GRCh38/fusion_report_db",
-                "references/GRCh38/fusion_report_db/DB-timestamp.txt",
-                "references/GRCh38/fusion_report_db/cosmic.db",
-                "references/GRCh38/fusion_report_db/fusion_report.log",
-                "references/GRCh38/fusion_report_db/fusiongdb2.db",
-                "references/GRCh38/fusion_report_db/mitelman.db",
+                "references/GRCh38/fusionreport",
+                "references/GRCh38/fusionreport/DB-timestamp.txt",
+                "references/GRCh38/fusionreport/cosmic.db",
+                "references/GRCh38/fusionreport/fusion_report.log",
+                "references/GRCh38/fusionreport/fusiongdb2.db",
+                "references/GRCh38/fusionreport/mitelman.db",
                 "references/GRCh38/gencode_v46",
                 "references/GRCh38/gencode_v46/gencode",
                 "references/GRCh38/gencode_v46/gencode/Homo_sapiens.GRCh38.46.gtf",
@@ -1458,10 +1458,10 @@
                 "starfusion/test.starfusion.fusion_predictions.tsv"
             ]
         ],
-        "timestamp": "2026-05-08T16:41:58.814907158",
+        "timestamp": "2026-05-28T12:49:47.138995156",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.2"
         }
     },
     "stub test fastp": {
@@ -1499,7 +1499,7 @@
                     "ucsc": 447
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.1.2"
+                    "nf-core/rnafusion": "v4.1.3dev"
                 }
             },
             [
@@ -1577,7 +1577,7 @@
                     "ucsc": 447
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.1.2"
+                    "nf-core/rnafusion": "v4.1.3dev"
                 }
             },
             [
@@ -1653,7 +1653,7 @@
                     "ucsc": 447
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.1.2"
+                    "nf-core/rnafusion": "v4.1.3dev"
                 }
             },
             [
@@ -1735,10 +1735,10 @@
                     "fusion-inspector": "2.11.5"
                 },
                 "FUSIONREPORT_DETECT": {
-                    "fusion_report": "4.0.1"
+                    "fusion_report": "4.1.1"
                 },
                 "FUSIONREPORT_DOWNLOAD": {
-                    "fusion_report": "4.0.1"
+                    "fusion_report": "4.1.1"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
                     "gatk4": "4.6.1.0"
@@ -1817,7 +1817,7 @@
                     "ucsc": 447
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.1.2"
+                    "nf-core/rnafusion": "v4.1.3dev"
                 }
             },
             [
@@ -1892,12 +1892,12 @@
                 "pipeline_info/nf_core_rnafusion_software_mqc_versions.yml",
                 "references",
                 "references/GRCh38",
-                "references/GRCh38/fusion_report_db",
-                "references/GRCh38/fusion_report_db/DB-timestamp.txt",
-                "references/GRCh38/fusion_report_db/cosmic.db",
-                "references/GRCh38/fusion_report_db/fusion_report.log",
-                "references/GRCh38/fusion_report_db/fusiongdb2.db",
-                "references/GRCh38/fusion_report_db/mitelman.db",
+                "references/GRCh38/fusionreport",
+                "references/GRCh38/fusionreport/DB-timestamp.txt",
+                "references/GRCh38/fusionreport/cosmic.db",
+                "references/GRCh38/fusionreport/fusion_report.log",
+                "references/GRCh38/fusionreport/fusiongdb2.db",
+                "references/GRCh38/fusionreport/mitelman.db",
                 "references/GRCh38/gencode_v46",
                 "references/GRCh38/gencode_v46/gencode",
                 "references/GRCh38/gencode_v46/gencode/Homo_sapiens.GRCh38.46.gtf",
@@ -2066,10 +2066,10 @@
                 "stringtie/test.transcripts.gtf"
             ]
         ],
-        "timestamp": "2026-05-08T16:33:02.735330651",
+        "timestamp": "2026-05-28T12:46:12.232737413",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.2"
         }
     }
 }
