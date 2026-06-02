@@ -47,7 +47,7 @@
                     "ucsc": 447
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.1.3"
+                    "nf-core/rnafusion": "v4.1.4dev"
                 }
             },
             [
