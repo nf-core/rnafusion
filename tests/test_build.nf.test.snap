@@ -13,7 +13,7 @@
                     "ctatsplicing": "0.0.2"
                 },
                 "FUSIONREPORT_DOWNLOAD": {
-                    "fusion_report": "4.0.1"
+                    "fusion_report": "4.1.1"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
                     "gatk4": "4.6.1.0"
@@ -47,7 +47,7 @@
                     "ucsc": 447
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.1.2"
+                    "nf-core/rnafusion": "v4.1.3"
                 }
             },
             [
@@ -59,11 +59,10 @@
                 "pipeline_info/nf_core_rnafusion_software_mqc_versions.yml",
                 "references",
                 "references/GRCh38",
-                "references/GRCh38/fusion_report_db",
-                "references/GRCh38/fusion_report_db/DB-timestamp.txt",
-                "references/GRCh38/fusion_report_db/fusion_report.log",
-                "references/GRCh38/fusion_report_db/fusiongdb2.db",
-                "references/GRCh38/fusion_report_db/mitelman.db",
+                "references/GRCh38/fusionreport",
+                "references/GRCh38/fusionreport/DB-timestamp.txt",
+                "references/GRCh38/fusionreport/fusiongdb2.db",
+                "references/GRCh38/fusionreport/mitelman.db",
                 "references/GRCh38/gencode_v46",
                 "references/GRCh38/gencode_v46/gencode",
                 "references/GRCh38/gencode_v46/gencode/minigenome.dict",
@@ -193,7 +192,6 @@
             [
                 "minigenome.gtf.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "minigenome.gtf_rrna.gtf.gz:md5,fb03ec66f68bc4becc71c299ed38b62d",
-                "fusion_report.log:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "minigenome.dict:md5,f2dfb8df1d1f860050fc0dba1399fd9e",
                 "minigenome.fa.fai:md5,e3f74a27219b33ae80fd5de5cbeaf32b",
                 "minigenome.gtf.fasta:md5,349d42b5dbd73e163cdbad3453d8cd3a",
@@ -282,10 +280,10 @@
                 "trans.blast.dat.gz:md5,85ba5ea96c566f751ad83a3e4b8ab128"
             ]
         ],
-        "timestamp": "2026-05-08T22:13:25.423950839",
+        "timestamp": "2026-05-28T11:31:31.557285215",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.2"
         }
     }
 }

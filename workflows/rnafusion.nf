@@ -207,7 +207,7 @@ workflow RNAFUSION {
         def ch_star_junctions        = ch_input.junctions.filter { meta, file -> file && !meta.align }
         def ch_star_splice_junctions = ch_input.splice_junctions.filter { meta, file -> file && !meta.align }
         if(tools.intersect(["ctatsplicing", "arriba", "starfusion", "stringtie"])) {
-            def ch_fasta_fai = BUILD_REFERENCES.out.fasta.join(BUILD_REFERENCES.out.fai, failOnMismatch:true, failOnDuplicate:true)
+            def ch_fasta_fai = BUILD_REFERENCES.out.fasta.join(BUILD_REFERENCES.out.fai, failOnMismatch:true, failOnDuplicate:true).collect()
 
             FASTQ_ALIGN_STAR(
                 ch_fastqs_to_align,
@@ -355,7 +355,6 @@ workflow RNAFUSION {
                 params.tools_cutoff
             )
 
-            ch_versions             = ch_versions.mix(FUSIONREPORT_DETECT.out.versions)
             ch_fusion_list          = FUSIONREPORT_DETECT.out.fusion_list
             ch_fusion_list_filtered = FUSIONREPORT_DETECT.out.fusion_list_filtered
             ch_fusionreport_report  = FUSIONREPORT_DETECT.out.report
