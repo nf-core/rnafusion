@@ -520,7 +520,7 @@ workflow RNAFUSION {
     def ch_collated_versions = softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
         .mix(topic_versions_string)
         .collectFile(
-            storeDir: "${outdir.toUriString()}/pipeline_info",
+            storeDir: "${outdir}/pipeline_info",
             name: 'nf_core_'  +  'rnafusion_software_'  + 'mqc_'  + 'versions.yml',
             sort: true,
             newLine: true
