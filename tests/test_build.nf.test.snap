@@ -13,7 +13,7 @@
                     "ctatsplicing": "0.0.3"
                 },
                 "FUSIONREPORT_DOWNLOAD": {
-                    "fusion_report": "4.0.1"
+                    "fusion_report": "4.1.1"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
                     "gatk4": "4.6.2.0"
