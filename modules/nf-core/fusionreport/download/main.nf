@@ -10,9 +10,6 @@ process FUSIONREPORT_DOWNLOAD {
     input:
     val(meta)
 
-    input:
-    val(meta)
-
     output:
     tuple val(meta), path("${prefix}"), emit: fusionreport_ref
     tuple val("${task.process}"), val('fusion_report'), eval("fusion_report --version |& sed 's/fusion-report //'"), topic: versions, emit: versions_fusionreport
