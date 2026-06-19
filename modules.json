@@ -75,12 +75,12 @@
                     },
                     "fusionreport/detect": {
                         "branch": "master",
-                        "git_sha": "6ed53ffdb0d6be9a34de52b9472693397994e6d0",
+                        "git_sha": "969d923eeb55fc9e82f5907a7dcfa23152cc6e84",
                         "installed_by": ["modules"]
                     },
                     "fusionreport/download": {
                         "branch": "master",
-                        "git_sha": "b871d05e5c8aab73132a41ede89c40910726df74",
+                        "git_sha": "969d923eeb55fc9e82f5907a7dcfa23152cc6e84",
                         "installed_by": ["modules"]
                     },
                     "gatk4/bedtointervallist": {
