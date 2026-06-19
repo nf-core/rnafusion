@@ -3,11 +3,12 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v4.1.4dev - [xxx]
+## v4.2.0dev
 
-### Added
+### Changed
 
-### Fixed
+1. Moved the pipeline to full strict syntax compatibility
+2. Updated the minimal Nextflow version to 26.04.0
 
 ## v4.1.3 - [2026-06-02]
 

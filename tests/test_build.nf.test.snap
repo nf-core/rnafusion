@@ -1,25 +1,25 @@
 {
     "Test build references": {
         "content": [
-            13,
+            14,
             {
                 "AGAT_CONVERTGFF2BED": {
-                    "agat": "v1.5.1"
+                    "agat": "1.6.1"
                 },
                 "BIOAWK": {
                     "bioawk": 1.0
                 },
                 "CTATSPLICING_PREPGENOMELIB": {
-                    "ctatsplicing": "0.0.2"
+                    "ctatsplicing": "0.0.3"
                 },
                 "FUSIONREPORT_DOWNLOAD": {
-                    "fusion_report": "4.1.1"
+                    "fusion_report": "4.1.2"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
-                    "gatk4": "4.6.1.0"
+                    "gatk4": "4.6.2.0"
                 },
                 "GATK4_CREATESEQUENCEDICTIONARY": {
-                    "gatk4": "4.6.1.0"
+                    "gatk4": "4.6.2.0"
                 },
                 "GFFREAD": {
                     "gffread": "0.12.7"
@@ -31,7 +31,7 @@
                     "salmon": "1.10.3"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": 1.21
+                    "samtools": "1.23.1"
                 },
                 "STARFUSION_BUILD": {
                     "STAR-Fusion": "1.15.1",
@@ -44,17 +44,27 @@
                     "star": "2.7.11b"
                 },
                 "UCSC_GTFTOGENEPRED": {
-                    "ucsc": 447
+                    "ucsc": 482
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.1.4dev"
+                    "nf-core/rnafusion": "v4.2.0dev"
                 }
             },
             [
                 "agat",
                 "agat/minigenome.gtf.bed",
                 "bioawk",
-                "bioawk/minigenome.gtf_rrna.gtf.gz",
+                "bioawk/minigenome.gtf_rrna.gtf.gff",
+                "multiqc",
+                "multiqc/multiqc_data",
+                "multiqc/multiqc_data/llms-full.txt",
+                "multiqc/multiqc_data/multiqc.log",
+                "multiqc/multiqc_data/multiqc.parquet",
+                "multiqc/multiqc_data/multiqc_citations.txt",
+                "multiqc/multiqc_data/multiqc_data.json",
+                "multiqc/multiqc_data/multiqc_software_versions.txt",
+                "multiqc/multiqc_data/multiqc_sources.txt",
+                "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_rnafusion_software_mqc_versions.yml",
                 "references",
@@ -191,7 +201,8 @@
             ],
             [
                 "minigenome.gtf.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "minigenome.gtf_rrna.gtf.gz:md5,fb03ec66f68bc4becc71c299ed38b62d",
+                "minigenome.gtf_rrna.gtf.gff:md5,fb03ec66f68bc4becc71c299ed38b62d",
+                "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
                 "minigenome.dict:md5,f2dfb8df1d1f860050fc0dba1399fd9e",
                 "minigenome.fa.fai:md5,e3f74a27219b33ae80fd5de5cbeaf32b",
                 "minigenome.gtf.fasta:md5,349d42b5dbd73e163cdbad3453d8cd3a",
@@ -280,10 +291,10 @@
                 "trans.blast.dat.gz:md5,85ba5ea96c566f751ad83a3e4b8ab128"
             ]
         ],
-        "timestamp": "2026-05-28T11:31:31.557285215",
+        "timestamp": "2026-06-19T10:28:31.977688013",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.2"
+            "nextflow": "26.04.1"
         }
     }
 }

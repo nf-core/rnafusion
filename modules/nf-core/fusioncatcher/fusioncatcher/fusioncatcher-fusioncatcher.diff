@@ -1,15 +1,16 @@
 Changes in component 'nf-core/fusioncatcher/fusioncatcher'
+'modules/nf-core/fusioncatcher/fusioncatcher/meta.yml' is unchanged
 Changes in 'fusioncatcher/fusioncatcher/main.nf':
 --- modules/nf-core/fusioncatcher/fusioncatcher/main.nf
 +++ modules/nf-core/fusioncatcher/fusioncatcher/main.nf
 @@ -4,8 +4,8 @@
  
      conda "${moduleDir}/environment.yml"
-     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
 -        'https://depot.galaxyproject.org/singularity/fusioncatcher:1.33--hdfd78af_5':
--        'biocontainers/fusioncatcher:1.33--hdfd78af_5' }"
+-        'quay.io/biocontainers/fusioncatcher:1.33--hdfd78af_5' }"
 +        'https://depot.galaxyproject.org/singularity/fusioncatcher:1.33b--hdfd78af_0':
-+        'biocontainers/fusioncatcher:1.33b--hdfd78af_0' }"
++        'quay.io/biocontainers/fusioncatcher:1.33b--hdfd78af_0' }"
  
      input:
      tuple val(meta), path(fastqs)
@@ -21,10 +22,9 @@ Changes in 'fusioncatcher/fusioncatcher/environment.yml':
    - conda-forge
    - bioconda
  dependencies:
--  - "bioconda::fusioncatcher=1.33"
-+  - "bioconda::fusioncatcher=1.33b"
+-  - bioconda::fusioncatcher=1.33
++  - bioconda::fusioncatcher=1.33b
 
-'modules/nf-core/fusioncatcher/fusioncatcher/meta.yml' is unchanged
-'modules/nf-core/fusioncatcher/fusioncatcher/tests/main.nf.test' is unchanged
 'modules/nf-core/fusioncatcher/fusioncatcher/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/fusioncatcher/fusioncatcher/tests/main.nf.test' is unchanged
 ************************************************************

@@ -1,28 +1,19 @@
 Changes in component 'nf-core/ctatsplicing/prepgenomelib'
-'modules/nf-core/ctatsplicing/prepgenomelib/meta.yml' is unchanged
 Changes in 'ctatsplicing/prepgenomelib/main.nf':
 --- modules/nf-core/ctatsplicing/prepgenomelib/main.nf
 +++ modules/nf-core/ctatsplicing/prepgenomelib/main.nf
-@@ -1,7 +1,6 @@
- process CTATSPLICING_PREPGENOMELIB {
-     tag "$meta.id"
-     label 'process_single'
--    stageInMode 'copy'
- 
-     container "nf-core/ctatsplicing:0.0.3"
- 
-@@ -10,7 +9,7 @@
+@@ -10,7 +10,7 @@
      path(cancer_intron_tsv)
  
      output:
 -    tuple val(meta), path(genome_lib), emit: reference
 +    tuple val(meta), path(genome_lib, includeInputs:true), emit: reference
-     path "versions.yml"              , emit: versions
+     // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+     tuple val("${task.process}"), val('ctatsplicing'), val("0.0.3"), emit: versions_ctatsplicing, topic: versions
  
-     when:
-@@ -40,85 +39,10 @@
-     def prefix = task.ext.prefix ?: "${meta.id}"
-     def VERSION = '0.0.2' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+@@ -30,85 +30,7 @@
+ 
+     stub:
      """
 -    mkdir -p $genome_lib/
 -    mkdir -p $genome_lib/ref_genome.fa.star.idx
@@ -101,14 +92,13 @@ Changes in 'ctatsplicing/prepgenomelib/main.nf':
 -    touch $genome_lib/ref_genome.fa.njs
 -    touch $genome_lib/ref_genome.fa.fai
      touch $genome_lib/refGene.bed
-     echo | gzip > $genome_lib/refGene.sort.bed.gz
--    echo | gzip > $genome_lib/refGene.sort.bed.gz.tbi
-+    touch $genome_lib/refGene.sort.bed.gz.tbi
-+    mkdir $genome_lib/cancer_splicing_lib
-     touch $genome_lib/cancer_splicing_lib/cancer_splicing.idx
- 
-     cat <<-END_VERSIONS > versions.yml
+-    echo | gzip > $genome_lib/refGene.sort.bed.gz
+     touch $genome_lib/refGene.sort.bed.gz.tbi
+-    touch $genome_lib/cancer_splicing_lib/cancer_splicing.idx
+     """
+ }
 
-'modules/nf-core/ctatsplicing/prepgenomelib/tests/main.nf.test' is unchanged
+'modules/nf-core/ctatsplicing/prepgenomelib/meta.yml' is unchanged
 'modules/nf-core/ctatsplicing/prepgenomelib/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/ctatsplicing/prepgenomelib/tests/main.nf.test' is unchanged
 ************************************************************
