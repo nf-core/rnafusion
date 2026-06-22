@@ -1,0 +1,3 @@
+sample,fastq_1,fastq_2,strandedness
+test,https://github.com/nf-core/test-datasets/raw/f4eb330b1327642542a19e1f6c9ebaef2804b134/testdata/human/reads_1.fq.gz,https://github.com/nf-core/test-datasets/raw/f4eb330b1327642542a19e1f6c9ebaef2804b134/testdata/human/reads_2.fq.gz,forward
+test,https://github.com/nf-core/test-datasets/raw/f4eb330b1327642542a19e1f6c9ebaef2804b134/testdata/human/reads_duplicate_1.fq.gz,https://github.com/nf-core/test-datasets/raw/f4eb330b1327642542a19e1f6c9ebaef2804b134/testdata/human/reads_duplicate_2.fq.gz,forward

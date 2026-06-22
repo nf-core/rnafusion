@@ -232,8 +232,20 @@ workflow RNAFUSION {
 
         def ch_reads = channel.empty()
 
+        def ch_fastqs_merge = ch_fastqs.branch { meta, fastqs ->
+            to_merge: meta.single_end && fastqs.size() > 1 || !meta.single_end && fastqs.size() > 2
+            no_merge: true
+        }
+
+        CAT_FASTQ(
+            ch_fastqs_merge.to_merge,
+        )
+
+        def ch_fastqs_merged = CAT_FASTQ.out.reads
+            .mix(ch_fastqs_merge.no_merge)
+
         // Add optional adapter FASTA to the reads tuple expected by FASTP.
-        def ch_fastqs_with_adapters = ch_fastqs.map { meta, fastqs ->
+        def ch_fastqs_with_adapters = ch_fastqs_merged.map { meta, fastqs ->
             [ meta, fastqs, adapter_fasta ? file(adapter_fasta, checkIfExists: true) : [] ]
         }
 
