@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v4.2.0dev
 
+### Added
+
+1. Added support for multiple FASTQ files for the same sample. These will be merged at the start of the pipeline [#821](https://github.com/nf-core/rnafusion/pull/821)
+
 ### Changed
 
 1. Moved the pipeline to full strict syntax compatibility

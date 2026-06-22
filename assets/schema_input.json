@@ -91,7 +91,6 @@
                 "meta": "seq_center"
             }
         },
-        "uniqueEntries": ["sample"],
         "dependentRequired": {
             "bai": ["bam"],
             "crai": ["cram"]
