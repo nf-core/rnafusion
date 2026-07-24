@@ -1,0 +1,12 @@
+# Maintainers
+* @rannick @nvnieuwk @atrigila
+*.nf.test*  @rannick @nvnieuwk @atrigila
+.github/workflows/  @rannick @nvnieuwk @atrigila
+
+# Subworkflows
+subworkflows/nf-core/*  @rannick @nvnieuwk @atrigila
+subworkflows/local/*  @rannick @nvnieuwk @atrigila
+
+# Modules
+modules/nf-core/*  @rannick @nvnieuwk @atrigila
+modules/local/*  @rannick @nvnieuwk @atrigila

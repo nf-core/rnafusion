@@ -9,7 +9,7 @@ on:
       - "**/*.svg"
   release:
     types: [published]
-  workflow_dispatch:
+  workflow_dispatch: null
 
 # Cancel if a newer run is started
 concurrency:
@@ -64,11 +64,12 @@ jobs:
     runs-on: # use self-hosted runners
       - runs-on=${{ github.run_id }}-nf-test
       - runner=4cpu-linux-x64
+      - volume=80gb
     strategy:
       fail-fast: false
       matrix:
         shard: ${{ fromJson(needs.nf-test-changes.outputs.shard) }}
-        profile: [conda, docker, singularity]
+        profile: [docker, singularity]
         isMain:
           - ${{ github.base_ref == 'master' || github.base_ref == 'main' }}
         # Exclude conda and singularity on dev
@@ -78,8 +79,8 @@ jobs:
           - isMain: false
             profile: "singularity"
         NXF_VER:
-          - "25.10.4"
-          - "latest-everything"
+          - 26.04.0
+          - latest-everything
     env:
       NXF_ANSI_LOG: false
       TOTAL_SHARDS: ${{ needs.nf-test-changes.outputs.total_shards }}
@@ -88,6 +89,9 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
+
+      - name: Clean up Disk space
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
 
       - name: Run nf-test
         id: run_nf_test

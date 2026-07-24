@@ -31,10 +31,18 @@ workflow PIPELINE_INITIALISATION {
     monochrome_logs   // boolean: Do not use coloured log outputs
     nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
-    input             //  string: Path to input samplesheet
+    input            //  string: Path to input samplesheet
     help              // boolean: Display help message and exit
     help_full         // boolean: Show the full help message
     show_hidden       // boolean: Show hidden parameters in the help message
+    no_cosmic
+    dfam_version
+    species
+    setDfamParams
+    pfam_version
+    pfam_file
+    genomes
+    genome
 
     main:
 
@@ -88,7 +96,8 @@ workflow PIPELINE_INITIALISATION {
         show_hidden,
         before_text,
         after_text,
-        command
+        command,
+        false
     )
 
     //
@@ -101,29 +110,41 @@ workflow PIPELINE_INITIALISATION {
     //
     // Custom validation for pipeline parameters
     //
-    validateInputParameters()
+    validateInputParameters(
+        no_cosmic,
+        dfam_version,
+        species,
+        setDfamParams,
+        pfam_version,
+        pfam_file,
+        genomes,
+        genome
+    )
 
     //
-    // Create channel from input file provided through params.input
+    // Create channel from input file provided through input
     //
 
     channel
         .fromList(samplesheetToList(input, "${projectDir}/assets/schema_input.json"))
-        .map {
-            meta, fastq_1, fastq_2 ->
-                if (!fastq_2) {
-                    return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
-                } else {
-                    return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
-                }
+        .map { meta, fastq_1, fastq_2, bam, bai, cram, crai, junctions, splice_junctions, strandedness ->
+            def meta_fastqs = []
+            if (!fastq_1) {
+                meta_fastqs = [ meta, [] ]
+            } else if (!fastq_2) {
+                meta_fastqs = [ meta + [single_end:true], [ fastq_1 ] ]
+            } else {
+                meta_fastqs = [ meta + [single_end:false], [ fastq_1, fastq_2 ] ]
+            }
+            return [ meta.id ] + meta_fastqs + [ bam, bai, cram, crai, junctions, splice_junctions, strandedness ]
         }
         .groupTuple()
         .map { samplesheet ->
             validateInputSamplesheet(samplesheet)
         }
         .map {
-            meta, fastqs ->
-                return [ meta, fastqs.flatten() ]
+            meta, fastqs, bam, bai, cram, crai, junctions, splice_junctions ->
+                return [ meta, fastqs.flatten(), bam, bai, cram, crai, junctions, splice_junctions ]
         }
         .set { ch_samplesheet }
 
@@ -147,6 +168,7 @@ workflow PIPELINE_COMPLETION {
     outdir          //    path: Path to output directory where results will be published
     monochrome_logs // boolean: Disable ANSI colour codes in log output
     multiqc_report  //  string: Path to MultiQC report
+    max_multiqc_email_size
 
     main:
     summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
@@ -165,6 +187,7 @@ workflow PIPELINE_COMPLETION {
                 outdir,
                 monochrome_logs,
                 multiqc_reports.getVal(),
+                max_multiqc_email_size
             )
         }
 
@@ -182,34 +205,106 @@ workflow PIPELINE_COMPLETION {
     FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+
 //
 // Check and validate pipeline parameters
 //
-def validateInputParameters() {
-    genomeExistsError()
+def validateInputParameters(
+    Boolean no_cosmic,
+    String dfam_version,
+    String species,
+    Map<String,Path> setDfamParams,
+    String pfam_version,
+    String pfam_file,
+    Map genomes,
+    String genome
+) {
+    genomeExistsError(genomes, genome)
+
+    if (no_cosmic) {
+        log.warn("Skipping COSMIC DB download from `FUSIONREPORT_DOWNLOAD` and skip using it in `FUSIONREPORT`")
+    }
+
+    if (dfam_version) {
+        def dfamPattern = "https://www.dfam.org/releases/Dfam_${dfam_version}/infrastructure/dfamscan/${species}_dfam"
+
+        if (setDfamParams) {
+            def customParams = setDfamParams.findAll { _name, value ->
+                !value?.toUriString().startsWith(dfamPattern)
+            }
+            if (customParams) {
+                def paramDetails = customParams.collect { name, value ->
+                    "   --${name}: ${value.toUriString()}"
+                }.join('\n')
+                def dfam_warn = "Both custom DFAM paths as well as `--dfam_version` (${dfam_version}) and `--species` (${species}) were provided.\n" +
+                    "Custom DFAM paths parameters provided:\n${paramDetails}\n" +
+                    "The pipeline will prioritize these custom files specified with `--${customParams}` and **will NOT** construct these URLs based on `--dfam_version` nor `--species`.\n" +
+                    "   - If you intend to use custom DFAM files, please ensure that all `--dfam_h*` parameters point to full and valid paths.\n" +
+                    "   - If you prefer to let the pipeline build the DFAM URLs automatically, omit `--dfam_h*` and instead provide only `--dfam_version` and `--species`."
+                log.warn(dfam_warn)
+            }
+        }
+    }
+
+    if (pfam_version){
+        def pfamPattern = "http://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam${pfam_version}/Pfam-A"
+
+        if (!(pfam_file?.startsWith(pfamPattern))) {
+            def pfam_warn = "Both `--pfam_file` (${pfam_file}) and `--pfam_version` (${pfam_version}) were provided.\n" +
+                    "The pipeline will prioritize the custom file from `--pfam_file` and **will NOT** construct the URL based on `--pfam_version`.\n" +
+                    "   - If you intend to use a custom PFAM file, please ensure that `--pfam_file` points to a full and valid path.\n" +
+                    "   - If you prefer to let the pipeline build the PFAM URL automatically, omit `--pfam_file` and instead provide only `--pfam_version`."
+            log.warn(pfam_warn)
+        }
+    }
 }
 
 //
 // Validate channels from input samplesheet
 //
 def validateInputSamplesheet(input) {
-    def (metas, fastqs) = input[1..2]
+    def (metas, fastqs, bam, bai, cram, crai, junctions, splice_junctions) = input[1..8]
+
+    def bam_list = bam.findAll { it -> it != [] }
+    def cram_list = cram.findAll { it -> it != [] }
+    def junctions_list = junctions.findAll { it -> it != [] }
+    def splice_junctions_list = splice_junctions.findAll { it -> it != [] }
+    // Check alignment and junction files (input is a list)
+    if (bam_list.size() > 1 || cram_list.size() > 1 || junctions_list.size() > 1 || splice_junctions_list.size() > 1) {
+        error("Please check input samplesheet -> Only one BAM or CRAM, junctions and split junctions file is allowed per sample: ${metas[0].id}")
+    }
+
+    bam = bam_list.size() > 0 ? bam_list[0] : []
+    cram = cram_list.size() > 0 ? cram_list[0] : []
+    junctions = junctions_list.size() > 0 ? junctions_list[0] : []
+    splice_junctions = splice_junctions_list.size() > 0 ? splice_junctions_list[0] : []
+
+    if (bam != [] && cram != []) {
+        error("Please check input samplesheet -> Using both BAM and CRAM files isn't allowed: ${metas[0].id}")
+    }
+
+    // Check that multiple runs of the same sample are of the same strandedness
+    def strandedness_ok = metas.collect{ meta -> meta.strandedness }.unique().size == 1
+    if (!strandedness_ok) {
+        error("Please check input samplesheet -> Multiple runs of a sample must have the same strandedness!: ${metas[0].id}")
+    }
 
     // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
     def endedness_ok = metas.collect{ meta -> meta.single_end }.unique().size == 1
-    if (!endedness_ok) {
+    if (!endedness_ok && fastqs) {
         error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
     }
 
-    return [ metas[0], fastqs ]
+    return [ metas[0], fastqs, bam, bai.find { it -> it != [] } ?: [], cram, crai.find { it -> it != [] } ?: [], junctions, splice_junctions ]
 }
+
 //
 // Get attribute from genome config file e.g. fasta
 //
-def getGenomeAttribute(attribute) {
-    if (params.genomes && params.genome && params.genomes.containsKey(params.genome)) {
-        if (params.genomes[ params.genome ].containsKey(attribute)) {
-            return params.genomes[ params.genome ][ attribute ]
+def getGenomeAttribute(String attribute, Map genomes, String genome) {
+    if (genomes && genome && genomes.containsKey(genome)) {
+        if (genomes[ genome ].containsKey(attribute)) {
+            return genomes[ genome ][ attribute ]
         }
     }
     return null
@@ -218,12 +313,12 @@ def getGenomeAttribute(attribute) {
 //
 // Exit pipeline if incorrect --genome key provided
 //
-def genomeExistsError() {
-    if (params.genomes && params.genome && !params.genomes.containsKey(params.genome)) {
+def genomeExistsError(Map genomes, String genome) {
+    if (genomes && genome && !genomes.containsKey(genome)) {
         def error_string = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
-            "  Genome '${params.genome}' not found in any config files provided to the pipeline.\n" +
+            "  Genome '${genome}' not found in any config files provided to the pipeline.\n" +
             "  Currently, the available genome keys are:\n" +
-            "  ${params.genomes.keySet().join(", ")}\n" +
+            "  ${genomes.keySet().join(", ")}\n" +
             "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
         error(error_string)
     }
@@ -232,7 +327,6 @@ def genomeExistsError() {
 // Generate methods description for MultiQC
 //
 def toolCitationText() {
-    // TODO nf-core: Optionally add in-text citation tools to this list.
     // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "Tool (Foo et al. 2023)" : "",
     // Uncomment function in methodsDescriptionText to render in MultiQC report
     def citation_text = [
@@ -246,7 +340,6 @@ def toolCitationText() {
 }
 
 def toolBibliographyText() {
-    // TODO nf-core: Optionally add bibliographic entries to this list.
     // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "<li>Author (2023) Pub name, Journal, DOI</li>" : "",
     // Uncomment function in methodsDescriptionText to render in MultiQC report
     def reference_text = [
@@ -281,10 +374,9 @@ def methodsDescriptionText(mqc_methods_yaml) {
     meta["tool_citations"] = ""
     meta["tool_bibliography"] = ""
 
-    // TODO nf-core: Only uncomment below if logic in toolCitationText/toolBibliographyText has been filled!
+    // nf-core: Only uncomment below if logic in toolCitationText/toolBibliographyText has been filled!
     // meta["tool_citations"] = toolCitationText().replaceAll(", \\.", ".").replaceAll("\\. \\.", ".").replaceAll(", \\.", ".")
     // meta["tool_bibliography"] = toolBibliographyText()
-
 
     def methods_text = mqc_methods_yaml.text
 

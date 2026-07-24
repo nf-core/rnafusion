@@ -1,0 +1,21 @@
+{
+    "FUSIONCATCHER_WORKFLOW - Stub": {
+        "content": [
+            {
+                "fusions": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "test_sample.fusion-genes.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-05-22T13:21:44.001635544",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.1"
+        }
+    }
+}

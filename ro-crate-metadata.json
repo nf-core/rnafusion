@@ -29,7 +29,13 @@
                     "@id": "main.nf"
                 },
                 {
+                    "@id": "docs/images/nf-core-rnafusion_metro_map.png"
+                },
+                {
                     "@id": "assets/"
+                },
+                {
+                    "@id": "bin/"
                 },
                 {
                     "@id": "conf/"
@@ -42,6 +48,9 @@
                 },
                 {
                     "@id": "modules/"
+                },
+                {
+                    "@id": "modules/local/"
                 },
                 {
                     "@id": "modules/nf-core/"
@@ -121,29 +130,78 @@
         },
         {
             "@id": "main.nf",
-            "@type": ["File", "SoftwareSourceCode", "ComputationalWorkflow"],
-            "contributor": [
+            "@type": [
+                "File",
+                "SoftwareSourceCode",
+                "ComputationalWorkflow"
+            ],
+            "author": [
                 {
                     "@id": "https://orcid.org/0000-0002-8178-3128"
                 },
                 {
                     "@id": "https://orcid.org/0000-0001-7411-6063"
+                },
+                {
+                    "@id": "https://orcid.org/0000-0003-2827-9261"
+                }
+            ],
+            "contributor": [
+                {
+                    "@id": "#d6f80fd4-524f-48e7-ac6c-becfcce69283"
+                },
+                {
+                    "@id": "https://orcid.org/0009-0003-5619-1555"
+                },
+                {
+                    "@id": "#43b010cc-dc33-4461-abda-dcaecb83c945"
                 }
             ],
             "dateCreated": "",
             "dateModified": "2026-07-24T12:36:11Z",
             "dct:conformsTo": "https://bioschemas.org/profiles/ComputationalWorkflow/1.0-RELEASE/",
-            "keywords": ["nf-core", "nextflow", "fusion", "fusion-genes", "gene-fusion", "rna", "rna-seq"],
-            "license": ["MIT"],
-            "name": ["nf-core/rnafusion"],
+            "image": {
+                "@id": "docs/images/nf-core-rnafusion_metro_map.png"
+            },
+            "keywords": [
+                "nf-core",
+                "nextflow",
+                "fusion",
+                "fusion-genes",
+                "gene-fusion",
+                "rna",
+                "rna-seq"
+            ],
+            "license": [
+                "MIT"
+            ],
+            "maintainer": [
+                {
+                    "@id": "https://orcid.org/0000-0001-7411-6063"
+                },
+                {
+                    "@id": "#d6f80fd4-524f-48e7-ac6c-becfcce69283"
+                },
+                {
+                    "@id": "https://orcid.org/0009-0003-5619-1555"
+                }
+            ],
+            "name": [
+                "nf-core/rnafusion"
+            ],
             "programmingLanguage": {
                 "@id": "https://w3id.org/workflowhub/workflow-ro-crate#nextflow"
             },
             "sdPublisher": {
                 "@id": "https://nf-co.re/"
             },
-            "url": ["https://github.com/nf-core/rnafusion", "https://nf-co.re/rnafusion/dev/"],
-            "version": ["4.2.0dev"]
+            "url": [
+                "https://github.com/nf-core/rnafusion",
+                "https://nf-co.re/rnafusion/dev/"
+            ],
+            "version": [
+                "4.1.4dev"
+            ]
         },
         {
             "@id": "https://w3id.org/workflowhub/workflow-ro-crate#nextflow",
@@ -194,6 +252,11 @@
             "description": "Additional files"
         },
         {
+            "@id": "bin/",
+            "@type": "Dataset",
+            "description": "Scripts that must be callable from a pipeline process"
+        },
+        {
             "@id": "conf/",
             "@type": "Dataset",
             "description": "Configuration files"
@@ -212,6 +275,11 @@
             "@id": "modules/",
             "@type": "Dataset",
             "description": "Modules used by the pipeline"
+        },
+        {
+            "@id": "modules/local/",
+            "@type": "Dataset",
+            "description": "Pipeline-specific modules"
         },
         {
             "@id": "modules/nf-core/",
@@ -303,12 +371,48 @@
             "@id": "https://orcid.org/0000-0002-8178-3128",
             "@type": "Person",
             "email": "mproksik@gmail.com",
-            "name": "Martin Proks"
+            "name": "Martin Proks",
+            "url": "https://github.com/matq007"
         },
         {
             "@id": "https://orcid.org/0000-0001-7411-6063",
             "@type": "Person",
-            "name": "Annick Renevey"
+            "affiliation": "SciLifeLab, Karolinska Institutet",
+            "email": "annick.renevey@scilifelab.se",
+            "name": "Annick Renevey",
+            "url": "https://github.com/rannick"
+        },
+        {
+            "@id": "https://orcid.org/0000-0003-2827-9261",
+            "@type": "Person",
+            "affiliation": "Seqera",
+            "email": "maxime.garcia@seqera.io",
+            "name": "Maxime U Garcia",
+            "url": "https://github.com/maxulysse"
+        },
+        {
+            "@id": "#d6f80fd4-524f-48e7-ac6c-becfcce69283",
+            "@type": "Person",
+            "affiliation": "ZS Associates",
+            "email": "18577080+atrigila@users.noreply.github.com",
+            "name": "Anabella Trigila",
+            "url": "https://github.com/atrigila"
+        },
+        {
+            "@id": "https://orcid.org/0009-0003-5619-1555",
+            "@type": "Person",
+            "affiliation": "Center for Medical Genetics Ghent",
+            "email": "nicolas.vannieuwkerke@ugent.be",
+            "name": "Nicolas Vannieuwkerke",
+            "url": "https://github.com/nvnieuwk"
+        },
+        {
+            "@id": "#43b010cc-dc33-4461-abda-dcaecb83c945",
+            "@type": "Person",
+            "affiliation": "ZS Associates",
+            "email": "155591053+delfiterradas@users.noreply.github.com",
+            "name": "Delfina Terradas",
+            "url": "https://github.com/delfiterradas"
         }
     ]
 }

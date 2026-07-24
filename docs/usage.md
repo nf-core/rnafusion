@@ -1,66 +1,226 @@
-# nf-core/rnafusion: Usage
+# nf-core/rnafusion: Usage <!-- omit in toc -->
 
 ## :warning: Please read this documentation on the nf-core website: [https://nf-co.re/rnafusion/usage](https://nf-co.re/rnafusion/usage)
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
-## Introduction
+## Pipeline summary
 
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
+The pipeline is divided into two parts:
 
-## Samplesheet input
+1. Download and build references
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
+- [Download](#download-and-build-references) the references from the S3 bucket (recommended) or build them with the pipeline
+- **Important**: has to be done with each new release
+
+2. Running the analysis
+
+- Supported tools: `Arriba`, `FusionCatcher`, `STAR-Fusion`, `StringTie` and `CTAT-SPLICING` (the last two are not supported by fusion-report and `StringTie` can be seen as more of an assembly tool that requires manual investigation).
+- QC: `Fastqc`, `MultiQC`, and `Picard CollectInsertSize`, `Picard CollectWgsMetrics`, `Picard Markduplicates`
+- Fusions visualization: `Arriba`, `fusion-report`, `FusionInspector`, and `vcf_collect`
+
+## Download and build references
+
+The rnafusion pipeline needs references for the fusion detection tools, so downloading these is a **requirement**.
+
+The references for the pipeline can be downloaded from the nf-core AWS megatests S3 bucket using the following command for the [AWS CLI tool](https://github.com/aws/aws-cli):
 
 ```bash
---input '[path to samplesheet file]'
+aws --no-sign-request s3 sync s3://nf-core-awsmegatests/rnafusion/references/ <path_to_references>
 ```
 
-### Multiple runs of the same sample
+The path to the downloaded references can then be provided to the pipeline with the `--genomes_base` parameter.
 
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
+> [!WARNING]
+> Please note that the references are large and can take a long time to download, so it is recommended to download them once and use them for all future runs of the pipeline.
 
-```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
+The fusion report references available on the S3 bucket do not contain information from cosmic due to licensing issues. If you want to use the cosmic database, you will need to build the fusion report references yourself by either deleting the `fusion_report_db` folder in the references directory or by specifying a different location for the fusion report directory with `--fusionreport_ref <PATH/TO/REFERENCES>`. The cosmic username and password should also be given in this case using `--cosmic_username <EMAIL>` and `--cosmic_passwd <PASSWORD>`.
+
+Additionally, the references can be built by the pipeline using the following command:
+
+```bash
+nextflow run nf-core/rnafusion \
+  -profile <docker/singularity/.../institute> \
+  --references_only --tools all \
+  --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <PATH/TO/REFERENCES>
 ```
 
-### Full samplesheet
+> **IMPORTANT**
+>
+> - Note that this step takes about 24 hours to complete on HPC.
 
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
+References for each tools can also be downloaded separately with:
 
-A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
-
-```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
-CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
+```bash
+nextflow run nf-core/rnafusion \
+  -profile <docker/singularity/.../institute> \
+  --references_only --tools <comma-separated-list-of-tools> \
+  --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH>
 ```
 
-| Column    | Description                                                                                                                                                                            |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+If you are not covered by the research COSMIC license and want to avoid using COSMIC, you can provide the additional option `--no_cosmic`.
 
-An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
+### Downloading the cosmic database with SANGER or QIAGEN
+
+#### For academic users
+
+First register for a free account at COSMIC at [https://cancer.sanger.ac.uk/cosmic/register](https://cancer.sanger.ac.uk/cosmic/register) using a university email. The account is **only activated upon** clicking the link in the registration email.
+
+#### For non-academic users
+
+Use credentials from QIAGEN and add `--qiagen`
+
+```bash
+nextflow run nf-core/rnafusion \
+  -profile <docker/singularity/.../institute> \
+  --references_only --tools <comma-separated-list-of-tools> \
+  --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH> --qiagen
+```
+
+#### Issues with building references
+
+If process `FUSIONREPORT_DOWNLOAD` times out, it could be due to network restriction (for example if trying to run on HPC). As this process is lightweight in cpu, memory and time, running on local machines with the following options might solve the issue:
+
+```bash
+nextflow run nf-core/rnafusion  \
+  -profile <docker/singularity/.../institute> \
+  --references_only \
+  --cosmic_username <EMAIL> --cosmic_passwd <PASSWORD> \
+  --tools fusionreport \
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH>
+```
+
+Adjustments for cpu and memory requirements can be done by feeding a custom configuration with `-c /PATH/TO/CUSTOM/CONFIG`.
+Where the custom configuration could look like (adaptation to local machine necessary):
+
+```text
+process {
+  withName:  'NFCORE_RNAFUSION:RNAFUSION:BUILD_REFERENCES:FUSIONREPORT_DOWNLOAD' {
+    memory = '8.GB'
+    cpus = 4
+  }
+}
+```
+
+The four `fusion-report` files: `cosmic.db`, `fusiongdb2.db`, `mitelman.db`
+should then be copied into the HPC `<REFERENCE_PATH>/references/fusion_report_db`.
+
+#### Note about fusioncatcher references
+
+The references are only built based on ensembl version 102. It is not possible currently to use any other version/source.
 
 ## Running the pipeline
 
-The typical command for running the pipeline is as follows:
+### Samplesheet input
 
-```bash
-nextflow run nf-core/rnafusion --input ./samplesheet.csv --outdir ./results --genome GRCh37 -profile docker
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. The pipeline will detect whether a sample is single- or paired-end from the samplesheet - the `fastq_2` column is empty for single-end.
+
+The samplesheet has to be a comma-separated (.csv), tab-separated (.tsv), yaml (.yaml or .yml) or json (.json) file but can have as many entries as you desire. There is a strict requirement for the `sample` and `strandedness` fields. One or more of these fields should be provided too: `fastq_1`, `bam`, `cram`, `junctions` and `splice_junctions`
+
+A final samplesheet file consisting of both single- and paired-end data may look something like the one below:
+
+```csv title="samplesheet.csv"
+sample,fastq_1,fastq_2,strandedness
+CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,forward
+CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz,forward
+CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz,forward
+TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,,forward
+TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,,forward
+TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,,forward
 ```
 
-This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
+| Column             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | Required |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| `sample`           | Custom sample name. This value cannot contain spaces                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | ✅       |
+| `strandedness`     | Strandedness: forward or reverse.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | ✅       |
+| `fastq_1`          | Full path to FastQ file for Illumina short reads 1. File must exist, has to be gzipped and have the extension ".fastq.gz" or ".fq.gz". It's recommended to always provide the FASTQ files because the pipeline will be able to create any missing files from these. This should be supplied to let the pipeline run faster, but they can be automatically created from the availabe BAM or CRAM files. Add a samplesheet entry for each FASTQ file belonging to this sample. They will be automatically merged by the pipeline. | ❓       |
+| `fastq_2`          | Full path to FastQ file for Illumina short reads 2. File must exist, has to be gzipped and have the extension ".fastq.gz" or ".fq.gz". It's recommended to always provide the FASTQ files because the pipeline will be able to create any missing files from these. This should be supplied to let the pipeline run faster, but they can be automatically created from the availabe BAM or CRAM files. Add a samplesheet entry for each FASTQ file belonging to this sample. They will be automatically merged by the pipeline. | ❓       |
+| `bam`              | Full path to the BAM file created with STAR. File has to exist and must have the extension ".bam". It's the responsibility of the pipeline user to make sure this file has been correctly created, see the [prepare chapter](#preparing-bamcramjunctionssplice_junctions) for more information. The BAM file is required to run `ctatsplicing`, `stringtie`, `fusioninspector` and `arriba` when the `fastq_1` and `cram` fields are empty.                                                                                     | ❓       |
+| `bai`              | Full path to the index of the BAM file. File has to exist and must have the extension ".bai".                                                                                                                                                                                                                                                                                                                                                                                                                                   | ❌       |
+| `cram`             | Full path to the CRAM file created with STAR. File has to exist and must have the extension ".cram". It's the responsibility of the pipeline user to make sure this file has been correctly created, see the [prepare chapter](#preparing-bamcramjunctionssplice_junctions) for more information. The CRAM file is required to run `ctatsplicing`, `stringtie`, `fusioninspector` and `arriba` when the `fastq_1` and `bam` fields are empty.                                                                                   | ❓       |
+| `crai`             | Full path to the index of the CRAM file. File has to exist and must have the extension ".crai".                                                                                                                                                                                                                                                                                                                                                                                                                                 | ❌       |
+| `junctions`        | Full path to the file containing chimeric junctions determined by STAR. File has to exist and must have the extension ".junction". It's the responsibility of the pipeline user to make sure this file has been correctly created, see the [prepare chapter](#preparing-bamcramjunctionssplice_junctions) for more information. The junctions file is required to run `starfusion` and `ctatsplicing` when the `fastq_1` field is empty.                                                                                        | ❓       |
+| `splice_junctions` | Full path to the file containing splice junctions determined by STAR. File has to exist and must have the extension ".SJ.out.tab". It's the responsibility of the pipeline user to make sure this file has been correctly created, see the [prepare chapter](#preparing-bamcramjunctionssplice_junctions) for more information. The splice junctions file is required to run `ctatsplicing` when the `fastq_1` field is empty.                                                                                                  | ❓       |
+| `seq_platform`     | The sequencing platform used to create to sequence the data in the FASTQ files. This value will take precedence over the value provided with `--seq_platform`.                                                                                                                                                                                                                                                                                                                                                                  | ❌       |
+| `seq_center`       | The sequencing center in which the data in the FASTQ files was sequenced. This value will take precedence over the value provided with `--seq_center`.                                                                                                                                                                                                                                                                                                                                                                          | ❌       |
+
+- ✅ = Required
+- ❌ = Not required
+- ❓ = One of these columns should be provided
+
+### Preparing BAM/CRAM/junctions/splice_junctions
+
+In the pipeline the following STAR command is used to produce the needed files:
+
+```bash
+STAR \\
+    --genomeDir <path-to-star-index> \
+    --readFilesIn <comma-separated-list-of-forward-fastqs> <comma-separated-list-of-reverse-fastqs> \
+    --runThreadN <threads> \
+    --outFileNamePrefix <sample-name>. \
+    --outSAMattrRGline 'ID:<sample-name>' 'SM:<sample-name>' \
+    --outReadsUnmapped None  \
+    --outSAMstrandField intronMotif \
+    --chimOutJunctionFormat 1 \
+    --twopassMode None \
+    --outFilterMultimapNmax 50 \
+    --chimMultimapNmax 50 \
+    --quantMode GeneCounts \
+    --outSAMunmapped Within \
+    --readFilesCommand zcat  \
+    --alignSJstitchMismatchNmax 5 -1 5 5 \
+    --outSAMtype BAM SortedByCoordinate \
+    --chimSegmentMin 10 \
+    --peOverlapNbasesMin 10 \
+    --alignSplicedMateMapLminOverLmate 0.5 \
+    --chimJunctionOverhangMin 10 \
+    --chimScoreJunctionNonGTAG 0 \
+    --chimScoreDropMax 30 \
+    --chimScoreSeparation 1  \
+    --chimSegmentReadGapMax 3 \
+    --chimOutType Junctions WithinBAM'
+```
+
+We found that this command produces the best results for all downstream processes in the pipeline. It is highly recommended to use the same command for the input BAM, CRAM, junctions and splice_junctions files.
+
+The pipeline will still work when another command has been used, but it is possible that the results will be significantly different from the standard flow.
+
+### Starting commands
+
+The pipeline can either be run using all tools or by specifying individual tools. Visualisation tools will be run on all fusions detected. To run all tools (`arriba`, `ctatsplicing`, `fusioncatcher`, `starfusion`, `stringtie`, `fusionreport`, `fastp`, `salmon`, `fusioninspector`) use the `all` option for the `--tools` parameter:
+
+```bash
+nextflow run nf-core/rnafusion \
+  -profile <docker/singularity/.../institute> \
+  --tools all \
+  --input <SAMPLE_SHEET.CSV> \
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH>
+```
+
+To run only a set of specific tools use `--tools` with a comma separated list of requested tools:
+
+```bash
+nextflow run nf-core/rnafusion \
+  -profile <docker/singularity/.../institute> \
+  --tools <comma-separated-list-of-tools> \
+  --input <SAMPLE_SHEET.CSV> \
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH>
+```
+
+If you are not covered by the research COSMIC license and want to avoid using COSMIC, you can provide the additional option `--no_cosmic`.
+
+> **IMPORTANT: `--tools`** is necessary to run detection tools
+
+`--genomes_base` should be the path to the directory containing the references that were [downloaded or built](#download-and-build-references).
 
 Note that the pipeline will create the following files in your working directory:
 
@@ -89,15 +249,150 @@ with:
 ```yaml title="params.yaml"
 input: './samplesheet.csv'
 outdir: './results/'
-genome: 'GRCh37'
 <...>
 ```
 
 You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
 
+> [!WARNING]
+> Conda is not currently supported.
+> Supported genome is currently only GRCh38.
+
+### Options
+
+#### Trimming
+
+When the flag `fastp` tool is used in `--tools`, `fastp` is used to provide all tools with trimmed reads. Quality and adapter trimming are performed by default. In addition, tail trimming for fusioncatcher and adapter fasta specification are possible. Example usage:
+
+```bash
+nextflow run nf-core/rnafusion \
+-profile <docker/singularity/.../institute> \
+--tools fastp,... \
+--input <SAMPLE_SHEET.CSV> \
+--genomes_base <PATH/TO/REFERENCES> \
+--outdir <OUTPUT/PATH> \
+--fastp_trim \
+--trim_tail_fusioncatcher <INTEGER> (optional) \
+--adapter_fasta <PATH/TO/ADAPTER/FASTA> (optional)
+```
+
+The additional `--trim_tail_fusioncatcher` flag will toggle an additional `fastp` process, especially useful if reads are above 100 bp, which is not handled well by FusionCatcher. The parameter `--trim_tail_fusioncatcher` needs to be provided with the number of bases to remove from the tail end.
+
+#### Filter for fusions detected by several tools
+
+```bash
+nextflow run nf-core/rnafusion \
+  -profile <docker/singularity/.../institute> \
+  --tools <comma-separated-list-of-tools> \
+  --input <SAMPLE_SHEET.CSV> \
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH>
+  --tools_cutoff <INT>
+```
+
+`--tools_cutoff INT` will discard fusions detected by less than INT tools both for display in fusionreport html index and to consider in fusioninspector. Default = 1, no filtering.
+
+#### Adding custom fusions to consider as well as the detected set: whitelist
+
+```bash
+nextflow run nf-core/rnafusion \
+  -profile <docker/singularity/.../institute> \
+  --tools <comma-separated-list-of-tools> \
+  --input <SAMPLE_SHEET.CSV> \
+  --genomes_base <PATH/TO/REFERENCES> \
+  --outdir <OUTPUT/PATH>
+  --whitelist <WHITELIST/PATH>
+```
+
+The custom fusion file should have the following format:
+
+```
+GENE1--GENE2
+GENE3--GENE4
+```
+
+#### Running FusionInspector only
+
+FusionInspector can be run as a standalone with:
+
+```bash
+nextflow run nf-core/rnafusion \
+-profile <docker/singularity/.../institute> \
+--tools fusioninspector \
+--skip_qc \
+--skip_vis \
+--skip_vcf \
+--fusioninspector_fusions <PATH_TO_CUSTOM_FUSION_FILE> \
+--input <SAMPLE_SHEET.CSV> \
+--outdir <PATH>
+```
+
+The custom fusion file should have the following format:
+
+```
+GENE1--GENE2
+GENE3--GENE4
+```
+
+#### Skipping QC
+
+```bash
+nextflow run nf-core/rnafusion \
+-profile <docker/singularity/.../institute> \
+--skip_qc \
+--tools <comma-separated-list-of-tools> \
+--input <SAMPLE_SHEET.CSV> \
+--genomes_base <PATH/TO/REFERENCES> \
+--outdir <PATH>
+```
+
+This will skip all QC-related processes (picard metrics collection)
+
+#### Skipping visualisation
+
+```bash
+nextflow run nf-core/rnafusion \
+-profile <docker/singularity/.../institute> \
+--skip_vis \
+--tools <comma-separated-list-of-tools> \
+--input <SAMPLE_SHEET.CSV> \
+--genomes_base <PATH/TO/REFERENCES> \
+--outdir <PATH>
+```
+
+This will skip all visualisation processes, including `fusion-report`, `FusionInspector` and `Arriba` visualisation.
+
+#### Optional manual feed-in of fusion files
+
+It is possible to give the output of each fusion detection tool manually using the argument: `--<tool>_fusions PATH/TO/FUSION/FILE`: this feature needs more testing, don't hesitate to open an issue if you encounter problems.
+
+#### Set different `--limitSjdbInsertNsj` parameter
+
+There are two parameters to increase the `--limitSjdbInsertNsj` parameter if necessary:
+
+- `--fusioncatcher_limitSjdbInsertNsj`, default: 2000000
+- `--fusioninspector_limitSjdbInsertNsj`, default: 1000000
+
+#### CRAM compression
+
+Use the parameter `--cram` to compress the BAM files to CRAM.
+
+### Troubleshooting
+
+#### GstrandBit issues
+
+The issue below sometimes occurs:
+
+```
+EXITING because of FATAL ERROR: cannot insert sequence on the fly because of strand GstrandBit problem
+SOLUTION: please contact STAR author at https://groups.google.com/forum/#!forum/rna-star
+```
+
+As the error message suggests, it is a STAR-related error and your best luck in solving it will be the forum.
+
 ### Updating the pipeline
 
-When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
+When you run the command below, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
 
 ```bash
 nextflow pull nf-core/rnafusion
@@ -128,7 +423,7 @@ Use this parameter to choose a configuration profile. Profiles can give configur
 Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Podman, Shifter, Charliecloud, Apptainer, Conda) - see below.
 
 > [!IMPORTANT]
-> We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
+> We highly recommend the use of Docker or Singularity containers, ctatsplicing is not supported by Conda and Conda was not specifically tested for the rest of the pipeline.
 
 The pipeline also dynamically loads configurations from [https://github.com/nf-core/configs](https://github.com/nf-core/configs) when it runs, making multiple config profiles for various institutional clusters available at run time. For more information and to check if your system is supported, please see the [nf-core/configs documentation](https://github.com/nf-core/configs#documentation).
 
@@ -156,6 +451,10 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
   - A generic configuration profile to enable [Wave](https://seqera.io/wave/) containers. Use together with one of the above (requires Nextflow ` 24.03.0-edge` or later).
 - `conda`
   - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter, Charliecloud, or Apptainer.
+- `test`
+  - A profile with a complete configuration for automated testing
+  - Includes links to test data so needs no other parameters
+  - !!!! Run with `-stub` as all references need to be downloaded otherwise !!!!
 
 ### `-resume`
 
@@ -177,7 +476,7 @@ To change the resource requests, please see the [max resources](https://nf-co.re
 
 ### Custom Containers
 
-In some cases, you may wish to change the container or conda environment used by a pipeline steps for a particular tool. By default, nf-core pipelines use containers and software from the [biocontainers](https://biocontainers.pro/) or [bioconda](https://bioconda.github.io/) projects. However, in some cases the pipeline specified version maybe out of date.
+In some cases, you may wish to change the container used by a pipeline steps for a particular tool. By default, nf-core pipelines use containers and software from the [biocontainers](https://biocontainers.pro/) or [bioconda](https://bioconda.github.io/) projects (via wave for docker and singularity).
 
 To use a different container from the default container or conda environment specified in a pipeline, please see the [updating tool versions](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#update-tool-versions) section of the nf-core website.
 
@@ -193,7 +492,7 @@ In most cases, you will only need to create a custom config as a one-off but if 
 
 See the main [Nextflow documentation](https://www.nextflow.io/docs/latest/config.html) for more information about creating your own configuration files.
 
-If you have any questions or issues please send us a message on [Slack](https://nf-co.re/join/slack) on the [`#configs` channel](https://nfcore.slack.com/channels/configs).
+If you have any questions or issues please send us a message on [Slack](https://nf-co.re/join/slack) on the [`#configs` channel](https://nfcore.slack.com/channels/configs). -->
 
 ## Running in the background
 
