@@ -71,7 +71,7 @@
                     "ucsc": 482
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0dev"
+                    "nf-core/rnafusion": "v4.2.0"
                 }
             },
             [
@@ -310,7 +310,7 @@
                     "ucsc": 482
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0dev"
+                    "nf-core/rnafusion": "v4.2.0"
                 }
             },
             [
@@ -525,7 +525,7 @@
                     "ucsc": 482
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0dev"
+                    "nf-core/rnafusion": "v4.2.0"
                 }
             },
             [
@@ -848,7 +848,7 @@
                     "ucsc": 482
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0dev"
+                    "nf-core/rnafusion": "v4.2.0"
                 }
             },
             [
@@ -1024,7 +1024,7 @@
                     "ucsc": 482
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0dev"
+                    "nf-core/rnafusion": "v4.2.0"
                 }
             },
             [
@@ -1257,7 +1257,7 @@
                     "ucsc": 482
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0dev"
+                    "nf-core/rnafusion": "v4.2.0"
                 }
             },
             [
@@ -1391,7 +1391,7 @@
                     "ucsc": 482
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0dev"
+                    "nf-core/rnafusion": "v4.2.0"
                 }
             },
             [
@@ -1654,7 +1654,7 @@
                     "ucsc": 482
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0dev"
+                    "nf-core/rnafusion": "v4.2.0"
                 }
             },
             [
@@ -1879,7 +1879,7 @@
                     "ucsc": 482
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0dev"
+                    "nf-core/rnafusion": "v4.2.0"
                 }
             },
             [
@@ -1958,7 +1958,7 @@
                     "ucsc": 482
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0dev"
+                    "nf-core/rnafusion": "v4.2.0"
                 }
             },
             [
@@ -2035,7 +2035,7 @@
                     "ucsc": 482
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0dev"
+                    "nf-core/rnafusion": "v4.2.0"
                 }
             },
             [
@@ -2200,7 +2200,7 @@
                     "ucsc": 482
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0dev"
+                    "nf-core/rnafusion": "v4.2.0"
                 }
             },
             [
