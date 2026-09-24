@@ -4,6 +4,8 @@ lint:
     - .github/PULL_REQUEST_TEMPLATE.md
     - conf/igenomes.config
     - conf/igenomes_ignored.config
+  files_exist:
+    - tests/default.nf.test
   nextflow_config: false
   schema_params: false
 nf_core_version: 4.0.3
