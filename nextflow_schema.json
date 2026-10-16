@@ -437,6 +437,12 @@
                     "fa_icon": "far fa-file-code",
                     "default": "homo_sapiens"
                 },
+                "skip_gencode_filter": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-forward",
+                    "description": "Do not apply STAR-Fusion's `--human_gencode_filter` when building the CTAT genome library.",
+                    "help_text": "The filter expects a human GENCODE annotation. Set this for other annotations, such as the STAR-Fusion tutorial minigenome used by the `test_build` profile."
+                },
                 "dfam_version": {
                     "type": "string",
                     "description": "Version of dfam to use",

@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 1. Moved the pipeline to full strict syntax compatibility
 2. Updated the minimal Nextflow version to 26.04.0
 
+### Fixed
+
+1. Added `--skip_gencode_filter` to build the CTAT genome library without STAR-Fusion's `--human_gencode_filter`, and set it in `test_build`: the STAR-Fusion tutorial minigenome that profile builds from is not a GENCODE annotation, and the filter failed on it when the profile was run directly [#832](https://github.com/nf-core/rnafusion/issues/832)
+
 ## v4.1.3 - [2026-06-02]
 
 ### Added
