@@ -10,7 +10,7 @@
             "sample": {
                 "type": "string",
                 "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "errorMessage": "Sample name must be provided, has to be a string and cannot contain spaces",
                 "meta": ["id"]
             },
             "fastq_1": {
@@ -26,8 +26,92 @@
                 "exists": true,
                 "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
                 "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+            },
+            "bam": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^\\S+\\.bam$",
+                "description": "BAM file created with STAR. This file should be created from paired-end reads and junctions should be written out separately.",
+                "errorMessage": "BAM file cannot contain spaces, has to exist and must have extension '.bam'"
+            },
+            "bai": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^\\S+\\.bam\\.bai$",
+                "errorMessage": "BAI file cannot contain spaces, has to exist and must have extension '.bam.bai'"
+            },
+            "cram": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^\\S+\\.cram$",
+                "description": "CRAM file created with STAR. This file should be created from paired-end reads and junctions should be written out separately.",
+                "errorMessage": "CRAM file cannot contain spaces, has to exist and must have extension '.cram'"
+            },
+            "crai": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^\\S+\\.cram\\.crai$",
+                "errorMessage": "CRAI file cannot contain spaces, has to exist and must have extension '.cram.crai'"
+            },
+            "junctions": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^\\S+\\.junction$",
+                "description": "Junctions file created with STAR. This file should be created from paired-end reads.",
+                "errorMessage": "Junctions file cannot contain spaces, has to exist and must have extension '.junction'"
+            },
+            "splice_junctions": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^\\S+\\.SJ.out.tab$",
+                "description": "Splice junctions file created with STAR. This file should be created from paired-end reads.",
+                "errorMessage": "Split junctions file cannot contain spaces, has to exist and must have extension '.SJ.out.tab'"
+            },
+            "strandedness": {
+                "type": "string",
+                "enum": ["forward", "reverse", "unstranded", "unknown"],
+                "errorMessage": "Strandedness has to be 'forward', 'reverse', 'unstranded' or 'unknown'"
+            },
+            "seq_platform": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Sequencing platform has to be a string and cannot contain spaces",
+                "meta": "seq_platform"
+            },
+            "seq_center": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Sequencing center has to be a string and cannot contain spaces",
+                "meta": "seq_center"
             }
         },
-        "required": ["sample", "fastq_1"]
+        "dependentRequired": {
+            "bai": ["bam"],
+            "crai": ["cram"]
+        },
+        "required": ["sample", "strandedness"],
+        "anyOf": [
+            {
+                "required": ["fastq_1", "fastq_2"]
+            },
+            {
+                "required": ["bam"]
+            },
+            {
+                "required": ["cram"]
+            },
+            {
+                "required": ["junctions"]
+            },
+            {
+                "required": ["splice_junctions"]
+            }
+        ]
     }
 }

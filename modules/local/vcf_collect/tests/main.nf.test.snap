@@ -1,0 +1,112 @@
+{
+    "VCF_COLLECT - human - fusionreport - fusioninspector - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        "VCF_COLLECT",
+                        "python",
+                        "3.11.0"
+                    ]
+                ],
+                "1": [
+                    [
+                        "VCF_COLLECT",
+                        "vcf_collect",
+                        "0.1"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "test_sample_fusion_data.vcf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "vcf": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "test_sample_fusion_data.vcf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "VCF_COLLECT",
+                        "python",
+                        "3.11.0"
+                    ]
+                ],
+                "versions_vcf_collect": [
+                    [
+                        "VCF_COLLECT",
+                        "vcf_collect",
+                        "0.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-05-19T12:30:17.230023707",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.1"
+        }
+    },
+    "VCF_COLLECT - human - fusionreport - fusioninspector": {
+        "content": [
+            {
+                "0": [
+                    [
+                        "VCF_COLLECT",
+                        "python",
+                        "3.11.0"
+                    ]
+                ],
+                "1": [
+                    [
+                        "VCF_COLLECT",
+                        "vcf_collect",
+                        "0.1"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "test_sample_fusion_data.vcf:md5,0ae5bd8c5b24ffbec7ae617feec91583"
+                    ]
+                ],
+                "vcf": [
+                    [
+                        {
+                            "id": "test_sample"
+                        },
+                        "test_sample_fusion_data.vcf:md5,0ae5bd8c5b24ffbec7ae617feec91583"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "VCF_COLLECT",
+                        "python",
+                        "3.11.0"
+                    ]
+                ],
+                "versions_vcf_collect": [
+                    [
+                        "VCF_COLLECT",
+                        "vcf_collect",
+                        "0.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-05-19T12:30:08.028668815",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.1"
+        }
+    }
+}

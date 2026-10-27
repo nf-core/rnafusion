@@ -1,0 +1,118 @@
+{
+    "sarscov2 - bam": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.bam:md5,a9994ba43be93769a06d4814e95928cd"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.bai:md5,fd1c3cc02f4e223d32eedeed842b86c7"
+                ]
+            ],
+            "test.bam.metrics",
+            {
+                "versions_gatk4": [
+                    [
+                        "GATK4_MARKDUPLICATES",
+                        "gatk4",
+                        "4.6.2.0"
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "GATK4_MARKDUPLICATES",
+                        "samtools",
+                        "1.21"
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.3"
+        },
+        "timestamp": "2026-02-05T16:39:06.851947547"
+    },
+    "homo_sapiens - multiple bam": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.bam:md5,6fee419d69f55f53b5a0d0334a5f9615"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.bai:md5,2b1603773979ad06f4dbcbaa90e93e8c"
+                ]
+            ],
+            "test.bam.metrics",
+            {
+                "versions_gatk4": [
+                    [
+                        "GATK4_MARKDUPLICATES",
+                        "gatk4",
+                        "4.6.2.0"
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "GATK4_MARKDUPLICATES",
+                        "samtools",
+                        "1.21"
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.3"
+        },
+        "timestamp": "2026-02-05T16:39:14.928475242"
+    },
+    "homo_sapiens - multiple cram": {
+        "content": [
+            "test.cram",
+            "test.cram.crai",
+            "test.cram.metrics",
+            {
+                "versions_gatk4": [
+                    [
+                        "GATK4_MARKDUPLICATES",
+                        "gatk4",
+                        "4.6.2.0"
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "GATK4_MARKDUPLICATES",
+                        "samtools",
+                        "1.21"
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.3"
+        },
+        "timestamp": "2026-02-05T16:39:23.543842929"
+    }
+}
