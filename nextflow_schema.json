@@ -5,21 +5,45 @@
     "description": "Nextflow rnafusion analysis pipeline, part of the nf-core community.",
     "type": "object",
     "$defs": {
+        "skip_steps": {
+            "title": "Skip steps",
+            "type": "object",
+            "description": "Skip analysis steps",
+            "default": "",
+            "properties": {
+                "skip_qc": {
+                    "type": "boolean",
+                    "description": "Skip QC steps",
+                    "fa_icon": "fas fa-forward"
+                },
+                "skip_vcf": {
+                    "type": "boolean",
+                    "description": "Skip vcf creation step",
+                    "fa_icon": "fas fa-forward"
+                },
+                "skip_vis": {
+                    "type": "boolean",
+                    "description": "Skip visualisation steps",
+                    "fa_icon": "fas fa-forward"
+                }
+            },
+            "fa_icon": "fas fa-fast-forward"
+        },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "outdir"],
+            "required": ["outdir", "genomes_base", "tools"],
             "properties": {
                 "input": {
                     "type": "string",
                     "format": "file-path",
-                    "exists": true,
-                    "schema": "assets/schema_input.json",
                     "mimetype": "text/csv",
-                    "pattern": "^\\S+\\.csv$",
-                    "description": "Path to comma-separated file containing information about the samples in the experiment.",
+                    "schema": "assets/schema_input.json",
+                    "exists": true,
+                    "pattern": "^\\S+\\.(csv|yaml|yml|json)$",
+                    "description": "Path to samplesheet file containing information about the samples in the experiment.",
                     "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/rnafusion/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
                 },
@@ -40,6 +64,304 @@
                     "type": "string",
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
+                },
+                "cosmic_username": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "COSMIC username"
+                },
+                "cosmic_passwd": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "COSMIC password"
+                },
+                "genomes_base": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to reference folder"
+                },
+                "genomes_ignore": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Don't automatically assign reference parameters to the correct references in --genomes_base"
+                },
+                "genome_gencode_version": {
+                    "type": "string",
+                    "fa_icon": "far fa-file-code",
+                    "description": "gencode version"
+                },
+                "tools": {
+                    "type": "string",
+                    "description": "Comma-delimited list of tools to run",
+                    "fa_icon": "far fa-file-code",
+                    "pattern": "^((arriba|ctatsplicing|fusioncatcher|starfusion|stringtie|fusionreport|fastp|salmon|fusioninspector|all)?,?)*(?<!,)$"
+                },
+                "read_length": {
+                    "type": "integer",
+                    "fa_icon": "far fa-file-code",
+                    "description": "The length of the reads provided to the pipeline. This is used for the '--sjdbOverhang' option of STAR as read_length - 1. Providing 1 to this option will disable overhang handling.",
+                    "default": 100,
+                    "minimum": 1
+                },
+                "arriba_ref_blacklist": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.tsv(\\.gz)?$",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to arriba reference blacklist"
+                },
+                "arriba_ref_cytobands": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.tsv$",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to arriba reference cytobands"
+                },
+                "arriba_ref_known_fusions": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.tsv(\\.gz)?$",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to arriba reference known fusions"
+                },
+                "arriba_ref_protein_domains": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.gff3$",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to arriba reference protein domain"
+                },
+                "arriba_fusions": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "pattern": "\\S+\\.tsv$",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to arriba output"
+                },
+                "fusioncatcher_fusions": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "pattern": "\\S+\\.txt$",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to fusioncatcher output"
+                },
+                "fusioncatcher_limitSjdbInsertNsj": {
+                    "type": "integer",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Use limitSjdbInsertNsj with int for fusioncatcher",
+                    "default": 2000000,
+                    "minimum": 1
+                },
+                "fusioncatcher_ref": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to fusioncatcher references"
+                },
+                "fusioninspector_limitSjdbInsertNsj": {
+                    "type": "integer",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Use limitSjdbInsertNsj with int for fusioninspector STAR process",
+                    "default": 1000000,
+                    "minimum": 1
+                },
+                "fusioninspector_fusions": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "pattern": "\\S+\\.tsv$",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to a fusion list file built with format GENE1--GENE2"
+                },
+                "fusionreport_ref": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to fusionreport references"
+                },
+                "hgnc_ref": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.txt$",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to HGNC database file"
+                },
+                "hgnc_date": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.txt$",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to HGNC timestamp file for database retrieval"
+                },
+                "qiagen": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Use QIAGEN instead of SANGER to download COSMIC database"
+                },
+                "salmon_index": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to salmon index"
+                },
+                "starfusion_fusions": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "pattern": "\\S+\\.tsv$",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to starfusion output"
+                },
+                "starfusion_ref": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to starfusion references"
+                },
+                "ctatsplicing_cancer_introns": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.tsv\\.gz$",
+                    "exists": true,
+                    "description": "Path to the cancer introns CSV file to create the CTAT-SPLICING reference with",
+                    "default": "https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/CANCER_SPLICING_LIB_SUPPLEMENT/cancer_introns.GRCh38.Jun232020.tsv.gz"
+                },
+                "dfam_hmm": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.hmm$",
+                    "description": "Path to Dfam HMM database file",
+                    "help_text": "Provide a valid path pointing to the Dfam HMM database file. Leave as null if using the automatical filling with `--dfam_version` and `--species`.",
+                    "fa_icon": "fas fa-link"
+                },
+                "dfam_h3f": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.h3f$",
+                    "description": "Path to Dfam H3F database file",
+                    "help_text": "Provide a valid path pointing to the Dfam H3F database file. Leave as null if using the automatical filling with `--dfam_version` and `--species`.",
+                    "fa_icon": "fas fa-link"
+                },
+                "dfam_h3i": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.h3i$",
+                    "description": "Path to Dfam H3I database file",
+                    "help_text": "Provide a valid path pointing to the Dfam H3I database file. Leave as null if using the automatical filling with `--dfam_version` and `--species`.",
+                    "fa_icon": "fas fa-link"
+                },
+                "dfam_h3m": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.h3m$",
+                    "description": "Path to Dfam H3M database file",
+                    "help_text": "Provide a valid path pointing to the Dfam H3M database file. Leave as null if using the automatical filling with `--dfam_version` and `--species`.",
+                    "fa_icon": "fas fa-link"
+                },
+                "dfam_h3p": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.h3p$",
+                    "description": "Path to Dfam H3P database file",
+                    "help_text": "Provide a valid path pointing to the Dfam H3P database file. Leave as null if using the automatical filling with `--dfam_version` and `--species`.",
+                    "fa_icon": "fas fa-link"
+                },
+                "pfam_file": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.hmm(\\.gz)?$",
+                    "description": "Path to Pfam database file",
+                    "help_text": "Provide a valid path pointing to the Pfam database file. Leave as null if using the automatical filling with `--pfam_version`.",
+                    "fa_icon": "fas fa-link"
+                },
+                "annot_filter_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https?://.*",
+                    "description": "URL to annotation filter rule file",
+                    "help_text": "Provide a valid HTTP/HTTPS URL pointing to the annotation filter rule file (typically a Perl module).",
+                    "default": "https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/AnnotFilterRule.pm",
+                    "fa_icon": "fas fa-filter"
+                },
+                "starindex_ref": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to starindex references"
+                },
+                "tools_cutoff": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "default": 1,
+                    "fa_icon": "far fa-file-code",
+                    "description": "Discard fusions identified by less than INT tools"
+                },
+                "whitelist": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "pattern": "\\S+\\.tsv$",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to fusions to add to the input of fusioninspector"
+                }
+            }
+        },
+        "read_trimming_options": {
+            "title": "Read trimming options",
+            "type": "object",
+            "fa_icon": "fas fa-cut",
+            "description": "Options to adjust read trimming criteria.",
+            "properties": {
+                "trim_tail": {
+                    "type": "integer",
+                    "description": "The amount of bases to trim at the tail of each read, none will be trimmed by default",
+                    "minimum": 0,
+                    "fa_icon": "fas fa-cut"
+                },
+                "trim_tail_fusioncatcher": {
+                    "type": "integer",
+                    "description": "The amount of bases to trim at the tail of each read for fusioncatcher, none will be trimmed by default",
+                    "minimum": 0,
+                    "fa_icon": "fas fa-cut"
+                },
+                "adapter_fasta": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "pattern": "\\S+\\.f(n|ast)?a$",
+                    "description": "Path to adapter fasta file: default: []",
+                    "fa_icon": "fas fa-cut"
+                },
+                "save_trimmed_fail": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-times-circle",
+                    "description": "FASTP: Specify true to save files that failed to pass trimming thresholds"
+                },
+                "min_trimmed_reads": {
+                    "type": "integer",
+                    "default": 1,
+                    "fa_icon": "fas fa-search-minus",
+                    "description": "FASTP: Inputs with fewer than this reads will be filtered out of the \"reads\" output channel"
+                },
+                "save_merged": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-download",
+                    "description": "FASTP: Specify true to save merged reads"
+                }
+            }
+        },
+        "compression_options": {
+            "title": "Alignment compression options",
+            "type": "object",
+            "fa_icon": "fas fa-cut",
+            "description": "Option to compress BAM files to CRAM.",
+            "properties": {
+                "cram": {
+                    "type": "boolean",
+                    "description": "Output CRAM files instead of BAM files.",
+                    "fa_icon": "fas fa-cut"
                 }
             }
         },
@@ -49,35 +371,81 @@
             "fa_icon": "fas fa-dna",
             "description": "Reference genome related files and options required for the workflow.",
             "properties": {
-                "genome": {
-                    "type": "string",
-                    "description": "Name of iGenomes reference.",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
+                "references_only": {
+                    "type": "boolean",
+                    "description": "Skip running the analysis, only builds the references",
+                    "fa_icon": "fas fa-book"
                 },
                 "fasta": {
                     "type": "string",
                     "format": "file-path",
-                    "exists": true,
                     "mimetype": "text/plain",
                     "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
                     "description": "Path to FASTA genome file.",
-                    "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
                     "fa_icon": "far fa-file-code"
                 },
-                "igenomes_ignore": {
-                    "type": "boolean",
-                    "description": "Do not load the iGenomes reference config.",
-                    "fa_icon": "fas fa-ban",
-                    "hidden": true,
-                    "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
-                },
-                "igenomes_base": {
+                "fai": {
                     "type": "string",
-                    "description": "The base path to the igenomes reference files",
-                    "fa_icon": "fas fa-ban",
-                    "hidden": true,
-                    "default": "s3://ngi-igenomes/igenomes/"
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.fn?ai(\\.gz)?$",
+                    "description": "Path to FASTA genome index file.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "genome": {
+                    "type": "string",
+                    "description": "Name of iGenomes reference.",
+                    "fa_icon": "fas fa-book"
+                },
+                "gtf": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.gtf?(\\.gz)?$",
+                    "description": "Path to GTF genome file.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "refflat": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.refflat?$",
+                    "description": "Path to GTF genome file.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "rrna_intervals": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.interval_list?$",
+                    "description": "Path to ribosomal interval list.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "no_cosmic": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Avoid using Cosmic DB (for example in clinical case applications where a paid license applies."
+                },
+                "fusion_annot_lib": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "pattern": "\\S+\\.dat\\.gz$",
+                    "description": "Path to Fusion Annotation Library to be used in STARFUSION_BUILD.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "species": {
+                    "type": "string",
+                    "description": "Which species dfam should automatically download, default: homo_sapiens.",
+                    "fa_icon": "far fa-file-code",
+                    "default": "homo_sapiens"
+                },
+                "dfam_version": {
+                    "type": "string",
+                    "description": "Version of dfam to use",
+                    "fa_icon": "fas fa-code-branch"
+                },
+                "pfam_version": {
+                    "type": "string",
+                    "description": "Version of pfam to use",
+                    "fa_icon": "fas fa-code-branch"
                 }
             }
         },
@@ -166,10 +534,9 @@
                     "hidden": true
                 },
                 "max_multiqc_email_size": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "File size limit when attaching MultiQC reports to summary emails.",
-                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
-                    "default": "25.MB",
+                    "default": 26214400,
                     "fa_icon": "fas fa-file-upload",
                     "hidden": true
                 },
@@ -219,7 +586,7 @@
                 },
                 "help": {
                     "type": ["boolean", "string"],
-                    "description": "Display the help message."
+                    "description": "Display a short help message. Give a parameter name to get detailed help for that parameter."
                 },
                 "help_full": {
                     "type": "boolean",
@@ -228,13 +595,47 @@
                 "show_hidden": {
                     "type": "boolean",
                     "description": "Display hidden parameters in the help message (only works when --help or --help_full are provided)."
+                },
+                "seq_center": {
+                    "type": "string",
+                    "description": "Sequencing center, used to fill in read group CN tag in the BAM header",
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "This will reported in the BAM header as CN"
+                },
+                "seq_platform": {
+                    "type": "string",
+                    "description": "Sequencing platform, used to fill in read group PL tag in the BAM header",
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "This will reported in the BAM header as PL."
+                },
+                "star_ignore_sjdbgtf": {
+                    "type": "boolean",
+                    "description": "Whether to ignore the GTF in STAR alignment",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "Setting false will use GTF file for STAR alignment"
+                },
+                "star_limit_bam_sort_ram": {
+                    "type": "integer",
+                    "description": "The maximum amount of RAM to use for sorting the BAM file in STAR. Should by in bits. Setting this value to `0` will use the default amount of STAR.",
+                    "fa_icon": "fas fa-toolbox",
+                    "minimum": 0
                 }
             }
         }
     },
     "allOf": [
         {
+            "$ref": "#/$defs/skip_steps"
+        },
+        {
             "$ref": "#/$defs/input_output_options"
+        },
+        {
+            "$ref": "#/$defs/read_trimming_options"
+        },
+        {
+            "$ref": "#/$defs/compression_options"
         },
         {
             "$ref": "#/$defs/reference_genome_options"

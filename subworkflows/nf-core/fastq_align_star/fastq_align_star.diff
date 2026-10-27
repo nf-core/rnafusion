@@ -1,0 +1,59 @@
+Changes in component 'nf-core/fastq_align_star'
+Changes in 'fastq_align_star/main.nf':
+--- subworkflows/nf-core/fastq_align_star/main.nf
++++ subworkflows/nf-core/fastq_align_star/main.nf
+@@ -9,6 +9,8 @@
+     ch_index // channel: [ path(index) ]
+     ch_gtf // channel: [ path(gtf) ]
+     val_star_ignore_sjdbgtf // boolean: when using pre-built STAR indices do not re-extract and use splice junctions from the GTF file
++    val_seq_platform // string: sequencing platform
++    val_seq_center // string: sequencing center
+     ch_fasta_fai // channel: [ val(meta), path(fasta), path(fai) ]
+     ch_transcripts_fasta_fai // channel: [ val(meta), path(fasta), path(fai) ]
+ 
+@@ -17,7 +19,7 @@
+     //
+     // Map reads with STAR
+     //
+-    STAR_ALIGN(ch_reads, ch_index, ch_gtf, val_star_ignore_sjdbgtf)
++    STAR_ALIGN(ch_reads, ch_index, ch_gtf, val_star_ignore_sjdbgtf, val_seq_platform, val_seq_center)
+ 
+     //
+     // Sort, index BAM file and run samtools stats, flagstat and idxstats
+@@ -42,6 +44,10 @@
+     fastq               = STAR_ALIGN.out.fastq // channel: [ val(meta), path(fastq)          ]
+     tab                 = STAR_ALIGN.out.tab // channel: [ val(meta), path(tab)            ]
+     orig_bam_transcript = STAR_ALIGN.out.bam_transcript // channel: [ val(meta), path(bam)            ]
++    bam_sorted_aligned  = STAR_ALIGN.out.bam_sorted_aligned // channel: [ val(meta), path(bam)            ]
++    junctions           = STAR_ALIGN.out.junction // channel: [ val(meta), path(junction)       ]
++    spl_junc_tabs       = STAR_ALIGN.out.spl_junc_tab // channel: [ val(meta), path(spl_junc_tab)   ]
++    gene_count          = STAR_ALIGN.out.read_per_gene_tab // channel: [ val(meta), path(read_tab)       ]
+     bam                 = BAM_SORT_STATS_SAMTOOLS_GENOME.out.bam // channel: [ val(meta), path(bam) ]
+     index               = BAM_SORT_STATS_SAMTOOLS_GENOME.out.index // channel: [ val(meta), path(index) ]
+     stats               = BAM_SORT_STATS_SAMTOOLS_GENOME.out.stats // channel: [ val(meta), path(stats) ]
+
+'subworkflows/nf-core/fastq_align_star/nextflow.config' is unchanged
+Changes in 'fastq_align_star/meta.yml':
+--- subworkflows/nf-core/fastq_align_star/meta.yml
++++ subworkflows/nf-core/fastq_align_star/meta.yml
+@@ -34,6 +34,14 @@
+       description: |
+         If true the --sjdbGTFfile flag is set
+       pattern: "true|false"
++  - val_seq_platform:
++      type: string
++      description: |
++        Sequencing platform to be added to the bam header using the --outSAMattrRGline flag
++  - val_seq_center:
++      type: string
++      description: |
++        Sequencing center to be added to the bam header using the --outSAMattrRGline flag
+   - ch_fasta_fai:
+       type: file
+       description: Reference genome fasta file and index
+
+'subworkflows/nf-core/fastq_align_star/tests/main.nf.test.snap' is unchanged
+'subworkflows/nf-core/fastq_align_star/tests/main.nf.test' is unchanged
+'subworkflows/nf-core/fastq_align_star/tests/with_transcripts.config' is unchanged
+'subworkflows/nf-core/fastq_align_star/tests/nextflow.config' is unchanged
+************************************************************
