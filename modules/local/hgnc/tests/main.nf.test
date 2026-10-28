@@ -1,0 +1,52 @@
+nextflow_process {
+
+    name "Test Process HGNC_DOWNLOAD"
+    script "../main.nf"
+    process "HGNC_DOWNLOAD"
+
+    test("Should download HGNC files") {
+
+        when {
+            process {
+                """
+                // This process doesn't have any inputs
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    file(process.out.hgnc_date[0]).name,
+                ).match() },
+                { assert path(process.out.hgnc_ref[0]).exists() },
+                { assert process.out.versions_wget }
+            )
+        }
+    }
+
+    test("Should create stub files") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                // This process doesn't have any inputs
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    file(process.out.hgnc_date[0]).name,
+                ).match() },
+                { assert path(process.out.hgnc_ref[0]).exists() },
+                { assert process.out.versions_wget }
+            )
+        }
+    }
+}
