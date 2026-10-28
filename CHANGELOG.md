@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | fastqc | 0.12.1      | 0.13.0      |
 | fastp  | 1.1.0       | 1.4.0       |
 
+### Fixed
+
+1. Added `--skip_gencode_filter` to build the CTAT genome library without STAR-Fusion's `--human_gencode_filter`, and set it in `test_build`: the STAR-Fusion tutorial minigenome that profile builds from is not a GENCODE annotation, and the filter failed on it when the profile was run directly [#832](https://github.com/nf-core/rnafusion/issues/832)
+
 ## v4.1.3 - [2026-06-02]
 
 ### Added
