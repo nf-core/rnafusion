@@ -2,7 +2,7 @@ Changes in component 'nf-core/utils_nfcore_pipeline'
 Changes in 'utils_nfcore_pipeline/main.nf':
 --- subworkflows/nf-core/utils_nfcore_pipeline/main.nf
 +++ subworkflows/nf-core/utils_nfcore_pipeline/main.nf
-@@ -226,7 +226,7 @@
+@@ -229,7 +229,7 @@
  //
  // Construct and send completion email
  //
@@ -11,7 +11,7 @@ Changes in 'utils_nfcore_pipeline/main.nf':
  
      // Set up the e-mail variables
      def subject = "[${workflow.manifest.name}] Successful: ${workflow.runName}"
-@@ -294,7 +294,7 @@
+@@ -297,7 +297,7 @@
      def email_html    = html_template.toString()
  
      // Render the sendmail template
@@ -24,7 +24,7 @@ Changes in 'utils_nfcore_pipeline/main.nf':
 'subworkflows/nf-core/utils_nfcore_pipeline/meta.yml' is unchanged
 'subworkflows/nf-core/utils_nfcore_pipeline/tests/main.function.nf.test' is unchanged
 'subworkflows/nf-core/utils_nfcore_pipeline/tests/main.function.nf.test.snap' is unchanged
+'subworkflows/nf-core/utils_nfcore_pipeline/tests/nextflow.config' is unchanged
 'subworkflows/nf-core/utils_nfcore_pipeline/tests/main.nf.test' is unchanged
 'subworkflows/nf-core/utils_nfcore_pipeline/tests/main.nf.test.snap' is unchanged
-'subworkflows/nf-core/utils_nfcore_pipeline/tests/nextflow.config' is unchanged
 ************************************************************

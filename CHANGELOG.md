@@ -13,10 +13,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 1. Moved the pipeline to full strict syntax compatibility
 2. Updated the minimal Nextflow version to 26.04.0
+3. Bumped to nf-core template v4.2.1
 
 ### Fixed
 
 1. Fixed the `PL` tag of the STAR read group being merged into the `SM` tag when a sequencing platform is set [#822](https://github.com/nf-core/rnafusion/issues/822)
+
+### Tool version updates
+
+| Tool   | Old version | New version |
+| ------ | ----------- | ----------- |
+| fastqc | 0.12.1      | 0.13.0      |
+| fastp  | 1.1.0       | 1.4.0       |
 
 ## v4.1.3 - [2026-06-02]
 
