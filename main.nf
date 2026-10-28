@@ -63,7 +63,7 @@ params {
     cosmic_passwd: String?
 
     // Path to reference folder
-    genomes_base: String = "s3://nf-core-awsmegatests/rnafusion/references"
+    genomes_base: String = "s3://ngi-igenomes/nf-core/pipelines/rnafusion/references"
 
     // Don't automatically assign reference parameters to the correct references in --genomes_base
     genomes_ignore: Boolean
