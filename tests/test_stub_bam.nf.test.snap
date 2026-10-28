@@ -10,7 +10,7 @@
                     "bioawk": 1.0
                 },
                 "FASTQC_RAW": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
                     "gatk4": "4.6.2.0"
@@ -206,7 +206,7 @@
                     "bioawk": 1.0
                 },
                 "FASTQC_RAW": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
                     "gatk4": "4.6.2.0"
@@ -335,7 +335,7 @@
                     "bioawk": 1.0
                 },
                 "FASTQC_RAW": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
                     "gatk4": "4.6.2.0"
@@ -449,7 +449,7 @@
                     "bioawk": 1.0
                 },
                 "FASTQC_RAW": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FUSIONINSPECTOR": {
                     "fusion-inspector": "2.11.5"
@@ -686,7 +686,7 @@
                     "bioawk": 1.0
                 },
                 "FASTQC_RAW": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
                     "gatk4": "4.6.2.0"
@@ -808,7 +808,7 @@
                     "ctatsplicing": "0.0.3"
                 },
                 "FASTQC_RAW": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
                     "gatk4": "4.6.2.0"
@@ -1020,7 +1020,7 @@
                     "bioawk": 1.0
                 },
                 "FASTQC_RAW": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FUSIONCATCHER_FUSIONCATCHER": {
                     "fusioncatcher": 1.35
@@ -1246,13 +1246,13 @@
                     "bioawk": 1.0
                 },
                 "FASTP": {
-                    "fastp": "1.1.0"
+                    "fastp": "1.4.0"
                 },
                 "FASTQC_RAW": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FASTQC_TRIM": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
                     "gatk4": "4.6.2.0"
@@ -1347,7 +1347,7 @@
                     "bioawk": 1.0
                 },
                 "FASTQC_RAW": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FUSIONCATCHER_FUSIONCATCHER": {
                     "fusioncatcher": 1.35
@@ -1449,13 +1449,13 @@
                     "ctatsplicing": "0.0.3"
                 },
                 "FASTP": {
-                    "fastp": "1.1.0"
+                    "fastp": "1.4.0"
                 },
                 "FASTQC_RAW": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FASTQC_TRIM": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FUSIONCATCHER_FUSIONCATCHER": {
                     "fusioncatcher": 1.35
@@ -1780,13 +1780,13 @@
                     "ctatsplicing": "0.0.3"
                 },
                 "FASTP": {
-                    "fastp": "1.1.0"
+                    "fastp": "1.4.0"
                 },
                 "FASTQC_RAW": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FASTQC_TRIM": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FUSIONCATCHER_FUSIONCATCHER": {
                     "fusioncatcher": 1.35
