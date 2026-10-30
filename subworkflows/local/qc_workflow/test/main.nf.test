@@ -38,6 +38,9 @@ nextflow_workflow {
                             file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/genome.gtf", checkIfExists: true)
                         ]
                     )
+                    input[1] = []
+                    input[2] = false
+                    input[3] = "gff"
                     """
                 }
             }
@@ -118,8 +121,7 @@ nextflow_workflow {
                 { assert snapshot(
 					file(workflow.out.rnaseq_metrics[0][1]).readLines()[5..8],
 					file(workflow.out.duplicate_metrics[0][1]).readLines()[5..8],
-					file(workflow.out.insertsize_metrics[0][1]).readLines()[5..8],
-                    workflow.out.versions
+					file(workflow.out.insertsize_metrics[0][1]).readLines()[5..8]
                 ).match() }
             )
         }

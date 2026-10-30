@@ -44,5 +44,3 @@ references/GRCh38/gencode_v*/starfusion/*_genome_lib_build_dir/ref_genome.fa.sta
 references/GRCh38/gencode_v*/starfusion/*_genome_lib_build_dir/trans.blast.align_coords.align_coords.dbm
 references/GRCh38/gencode_v*/star/genomeParameters.txt
 references/GRCh38/gencode_v*/starfusion/*_genome_lib_build_dir/ref_genome.fa.star.idx/genomeParameters.txt
-references/GRCh38/fusion_report_db/mitelman.db
-references/GRCh38/fusion_report_db/fusiongdb2.db

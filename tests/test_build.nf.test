@@ -28,7 +28,7 @@ nextflow_pipeline {
                 gtf                        = 'https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/master/minigenome.gtf'
                 fusion_annot_lib           = 'https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/master/CTAT_HumanFusionLib.mini.dat.gz'
                 species                    = 'homo_sapiens'
-                dfam_version               = 3.4
+                dfam_version               = "3.4"
                 outdir                     = "$outputDir"
             }
         }
