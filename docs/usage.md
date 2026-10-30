@@ -26,7 +26,7 @@ The rnafusion pipeline needs references for the fusion detection tools, so downl
 The references for the pipeline can be downloaded from the nf-core AWS megatests S3 bucket using the following command for the [AWS CLI tool](https://github.com/aws/aws-cli):
 
 ```bash
-aws --no-sign-request s3 sync s3://nf-core-awsmegatests/rnafusion/references/ <path_to_references>
+aws --no-sign-request s3 sync s3://ngi-igenomes/nf-core/pipelines/rnafusion/references/ <path_to_references>
 ```
 
 The path to the downloaded references can then be provided to the pipeline with the `--genomes_base` parameter.
