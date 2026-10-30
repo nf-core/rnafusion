@@ -63,7 +63,7 @@ params {
     cosmic_passwd: String?
 
     // Path to reference folder
-    genomes_base: String = "s3://nf-core-awsmegatests/rnafusion/references"
+    genomes_base: String = "s3://ngi-igenomes/nf-core/pipelines/rnafusion/references"
 
     // Don't automatically assign reference parameters to the correct references in --genomes_base
     genomes_ignore: Boolean
@@ -205,6 +205,9 @@ params {
 
     // Avoid using Cosmic DB (for example in clinical case applications where a paid license applies.
     no_cosmic: Boolean
+
+    // Do not apply STAR-Fusion's --human_gencode_filter when building the CTAT genome library
+    skip_gencode_filter: Boolean
 
     // Path to Fusion Annotation Library to be used in STARFUSION_BUILD.
     fusion_annot_lib: Path = "https://github.com/FusionAnnotator/CTAT_HumanFusionLib/releases/download/v0.3.0/fusion_lib.Mar2021.dat.gz" // path to  dat.gz CTAT genome lib // TODO: Update to latest with s3 link when available

@@ -8,7 +8,7 @@ lint:
     - tests/default.nf.test
   nextflow_config: false
   schema_params: false
-nf_core_version: 4.0.3
+nf_core_version: 4.2.1
 repository_type: pipeline
 template:
   author: Martin Proks, Annick Renevey
