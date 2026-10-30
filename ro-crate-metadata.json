@@ -137,13 +137,13 @@
             ],
             "contributor": [
                 {
-                    "@id": "#d6f80fd4-524f-48e7-ac6c-becfcce69283"
+                    "@id": "#fd011e01-69f4-4b47-bb47-dd0e2dd59c04"
                 },
                 {
                     "@id": "https://orcid.org/0009-0003-5619-1555"
                 },
                 {
-                    "@id": "#43b010cc-dc33-4461-abda-dcaecb83c945"
+                    "@id": "#4e38f400-4933-48c1-ba31-bd8815ea114c"
                 }
             ],
             "dateCreated": "",
@@ -169,7 +169,7 @@
                     "@id": "https://orcid.org/0000-0001-7411-6063"
                 },
                 {
-                    "@id": "#d6f80fd4-524f-48e7-ac6c-becfcce69283"
+                    "@id": "#fd011e01-69f4-4b47-bb47-dd0e2dd59c04"
                 },
                 {
                     "@id": "https://orcid.org/0009-0003-5619-1555"
@@ -186,10 +186,10 @@
             },
             "url": [
                 "https://github.com/nf-core/rnafusion",
-                "https://nf-co.re/rnafusion/dev/"
+                "https://nf-co.re/rnafusion/4.2.0/"
             ],
             "version": [
-                "4.1.4dev"
+                "4.2.0"
             ]
         },
         {
@@ -202,7 +202,7 @@
             "url": {
                 "@id": "https://www.nextflow.io/"
             },
-            "version": "!>=25.10.4"
+            "version": "!>=26.04.0"
         },
         {
             "@id": "https://w3id.org/workflowhub/workflow-ro-crate/1.1",
@@ -398,7 +398,7 @@
             "url": "https://github.com/maxulysse"
         },
         {
-            "@id": "#d6f80fd4-524f-48e7-ac6c-becfcce69283",
+            "@id": "#fd011e01-69f4-4b47-bb47-dd0e2dd59c04",
             "@type": "Person",
             "affiliation": "ZS Associates",
             "email": "18577080+atrigila@users.noreply.github.com",
@@ -409,12 +409,12 @@
             "@id": "https://orcid.org/0009-0003-5619-1555",
             "@type": "Person",
             "affiliation": "Center for Medical Genetics Ghent",
-            "email": "nicolas.vannieuwkerke@ugent.be",
+            "email": "101190534+nvnieuwk@users.noreply.github.com",
             "name": "Nicolas Vannieuwkerke",
             "url": "https://github.com/nvnieuwk"
         },
         {
-            "@id": "#43b010cc-dc33-4461-abda-dcaecb83c945",
+            "@id": "#4e38f400-4933-48c1-ba31-bd8815ea114c",
             "@type": "Person",
             "affiliation": "ZS Associates",
             "email": "155591053+delfiterradas@users.noreply.github.com",
