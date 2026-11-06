@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 1. Fixed the `PL` tag of the STAR read group being merged into the `SM` tag when a sequencing platform is set [#822](https://github.com/nf-core/rnafusion/issues/822)
+2. Fixed MultiQC regressions: a custom `--multiqc_config` is applied on top of the pipeline config again instead of replacing it, MultiQC is skipped again with `--skip_qc` and `--references_only`, and the MultiQC meta id is `rnafusion` [#844](https://github.com/nf-core/rnafusion/issues/844)
 
 ### Tool version updates
 
