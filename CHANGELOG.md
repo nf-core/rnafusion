@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 1. Added support for multiple FASTQ files for the same sample. These will be merged at the start of the pipeline [#821](https://github.com/nf-core/rnafusion/pull/821)
+2. Added a stub test for merging single-end FASTQ files of the same sample [#848](https://github.com/nf-core/rnafusion/issues/848)
 
 ### Changed
 
