@@ -289,12 +289,33 @@ def validateInputSamplesheet(input) {
     }
 
     // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
-    def endedness_ok = metas.collect{ meta -> meta.single_end }.unique().size == 1
-    if (!endedness_ok && fastqs) {
+    // Only rows with FASTQ files define single_end
+    def fastq_metas = metas.findAll { meta -> meta.single_end != null }
+    def endedness_ok = fastq_metas.collect{ meta -> meta.single_end }.unique().size() <= 1
+    if (!endedness_ok) {
         error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
     }
 
-    return [ metas[0], fastqs, bam, bai.find { it -> it != [] } ?: [], cram, crai.find { it -> it != [] } ?: [], junctions, splice_junctions ]
+    // Check that rows of the same sample don't specify different sequencing centers or platforms
+    def seq_center = metas.collect { meta -> meta.seq_center }.findAll { value -> value }.unique()
+    if (seq_center.size() > 1) {
+        error("Please check input samplesheet -> Multiple runs of a sample must have the same seq_center (found: ${seq_center.join(', ')}): ${metas[0].id}")
+    }
+    def seq_platform = metas.collect { meta -> meta.seq_platform }.findAll { value -> value }.unique()
+    if (seq_platform.size() > 1) {
+        error("Please check input samplesheet -> Multiple runs of a sample must have the same seq_platform (found: ${seq_platform.join(', ')}): ${metas[0].id}")
+    }
+
+    // Prefer the meta of a row with FASTQ files so single_end is set, and keep seq_center/seq_platform from any row that sets them
+    def meta = fastq_metas ? fastq_metas[0] : metas[0]
+    if (seq_center) {
+        meta = meta + [seq_center: seq_center[0]]
+    }
+    if (seq_platform) {
+        meta = meta + [seq_platform: seq_platform[0]]
+    }
+
+    return [ meta, fastqs, bam, bai.find { it -> it != [] } ?: [], cram, crai.find { it -> it != [] } ?: [], junctions, splice_junctions ]
 }
 
 //
