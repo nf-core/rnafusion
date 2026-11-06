@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 1. Fixed the `PL` tag of the STAR read group being merged into the `SM` tag when a sequencing platform is set [#822](https://github.com/nf-core/rnafusion/issues/822)
+2. Fixed the completion email arguments being shifted by one, and the MultiQC report being passed to the email as a `[meta, report]` tuple, which stopped the report from being attached [#849](https://github.com/nf-core/rnafusion/issues/849)
 
 ### Tool version updates
 
