@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 2. Updated the minimal Nextflow version to 26.04.0
 3. Bumped to nf-core template v4.2.1
 4. Moved references from `s3://nf-core-awsmegatests/rnafusion/references` to `s3://ngi-igenomes/nf-core/pipelines/rnafusion/references`
-5. Added `--no-fusiongdb2` to the fusionreport download and detect commands since the fusiongdb2 endpoint no longer exists. Without it on `FUSIONREPORT_DETECT`, references built with this release failed with `no such table: fusiongdb2` [#842](https://github.com/nf-core/rnafusion/issues/842). This will be removed once fusionreport is updated to address this issue.
+5. Added `--no-fusiongdb2` to the fusionreport download command since the fusiongdb2 endpoint no longer exists, and skip fusiongdb2 in `FUSIONREPORT_DETECT` as well, which failed with `no such table: fusiongdb2` on references built with this release [#842](https://github.com/nf-core/rnafusion/issues/842). Because `fusion_report run` swaps `--no-fusiongdb2` and `--no-mitelman` ([fusion-report#99](https://github.com/Clinical-Genomics/fusion-report/issues/99)), detect uses `--no-mitelman` to skip fusiongdb2. This will be removed once fusionreport is updated to address these issues.
 
 ### Fixed
 
