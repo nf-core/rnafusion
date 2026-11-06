@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 1. Fixed the `PL` tag of the STAR read group being merged into the `SM` tag when a sequencing platform is set [#822](https://github.com/nf-core/rnafusion/issues/822)
+2. Fixed `--references_only` requiring `--input`, which broke the documented reference-building command [#861](https://github.com/nf-core/rnafusion/issues/861)
 
 ### Tool version updates
 
