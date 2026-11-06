@@ -86,7 +86,7 @@
                     "description": "Don't automatically assign reference parameters to the correct references in --genomes_base"
                 },
                 "genome_gencode_version": {
-                    "type": "integer",
+                    "type": "string",
                     "fa_icon": "far fa-file-code",
                     "description": "gencode version"
                 },
@@ -437,13 +437,19 @@
                     "fa_icon": "far fa-file-code",
                     "default": "homo_sapiens"
                 },
+                "skip_gencode_filter": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-forward",
+                    "description": "Do not apply STAR-Fusion's `--human_gencode_filter` when building the CTAT genome library.",
+                    "help_text": "The filter expects a human GENCODE annotation. Set this for other annotations, such as the STAR-Fusion tutorial minigenome used by the `test_build` profile."
+                },
                 "dfam_version": {
-                    "type": ["number", "null"],
+                    "type": "string",
                     "description": "Version of dfam to use",
                     "fa_icon": "fas fa-code-branch"
                 },
                 "pfam_version": {
-                    "type": ["number", "null"],
+                    "type": "string",
                     "description": "Version of pfam to use",
                     "fa_icon": "fas fa-code-branch"
                 }
@@ -534,10 +540,9 @@
                     "hidden": true
                 },
                 "max_multiqc_email_size": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "File size limit when attaching MultiQC reports to summary emails.",
-                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
-                    "default": "25.MB",
+                    "default": 26214400,
                     "fa_icon": "fas fa-file-upload",
                     "hidden": true
                 },
@@ -581,9 +586,13 @@
                 },
                 "trace_report_suffix": {
                     "type": "string",
-                    "fa_icon": "far calendar",
+                    "fa_icon": "far fa-calendar",
                     "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
                     "hidden": true
+                },
+                "help": {
+                    "type": ["boolean", "string"],
+                    "description": "Display a short help message. Give a parameter name to get detailed help for that parameter."
                 },
                 "help_full": {
                     "type": "boolean",

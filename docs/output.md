@@ -393,6 +393,7 @@ The STAR index is generated with `--sjdbOverhang ${params.read_length - 1}`, `pa
 <summary>Output files</summary>
 
 - `stringtie/<sample>/stringtie.merged.gtf` - merged gtf from annotation and stringtie output gtfs
+
 </details>
 
 ### Vcf_collect
