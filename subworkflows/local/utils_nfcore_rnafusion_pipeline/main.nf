@@ -212,9 +212,9 @@ def validateInputParameters(
     Boolean no_cosmic,
     String dfam_version,
     String species,
-    Map<String,Path> setDfamParams,
+    Map<String,String> setDfamParams,
     String pfam_version,
-    String pfam_file,
+    pfam_file,
     Map genomes,
     String genome
 ) {
@@ -229,11 +229,11 @@ def validateInputParameters(
 
         if (setDfamParams) {
             def customParams = setDfamParams.findAll { _name, value ->
-                !value?.toUriString().startsWith(dfamPattern)
+                !value?.startsWith(dfamPattern)
             }
             if (customParams) {
                 def paramDetails = customParams.collect { name, value ->
-                    "   --${name}: ${value.toUriString()}"
+                    "   --${name}: ${value}"
                 }.join('\n')
                 def dfam_warn = "Both custom DFAM paths as well as `--dfam_version` (${dfam_version}) and `--species` (${species}) were provided.\n" +
                     "Custom DFAM paths parameters provided:\n${paramDetails}\n" +
@@ -247,9 +247,11 @@ def validateInputParameters(
 
     if (pfam_version){
         def pfamPattern = "http://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam${pfam_version}/Pfam-A"
+        // pfam_file can be a Path, where startsWith() would compare path components instead of the URL string
+        def pfamUri = pfam_file instanceof Path ? pfam_file.toUriString() : pfam_file?.toString()
 
-        if (!(pfam_file?.toUriString()?.startsWith(pfamPattern))) {
-            def pfam_warn = "Both `--pfam_file` (${pfam_file}) and `--pfam_version` (${pfam_version}) were provided.\n" +
+        if (!(pfamUri?.startsWith(pfamPattern))) {
+            def pfam_warn = "Both `--pfam_file` (${pfamUri}) and `--pfam_version` (${pfam_version}) were provided.\n" +
                     "The pipeline will prioritize the custom file from `--pfam_file` and **will NOT** construct the URL based on `--pfam_version`.\n" +
                     "   - If you intend to use a custom PFAM file, please ensure that `--pfam_file` points to a full and valid path.\n" +
                     "   - If you prefer to let the pipeline build the PFAM URL automatically, omit `--pfam_file` and instead provide only `--pfam_version`."
