@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 1. Fixed the `PL` tag of the STAR read group being merged into the `SM` tag when a sequencing platform is set [#822](https://github.com/nf-core/rnafusion/issues/822)
+2. Fixed `strandedness` from the samplesheet not being added to the meta map, so `PICARD_COLLECTRNASEQMETRICS` never got the right `--STRAND_SPECIFICITY` and the per-sample strandedness check never ran [#856](https://github.com/nf-core/rnafusion/issues/856)
 
 ### Tool version updates
 
