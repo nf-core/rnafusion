@@ -71,6 +71,7 @@
                 "references/GRCh38",
                 "references/GRCh38/fusionreport",
                 "references/GRCh38/fusionreport/DB-timestamp.txt",
+                "references/GRCh38/fusionreport/fusiongdb2.db",
                 "references/GRCh38/fusionreport/mitelman.db",
                 "references/GRCh38/gencode_v46",
                 "references/GRCh38/gencode_v46/gencode",
@@ -290,10 +291,10 @@
                 "trans.blast.dat.gz:md5,85ba5ea96c566f751ad83a3e4b8ab128"
             ]
         ],
-        "timestamp": "2026-06-19T10:28:31.977688013",
+        "timestamp": "2026-11-06T22:25:00.720888",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.1"
+            "nf-test": "0.9.4",
+            "nextflow": "26.10.5"
         }
     }
 }
