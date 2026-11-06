@@ -168,7 +168,7 @@ workflow PIPELINE_COMPLETION {
     outdir          //    path: Path to output directory where results will be published
     monochrome_logs // boolean: Disable ANSI colour codes in log output
     multiqc_report  //  string: Path to MultiQC report
-    max_multiqc_email_size
+    max_multiqc_email_size // MemoryUnit: Maximum size of the MultiQC report to attach to the email
 
     main:
     summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
@@ -185,6 +185,7 @@ workflow PIPELINE_COMPLETION {
                 email_on_fail,
                 plaintext_email,
                 outdir,
+                max_multiqc_email_size,
                 monochrome_logs,
                 multiqc_reports.isBound() ? multiqc_reports.getVal() : [],
             )
