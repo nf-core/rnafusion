@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 1. Added support for multiple FASTQ files for the same sample. These will be merged at the start of the pipeline [#821](https://github.com/nf-core/rnafusion/pull/821)
+2. Added a stub test for merging single-end FASTQ files of the same sample [#848](https://github.com/nf-core/rnafusion/issues/848)
 
 ### Changed
 
@@ -20,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 1. Fixed the `PL` tag of the STAR read group being merged into the `SM` tag when a sequencing platform is set [#822](https://github.com/nf-core/rnafusion/issues/822)
+2. Fixed single-end FASTQ samplesheets being rejected by the input schema since v4.0.0 [#860](https://github.com/nf-core/rnafusion/issues/860)
 
 ### Tool version updates
 
