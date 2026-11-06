@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 1. Fixed the `PL` tag of the STAR read group being merged into the `SM` tag when a sequencing platform is set [#822](https://github.com/nf-core/rnafusion/issues/822)
+2. Fixed single-end FASTQ samplesheets being rejected by the input schema since v4.0.0 [#860](https://github.com/nf-core/rnafusion/issues/860)
 
 ### Tool version updates
 
