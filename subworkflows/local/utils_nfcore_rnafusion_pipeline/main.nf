@@ -248,7 +248,7 @@ def validateInputParameters(
     if (pfam_version){
         def pfamPattern = "http://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam${pfam_version}/Pfam-A"
 
-        if (!(pfam_file?.startsWith(pfamPattern))) {
+        if (!(pfam_file?.toUriString()?.startsWith(pfamPattern))) {
             def pfam_warn = "Both `--pfam_file` (${pfam_file}) and `--pfam_version` (${pfam_version}) were provided.\n" +
                     "The pipeline will prioritize the custom file from `--pfam_file` and **will NOT** construct the URL based on `--pfam_version`.\n" +
                     "   - If you intend to use a custom PFAM file, please ensure that `--pfam_file` points to a full and valid path.\n" +
