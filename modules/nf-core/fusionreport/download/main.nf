@@ -23,6 +23,12 @@ process FUSIONREPORT_DOWNLOAD {
     """
     mkdir -p ${prefix}
     fusion_report download ${args} ${prefix}
+
+    # fusion_report run always queries fusiongdb2 (https://github.com/Clinical-Genomics/fusion-report/issues/99),
+    # so create an empty fusiongdb2 database when it was not downloaded (e.g. with --no-fusiongdb2)
+    if [ ! -f ${prefix}/fusiongdb2.db ]; then
+        python3 -c "import sqlite3; db = sqlite3.connect('${prefix}/fusiongdb2.db'); db.execute('CREATE TABLE fusiongdb2 (fusions varchar(50) NOT NULL)'); db.commit()"
+    fi
     """
 
     stub:

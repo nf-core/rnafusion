@@ -19,11 +19,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 5. Added `--no-fusiongdb2` to the fusionreport download command since the fusiongdb2 endpoint no longer exists. This will be removed once fusionreport is updated to address this issue.
 6. The samplesheet no longer requires unique `sample` values: rows with the same `sample` are combined into one sample [#821](https://github.com/nf-core/rnafusion/pull/821)
 7. Bumped nf-schema to 2.7.3
+5. Added `--no-fusiongdb2` to the fusionreport download command since the fusiongdb2 endpoint no longer exists. `FUSIONREPORT_DOWNLOAD` (patched) now creates an empty fusiongdb2 database instead, because `fusion_report run` always queries it and failed with `no such table: fusiongdb2` on references built with this release [#842](https://github.com/nf-core/rnafusion/issues/842). This will be removed once fusionreport is updated to address this issue.
 
 ### Fixed
 
 1. Fixed the `PL` tag of the STAR read group being merged into the `SM` tag when a sequencing platform is set [#822](https://github.com/nf-core/rnafusion/issues/822)
 2. Fixed the `test_build` profile failing on the STAR-Fusion tutorial minigenome by setting `--skip_gencode_filter`, since that annotation is not GENCODE [#832](https://github.com/nf-core/rnafusion/issues/832)
+3. Fixed samples spread over several samplesheet rows keeping only the first row's meta: `seq_center`/`seq_platform` from other rows are kept (and must agree), and rows without FASTQ files no longer break the single-end/paired-end check [#847](https://github.com/nf-core/rnafusion/issues/847)
+4. Fixed every run checking the remote dfam, pfam, AnnotFilterRule, cancer introns and fusion annotation library defaults at launch. They are now only resolved when the STAR-Fusion reference is built [#843](https://github.com/nf-core/rnafusion/issues/843)
+5. Fixed the completion email arguments being shifted by one, and the MultiQC report being passed to the email as a `[meta, report]` tuple, which stopped the report from being attached [#849](https://github.com/nf-core/rnafusion/issues/849)
+6. Fixed the pfam warning being printed on every run, because `--pfam_file` was compared as a path instead of a URL [#845](https://github.com/nf-core/rnafusion/issues/845)
 
 ### Tool version updates
 
