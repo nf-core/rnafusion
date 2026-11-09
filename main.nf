@@ -129,28 +129,28 @@ params {
     starfusion_ref: String = getGenomeAttribute("starfusion_ref", params.genomes, params.genome)
 
     // Path to the cancer introns CSV file to create the CTAT-SPLICING reference with
-    ctatsplicing_cancer_introns: Path = 'https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/CANCER_SPLICING_LIB_SUPPLEMENT/cancer_introns.GRCh38.Jun232020.tsv.gz'
+    ctatsplicing_cancer_introns: String = 'https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/CANCER_SPLICING_LIB_SUPPLEMENT/cancer_introns.GRCh38.Jun232020.tsv.gz'
 
     // Path to Dfam HMM database file
-    dfam_hmm: Path = "https://www.dfam.org/releases/Dfam_${params.dfam_version}/infrastructure/dfamscan/${params.species}_dfam.hmm"
+    dfam_hmm: String = "https://www.dfam.org/releases/Dfam_${params.dfam_version}/infrastructure/dfamscan/${params.species}_dfam.hmm"
 
     // Path to Dfam H3F database file
-    dfam_h3f: Path = "https://www.dfam.org/releases/Dfam_${params.dfam_version}/infrastructure/dfamscan/${params.species}_dfam.hmm.h3f"
+    dfam_h3f: String = "https://www.dfam.org/releases/Dfam_${params.dfam_version}/infrastructure/dfamscan/${params.species}_dfam.hmm.h3f"
 
     // Path to Dfam H3I database file
-    dfam_h3i: Path = "https://www.dfam.org/releases/Dfam_${params.dfam_version}/infrastructure/dfamscan/${params.species}_dfam.hmm.h3i"
+    dfam_h3i: String = "https://www.dfam.org/releases/Dfam_${params.dfam_version}/infrastructure/dfamscan/${params.species}_dfam.hmm.h3i"
 
     // Path to Dfam H3M database file
-    dfam_h3m: Path = "https://www.dfam.org/releases/Dfam_${params.dfam_version}/infrastructure/dfamscan/${params.species}_dfam.hmm.h3m"
+    dfam_h3m: String = "https://www.dfam.org/releases/Dfam_${params.dfam_version}/infrastructure/dfamscan/${params.species}_dfam.hmm.h3m"
 
     // Path to Dfam H3P database file
-    dfam_h3p: Path = "https://www.dfam.org/releases/Dfam_${params.dfam_version}/infrastructure/dfamscan/${params.species}_dfam.hmm.h3p"
+    dfam_h3p: String = "https://www.dfam.org/releases/Dfam_${params.dfam_version}/infrastructure/dfamscan/${params.species}_dfam.hmm.h3p"
 
     // Path to Pfam database file
-    pfam_file: Path = "http://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam${params.pfam_version}/Pfam-A.hmm.gz"
+    pfam_file: String = "http://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam${params.pfam_version}/Pfam-A.hmm.gz"
 
     // URL to annotation filter rule file
-    annot_filter_url: Path = 'https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/AnnotFilterRule.pm'
+    annot_filter_url: String = 'https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/AnnotFilterRule.pm'
 
     // Path to starindex references
     starindex_ref: String = getGenomeAttribute("starindex_ref", params.genomes, params.genome)
@@ -210,7 +210,7 @@ params {
     skip_gencode_filter: Boolean
 
     // Path to Fusion Annotation Library to be used in STARFUSION_BUILD.
-    fusion_annot_lib: Path = "https://github.com/FusionAnnotator/CTAT_HumanFusionLib/releases/download/v0.3.0/fusion_lib.Mar2021.dat.gz" // path to  dat.gz CTAT genome lib // TODO: Update to latest with s3 link when available
+    fusion_annot_lib: String = "https://github.com/FusionAnnotator/CTAT_HumanFusionLib/releases/download/v0.3.0/fusion_lib.Mar2021.dat.gz" // path to  dat.gz CTAT genome lib // TODO: Update to latest with s3 link when available
 
     // Which species dfam should automatically download, default: homo_sapiens.
     species: String = 'homo_sapiens'

@@ -182,17 +182,17 @@ workflow BUILD_REFERENCES {
             }
 
             if(pfam_file) {
-                pfam_file = channel.value(pfam_file)
+                pfam_file = channel.value(file(pfam_file, checkIfExists: true))
             } else {
                 error("Expected `--pfam_version` to be specified when using StarFusion to automatically fill in Pfam database or specify `--pfam_file` for custom input")
             }
 
             if(dfam_hmm && dfam_h3p && dfam_h3m && dfam_h3i && dfam_h3f) {
-                dfam_hmm = channel.value(dfam_hmm)
-                dfam_h3f = channel.value(dfam_h3f)
-                dfam_h3i = channel.value(dfam_h3i)
-                dfam_h3m = channel.value(dfam_h3m)
-                dfam_h3p = channel.value(dfam_h3p)
+                dfam_hmm = channel.value(file(dfam_hmm, checkIfExists: true))
+                dfam_h3f = channel.value(file(dfam_h3f, checkIfExists: true))
+                dfam_h3i = channel.value(file(dfam_h3i, checkIfExists: true))
+                dfam_h3m = channel.value(file(dfam_h3m, checkIfExists: true))
+                dfam_h3p = channel.value(file(dfam_h3p, checkIfExists: true))
             } else {
                 error("Expected `--dfam_version` and `--species` to be specified when using StarFusion to automatically fill in Dfam database or specify `--dfam_{hmm,h3f,h3i,h3m,h3p}` for custom input")
             }
@@ -206,12 +206,20 @@ workflow BUILD_REFERENCES {
                 )
                 .collect()
 
-            STARFUSION_BUILD(ch_fasta, ch_gtf, fusion_annot_lib, species, pfam_file, dfam_urls_ch, annot_filter_url)
+            STARFUSION_BUILD(
+                ch_fasta,
+                ch_gtf,
+                file(fusion_annot_lib, checkIfExists: true),
+                species,
+                pfam_file,
+                dfam_urls_ch,
+                file(annot_filter_url, checkIfExists: true)
+            )
             ch_versions = ch_versions.mix(STARFUSION_BUILD.out.versions)
             if (tools.contains("ctatsplicing")) {
                 CTATSPLICING_PREPGENOMELIB(
                     STARFUSION_BUILD.out.reference,
-                    ctatsplicing_cancer_introns
+                    file(ctatsplicing_cancer_introns, checkIfExists: true)
                 )
                 ch_starfusion_ref = CTATSPLICING_PREPGENOMELIB.out.reference
             } else {

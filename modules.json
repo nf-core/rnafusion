@@ -81,7 +81,8 @@
                     "fusionreport/download": {
                         "branch": "master",
                         "git_sha": "969d923eeb55fc9e82f5907a7dcfa23152cc6e84",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/fusionreport/download/fusionreport-download.diff"
                     },
                     "gatk4/bedtointervallist": {
                         "branch": "master",

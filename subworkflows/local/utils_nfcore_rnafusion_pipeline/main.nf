@@ -168,7 +168,7 @@ workflow PIPELINE_COMPLETION {
     outdir          //    path: Path to output directory where results will be published
     monochrome_logs // boolean: Disable ANSI colour codes in log output
     multiqc_report  //  string: Path to MultiQC report
-    max_multiqc_email_size
+    max_multiqc_email_size // MemoryUnit: Maximum size of the MultiQC report to attach to the email
 
     main:
     summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
@@ -185,6 +185,7 @@ workflow PIPELINE_COMPLETION {
                 email_on_fail,
                 plaintext_email,
                 outdir,
+                max_multiqc_email_size,
                 monochrome_logs,
                 multiqc_reports.isBound() ? multiqc_reports.getVal() : [],
             )
@@ -212,9 +213,9 @@ def validateInputParameters(
     Boolean no_cosmic,
     String dfam_version,
     String species,
-    Map<String,Path> setDfamParams,
+    Map<String,String> setDfamParams,
     String pfam_version,
-    String pfam_file,
+    pfam_file,
     Map genomes,
     String genome
 ) {
@@ -229,11 +230,11 @@ def validateInputParameters(
 
         if (setDfamParams) {
             def customParams = setDfamParams.findAll { _name, value ->
-                !value?.toUriString().startsWith(dfamPattern)
+                !value?.startsWith(dfamPattern)
             }
             if (customParams) {
                 def paramDetails = customParams.collect { name, value ->
-                    "   --${name}: ${value.toUriString()}"
+                    "   --${name}: ${value}"
                 }.join('\n')
                 def dfam_warn = "Both custom DFAM paths as well as `--dfam_version` (${dfam_version}) and `--species` (${species}) were provided.\n" +
                     "Custom DFAM paths parameters provided:\n${paramDetails}\n" +
@@ -247,9 +248,11 @@ def validateInputParameters(
 
     if (pfam_version){
         def pfamPattern = "http://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam${pfam_version}/Pfam-A"
+        // pfam_file can be a Path, where startsWith() would compare path components instead of the URL string
+        def pfamUri = pfam_file instanceof Path ? pfam_file.toUriString() : pfam_file?.toString()
 
-        if (!(pfam_file?.toUriString()?.startsWith(pfamPattern))) {
-            def pfam_warn = "Both `--pfam_file` (${pfam_file}) and `--pfam_version` (${pfam_version}) were provided.\n" +
+        if (!(pfamUri?.startsWith(pfamPattern))) {
+            def pfam_warn = "Both `--pfam_file` (${pfamUri}) and `--pfam_version` (${pfam_version}) were provided.\n" +
                     "The pipeline will prioritize the custom file from `--pfam_file` and **will NOT** construct the URL based on `--pfam_version`.\n" +
                     "   - If you intend to use a custom PFAM file, please ensure that `--pfam_file` points to a full and valid path.\n" +
                     "   - If you prefer to let the pipeline build the PFAM URL automatically, omit `--pfam_file` and instead provide only `--pfam_version`."
@@ -289,12 +292,33 @@ def validateInputSamplesheet(input) {
     }
 
     // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
-    def endedness_ok = metas.collect{ meta -> meta.single_end }.unique().size == 1
-    if (!endedness_ok && fastqs) {
+    // Only rows with FASTQ files define single_end
+    def fastq_metas = metas.findAll { meta -> meta.single_end != null }
+    def endedness_ok = fastq_metas.collect{ meta -> meta.single_end }.unique().size() <= 1
+    if (!endedness_ok) {
         error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
     }
 
-    return [ metas[0], fastqs, bam, bai.find { it -> it != [] } ?: [], cram, crai.find { it -> it != [] } ?: [], junctions, splice_junctions ]
+    // Check that rows of the same sample don't specify different sequencing centers or platforms
+    def seq_center = metas.collect { meta -> meta.seq_center }.findAll { value -> value }.unique()
+    if (seq_center.size() > 1) {
+        error("Please check input samplesheet -> Multiple runs of a sample must have the same seq_center (found: ${seq_center.join(', ')}): ${metas[0].id}")
+    }
+    def seq_platform = metas.collect { meta -> meta.seq_platform }.findAll { value -> value }.unique()
+    if (seq_platform.size() > 1) {
+        error("Please check input samplesheet -> Multiple runs of a sample must have the same seq_platform (found: ${seq_platform.join(', ')}): ${metas[0].id}")
+    }
+
+    // Prefer the meta of a row with FASTQ files so single_end is set, and keep seq_center/seq_platform from any row that sets them
+    def meta = fastq_metas ? fastq_metas[0] : metas[0]
+    if (seq_center) {
+        meta = meta + [seq_center: seq_center[0]]
+    }
+    if (seq_platform) {
+        meta = meta + [seq_platform: seq_platform[0]]
+    }
+
+    return [ meta, fastqs, bam, bai.find { it -> it != [] } ?: [], cram, crai.find { it -> it != [] } ?: [], junctions, splice_junctions ]
 }
 
 //
