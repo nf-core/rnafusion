@@ -21,9 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 1. Fixed the `PL` tag of the STAR read group being merged into the `SM` tag when a sequencing platform is set [#822](https://github.com/nf-core/rnafusion/issues/822)
 2. Fixed `strandedness` from the samplesheet not being added to the meta map, so `PICARD_COLLECTRNASEQMETRICS` never got the right `--STRAND_SPECIFICITY` and the per-sample strandedness check never ran [#856](https://github.com/nf-core/rnafusion/issues/856)
-3. Fixed every run checking the remote dfam, pfam, AnnotFilterRule, cancer introns and fusion annotation library defaults at launch. They are now only resolved when the STAR-Fusion reference is built [#843](https://github.com/nf-core/rnafusion/issues/843)
-4. Fixed the completion email arguments being shifted by one, and the MultiQC report being passed to the email as a `[meta, report]` tuple, which stopped the report from being attached [#849](https://github.com/nf-core/rnafusion/issues/849)
-5. Fixed the pfam warning being printed on every run, because `--pfam_file` was compared as a path instead of a URL [#845](https://github.com/nf-core/rnafusion/issues/845)
+3. Fixed samples spread over several samplesheet rows keeping only the first row's meta: `seq_center`/`seq_platform` from other rows are kept (and must agree), and rows without FASTQ files no longer break the single-end/paired-end check [#847](https://github.com/nf-core/rnafusion/issues/847)
+4. Fixed every run checking the remote dfam, pfam, AnnotFilterRule, cancer introns and fusion annotation library defaults at launch. They are now only resolved when the STAR-Fusion reference is built [#843](https://github.com/nf-core/rnafusion/issues/843)
+5. Fixed the completion email arguments being shifted by one, and the MultiQC report being passed to the email as a `[meta, report]` tuple, which stopped the report from being attached [#849](https://github.com/nf-core/rnafusion/issues/849)
+6. Fixed the pfam warning being printed on every run, because `--pfam_file` was compared as a path instead of a URL [#845](https://github.com/nf-core/rnafusion/issues/845)
 
 ### Tool version updates
 
