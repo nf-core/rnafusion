@@ -16,10 +16,10 @@
                     "fusion_report": "4.1.2"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_CREATESEQUENCEDICTIONARY": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GFFREAD": {
                     "gffread": "0.12.7"
@@ -31,12 +31,12 @@
                     "salmon": "1.10.3"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "STARFUSION_BUILD": {
-                    "STAR-Fusion": "1.15.1",
                     "gunzip": 1.12,
-                    "hmmer": 3.4
+                    "hmmer": 3.4,
+                    "star-fusion": "1.15.1"
                 },
                 "STAR_GENOMEGENERATE": {
                     "gawk": "5.1.0",
@@ -210,7 +210,7 @@
                 "versionInfo.json:md5,d2c799050e81aa6e282ac8a73e773941",
                 "Genome:md5,1621486e3b854fefa37c0b4e77275233",
                 "SA:md5,9b6b936f3a8a1232c4fc5533daf9401d",
-                "SAindex:md5,8b2025227b78fdc83e3e5b17c0f538f7",
+                "SAindex:md5,3cd1830ea49ca8aab389603b513791e7",
                 "chrLength.txt:md5,e02cd536b7281b894246863b160d5d06",
                 "chrName.txt:md5,f4d0d6595f423084e6b9472e40dfe6e8",
                 "chrNameLength.txt:md5,07a67d7ac441d7d30d80840b0927e717",

@@ -13,49 +13,49 @@
                     "fastqc": "0.13.0"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_CREATESEQUENCEDICTIONARY": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_MARKDUPLICATES": {
-                    "gatk4": "4.6.2.0",
-                    "samtools": 1.21
+                    "gatk4": "4.7.0.0",
+                    "samtools": 1.24
                 },
                 "GENCODE_DOWNLOAD": {
                     "wget": "1.21.4"
                 },
                 "PICARD_COLLECTINSERTSIZEMETRICS": {
-                    "picard": "3.4.0"
+                    "picard": "3.5.0"
                 },
                 "PICARD_COLLECTRNASEQMETRICS": {
-                    "picard": "3.4.0"
+                    "picard": "3.5.0"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "STARFUSION_BUILD": {
-                    "STAR-Fusion": "1.15.1",
                     "gunzip": 1.12,
-                    "hmmer": 3.4
+                    "hmmer": 3.4,
+                    "star-fusion": "1.15.1"
                 },
                 "STARFUSION_DETECT": {
-                    "STAR-Fusion": "1.15.1"
+                    "star-fusion": "1.15.1"
                 },
                 "STAR_ALIGN": {
                     "gawk": "5.1.0",
@@ -254,41 +254,41 @@
                     "fastqc": "0.13.0"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_CREATESEQUENCEDICTIONARY": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_MARKDUPLICATES": {
-                    "gatk4": "4.6.2.0",
-                    "samtools": 1.21
+                    "gatk4": "4.7.0.0",
+                    "samtools": 1.24
                 },
                 "GENCODE_DOWNLOAD": {
                     "wget": "1.21.4"
                 },
                 "PICARD_COLLECTINSERTSIZEMETRICS": {
-                    "picard": "3.4.0"
+                    "picard": "3.5.0"
                 },
                 "PICARD_COLLECTRNASEQMETRICS": {
-                    "picard": "3.4.0"
+                    "picard": "3.5.0"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "STAR_ALIGN": {
                     "gawk": "5.1.0",
@@ -301,10 +301,10 @@
                     "star": "2.7.11b"
                 },
                 "STRINGTIE_MERGE": {
-                    "stringtie": "2.2.1"
+                    "stringtie": "3.0.3"
                 },
                 "STRINGTIE_STRINGTIE": {
-                    "stringtie": "2.2.3"
+                    "stringtie": "3.0.3"
                 },
                 "UCSC_GTFTOGENEPRED": {
                     "ucsc": 482
@@ -394,6 +394,11 @@
                 "stringtie",
                 "stringtie/stringtie_merge.gtf",
                 "stringtie/test.ballgown",
+                "stringtie/test.ballgown/e2t.ctab",
+                "stringtie/test.ballgown/e_data.ctab",
+                "stringtie/test.ballgown/i2t.ctab",
+                "stringtie/test.ballgown/i_data.ctab",
+                "stringtie/test.ballgown/t_data.ctab",
                 "stringtie/test.coverage.gtf",
                 "stringtie/test.gene.abundance.txt",
                 "stringtie/test.transcripts.gtf"
@@ -449,14 +454,14 @@
                     "fusion_report": "4.1.2"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_CREATESEQUENCEDICTIONARY": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_MARKDUPLICATES": {
-                    "gatk4": "4.6.2.0",
-                    "samtools": 1.21
+                    "gatk4": "4.7.0.0",
+                    "samtools": 1.24
                 },
                 "GENCODE_DOWNLOAD": {
                     "wget": "1.21.4"
@@ -468,10 +473,10 @@
                     "wget": "1.21.4"
                 },
                 "PICARD_COLLECTINSERTSIZEMETRICS": {
-                    "picard": "3.4.0"
+                    "picard": "3.5.0"
                 },
                 "PICARD_COLLECTRNASEQMETRICS": {
-                    "picard": "3.4.0"
+                    "picard": "3.5.0"
                 },
                 "SALMON_INDEX": {
                     "salmon": "1.10.3"
@@ -480,30 +485,30 @@
                     "salmon": "1.10.3"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "STARFUSION_BUILD": {
-                    "STAR-Fusion": "1.15.1",
                     "gunzip": 1.12,
-                    "hmmer": 3.4
+                    "hmmer": 3.4,
+                    "star-fusion": "1.15.1"
                 },
                 "STARFUSION_DETECT": {
-                    "STAR-Fusion": "1.15.1"
+                    "star-fusion": "1.15.1"
                 },
                 "STAR_ALIGN": {
                     "gawk": "5.1.0",
@@ -516,10 +521,10 @@
                     "star": "2.7.11b"
                 },
                 "STRINGTIE_MERGE": {
-                    "stringtie": "2.2.1"
+                    "stringtie": "3.0.3"
                 },
                 "STRINGTIE_STRINGTIE": {
-                    "stringtie": "2.2.3"
+                    "stringtie": "3.0.3"
                 },
                 "UCSC_GTFTOGENEPRED": {
                     "ucsc": 482
@@ -770,6 +775,11 @@
                 "stringtie",
                 "stringtie/stringtie_merge.gtf",
                 "stringtie/test.ballgown",
+                "stringtie/test.ballgown/e2t.ctab",
+                "stringtie/test.ballgown/e_data.ctab",
+                "stringtie/test.ballgown/i2t.ctab",
+                "stringtie/test.ballgown/i_data.ctab",
+                "stringtie/test.ballgown/t_data.ctab",
                 "stringtie/test.coverage.gtf",
                 "stringtie/test.gene.abundance.txt",
                 "stringtie/test.transcripts.gtf"
@@ -798,41 +808,41 @@
                     "fastqc": "0.13.0"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_CREATESEQUENCEDICTIONARY": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_MARKDUPLICATES": {
-                    "gatk4": "4.6.2.0",
-                    "samtools": 1.21
+                    "gatk4": "4.7.0.0",
+                    "samtools": 1.24
                 },
                 "GENCODE_DOWNLOAD": {
                     "wget": "1.21.4"
                 },
                 "PICARD_COLLECTINSERTSIZEMETRICS": {
-                    "picard": "3.4.0"
+                    "picard": "3.5.0"
                 },
                 "PICARD_COLLECTRNASEQMETRICS": {
-                    "picard": "3.4.0"
+                    "picard": "3.5.0"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "STAR_ALIGN": {
                     "gawk": "5.1.0",
@@ -966,14 +976,14 @@
                     "fusion_report": "4.1.2"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_CREATESEQUENCEDICTIONARY": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_MARKDUPLICATES": {
-                    "gatk4": "4.6.2.0",
-                    "samtools": 1.21
+                    "gatk4": "4.7.0.0",
+                    "samtools": 1.24
                 },
                 "GENCODE_DOWNLOAD": {
                     "wget": "1.21.4"
@@ -982,33 +992,33 @@
                     "wget": "1.21.4"
                 },
                 "PICARD_COLLECTINSERTSIZEMETRICS": {
-                    "picard": "3.4.0"
+                    "picard": "3.5.0"
                 },
                 "PICARD_COLLECTRNASEQMETRICS": {
-                    "picard": "3.4.0"
+                    "picard": "3.5.0"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "STARFUSION_BUILD": {
-                    "STAR-Fusion": "1.15.1",
                     "gunzip": 1.12,
-                    "hmmer": 3.4
+                    "hmmer": 3.4,
+                    "star-fusion": "1.15.1"
                 },
                 "STAR_ALIGN": {
                     "gawk": "5.1.0",
@@ -1233,10 +1243,10 @@
                     "fastqc": "0.13.0"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_CREATESEQUENCEDICTIONARY": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GENCODE_DOWNLOAD": {
                     "wget": "1.21.4"
@@ -1251,7 +1261,7 @@
                     "salmon": "1.10.3"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "UCSC_GTFTOGENEPRED": {
                     "ucsc": 482
@@ -1336,46 +1346,46 @@
                     "fastqc": "0.13.0"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_CREATESEQUENCEDICTIONARY": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_MARKDUPLICATES": {
-                    "gatk4": "4.6.2.0",
-                    "samtools": 1.21
+                    "gatk4": "4.7.0.0",
+                    "samtools": 1.24
                 },
                 "GENCODE_DOWNLOAD": {
                     "wget": "1.21.4"
                 },
                 "PICARD_COLLECTINSERTSIZEMETRICS": {
-                    "picard": "3.4.0"
+                    "picard": "3.5.0"
                 },
                 "PICARD_COLLECTRNASEQMETRICS": {
-                    "picard": "3.4.0"
+                    "picard": "3.5.0"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "STARFUSION_BUILD": {
-                    "STAR-Fusion": "1.15.1",
                     "gunzip": 1.12,
-                    "hmmer": 3.4
+                    "hmmer": 3.4,
+                    "star-fusion": "1.15.1"
                 },
                 "STAR_ALIGN": {
                     "gawk": "5.1.0",
@@ -1596,49 +1606,49 @@
                     "fusion_report": "4.1.2"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_CREATESEQUENCEDICTIONARY": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_MARKDUPLICATES": {
-                    "gatk4": "4.6.2.0",
-                    "samtools": 1.21
+                    "gatk4": "4.7.0.0",
+                    "samtools": 1.24
                 },
                 "GENCODE_DOWNLOAD": {
                     "wget": "1.21.4"
                 },
                 "PICARD_COLLECTINSERTSIZEMETRICS": {
-                    "picard": "3.4.0"
+                    "picard": "3.5.0"
                 },
                 "PICARD_COLLECTRNASEQMETRICS": {
-                    "picard": "3.4.0"
+                    "picard": "3.5.0"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "STARFUSION_BUILD": {
-                    "STAR-Fusion": "1.15.1",
                     "gunzip": 1.12,
-                    "hmmer": 3.4
+                    "hmmer": 3.4,
+                    "star-fusion": "1.15.1"
                 },
                 "STARFUSION_DETECT": {
-                    "STAR-Fusion": "1.15.1"
+                    "star-fusion": "1.15.1"
                 },
                 "STAR_ALIGN": {
                     "gawk": "5.1.0",
@@ -1864,16 +1874,16 @@
                     "fastqc": "0.13.0"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_CREATESEQUENCEDICTIONARY": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GENCODE_DOWNLOAD": {
                     "wget": "1.21.4"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "UCSC_GTFTOGENEPRED": {
                     "ucsc": 482
@@ -1943,16 +1953,16 @@
                     "fusioncatcher": 1.35
                 },
                 "GATK4_BEDTOINTERVALLIST": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_CREATESEQUENCEDICTIONARY": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GENCODE_DOWNLOAD": {
                     "wget": "1.21.4"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "UCSC_GTFTOGENEPRED": {
                     "ucsc": 482
@@ -2020,16 +2030,16 @@
                     "fusioncatcher": 1.35
                 },
                 "GATK4_BEDTOINTERVALLIST": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_CREATESEQUENCEDICTIONARY": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GENCODE_DOWNLOAD": {
                     "wget": "1.21.4"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "UCSC_GTFTOGENEPRED": {
                     "ucsc": 482
@@ -2124,14 +2134,14 @@
                     "fusion_report": "4.1.2"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_CREATESEQUENCEDICTIONARY": {
-                    "gatk4": "4.6.2.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_MARKDUPLICATES": {
-                    "gatk4": "4.6.2.0",
-                    "samtools": 1.21
+                    "gatk4": "4.7.0.0",
+                    "samtools": 1.24
                 },
                 "GENCODE_DOWNLOAD": {
                     "wget": "1.21.4"
@@ -2143,10 +2153,10 @@
                     "wget": "1.21.4"
                 },
                 "PICARD_COLLECTINSERTSIZEMETRICS": {
-                    "picard": "3.4.0"
+                    "picard": "3.5.0"
                 },
                 "PICARD_COLLECTRNASEQMETRICS": {
-                    "picard": "3.4.0"
+                    "picard": "3.5.0"
                 },
                 "SALMON_INDEX": {
                     "salmon": "1.10.3"
@@ -2155,30 +2165,30 @@
                     "salmon": "1.10.3"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.25
                 },
                 "STARFUSION_BUILD": {
-                    "STAR-Fusion": "1.15.1",
                     "gunzip": 1.12,
-                    "hmmer": 3.4
+                    "hmmer": 3.4,
+                    "star-fusion": "1.15.1"
                 },
                 "STARFUSION_DETECT": {
-                    "STAR-Fusion": "1.15.1"
+                    "star-fusion": "1.15.1"
                 },
                 "STAR_ALIGN": {
                     "gawk": "5.1.0",
@@ -2191,10 +2201,10 @@
                     "star": "2.7.11b"
                 },
                 "STRINGTIE_MERGE": {
-                    "stringtie": "2.2.1"
+                    "stringtie": "3.0.3"
                 },
                 "STRINGTIE_STRINGTIE": {
-                    "stringtie": "2.2.3"
+                    "stringtie": "3.0.3"
                 },
                 "UCSC_GTFTOGENEPRED": {
                     "ucsc": 482
@@ -2442,6 +2452,11 @@
                 "stringtie",
                 "stringtie/stringtie_merge.gtf",
                 "stringtie/test.ballgown",
+                "stringtie/test.ballgown/e2t.ctab",
+                "stringtie/test.ballgown/e_data.ctab",
+                "stringtie/test.ballgown/i2t.ctab",
+                "stringtie/test.ballgown/i_data.ctab",
+                "stringtie/test.ballgown/t_data.ctab",
                 "stringtie/test.coverage.gtf",
                 "stringtie/test.gene.abundance.txt",
                 "stringtie/test.transcripts.gtf"

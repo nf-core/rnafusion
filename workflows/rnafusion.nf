@@ -393,7 +393,6 @@ workflow RNAFUSION {
                     ch_star_junctions.map { meta, junc -> [ meta, [], junc ] },
                     BUILD_REFERENCES.out.starfusion_ref.map { _meta, starfusion_ref_ -> starfusion_ref_ }
                 )
-                ch_versions = ch_versions.mix(STARFUSION_DETECT.out.versions)
                 ch_starfusion_fusions = STARFUSION_DETECT.out.fusions
             }
         }
@@ -424,7 +423,8 @@ workflow RNAFUSION {
 
         if(tools.contains("stringtie")) {
             BAM_STRINGTIE_MERGE (
-                ch_aligned_reads.map { meta, bam, _bai -> [meta, bam]},
+                ch_aligned_reads.map { meta, bam, _bai -> [meta, bam, []]},
+                channel.value([]),
                 BUILD_REFERENCES.out.gtf
             )
         }
