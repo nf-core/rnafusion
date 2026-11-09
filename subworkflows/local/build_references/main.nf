@@ -176,7 +176,11 @@ workflow BUILD_REFERENCES {
 
     def ch_starfusion_ref = channel.empty()
     if (tools.intersect(["starfusion", "ctatsplicing", "fusioninspector"])) {
-        if (!exists_not_empty(starfusion_ref)) {
+        def starfusion_ref_prebuilt = exists_not_empty(starfusion_ref)
+        if (starfusion_ref_prebuilt) {
+            ch_starfusion_ref = channel.fromPath(starfusion_ref).map { starfusion_ref_ -> [[id:starfusion_ref_.name], starfusion_ref_] }
+        }
+        else {
             if(!fusion_annot_lib) {
                 error("Expected --fusion_annot_lib to be specified when using StarFusion or any tools that depend on it")
             }
@@ -216,18 +220,23 @@ workflow BUILD_REFERENCES {
                 file(annot_filter_url, checkIfExists: true)
             )
             ch_versions = ch_versions.mix(STARFUSION_BUILD.out.versions)
-            if (tools.contains("ctatsplicing")) {
-                CTATSPLICING_PREPGENOMELIB(
-                    STARFUSION_BUILD.out.reference,
-                    file(ctatsplicing_cancer_introns, checkIfExists: true)
-                )
-                ch_starfusion_ref = CTATSPLICING_PREPGENOMELIB.out.reference
-            } else {
-                ch_starfusion_ref = STARFUSION_BUILD.out.reference
-            }
+            ch_starfusion_ref = STARFUSION_BUILD.out.reference
         }
-        else {
-            ch_starfusion_ref = channel.fromPath(starfusion_ref).map { starfusion_ref_ -> [[id:starfusion_ref_.name], starfusion_ref_] }
+
+        // A prebuilt library may have been built without ctatsplicing, so only trust it if it has the index
+        def has_splicing_index = starfusion_ref_prebuilt && exists_not_empty(file(starfusion_ref as String).resolve("cancer_splicing_lib/cancer_splicing.idx").toUriString())
+        if (tools.contains("ctatsplicing") && !has_splicing_index) {
+            def ch_genome_lib = ch_starfusion_ref
+            if (starfusion_ref_prebuilt) {
+                log.warn("The STAR-Fusion reference at ${starfusion_ref} has no cancer splicing index. Adding it to a copy of the reference, which is published to `references/starfusion` in `--outdir`. Use that copy as `--starfusion_ref` in later runs to avoid repeating this step.")
+                // conf/modules.config uses this flag to keep the patched copy out of the prebuilt reference location
+                ch_genome_lib = ch_starfusion_ref.map { meta, genome_lib -> [meta + [prebuilt: true], genome_lib] }
+            }
+            CTATSPLICING_PREPGENOMELIB(
+                ch_genome_lib,
+                file(ctatsplicing_cancer_introns, checkIfExists: true)
+            )
+            ch_starfusion_ref = CTATSPLICING_PREPGENOMELIB.out.reference
         }
     }
 

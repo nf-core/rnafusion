@@ -98,6 +98,10 @@ nextflow run nf-core/rnafusion  \
 ```
 
 Adjustments for cpu and memory requirements can be done by feeding a custom configuration with `-c /PATH/TO/CUSTOM/CONFIG`.
+
+#### Using `ctatsplicing` with a prebuilt STAR-Fusion reference
+
+`ctatsplicing` needs `cancer_splicing_lib/cancer_splicing.idx` in the STAR-Fusion reference. If a prebuilt reference does not have this index, the pipeline adds it to a copy of the reference and uses that copy for the run. The original reference is left untouched, and the copy is published to `references/starfusion` in `--outdir`. As the whole reference is copied, this needs extra space in the work directory and in `--outdir`. Set `--starfusion_ref` to the published copy in later runs to avoid repeating this step.
 Where the custom configuration could look like (adaptation to local machine necessary):
 
 ```text

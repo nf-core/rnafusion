@@ -497,4 +497,62 @@ nextflow_pipeline {
             )
         }
     }
+
+    test("stub test ctatsplicing prebuilt reference without splicing index") {
+
+        when {
+            params {
+                outdir           = "$outputDir"
+                tools            = "ctatsplicing"
+                starfusion_ref   = "${projectDir}/tests/fixtures/starfusion_ref_without_splicing_index/ctat_genome_lib_build_dir"
+                genomes_base     = "${outputDir}/references"
+                arriba_ref_protein_domains  = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3"
+                arriba_ref_known_fusions    = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/known_fusions_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_blacklist        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/blacklist_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_cytobands        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv"
+                fusioncatcher_ref           = "${projectDir}/assets" // This is a placeholder until a small reference can be created
+            }
+        }
+
+        then {
+            // The index is added to a copy of the prebuilt reference, published under outdir and not under genomes_base
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.trace.succeeded().count { task -> task.name.contains(':STARFUSION_BUILD ') } == 0 },
+                { assert workflow.trace.succeeded().count { task -> task.name.contains(':CTATSPLICING_PREPGENOMELIB ') } == 1 },
+                { assert workflow.trace.succeeded().count { task -> task.name.contains(':CTATSPLICING_STARTOCANCERINTRONS ') } == 1 },
+                { assert path("$outputDir/references/starfusion/ctat_genome_lib_build_dir/refGene.bed").exists() },
+                { assert !path("$outputDir/references/GRCh38/gencode_v46/starfusion").exists() },
+                { assert !path("${projectDir}/tests/fixtures/starfusion_ref_without_splicing_index/ctat_genome_lib_build_dir/refGene.bed").exists() }
+            )
+        }
+    }
+
+    test("stub test ctatsplicing prebuilt reference with splicing index") {
+
+        when {
+            params {
+                outdir           = "$outputDir"
+                tools            = "ctatsplicing"
+                starfusion_ref   = "${projectDir}/tests/fixtures/starfusion_ref_with_splicing_index/ctat_genome_lib_build_dir"
+                genomes_base     = "${outputDir}/references"
+                arriba_ref_protein_domains  = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3"
+                arriba_ref_known_fusions    = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/known_fusions_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_blacklist        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/blacklist_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_cytobands        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv"
+                fusioncatcher_ref           = "${projectDir}/assets" // This is a placeholder until a small reference can be created
+            }
+        }
+
+        then {
+            // A complete prebuilt reference is used as is
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.trace.succeeded().count { task -> task.name.contains(':STARFUSION_BUILD ') } == 0 },
+                { assert workflow.trace.succeeded().count { task -> task.name.contains(':CTATSPLICING_PREPGENOMELIB ') } == 0 },
+                { assert workflow.trace.succeeded().count { task -> task.name.contains(':CTATSPLICING_STARTOCANCERINTRONS ') } == 1 },
+                { assert !path("$outputDir/references/starfusion").exists() }
+            )
+        }
+    }
 }
