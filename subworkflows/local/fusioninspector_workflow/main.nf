@@ -16,7 +16,6 @@ workflow FUSIONINSPECTOR_WORKFLOW {
         ch_arriba_ref_protein_domains
         ch_arriba_ref_cytobands
         ch_hgnc_ref
-        ch_hgnc_date
         ch_starfusion_ref
         skip_vis
         skip_vcf
@@ -57,7 +56,7 @@ workflow FUSIONINSPECTOR_WORKFLOW {
                 .join(fusionreport_out)
                 .join(fusionreport_csv)
 
-            VCF_COLLECT(fusion_data, ch_hgnc_ref, ch_hgnc_date)
+            VCF_COLLECT(fusion_data, ch_hgnc_ref)
         }
         if (
             !skip_vis

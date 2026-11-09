@@ -10,7 +10,6 @@ process VCF_COLLECT {
     input:
     tuple val(meta), path(fusioninspector_tsv), path(fusioninspector_gtf_tsv), path(fusionreport_report), path(fusionreport_csv)
     tuple val(meta2),  path(hgnc_ref)
-    tuple val(meta3),  path(hgnc_date)
 
     output:
     tuple val("${task.process}"), val('python'), eval("python --version | sed 's/Python //g'"), topic: versions, emit: versions_python

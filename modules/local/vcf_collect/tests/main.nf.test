@@ -15,7 +15,6 @@ nextflow_process {
                     .combine(Channel.of(file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/fusionreport/test_sample_fusionreport_index.html", checkIfExists: true)))
                     .combine(Channel.of(file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/test.fusions.csv", checkIfExists: true)))
                 input[1] = [[ id:'hgnc' ], file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/reference/hgnc/hgnc_complete_set.txt")]
-                input[2] = [[ id:'hgnc_timestamp' ], file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/reference/hgnc/HGNC-DB-timestamp.txt")]
                 """
             }
         }
@@ -41,7 +40,6 @@ nextflow_process {
                     .combine(Channel.of(file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/fusionreport/test_sample_fusionreport_index.html", checkIfExists: true)))
                     .combine(Channel.of(file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/test.fusions.csv", checkIfExists: true)))
                 input[1] = [[ id:'hgnc' ], file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/reference/hgnc/hgnc_complete_set.txt")]
-                input[2] = [[ id:'hgnc_timestamp' ], file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/reference/hgnc/HGNC-DB-timestamp.txt")]
                 """
             }
         }
@@ -68,7 +66,6 @@ nextflow_process {
                     .combine(Channel.of(file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/fusionreport/test_sample_fusionreport_index.html", checkIfExists: true)))
                     .combine(Channel.of(file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/human/test.fusions.csv", checkIfExists: true)))
                 input[1] = [[ id:'hgnc' ], file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/reference/hgnc/hgnc_complete_set.txt")]
-                input[2] = [[ id:'hgnc_timestamp' ], file("https://github.com/nf-core/test-datasets/raw/rnafusion/testdata/reference/hgnc/HGNC-DB-timestamp.txt")]
                 """
             }
         }

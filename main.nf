@@ -113,8 +113,6 @@ params {
     // Path to HGNC database file
     hgnc_ref: String = getGenomeAttribute("hgnc_ref", params.genomes, params.genome)
 
-    // Path to HGNC timestamp file for database retrieval
-    hgnc_date: String = getGenomeAttribute("hgnc_date", params.genomes, params.genome)
 
     // Use QIAGEN instead of SANGER to download COSMIC database
     qiagen: Boolean
@@ -386,7 +384,6 @@ workflow {
         params.genome_gencode_version,
         params.genome,
         params.hgnc_ref,
-        params.hgnc_date,
         params.rrna_intervals,
         params.refflat,
         params.salmon_index,

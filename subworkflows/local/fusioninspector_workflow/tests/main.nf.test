@@ -105,12 +105,11 @@ nextflow_workflow {
                 input[7] = Channel.fromPath("https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3")
                 input[8] = Channel.fromPath("https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv")
                 input[9] = Channel.of([[ id:'hgnc' ], file("https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/hgnc/hgnc_complete_set.txt")] )
-                input[10] = Channel.of([[ id:'hgnc_timestamp' ], file("https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/hgnc/HGNC-DB-timestamp.txt")] )
-                input[11] = STARFUSION_BUILD.out.reference
-                input[12] = false
-                input[13] = true
-                input[14] = 1
-                input[15] = null
+                input[10] = STARFUSION_BUILD.out.reference
+                input[11] = false
+                input[12] = true
+                input[13] = 1
+                input[14] = null
                 """
             }
         }
@@ -213,12 +212,11 @@ nextflow_workflow {
                 input[7] = Channel.fromPath("https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3")
                 input[8] = Channel.fromPath("https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv")
                 input[9] = Channel.of([[ id:'hgnc' ], file("https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/hgnc/hgnc_complete_set.txt")] )
-                input[10] = Channel.of([[ id:'hgnc_timestamp' ], file("https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/hgnc/HGNC-DB-timestamp.txt")] )
-                input[11] = STARFUSION_BUILD.out.reference
-                input[12] = false
-                input[13] = true
-                input[14] = 1
-                input[15] = null
+                input[10] = STARFUSION_BUILD.out.reference
+                input[11] = false
+                input[12] = true
+                input[13] = 1
+                input[14] = null
                 """
             }
         }

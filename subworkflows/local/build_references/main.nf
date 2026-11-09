@@ -4,9 +4,6 @@
 ========================================================================================
 */
 
-include { GENCODE_DOWNLOAD }                from '../../../modules/local/gencode_download/main'
-include { HGNC_DOWNLOAD }                   from '../../../modules/local/hgnc/main'
-
 /*
 ========================================================================================
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -24,6 +21,9 @@ include { SALMON_INDEX }                    from '../../../modules/nf-core/salmo
 include { FUSIONREPORT_DOWNLOAD }           from '../../../modules/nf-core/fusionreport/download/main'
 include { STARFUSION_BUILD }                from '../../../modules/nf-core/starfusion/build/main'
 include { GFFREAD }                         from '../../../modules/nf-core/gffread/main'
+include { GUNZIP }                          from '../../../modules/nf-core/gunzip/main'
+include { WGET as WGET_GENCODE }            from '../../../modules/nf-core/wget/main'
+include { WGET as WGET_HGNC }               from '../../../modules/nf-core/wget/main'
 
 /*
 ========================================================================================
@@ -43,7 +43,6 @@ workflow BUILD_REFERENCES {
     genome_gencode_version
     genome
     hgnc_ref
-    hgnc_date
     rrna_intervals
     refflat
     salmon_index
@@ -79,9 +78,16 @@ workflow BUILD_REFERENCES {
     def ch_fasta = channel.empty()
     def ch_gtf   = channel.empty()
     if (!exists_not_empty(fasta) || !exists_not_empty(gtf)){
-        GENCODE_DOWNLOAD(genome_gencode_version, genome)
-        ch_fasta = GENCODE_DOWNLOAD.out.fasta.map { that -> [[id:that.Name], that] }
-        ch_gtf = GENCODE_DOWNLOAD.out.gtf.map { that -> [[id:that.Name], that] }
+        def gencode_url = "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_${genome_gencode_version}"
+        WGET_GENCODE(
+            channel.of(
+                [[id:"Homo_sapiens_${genome}_${genome_gencode_version}_dna_primary_assembly", type:'fasta'], "${gencode_url}/${genome}.primary_assembly.genome.fa.gz", 'fa.gz'],
+                [[id:"Homo_sapiens_${genome}_${genome_gencode_version}", type:'gtf'], "${gencode_url}/gencode.v${genome_gencode_version}.primary_assembly.annotation.gtf.gz", 'gtf.gz']
+            )
+        )
+        GUNZIP(WGET_GENCODE.out.outfile)
+        ch_fasta = GUNZIP.out.gunzip.filter { meta, _unzipped -> meta.type == 'fasta' }.map { _meta, unzipped -> [[id:unzipped.name], unzipped] }
+        ch_gtf = GUNZIP.out.gunzip.filter { meta, _unzipped -> meta.type == 'gtf' }.map { _meta, unzipped -> [[id:unzipped.name], unzipped] }
     } else {
         ch_fasta = channel.fromPath(fasta).map { that -> [[id:that.Name], that] }
         ch_gtf = channel.fromPath(gtf).map { that -> [[id:that.Name], that] }
@@ -95,18 +101,17 @@ workflow BUILD_REFERENCES {
         ch_fai = channel.fromPath(fai).map { that -> [[id:that.name.replaceFirst(/\.fai$/, '')], that] }
     }
 
-    def ch_hgnc_date = channel.empty()
     def ch_hgnc_ref  = channel.empty()
     //TODO: unify as if(tools.contains("fusioninspector")) once nextflow bug fixed
     def run_fusioninspector = tools.contains("fusioninspector")
     if(run_fusioninspector && !skip_vcf) {
-        if ((!exists_not_empty(hgnc_ref) || !exists_not_empty(hgnc_date)) && !skip_vcf){
-            HGNC_DOWNLOAD( )
-            ch_hgnc_ref = HGNC_DOWNLOAD.out.hgnc_ref.map { that -> [[id:that.name], that] }
-            ch_hgnc_date = HGNC_DOWNLOAD.out.hgnc_date.map { that -> [[id:that.name], that] }
+        if (!exists_not_empty(hgnc_ref) && !skip_vcf){
+            WGET_HGNC(
+                channel.of([[id:'hgnc_complete_set'], 'https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/hgnc_complete_set.txt', 'txt'])
+            )
+            ch_hgnc_ref = WGET_HGNC.out.outfile.map { _meta, that -> [[id:that.name], that] }
         } else {
             ch_hgnc_ref = channel.fromPath(hgnc_ref).map { that -> [[id:that.name], that] }
-            ch_hgnc_date = channel.fromPath(hgnc_date).map { that -> [[id:that.name], that] }
         }
     }
 
@@ -257,7 +262,6 @@ workflow BUILD_REFERENCES {
     gtf                         = ch_gtf.collect()
     fai                         = ch_fai.collect()
     hgnc_ref                    = ch_hgnc_ref.collect()
-    hgnc_date                   = ch_hgnc_date.collect()
     rrna_interval               = ch_rrna_interval.collect()
     refflat                     = ch_refflat.collect()
     salmon_index                = ch_salmon_index.collect()
