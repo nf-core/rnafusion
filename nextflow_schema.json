@@ -349,6 +349,13 @@
                     "fa_icon": "far fa-file-code",
                     "description": "Path to HGNC database file"
                 },
+                "hgnc_date": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "\\S+\\.txt$",
+                    "fa_icon": "far fa-file-code",
+                    "description": "Path to HGNC timestamp file for database retrieval"
+                },
                 "starindex_ref": {
                     "type": "string",
                     "format": "directory-path",

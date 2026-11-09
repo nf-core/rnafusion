@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 8. Reorganised the parameter schema so inputs, references and alignment options are grouped together. This only changes how parameters are presented. Based on the original reorganisation by FriederikeHanssen in [#782](https://github.com/nf-core/rnafusion/pull/782)
 9. Added `--no-fusiongdb2` to the fusionreport download command since the fusiongdb2 endpoint no longer exists. `FUSIONREPORT_DOWNLOAD` (patched) now creates an empty fusiongdb2 database instead, because `fusion_report run` always queries it and failed with `no such table: fusiongdb2` on references built with this release [#842](https://github.com/nf-core/rnafusion/issues/842). This will be removed once fusionreport is updated to address this issue.
 10. Updated the nf-core modules. `SALMON_INDEX` and `SALMON_QUANT` stay on 1.10.3 because salmon 2.x rejects the published index, and `utils_nfschema_plugin` stays on the nf-schema 2 version
-11. Replaced the local `GENCODE_DOWNLOAD` and `HGNC_DOWNLOAD` modules with the nf-core `wget` and `gunzip` modules [#575](https://github.com/nf-core/rnafusion/issues/575). Removed `--hgnc_date` and `HGNC-DB-timestamp.txt`, which nothing in the pipeline read. Passing `--hgnc_date`, for example through an old params file, now stops the pipeline with an error
+11. Replaced the local `GENCODE_DOWNLOAD` and `HGNC_DOWNLOAD` modules with the nf-core `wget` and `gunzip` modules [#575](https://github.com/nf-core/rnafusion/issues/575).
 
 ### Fixed
 

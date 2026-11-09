@@ -43,6 +43,7 @@ workflow BUILD_REFERENCES {
     genome_gencode_version
     genome
     hgnc_ref
+    hgnc_date
     rrna_intervals
     refflat
     salmon_index
@@ -101,17 +102,24 @@ workflow BUILD_REFERENCES {
         ch_fai = channel.fromPath(fai).map { that -> [[id:that.name.replaceFirst(/\.fai$/, '')], that] }
     }
 
+    def ch_hgnc_date = channel.empty()
     def ch_hgnc_ref  = channel.empty()
     //TODO: unify as if(tools.contains("fusioninspector")) once nextflow bug fixed
     def run_fusioninspector = tools.contains("fusioninspector")
     if(run_fusioninspector && !skip_vcf) {
-        if (!exists_not_empty(hgnc_ref) && !skip_vcf){
+        if ((!exists_not_empty(hgnc_ref) || !exists_not_empty(hgnc_date)) && !skip_vcf){
             WGET_HGNC(
                 channel.of([[id:'hgnc_complete_set'], 'https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/hgnc_complete_set.txt', 'txt'])
             )
             ch_hgnc_ref = WGET_HGNC.out.outfile.map { _meta, that -> [[id:that.name], that] }
+            // wget has no timestamp output, so record when the HGNC file was downloaded
+            ch_hgnc_date = WGET_HGNC.out.outfile
+                .map { _meta, that -> new java.util.Date(that.lastModified()).format('yyyy-MM-dd/HH:mm') + '\n' }
+                .collectFile(name: 'HGNC-DB-timestamp.txt', storeDir: "${params.genomes_base}/GRCh38/hgnc")
+                .map { that -> [[id:that.name], that] }
         } else {
             ch_hgnc_ref = channel.fromPath(hgnc_ref).map { that -> [[id:that.name], that] }
+            ch_hgnc_date = channel.fromPath(hgnc_date).map { that -> [[id:that.name], that] }
         }
     }
 
@@ -262,6 +270,7 @@ workflow BUILD_REFERENCES {
     gtf                         = ch_gtf.collect()
     fai                         = ch_fai.collect()
     hgnc_ref                    = ch_hgnc_ref.collect()
+    hgnc_date                   = ch_hgnc_date.collect()
     rrna_interval               = ch_rrna_interval.collect()
     refflat                     = ch_refflat.collect()
     salmon_index                = ch_salmon_index.collect()

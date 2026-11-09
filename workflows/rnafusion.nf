@@ -52,6 +52,7 @@ workflow RNAFUSION {
     genome_gencode_version
     genome
     hgnc_ref
+    hgnc_date
     rrna_intervals
     refflat
     salmon_index
@@ -118,6 +119,7 @@ workflow RNAFUSION {
         genome_gencode_version,
         genome,
         hgnc_ref,
+        hgnc_date,
         rrna_intervals,
         refflat,
         salmon_index,
@@ -480,6 +482,7 @@ workflow RNAFUSION {
                 BUILD_REFERENCES.out.arriba_ref_protein_domains,
                 BUILD_REFERENCES.out.arriba_ref_cytobands,
                 BUILD_REFERENCES.out.hgnc_ref,
+                BUILD_REFERENCES.out.hgnc_date,
                 BUILD_REFERENCES.out.starfusion_ref,
                 skip_vis,
                 skip_vcf,

@@ -60,6 +60,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
         - `ctat_genome_lib_build_dir/`
       - `hgnc/`
         - `hgnc_complete_set.txt`
+        - `HGNC-DB-timestamp.txt`
 
 (Only files or folders used by the pipeline are mentioned explicitly.)
 

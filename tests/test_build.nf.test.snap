@@ -186,6 +186,7 @@
                 "references/GRCh38/gencode_v46/starfusion/ctat_genome_lib_build_dir/trans.blast.align_coords.align_coords.dbm",
                 "references/GRCh38/gencode_v46/starfusion/ctat_genome_lib_build_dir/trans.blast.dat.gz",
                 "references/GRCh38/hgnc",
+                "references/GRCh38/hgnc/HGNC-DB-timestamp.txt",
                 "references/GRCh38/hgnc/hgnc_complete_set.txt"
             ],
             [
