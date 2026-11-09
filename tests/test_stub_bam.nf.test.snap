@@ -1,7 +1,7 @@
 {
     "stub test starfusion": {
         "content": [
-            15,
+            18,
             {
                 "AGAT_CONVERTGFF2BED": {
                     "agat": "1.6.1"
@@ -23,7 +23,7 @@
                     "samtools": 1.24
                 },
                 "GUNZIP": {
-                    "gunzip": "1.13"
+                    "gunzip": 1.13
                 },
                 "PICARD_COLLECTINSERTSIZEMETRICS": {
                     "picard": "3.5.0"
@@ -200,7 +200,7 @@
     },
     "stub test stringtie": {
         "content": [
-            16,
+            19,
             {
                 "AGAT_CONVERTGFF2BED": {
                     "agat": "1.6.1"
@@ -222,7 +222,7 @@
                     "samtools": 1.24
                 },
                 "GUNZIP": {
-                    "gunzip": "1.13"
+                    "gunzip": 1.13
                 },
                 "PICARD_COLLECTINSERTSIZEMETRICS": {
                     "picard": "3.5.0"
@@ -334,7 +334,7 @@
     },
     "stub test arriba": {
         "content": [
-            14,
+            17,
             {
                 "AGAT_CONVERTGFF2BED": {
                     "agat": "1.6.1"
@@ -359,7 +359,7 @@
                     "samtools": 1.24
                 },
                 "GUNZIP": {
-                    "gunzip": "1.13"
+                    "gunzip": 1.13
                 },
                 "PICARD_COLLECTINSERTSIZEMETRICS": {
                     "picard": "3.5.0"
@@ -451,7 +451,7 @@
     },
     "stub test fusioninspector": {
         "content": [
-            20,
+            23,
             {
                 "AGAT_CONVERTGFF2BED": {
                     "agat": "1.6.1"
@@ -485,7 +485,7 @@
                     "samtools": 1.24
                 },
                 "GUNZIP": {
-                    "gunzip": "1.13"
+                    "gunzip": 1.13
                 },
                 "PICARD_COLLECTINSERTSIZEMETRICS": {
                     "picard": "3.5.0"
@@ -693,7 +693,7 @@
     },
     "stub test salmon": {
         "content": [
-            15,
+            18,
             {
                 "AGAT_CONVERTGFF2BED": {
                     "agat": "1.6.1"
@@ -718,7 +718,7 @@
                     "gffread": "0.12.7"
                 },
                 "GUNZIP": {
-                    "gunzip": "1.13"
+                    "gunzip": 1.13
                 },
                 "PICARD_COLLECTINSERTSIZEMETRICS": {
                     "picard": "3.5.0"
@@ -812,7 +812,7 @@
     },
     "stub test ctatsplicing": {
         "content": [
-            17,
+            20,
             {
                 "AGAT_CONVERTGFF2BED": {
                     "agat": "1.6.1"
@@ -840,7 +840,7 @@
                     "samtools": 1.24
                 },
                 "GUNZIP": {
-                    "gunzip": "1.13"
+                    "gunzip": 1.13
                 },
                 "PICARD_COLLECTINSERTSIZEMETRICS": {
                     "picard": "3.5.0"
@@ -1030,7 +1030,7 @@
     },
     "stub test fusionreport": {
         "content": [
-            19,
+            22,
             {
                 "AGAT_CONVERTGFF2BED": {
                     "agat": "1.6.1"
@@ -1064,7 +1064,7 @@
                     "samtools": 1.24
                 },
                 "GUNZIP": {
-                    "gunzip": "1.13"
+                    "gunzip": 1.13
                 },
                 "PICARD_COLLECTINSERTSIZEMETRICS": {
                     "picard": "3.5.0"
@@ -1262,7 +1262,7 @@
     },
     "stub test fastp": {
         "content": [
-            14,
+            17,
             {
                 "AGAT_CONVERTGFF2BED": {
                     "agat": "1.6.1"
@@ -1290,7 +1290,7 @@
                     "samtools": 1.24
                 },
                 "GUNZIP": {
-                    "gunzip": "1.13"
+                    "gunzip": 1.13
                 },
                 "PICARD_COLLECTINSERTSIZEMETRICS": {
                     "picard": "3.5.0"
@@ -1366,7 +1366,7 @@
     },
     "stub test fusioncatcher": {
         "content": [
-            13,
+            16,
             {
                 "AGAT_CONVERTGFF2BED": {
                     "agat": "1.6.1"
@@ -1391,7 +1391,7 @@
                     "samtools": 1.24
                 },
                 "GUNZIP": {
-                    "gunzip": "1.13"
+                    "gunzip": 1.13
                 },
                 "PICARD_COLLECTINSERTSIZEMETRICS": {
                     "picard": "3.5.0"
@@ -1462,7 +1462,7 @@
     },
     "stub test all": {
         "content": [
-            31,
+            34,
             {
                 "AGAT_CONVERTGFF2BED": {
                     "agat": "1.6.1"
@@ -1514,7 +1514,7 @@
                     "gffread": "0.12.7"
                 },
                 "GUNZIP": {
-                    "gunzip": "1.13"
+                    "gunzip": 1.13
                 },
                 "PICARD_COLLECTINSERTSIZEMETRICS": {
                     "picard": "3.5.0"
@@ -1800,7 +1800,7 @@
     },
     "default no fastqs provided": {
         "content": [
-            32,
+            35,
             {
                 "AGAT_CONVERTGFF2BED": {
                     "agat": "1.6.1"
@@ -1852,7 +1852,7 @@
                     "gffread": "0.12.7"
                 },
                 "GUNZIP": {
-                    "gunzip": "1.13"
+                    "gunzip": 1.13
                 },
                 "PICARD_COLLECTINSERTSIZEMETRICS": {
                     "picard": "3.5.0"
