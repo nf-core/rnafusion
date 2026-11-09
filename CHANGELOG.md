@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 10. Fixed `strandedness` from the samplesheet not being added to the meta map, so `PICARD_COLLECTRNASEQMETRICS` never got the right `--STRAND_SPECIFICITY` and the per-sample strandedness check never ran [#856](https://github.com/nf-core/rnafusion/issues/856)
 11. Fixed `ctatsplicing` failing on a prebuilt STAR-Fusion reference without a cancer splicing index. The index is now added to a copy of the reference, which is published to `references/starfusion` in `--outdir` [#704](https://github.com/nf-core/rnafusion/issues/704)
 12. Fixed additional STAR parameters not being correctly passed to FusionInspector by updating the module [#841](https://github.com/nf-core/rnafusion/issues/841)
+13. Fixed `ARRIBA_VISUALISATION` crashing on a samplesheet BAM without an index. The index is now created when `ctatsplicing` or `fusioninspector` need it, and a sample without confirmed fusions now logs a warning that its visualisation is skipped [#780](https://github.com/nf-core/rnafusion/issues/780)
 
 ### Tool version updates
 

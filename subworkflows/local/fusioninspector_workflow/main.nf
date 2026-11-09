@@ -41,12 +41,13 @@ workflow FUSIONINSPECTOR_WORKFLOW {
 
         FUSIONINSPECTOR( ch_reads_fusion, ch_starfusion_ref)
 
-        def tsv_nonempty = FUSIONINSPECTOR.out.tsv.filter { _meta, file -> file.exists() && file.size() > 0 }
+        // Stub runs create empty files, which would otherwise keep the visualisation out of the stub tests
+        def tsv_nonempty = FUSIONINSPECTOR.out.tsv.filter { _meta, file -> workflow.stubRun || (file.exists() && file.size() > 0) }
         def tsv_abridged_nonempty = FUSIONINSPECTOR.out.abridged_tsv.filter { _meta, file -> file.exists() && file.size() > 0 }
         def gtf_nonempty = FUSIONINSPECTOR.out.out_gtf.filter { _meta, file -> file.exists() && file.size() > 0 }
-        if (!tsv_nonempty) {
-            log.warn("FUSIONINSPECTOR confirmed no fusions, skipping VCF and visualisation steps.")
-        }
+        FUSIONINSPECTOR.out.tsv
+            .filter { _meta, file -> !workflow.stubRun && (!file.exists() || file.size() == 0) }
+            .subscribe { meta, _file -> log.warn("FUSIONINSPECTOR confirmed no fusions for sample '${meta.id}', skipping its VCF and visualisation steps.") }
         if (
             !skip_vcf
         ) {
