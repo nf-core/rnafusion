@@ -568,7 +568,7 @@ workflow RNAFUSION {
                 ]
             }
         )
-        ch_multiqc_output = MULTIQC.out.report.toList()
+        ch_multiqc_output = MULTIQC.out.report.map { _meta, report -> report }.toList()
     }
 
 
