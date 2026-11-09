@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. Fixed every run checking the remote dfam, pfam, AnnotFilterRule, cancer introns and fusion annotation library defaults at launch. They are now only resolved when the STAR-Fusion reference is built [#843](https://github.com/nf-core/rnafusion/issues/843)
 7. Fixed the completion email arguments being shifted by one, and the MultiQC report being passed to the email as a `[meta, report]` tuple, which stopped the report from being attached [#849](https://github.com/nf-core/rnafusion/issues/849)
 8. Fixed the pfam warning being printed on every run, because `--pfam_file` was compared as a path instead of a URL [#845](https://github.com/nf-core/rnafusion/issues/845)
+9. Fixed additional STAR parameters not being correctly passed to FusionInspector by updating the module [#841](https://github.com/nf-core/rnafusion/issues/841)
 
 ### Tool version updates
 

@@ -70,7 +70,7 @@
                     },
                     "fusioninspector": {
                         "branch": "master",
-                        "git_sha": "eb5d65fc9a77b039dd95b11135ded338783747c7",
+                        "git_sha": "6a66d800ab930d7c3b9f571f74774cdcbdc88503",
                         "installed_by": ["modules"]
                     },
                     "fusionreport/detect": {
