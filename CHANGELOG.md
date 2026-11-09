@@ -20,7 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 5. Added `--no-fusiongdb2` to the fusionreport download command since the fusiongdb2 endpoint no longer exists. This will be removed once fusionreport is updated to address this issue.
 6. The samplesheet no longer requires unique `sample` values: rows with the same `sample` are combined into one sample [#821](https://github.com/nf-core/rnafusion/pull/821)
 7. Bumped nf-schema to 2.7.3
-5. Added `--no-fusiongdb2` to the fusionreport download command since the fusiongdb2 endpoint no longer exists. `FUSIONREPORT_DOWNLOAD` (patched) now creates an empty fusiongdb2 database instead, because `fusion_report run` always queries it and failed with `no such table: fusiongdb2` on references built with this release [#842](https://github.com/nf-core/rnafusion/issues/842). This will be removed once fusionreport is updated to address this issue.
+8. Reorganised the parameter schema so inputs, references and alignment options are grouped together. This only changes how parameters are presented. Based on the original reorganisation by FriederikeHanssen in [#782](https://github.com/nf-core/rnafusion/pull/782)
+9. Added `--no-fusiongdb2` to the fusionreport download command since the fusiongdb2 endpoint no longer exists. `FUSIONREPORT_DOWNLOAD` (patched) now creates an empty fusiongdb2 database instead, because `fusion_report run` always queries it and failed with `no such table: fusiongdb2` on references built with this release [#842](https://github.com/nf-core/rnafusion/issues/842). This will be removed once fusionreport is updated to address this issue.
 
 ### Fixed
 
