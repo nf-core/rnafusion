@@ -127,7 +127,7 @@ workflow PIPELINE_INITIALISATION {
 
     channel
         .fromList(input ? samplesheetToList(input, "${projectDir}/assets/schema_input.json") : [])
-        .map { meta, fastq_1, fastq_2, bam, bai, cram, crai, junctions, splice_junctions, strandedness ->
+        .map { meta, fastq_1, fastq_2, bam, bai, cram, crai, junctions, splice_junctions ->
             def meta_fastqs = []
             if (!fastq_1) {
                 meta_fastqs = [ meta, [] ]
@@ -136,7 +136,7 @@ workflow PIPELINE_INITIALISATION {
             } else {
                 meta_fastqs = [ meta + [single_end:false], [ fastq_1, fastq_2 ] ]
             }
-            return [ meta.id ] + meta_fastqs + [ bam, bai, cram, crai, junctions, splice_junctions, strandedness ]
+            return [ meta.id ] + meta_fastqs + [ bam, bai, cram, crai, junctions, splice_junctions ]
         }
         .groupTuple()
         .map { samplesheet ->
