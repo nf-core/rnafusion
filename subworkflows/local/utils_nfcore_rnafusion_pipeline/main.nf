@@ -213,7 +213,7 @@ def validateInputParameters(
     Boolean no_cosmic,
     String dfam_version,
     String species,
-    Map<String,Path> setDfamParams,
+    Map<String,String> setDfamParams,
     String pfam_version,
     pfam_file,
     Map genomes,
@@ -230,11 +230,11 @@ def validateInputParameters(
 
         if (setDfamParams) {
             def customParams = setDfamParams.findAll { _name, value ->
-                !value?.toUriString().startsWith(dfamPattern)
+                !value?.startsWith(dfamPattern)
             }
             if (customParams) {
                 def paramDetails = customParams.collect { name, value ->
-                    "   --${name}: ${value.toUriString()}"
+                    "   --${name}: ${value}"
                 }.join('\n')
                 def dfam_warn = "Both custom DFAM paths as well as `--dfam_version` (${dfam_version}) and `--species` (${species}) were provided.\n" +
                     "Custom DFAM paths parameters provided:\n${paramDetails}\n" +
