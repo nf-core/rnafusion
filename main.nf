@@ -45,7 +45,7 @@ params {
     skip_vis: Boolean
 
     // Path to samplesheet file containing information about the samples in the experiment.
-    input: Path
+    input: Path?
 
     // The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.
     outdir: String
@@ -300,6 +300,11 @@ params {
 workflow {
 
     main:
+    // A samplesheet is only needed when the analysis runs, not when only building references
+    if (!params.input && !params.references_only) {
+        error("Please provide a samplesheet with `--input`, or use `--references_only` to only build the references.")
+    }
+
     //
     // SUBWORKFLOW: Run initialisation tasks
     //

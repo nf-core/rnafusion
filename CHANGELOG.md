@@ -26,11 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 1. Fixed the `PL` tag of the STAR read group being merged into the `SM` tag when a sequencing platform is set [#822](https://github.com/nf-core/rnafusion/issues/822)
 2. Fixed single-end FASTQ samplesheets being rejected by the input schema since v4.0.0 [#860](https://github.com/nf-core/rnafusion/issues/860)
-3. Fixed the `test_build` profile failing on the STAR-Fusion tutorial minigenome by setting `--skip_gencode_filter`, since that annotation is not GENCODE [#832](https://github.com/nf-core/rnafusion/issues/832)
-4. Fixed samples spread over several samplesheet rows keeping only the first row's meta: `seq_center`/`seq_platform` from other rows are kept (and must agree), and rows without FASTQ files no longer break the single-end/paired-end check [#847](https://github.com/nf-core/rnafusion/issues/847)
-5. Fixed every run checking the remote dfam, pfam, AnnotFilterRule, cancer introns and fusion annotation library defaults at launch. They are now only resolved when the STAR-Fusion reference is built [#843](https://github.com/nf-core/rnafusion/issues/843)
-6. Fixed the completion email arguments being shifted by one, and the MultiQC report being passed to the email as a `[meta, report]` tuple, which stopped the report from being attached [#849](https://github.com/nf-core/rnafusion/issues/849)
-7. Fixed the pfam warning being printed on every run, because `--pfam_file` was compared as a path instead of a URL [#845](https://github.com/nf-core/rnafusion/issues/845)
+3. Fixed `--references_only` requiring `--input`, which broke the documented reference-building command [#861](https://github.com/nf-core/rnafusion/issues/861)
+4. Fixed the `test_build` profile failing on the STAR-Fusion tutorial minigenome by setting `--skip_gencode_filter`, since that annotation is not GENCODE [#832](https://github.com/nf-core/rnafusion/issues/832)
+5. Fixed samples spread over several samplesheet rows keeping only the first row's meta: `seq_center`/`seq_platform` from other rows are kept (and must agree), and rows without FASTQ files no longer break the single-end/paired-end check [#847](https://github.com/nf-core/rnafusion/issues/847)
+6. Fixed every run checking the remote dfam, pfam, AnnotFilterRule, cancer introns and fusion annotation library defaults at launch. They are now only resolved when the STAR-Fusion reference is built [#843](https://github.com/nf-core/rnafusion/issues/843)
+7. Fixed the completion email arguments being shifted by one, and the MultiQC report being passed to the email as a `[meta, report]` tuple, which stopped the report from being attached [#849](https://github.com/nf-core/rnafusion/issues/849)
+8. Fixed the pfam warning being printed on every run, because `--pfam_file` was compared as a path instead of a URL [#845](https://github.com/nf-core/rnafusion/issues/845)
 
 ### Tool version updates
 
