@@ -20,7 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 5. Added `--no-fusiongdb2` to the fusionreport download command since the fusiongdb2 endpoint no longer exists. This will be removed once fusionreport is updated to address this issue.
 6. The samplesheet no longer requires unique `sample` values: rows with the same `sample` are combined into one sample [#821](https://github.com/nf-core/rnafusion/pull/821)
 7. Bumped nf-schema to 2.7.3
-5. Added `--no-fusiongdb2` to the fusionreport download command since the fusiongdb2 endpoint no longer exists. `FUSIONREPORT_DOWNLOAD` (patched) now creates an empty fusiongdb2 database instead, because `fusion_report run` always queries it and failed with `no such table: fusiongdb2` on references built with this release [#842](https://github.com/nf-core/rnafusion/issues/842). This will be removed once fusionreport is updated to address this issue.
+8. Reorganised the parameter schema so inputs, references and alignment options are grouped together. This only changes how parameters are presented. Based on the original reorganisation by FriederikeHanssen in [#782](https://github.com/nf-core/rnafusion/pull/782)
+9. Added `--no-fusiongdb2` to the fusionreport download command since the fusiongdb2 endpoint no longer exists. `FUSIONREPORT_DOWNLOAD` (patched) now creates an empty fusiongdb2 database instead, because `fusion_report run` always queries it and failed with `no such table: fusiongdb2` on references built with this release [#842](https://github.com/nf-core/rnafusion/issues/842). This will be removed once fusionreport is updated to address this issue.
 
 ### Fixed
 
@@ -32,7 +33,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. Fixed every run checking the remote dfam, pfam, AnnotFilterRule, cancer introns and fusion annotation library defaults at launch. They are now only resolved when the STAR-Fusion reference is built [#843](https://github.com/nf-core/rnafusion/issues/843)
 7. Fixed the completion email arguments being shifted by one, and the MultiQC report being passed to the email as a `[meta, report]` tuple, which stopped the report from being attached [#849](https://github.com/nf-core/rnafusion/issues/849)
 8. Fixed the pfam warning being printed on every run, because `--pfam_file` was compared as a path instead of a URL [#845](https://github.com/nf-core/rnafusion/issues/845)
-9. Fixed additional STAR parameters not being correctly passed to FusionInspector by updating the module [#841](https://github.com/nf-core/rnafusion/issues/841)
+9. Fixed MultiQC regressions: a custom `--multiqc_config` is applied on top of the pipeline config again instead of replacing it, MultiQC is skipped again with `--skip_qc` and `--references_only`, and the MultiQC meta id is `rnafusion` [#844](https://github.com/nf-core/rnafusion/issues/844)
+10. Fixed `strandedness` from the samplesheet not being added to the meta map, so `PICARD_COLLECTRNASEQMETRICS` never got the right `--STRAND_SPECIFICITY` and the per-sample strandedness check never ran [#856](https://github.com/nf-core/rnafusion/issues/856)
+11. Fixed `ctatsplicing` failing on a prebuilt STAR-Fusion reference without a cancer splicing index. The index is now added to a copy of the reference, which is published to `references/starfusion` in `--outdir` [#704](https://github.com/nf-core/rnafusion/issues/704)
+12. Fixed additional STAR parameters not being correctly passed to FusionInspector by updating the module [#841](https://github.com/nf-core/rnafusion/issues/841)
 
 ### Tool version updates
 

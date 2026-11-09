@@ -76,7 +76,8 @@
             "strandedness": {
                 "type": "string",
                 "enum": ["forward", "reverse", "unstranded", "unknown"],
-                "errorMessage": "Strandedness has to be 'forward', 'reverse', 'unstranded' or 'unknown'"
+                "errorMessage": "Strandedness has to be 'forward', 'reverse', 'unstranded' or 'unknown'",
+                "meta": ["strandedness"]
             },
             "seq_platform": {
                 "type": "string",
