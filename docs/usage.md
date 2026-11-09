@@ -159,6 +159,23 @@ TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,,forward
 - ❌ = Not required
 - ❓ = One of these columns should be provided
 
+#### Samples split over several lanes or runs
+
+If a sample was sequenced over several lanes or runs, give each FASTQ file or pair its own row with the same `sample` value. The pipeline concatenates the FASTQ files of these rows at the start of the run, so you don't need to merge them beforehand:
+
+```csv title="samplesheet.csv"
+sample,fastq_1,fastq_2,strandedness
+CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz,forward
+CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz,forward
+```
+
+The pipeline stops with an error if the rows of one sample:
+
+- have different `strandedness` values
+- mix single-end and paired-end FASTQ files
+- have different `seq_center` or `seq_platform` values
+- together provide more than one BAM or CRAM file, junctions file or splice junctions file
+
 ### Preparing BAM/CRAM/junctions/splice_junctions
 
 In the pipeline the following STAR command is used to produce the needed files:
