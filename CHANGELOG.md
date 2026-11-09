@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 7. Bumped nf-schema to 2.7.3
 8. Reorganised the parameter schema so inputs, references and alignment options are grouped together. This only changes how parameters are presented. Based on the original reorganisation by FriederikeHanssen in [#782](https://github.com/nf-core/rnafusion/pull/782)
 9. Added `--no-fusiongdb2` to the fusionreport download command since the fusiongdb2 endpoint no longer exists. `FUSIONREPORT_DOWNLOAD` (patched) now creates an empty fusiongdb2 database instead, because `fusion_report run` always queries it and failed with `no such table: fusiongdb2` on references built with this release [#842](https://github.com/nf-core/rnafusion/issues/842). This will be removed once fusionreport is updated to address this issue.
+10. Updated the nf-core modules. `SALMON_INDEX` and `SALMON_QUANT` stay on 1.10.3 because salmon 2.x rejects the published index, and `utils_nfschema_plugin` stays on the nf-schema 2 version
 
 ### Fixed
 
@@ -39,18 +40,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Tool version updates
 
-| Tool                                                 | Old version  | New version |
-| ---------------------------------------------------- | ------------ | ----------- |
-| agat                                                 | 1.5.1        | 1.6.1       |
-| ctatsplicing                                         | 0.0.2        | 0.0.3       |
-| fastp                                                | 1.1.0        | 1.4.0       |
-| fastqc                                               | 0.12.1       | 0.13.0      |
-| fusion-report                                        | 4.1.1        | 4.1.2       |
-| gatk4                                                | 4.6.1.0      | 4.6.2.0     |
-| multiqc                                              | 1.33         | 1.35        |
-| picard                                               | 3.3.0        | 3.4.0       |
-| samtools (`SAMTOOLS_FAIDX`, `SAMTOOLS_COLLATEFASTQ`) | 1.21, 1.22.1 | 1.23.1      |
-| ucsc                                                 | 447          | 482         |
+| Tool          | Old version          | New version |
+| ------------- | -------------------- | ----------- |
+| agat          | 1.5.1                | 1.6.1       |
+| ctatsplicing  | 0.0.2                | 0.0.3       |
+| fastp         | 1.1.0                | 1.4.0       |
+| fastqc        | 0.12.1               | 0.13.0      |
+| fusion-report | 4.1.1                | 4.1.2       |
+| gatk4         | 4.6.1.0              | 4.7.0.0     |
+| multiqc       | 1.33                 | 1.35        |
+| picard        | 3.3.0                | 3.5.0       |
+| samtools      | 1.21, 1.22.1, 1.23.1 | 1.25        |
+| stringtie     | 2.2.1, 2.2.3         | 3.0.3       |
+| ucsc          | 447                  | 482         |
 
 ## v4.1.3 - [2026-06-02]
 

@@ -219,7 +219,6 @@ workflow BUILD_REFERENCES {
                 dfam_urls_ch,
                 file(annot_filter_url, checkIfExists: true)
             )
-            ch_versions = ch_versions.mix(STARFUSION_BUILD.out.versions)
             ch_starfusion_ref = STARFUSION_BUILD.out.reference
         }
 

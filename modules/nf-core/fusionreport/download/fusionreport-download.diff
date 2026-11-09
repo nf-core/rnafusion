@@ -4,7 +4,7 @@ Changes in component 'nf-core/fusionreport/download'
 Changes in 'fusionreport/download/main.nf':
 --- modules/nf-core/fusionreport/download/main.nf
 +++ modules/nf-core/fusionreport/download/main.nf
-@@ -23,6 +23,12 @@
+@@ -26,6 +26,12 @@
      """
      mkdir -p ${prefix}
      fusion_report download ${args} ${prefix}

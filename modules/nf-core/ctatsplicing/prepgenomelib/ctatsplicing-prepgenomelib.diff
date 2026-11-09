@@ -1,8 +1,9 @@
 Changes in component 'nf-core/ctatsplicing/prepgenomelib'
+'modules/nf-core/ctatsplicing/prepgenomelib/meta.yml' is unchanged
 Changes in 'ctatsplicing/prepgenomelib/main.nf':
 --- modules/nf-core/ctatsplicing/prepgenomelib/main.nf
 +++ modules/nf-core/ctatsplicing/prepgenomelib/main.nf
-@@ -10,7 +10,7 @@
+@@ -13,7 +13,7 @@
      path(cancer_intron_tsv)
  
      output:
@@ -11,7 +12,7 @@ Changes in 'ctatsplicing/prepgenomelib/main.nf':
      // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
      tuple val("${task.process}"), val('ctatsplicing'), val("0.0.3"), emit: versions_ctatsplicing, topic: versions
  
-@@ -30,85 +30,7 @@
+@@ -33,85 +33,7 @@
  
      stub:
      """
@@ -98,7 +99,6 @@ Changes in 'ctatsplicing/prepgenomelib/main.nf':
      """
  }
 
-'modules/nf-core/ctatsplicing/prepgenomelib/meta.yml' is unchanged
 'modules/nf-core/ctatsplicing/prepgenomelib/tests/main.nf.test.snap' is unchanged
 'modules/nf-core/ctatsplicing/prepgenomelib/tests/main.nf.test' is unchanged
 ************************************************************
