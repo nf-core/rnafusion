@@ -15,12 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 2. Updated the minimal Nextflow version to 26.04.0
 3. Bumped to nf-core template v4.2.1
 4. Moved references from `s3://nf-core-awsmegatests/rnafusion/references` to `s3://ngi-igenomes/nf-core/pipelines/rnafusion/references`
-5. Added `--no-fusiongdb2` to the fusionreport download command since the fusiongdb2 endpoint no longer exists. This will be removed once fusionreport is updated to address this issue.
+5. Added `--no-fusiongdb2` to the fusionreport download command since the fusiongdb2 endpoint no longer exists. `FUSIONREPORT_DOWNLOAD` (patched) now creates an empty fusiongdb2 database instead, because `fusion_report run` always queries it and failed with `no such table: fusiongdb2` on references built with this release [#842](https://github.com/nf-core/rnafusion/issues/842). This will be removed once fusionreport is updated to address this issue.
 
 ### Fixed
 
 1. Fixed the `PL` tag of the STAR read group being merged into the `SM` tag when a sequencing platform is set [#822](https://github.com/nf-core/rnafusion/issues/822)
 2. Fixed the completion email arguments being shifted by one, and the MultiQC report being passed to the email as a `[meta, report]` tuple, which stopped the report from being attached [#849](https://github.com/nf-core/rnafusion/issues/849)
+3. Fixed the pfam warning being printed on every run, because `--pfam_file` was compared as a path instead of a URL [#845](https://github.com/nf-core/rnafusion/issues/845)
 
 ### Tool version updates
 

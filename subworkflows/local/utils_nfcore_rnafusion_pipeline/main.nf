@@ -215,7 +215,7 @@ def validateInputParameters(
     String species,
     Map<String,Path> setDfamParams,
     String pfam_version,
-    String pfam_file,
+    pfam_file,
     Map genomes,
     String genome
 ) {
@@ -248,9 +248,11 @@ def validateInputParameters(
 
     if (pfam_version){
         def pfamPattern = "http://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam${pfam_version}/Pfam-A"
+        // pfam_file can be a Path, where startsWith() would compare path components instead of the URL string
+        def pfamUri = pfam_file instanceof Path ? pfam_file.toUriString() : pfam_file?.toString()
 
-        if (!(pfam_file?.startsWith(pfamPattern))) {
-            def pfam_warn = "Both `--pfam_file` (${pfam_file}) and `--pfam_version` (${pfam_version}) were provided.\n" +
+        if (!(pfamUri?.startsWith(pfamPattern))) {
+            def pfam_warn = "Both `--pfam_file` (${pfamUri}) and `--pfam_version` (${pfam_version}) were provided.\n" +
                     "The pipeline will prioritize the custom file from `--pfam_file` and **will NOT** construct the URL based on `--pfam_version`.\n" +
                     "   - If you intend to use a custom PFAM file, please ensure that `--pfam_file` points to a full and valid path.\n" +
                     "   - If you prefer to let the pipeline build the PFAM URL automatically, omit `--pfam_file` and instead provide only `--pfam_version`."
