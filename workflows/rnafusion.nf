@@ -541,33 +541,35 @@ workflow RNAFUSION {
     //
     // MODULE: MultiQC
     //
-    ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
+    def ch_multiqc_output = channel.empty()
+    if (!skip_qc && !references_only) {
+        ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
 
-    def ch_summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
-    def ch_workflow_summary = channel.value(paramsSummaryMultiqc(ch_summary_params))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+        def ch_summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+        def ch_workflow_summary = channel.value(paramsSummaryMultiqc(ch_summary_params))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
 
-    def ch_multiqc_custom_methods_description = multiqc_methods_description
-        ? multiqc_methods_description
-        : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
-    def ch_methods_description = channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
+        def ch_multiqc_custom_methods_description = multiqc_methods_description
+            ? multiqc_methods_description
+            : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
+        def ch_methods_description = channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
 
-    MULTIQC(
-        ch_multiqc_files.flatten().collect().map { files ->
-            [
-                [id: 'exomecnv'],
-                files,
-                multiqc_config
-                    ? multiqc_config
-                    : file("${projectDir}/assets/multiqc_config.yml", checkIfExists: true),
-                multiqc_logo ? multiqc_logo : [],
-                [],
-                [],
-            ]
-        }
-    )
-    ch_multiqc_output = MULTIQC.out.report.map { _meta, report -> report }.toList()
+        MULTIQC(
+            ch_multiqc_files.flatten().collect().map { files ->
+                [
+                    [id: 'rnafusion'],
+                    files,
+                    // Always load the pipeline config, a custom config is applied on top of it
+                    [file("${projectDir}/assets/multiqc_config.yml", checkIfExists: true), multiqc_config].findAll { config -> config },
+                    multiqc_logo ? multiqc_logo : [],
+                    [],
+                    [],
+                ]
+            }
+        )
+        ch_multiqc_output = MULTIQC.out.report.map { _meta, report -> report }.toList()
+    }
 
 
     emit:
