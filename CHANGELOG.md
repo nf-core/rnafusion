@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 1. Added support for multiple FASTQ files for the same sample. These will be merged at the start of the pipeline [#821](https://github.com/nf-core/rnafusion/pull/821)
 2. Added a stub test for merging single-end FASTQ files of the same sample [#848](https://github.com/nf-core/rnafusion/issues/848)
 3. Added `--skip_gencode_filter` to build the CTAT genome library without STAR-Fusion's `--human_gencode_filter`, for annotations that are not GENCODE [#832](https://github.com/nf-core/rnafusion/issues/832)
+4. `GATK4_MARKDUPLICATES` now creates and publishes an index for the duplicate-marked BAM [#784](https://github.com/nf-core/rnafusion/issues/784)
 
 ### Changed
 
