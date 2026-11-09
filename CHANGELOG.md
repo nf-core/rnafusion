@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 1. Added support for multiple FASTQ files for the same sample. These will be merged at the start of the pipeline [#821](https://github.com/nf-core/rnafusion/pull/821)
+2. Added `--skip_gencode_filter` to build the CTAT genome library without STAR-Fusion's `--human_gencode_filter`, for annotations that are not GENCODE [#832](https://github.com/nf-core/rnafusion/issues/832)
 
 ### Changed
 
@@ -15,26 +16,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 2. Updated the minimal Nextflow version to 26.04.0
 3. Bumped to nf-core template v4.2.1
 4. Moved references from `s3://nf-core-awsmegatests/rnafusion/references` to `s3://ngi-igenomes/nf-core/pipelines/rnafusion/references`
+5. Added `--no-fusiongdb2` to the fusionreport download command since the fusiongdb2 endpoint no longer exists. This will be removed once fusionreport is updated to address this issue.
+6. The samplesheet no longer requires unique `sample` values: rows with the same `sample` are combined into one sample [#821](https://github.com/nf-core/rnafusion/pull/821)
+7. Bumped nf-schema to 2.7.3
 5. Added `--no-fusiongdb2` to the fusionreport download command since the fusiongdb2 endpoint no longer exists. `FUSIONREPORT_DOWNLOAD` (patched) now creates an empty fusiongdb2 database instead, because `fusion_report run` always queries it and failed with `no such table: fusiongdb2` on references built with this release [#842](https://github.com/nf-core/rnafusion/issues/842). This will be removed once fusionreport is updated to address this issue.
 
 ### Fixed
 
 1. Fixed the `PL` tag of the STAR read group being merged into the `SM` tag when a sequencing platform is set [#822](https://github.com/nf-core/rnafusion/issues/822)
-2. Fixed samples spread over several samplesheet rows keeping only the first row's meta: `seq_center`/`seq_platform` from other rows are kept (and must agree), and rows without FASTQ files no longer break the single-end/paired-end check [#847](https://github.com/nf-core/rnafusion/issues/847)
-3. Fixed every run checking the remote dfam, pfam, AnnotFilterRule, cancer introns and fusion annotation library defaults at launch. They are now only resolved when the STAR-Fusion reference is built [#843](https://github.com/nf-core/rnafusion/issues/843)
-4. Fixed the completion email arguments being shifted by one, and the MultiQC report being passed to the email as a `[meta, report]` tuple, which stopped the report from being attached [#849](https://github.com/nf-core/rnafusion/issues/849)
-5. Fixed the pfam warning being printed on every run, because `--pfam_file` was compared as a path instead of a URL [#845](https://github.com/nf-core/rnafusion/issues/845)
+2. Fixed the `test_build` profile failing on the STAR-Fusion tutorial minigenome by setting `--skip_gencode_filter`, since that annotation is not GENCODE [#832](https://github.com/nf-core/rnafusion/issues/832)
+3. Fixed samples spread over several samplesheet rows keeping only the first row's meta: `seq_center`/`seq_platform` from other rows are kept (and must agree), and rows without FASTQ files no longer break the single-end/paired-end check [#847](https://github.com/nf-core/rnafusion/issues/847)
+4. Fixed every run checking the remote dfam, pfam, AnnotFilterRule, cancer introns and fusion annotation library defaults at launch. They are now only resolved when the STAR-Fusion reference is built [#843](https://github.com/nf-core/rnafusion/issues/843)
+5. Fixed the completion email arguments being shifted by one, and the MultiQC report being passed to the email as a `[meta, report]` tuple, which stopped the report from being attached [#849](https://github.com/nf-core/rnafusion/issues/849)
+6. Fixed the pfam warning being printed on every run, because `--pfam_file` was compared as a path instead of a URL [#845](https://github.com/nf-core/rnafusion/issues/845)
 
 ### Tool version updates
 
-| Tool   | Old version | New version |
-| ------ | ----------- | ----------- |
-| fastqc | 0.12.1      | 0.13.0      |
-| fastp  | 1.1.0       | 1.4.0       |
-
-### Fixed
-
-1. Added `--skip_gencode_filter` to build the CTAT genome library without STAR-Fusion's `--human_gencode_filter`, and set it in `test_build`: the STAR-Fusion tutorial minigenome that profile builds from is not a GENCODE annotation, and the filter failed on it when the profile was run directly [#832](https://github.com/nf-core/rnafusion/issues/832)
+| Tool                                                 | Old version  | New version |
+| ---------------------------------------------------- | ------------ | ----------- |
+| agat                                                 | 1.5.1        | 1.6.1       |
+| ctatsplicing                                         | 0.0.2        | 0.0.3       |
+| fastp                                                | 1.1.0        | 1.4.0       |
+| fastqc                                               | 0.12.1       | 0.13.0      |
+| fusion-report                                        | 4.1.1        | 4.1.2       |
+| gatk4                                                | 4.6.1.0      | 4.6.2.0     |
+| multiqc                                              | 1.33         | 1.35        |
+| picard                                               | 3.3.0        | 3.4.0       |
+| samtools (`SAMTOOLS_FAIDX`, `SAMTOOLS_COLLATEFASTQ`) | 1.21, 1.22.1 | 1.23.1      |
+| ucsc                                                 | 447          | 482         |
 
 ## v4.1.3 - [2026-06-02]
 
