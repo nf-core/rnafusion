@@ -1,0 +1,50 @@
+nextflow_pipeline {
+
+    name "Test pipeline with a BAM input without an index"
+    script "../main.nf"
+    profile "test"
+    options "-stub" // TODO remove once reference files are available
+    tag "pipeline"
+    tag "pipeline_rnafusion"
+    tag "test_stub_bam_no_index"
+
+    // Regression test for https://github.com/nf-core/rnafusion/issues/780
+    test("BAM without an index reaches fusioninspector and the arriba visualisation") {
+
+        when {
+            params {
+                outdir           = "$outputDir"
+                fusion_annot_lib = 'https://github.com/STAR-Fusion/STAR-Fusion-Tutorial/raw/master/CTAT_HumanFusionLib.mini.dat.gz'
+                input            = "${projectDir}/tests/yml/bam_no_index.yml"
+                tools            = "starfusion,fusionreport,fusioninspector"
+                no_cosmic        = true
+                genomes_base     = "${outputDir}/references"
+                arriba_ref_protein_domains  = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3"
+                arriba_ref_known_fusions    = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/known_fusions_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_blacklist        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/blacklist_hg38_GRCh38_v2.5.0.tsv.gz"
+                arriba_ref_cytobands        = "https://github.com/nf-core/test-datasets/raw/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv"
+            }
+        }
+
+        then {
+            def tasks = workflow.trace.tasks().collect { task -> task.name }
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+            assertAll(
+                { assert workflow.success },
+                { assert tasks.any { name -> name.contains("SAMTOOLS_COLLATEFASTQ") } },
+                { assert tasks.any { name -> name.contains("SAMTOOLS_INDEX_INPUT") } },
+                { assert tasks.any { name -> name.contains("FUSIONINSPECTOR") } },
+                { assert tasks.any { name -> name.contains("ARRIBA_VISUALISATION") } },
+                { assert path("$outputDir/arriba_visualisation/test_combined_fusions_arriba_visualisation.pdf").exists() },
+                { assert snapshot(
+                    // Number of successful tasks
+                    workflow.trace.succeeded().size(),
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we tests pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_rnafusion_software_mqc_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_name
+                ).match() }
+            )
+        }
+    }
+}

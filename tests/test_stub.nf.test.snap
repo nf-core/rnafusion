@@ -426,6 +426,9 @@
                 "ARRIBA_ARRIBA": {
                     "arriba": "2.5.0"
                 },
+                "ARRIBA_VISUALISATION": {
+                    "arriba": "2.5.0"
+                },
                 "BIOAWK": {
                     "bioawk": 1.0
                 },
@@ -548,6 +551,8 @@
                 "arriba",
                 "arriba/test.arriba.fusions.discarded.tsv",
                 "arriba/test.arriba.fusions.tsv",
+                "arriba_visualisation",
+                "arriba_visualisation/test_combined_fusions_arriba_visualisation.pdf",
                 "bioawk",
                 "bioawk/Homo_sapiens_GRCh38_46.gtf_rrna.gtf.gff",
                 "cat",
@@ -794,10 +799,10 @@
                 "stringtie/test.transcripts.gtf"
             ]
         ],
-        "timestamp": "2026-06-22T11:23:28.51678054",
+        "timestamp": "2026-11-10T00:12:58.158846",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.1"
+            "nf-test": "0.9.4",
+            "nextflow": "26.10.5"
         }
     },
     "stub test arriba": {
@@ -972,6 +977,9 @@
                 "ARRIBA_ARRIBA": {
                     "arriba": "2.5.0"
                 },
+                "ARRIBA_VISUALISATION": {
+                    "arriba": "2.5.0"
+                },
                 "BIOAWK": {
                     "bioawk": 1.0
                 },
@@ -1058,6 +1066,8 @@
                 "arriba",
                 "arriba/test.arriba.fusions.discarded.tsv",
                 "arriba/test.arriba.fusions.tsv",
+                "arriba_visualisation",
+                "arriba_visualisation/test_combined_fusions_arriba_visualisation.pdf",
                 "bioawk",
                 "bioawk/Homo_sapiens_GRCh38_46.gtf_rrna.gtf.gff",
                 "fastqc",
@@ -1238,10 +1248,10 @@
                 "star/testXd.out.bam"
             ]
         ],
-        "timestamp": "2026-05-22T13:37:37.792321883",
+        "timestamp": "2026-11-10T00:11:11.129491",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.1"
+            "nf-test": "0.9.4",
+            "nextflow": "26.10.5"
         }
     },
     "stub test salmon": {
@@ -2136,6 +2146,9 @@
                 "ARRIBA_ARRIBA": {
                     "arriba": "2.5.0"
                 },
+                "ARRIBA_VISUALISATION": {
+                    "arriba": "2.5.0"
+                },
                 "BIOAWK": {
                     "bioawk": 1.0
                 },
@@ -2255,6 +2268,8 @@
                 "arriba",
                 "arriba/test.arriba.fusions.discarded.tsv",
                 "arriba/test.arriba.fusions.tsv",
+                "arriba_visualisation",
+                "arriba_visualisation/test_combined_fusions_arriba_visualisation.pdf",
                 "bioawk",
                 "bioawk/Homo_sapiens_GRCh38_46.gtf_rrna.gtf.gff",
                 "ctatsplicing",
@@ -2498,10 +2513,10 @@
                 "stringtie/test.transcripts.gtf"
             ]
         ],
-        "timestamp": "2026-05-22T13:30:27.324353488",
+        "timestamp": "2026-11-10T00:00:53.717393",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.1"
+            "nf-test": "0.9.4",
+            "nextflow": "26.10.5"
         }
     }
 }
