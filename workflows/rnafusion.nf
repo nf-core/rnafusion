@@ -19,6 +19,7 @@ include { STAR_ALIGN                    }   from '../modules/nf-core/star/align/
 include { SALMON_QUANT                  }   from '../modules/nf-core/salmon/quant/main'
 include { SAMTOOLS_CONVERT              }   from '../modules/nf-core/samtools/convert/main'
 include { SAMTOOLS_INDEX                }   from '../modules/nf-core/samtools/index/main'
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_INPUT } from '../modules/nf-core/samtools/index/main'
 include { SAMTOOLS_COLLATEFASTQ         }   from '../modules/nf-core/samtools/collatefastq/main'
 include { paramsSummaryMap              }   from 'plugin/nf-schema'
 include { FASTQ_ALIGN_STAR              }   from '../subworkflows/nf-core/fastq_align_star'
@@ -213,7 +214,20 @@ workflow RNAFUSION {
 
         // Convert CRAM to BAM when needed (when tools that don't support CRAM are used and when the sample isn't aligned)
         def only_bam_tools = ["ctatsplicing", "stringtie", "fusioninspector"]
-        def ch_aligned_inputs = ch_input.bam.filter { meta, file, _bai -> file && !meta.align }
+        // The samplesheet doesn't require an index, but these tools read the BAM through it
+        def needs_bam_index = tools.intersect(["ctatsplicing", "fusioninspector"])
+        def ch_bam_inputs = ch_input.bam
+            .filter { meta, file, _bai -> file && !meta.align }
+            .branch { _meta, _file, bai ->
+                indexed: bai || !needs_bam_index
+                not_indexed: true
+            }
+        SAMTOOLS_INDEX_INPUT(ch_bam_inputs.not_indexed.map { meta, file, _bai -> [meta, file] })
+        def ch_aligned_inputs = ch_bam_inputs.indexed.mix(
+            ch_bam_inputs.not_indexed
+                .map { meta, file, _bai -> [meta, file] }
+                .join(SAMTOOLS_INDEX_INPUT.out.index, failOnMismatch:true, failOnDuplicate:true)
+        )
         if(tools.intersect(only_bam_tools)) {
             SAMTOOLS_CONVERT(
                 ch_input.cram.filter { meta, file, _crai -> file && !meta.align },
