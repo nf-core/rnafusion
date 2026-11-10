@@ -24,9 +24,6 @@
                 "GFFREAD": {
                     "gffread": "0.12.7"
                 },
-                "HGNC_DOWNLOAD": {
-                    "wget": "1.21.4"
-                },
                 "SALMON_INDEX": {
                     "salmon": "1.10.3"
                 },
@@ -45,6 +42,9 @@
                 },
                 "UCSC_GTFTOGENEPRED": {
                     "ucsc": 482
+                },
+                "WGET_HGNC": {
+                    "wget": "1.21.4"
                 },
                 "Workflow": {
                     "nf-core/rnafusion": "v4.2.0"

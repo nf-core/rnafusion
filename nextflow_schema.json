@@ -208,7 +208,8 @@
                 },
                 "genome": {
                     "type": "string",
-                    "description": "Name of iGenomes reference.",
+                    "description": "Name of the reference genome. GRCh38 is the only supported genome.",
+                    "const": "GRCh38",
                     "fa_icon": "fas fa-book",
                     "default": "GRCh38"
                 },
