@@ -23,6 +23,9 @@ The pipeline is divided into two parts:
 
 The rnafusion pipeline needs references for the fusion detection tools, so downloading these is a **requirement**.
 
+> [!NOTE]
+> GRCh38 is the only supported genome. The published references, the reference build and the tests all use GRCh38, so other values of `--genome` are not supported.
+
 The references for the pipeline can be downloaded from the nf-core AWS megatests S3 bucket using the following command for the [AWS CLI tool](https://github.com/aws/aws-cli):
 
 ```bash
