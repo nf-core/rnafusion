@@ -41,6 +41,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 11. Fixed `ctatsplicing` failing on a prebuilt STAR-Fusion reference without a cancer splicing index. The index is now added to a copy of the reference, which is published to `references/starfusion` in `--outdir` [#704](https://github.com/nf-core/rnafusion/issues/704)
 12. Fixed additional STAR parameters not being correctly passed to FusionInspector by updating the module [#841](https://github.com/nf-core/rnafusion/issues/841)
 13. Fixed `ARRIBA_VISUALISATION` crashing on a samplesheet BAM without an index. The index is now created when `ctatsplicing` or `fusioninspector` need it, and a sample without confirmed fusions now logs a warning that its visualisation is skipped [#780](https://github.com/nf-core/rnafusion/issues/780)
+14. Fixed prebuilt references being rebuilt because a directory was judged empty from a single file, e.g. an empty checkpoint file in the STAR-Fusion `__chkpts/` folder. A reference directory now counts as present if any file in it has content, and an empty directory no longer crashes the check [#774](https://github.com/nf-core/rnafusion/issues/774)
+15. Increased the memory of `FUSIONCATCHER_FUSIONCATCHER` to 48 GB, since `bbduk.sh` could run out of memory with the `process_medium` default [#773](https://github.com/nf-core/rnafusion/issues/773)
 
 ### Tool version updates
 

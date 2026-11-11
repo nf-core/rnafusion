@@ -118,6 +118,45 @@ nextflow_function {
 
     }
 
+    test("Test Function exists_not_empty - local directory with empty checkpoint files") {
+
+        function "exists_not_empty"
+
+        when {
+            function {
+                """
+                input[0] = "${projectDir}/subworkflows/local/build_references/tests/folder_with_checkpoints/"
+                """
+            }
+        }
+
+        then {
+            assert function.success
+            assert function.result == true
+        }
+
+    }
+
+    test("Test Function exists_not_empty - local directory without files") {
+
+        function "exists_not_empty"
+
+        when {
+            function {
+                """
+                def empty_dir = java.nio.file.Files.createTempDirectory("exists_not_empty")
+                input[0] = empty_dir.toString()
+                """
+            }
+        }
+
+        then {
+            assert function.success
+            assert function.result == false
+        }
+
+    }
+
     test("Test Function exists_not_empty - HTTPS file exists") {
 
         function "exists_not_empty"
