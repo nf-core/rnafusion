@@ -1,0 +1,93 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "fusioninspector_workflow"
+description: Validate the detected fusions with FusionInspector, collect them into a VCF file and visualise them with Arriba
+keywords:
+  - fusion
+  - rna-seq
+  - fusioninspector
+  - vcf
+  - visualisation
+components:
+  - agat/convertspgff2tsv
+  - arriba/visualisation
+  - cat/cat
+  - fusioninspector
+  - vcf_collect
+input:
+  - reads:
+      description: |
+        Channel with the reads of each sample
+        Structure: [ val(meta), [ path(reads) ] ]
+  - fusion_list:
+      description: |
+        List of fusions detected by fusion-report
+        Structure: [ val(meta), path(fusion_list) ]
+  - fusion_list_filtered:
+      description: |
+        List of fusions detected by at least `tools_cutoff` tools, used instead of `fusion_list` when `tools_cutoff` > 1
+        Structure: [ val(meta), path(fusion_list_filtered) ]
+  - fusionreport_out:
+      description: |
+        fusion-report HTML report
+        Structure: [ val(meta), path(report) ]
+  - fusionreport_csv:
+      description: |
+        fusion-report CSV output
+        Structure: [ val(meta), path(csv) ]
+  - bam_sorted_indexed:
+      description: |
+        Sorted alignments and their index
+        Structure: [ val(meta), path(bam), path(bai) ]
+  - ch_gtf:
+      description: |
+        Gene annotation in GTF format
+        Structure: [ val(meta), path(gtf) ]
+  - ch_arriba_ref_protein_domains:
+      description: |
+        Arriba protein domains annotation
+        Structure: path(protein_domains)
+  - ch_arriba_ref_cytobands:
+      description: |
+        Arriba cytobands annotation
+        Structure: path(cytobands)
+  - ch_hgnc_ref:
+      description: |
+        HGNC complete set, used to annotate the VCF file
+        Structure: [ val(meta), path(hgnc_ref) ]
+  - ch_hgnc_date:
+      description: |
+        File with the download date of the HGNC complete set
+        Structure: [ val(meta), path(hgnc_date) ]
+  - ch_starfusion_ref:
+      description: |
+        STAR-Fusion (CTAT) genome library
+        Structure: [ val(meta), path(starfusion_ref) ]
+  - skip_vis:
+      description: |
+        Skip the Arriba visualisation
+        Structure: val(boolean)
+  - skip_vcf:
+      description: |
+        Skip the VCF file creation
+        Structure: val(boolean)
+  - tools_cutoff:
+      description: |
+        Minimum number of tools that must detect a fusion for it to be passed to FusionInspector
+        Structure: val(integer)
+  - whitelist:
+      description: |
+        Optional file with fusions that are always passed to FusionInspector
+        Structure: path(whitelist)
+output:
+  - ch_arriba_visualisation:
+      description: |
+        Arriba visualisation of the fusions confirmed by FusionInspector
+        Structure: [ val(meta), path(pdf) ]
+authors:
+  - "@rannick"
+  - "@nvnieuwk"
+  - "@atrigila"
+maintainers:
+  - "@rannick"
+  - "@nvnieuwk"
+  - "@atrigila"
