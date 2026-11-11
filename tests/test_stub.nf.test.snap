@@ -418,7 +418,7 @@
     },
     "stub test fastq merging": {
         "content": [
-            46,
+            47,
             {
                 "AGAT_CONVERTGFF2BED": {
                     "agat": "1.6.1"
@@ -799,9 +799,9 @@
                 "stringtie/test.transcripts.gtf"
             ]
         ],
-        "timestamp": "2026-11-10T00:12:58.158846",
+        "timestamp": "2026-11-11T19:02:38.609506",
         "meta": {
-            "nf-test": "0.9.4",
+            "nf-test": "0.9.5",
             "nextflow": "26.10.5"
         }
     },
@@ -969,7 +969,7 @@
     },
     "stub test fusioninspector": {
         "content": [
-            34,
+            35,
             {
                 "AGAT_CONVERTGFF2BED": {
                     "agat": "1.6.1"
@@ -1248,9 +1248,9 @@
                 "star/testXd.out.bam"
             ]
         ],
-        "timestamp": "2026-11-10T00:11:11.129491",
+        "timestamp": "2026-11-11T19:00:53.79025",
         "meta": {
-            "nf-test": "0.9.4",
+            "nf-test": "0.9.5",
             "nextflow": "26.10.5"
         }
     },
@@ -2138,7 +2138,7 @@
     },
     "stub test all": {
         "content": [
-            45,
+            46,
             {
                 "AGAT_CONVERTGFF2BED": {
                     "agat": "1.6.1"
@@ -2513,9 +2513,9 @@
                 "stringtie/test.transcripts.gtf"
             ]
         ],
-        "timestamp": "2026-11-10T00:00:53.717393",
+        "timestamp": "2026-11-11T18:52:01.228448",
         "meta": {
-            "nf-test": "0.9.4",
+            "nf-test": "0.9.5",
             "nextflow": "26.10.5"
         }
     }
