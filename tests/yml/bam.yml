@@ -1,0 +1,10 @@
+- sample: test
+  fastq_1: https://github.com/nf-core/test-datasets/raw/81cb45949e75cbb85cbf6c5ec9009ab45b160823/testdata/human/reads_1.fq.gz
+  fastq_2: https://github.com/nf-core/test-datasets/raw/81cb45949e75cbb85cbf6c5ec9009ab45b160823/testdata/human/reads_2.fq.gz
+  # bam: https://github.com/nf-core/test-datasets/raw/81cb45949e75cbb85cbf6c5ec9009ab45b160823/testdata/human/test.Aligned.sortedByCoord.out.bam
+  # bai: https://github.com/nf-core/test-datasets/raw/81cb45949e75cbb85cbf6c5ec9009ab45b160823/testdata/human/test.Aligned.sortedByCoord.out.bam.bai
+  cram: https://github.com/nf-core/test-datasets/raw/81cb45949e75cbb85cbf6c5ec9009ab45b160823/testdata/human/test.Aligned.sortedByCoord.out.cram
+  crai: https://github.com/nf-core/test-datasets/raw/81cb45949e75cbb85cbf6c5ec9009ab45b160823/testdata/human/test.Aligned.sortedByCoord.out.cram.crai
+  junctions: https://github.com/nf-core/test-datasets/raw/81cb45949e75cbb85cbf6c5ec9009ab45b160823/testdata/human/test.Chimeric.out.junction
+  splice_junctions: https://github.com/nf-core/test-datasets/raw/81cb45949e75cbb85cbf6c5ec9009ab45b160823/testdata/human/test.SJ.out.tab
+  strandedness: forward

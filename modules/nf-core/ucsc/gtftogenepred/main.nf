@@ -1,0 +1,47 @@
+// Copyright (c) the nf-core community under an open-source MIT license.
+// See https://github.com/nf-core/modules for full license, file patching instructions and upstream contributing.
+
+process UCSC_GTFTOGENEPRED {
+    tag "${meta.id}"
+    label 'process_low'
+
+    conda "${moduleDir}/environment.yml"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/0b/0b1bf78d0b82411a2355c9930140488b5fe91fbba5be774751666ef81b45ff71/data'
+:         'community.wave.seqera.io/library/ucsc-gtftogenepred:482--ace98be9f7cb069f' }"
+
+    input:
+    tuple val(meta), path(gtf)
+
+    output:
+    tuple val(meta), path("*.genepred"), emit: genepred
+    tuple val(meta), path("*.refflat") , emit: refflat , optional: true
+    tuple val("${task.process}"), val('ucsc'), val('482'), topic: versions, emit: versions_ucsc
+    // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+    when:
+    task.ext.when == null || task.ext.when
+
+    script:
+    def args = task.ext.args ?: ''
+    def gen_refflat = args.contains("-genePredExt") && args.contains("-geneNameAsName2") ? "true" : "false"
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    gtfToGenePred \\
+        $args \\
+        $gtf  \\
+        ${prefix}.genepred
+
+    if [ "${gen_refflat}" == "true" ] ; then
+        awk 'BEGIN { OFS="\\t"} {print \$12, \$1, \$2, \$3, \$4, \$5, \$6, \$7, \$8, \$9, \$10}' ${prefix}.genepred > ${prefix}.refflat
+    fi
+
+    """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}.genepred
+    touch ${prefix}.refflat
+
+    """
+}

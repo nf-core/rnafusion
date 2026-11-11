@@ -1,0 +1,130 @@
+nextflow_workflow {
+
+    name "Test Subworkflow QC_WORKFLOW"
+    script "../main.nf"
+    config "./nextflow.config"
+    workflow "QC_WORKFLOW"
+    tag "qc"
+    tag "subworkflow"
+
+    test("QC_WORKFLOW - Homo sapiens chr22") {
+
+        // Generate refflat file
+        setup {
+
+            // Create refflat reference
+            run("UCSC_GTFTOGENEPRED") {
+                script "../../../../modules/nf-core/ucsc/gtftogenepred/main.nf"
+                process {
+                    """
+                    input[0] =Channel.of(
+                        [
+                            [id: 'gtf'],
+                            file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/genome.gtf", checkIfExists: true)
+                        ]
+                    )
+                    """
+                }
+            }
+
+            // Filter GTF to extract rRNA genes
+            run("BIOAWK") {
+                script "../../../../modules/nf-core/bioawk/main.nf"
+                process {
+                    """
+                    input[0] = Channel.of(
+                        [
+                            [id: 'gtf'],
+                            file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/genome.gtf", checkIfExists: true)
+                        ]
+                    )
+                    input[1] = []
+                    input[2] = false
+                    input[3] = "gff"
+                    """
+                }
+            }
+
+            run("AGAT_CONVERTGFF2BED") {
+                script "../../../../modules/nf-core/agat/convertgff2bed/main.nf"
+                process {
+                    """
+                    input[0] = BIOAWK.out.output
+                    """
+                }
+            }
+
+
+            // Convert rRNA BED to interval list (the necessary file)
+            run("GATK4_BEDTOINTERVALLIST") {
+                script "../../../../modules/nf-core/gatk4/bedtointervallist/main.nf"
+                process {
+                    """
+                    input[0] = AGAT_CONVERTGFF2BED.out.bed
+                    input[1] = Channel.of(
+                        [
+                            [id: 'chr22_dict'],
+                            file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/genome.dict", checkIfExist: true)
+                        ]
+                    )
+                    """
+                }
+            }
+
+        }
+
+        when {
+            params {
+                skip_qc              = false
+                fusioninspector_only = false
+                tools               = "all"
+                outdir               = "test"
+
+            }
+
+            workflow {
+                """
+                // ch_bam_sorted
+                input[0] = Channel.of(
+                    [
+                        [id: "chr22_bam"],
+                        file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/illumina/bam/test.paired_end.sorted.bam", checkIfExists: true)
+                    ])
+
+                // ch_refflat
+                input[1] = UCSC_GTFTOGENEPRED.out.refflat
+                // ch_fasta
+                input[2] = Channel.of(
+                    [
+                        [ id: "test_ref" ],
+                        file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/genome.fasta", checkIfExists: true)
+                    ]
+                )
+
+                // ch_fai
+                input[3] = Channel.of(
+                    [
+                        [ id: "test_ref" ],
+                        file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/genome.fasta.fai", checkIfExists: true)
+                    ] )
+
+                // ch rRNA interval list
+                input[4] = GATK4_BEDTOINTERVALLIST.out.interval_list
+                """
+
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+					file(workflow.out.rnaseq_metrics[0][1]).readLines()[5..8],
+					file(workflow.out.duplicate_metrics[0][1]).readLines()[5..8],
+					file(workflow.out.insertsize_metrics[0][1]).readLines()[5..8]
+                ).match() }
+            )
+        }
+    }
+
+}

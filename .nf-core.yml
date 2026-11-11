@@ -1,6 +1,4 @@
 lint:
-  files_exist:
-    - tests/default.nf.test
   files_unchanged:
     - .github/CONTRIBUTING.md
     - .github/PULL_REQUEST_TEMPLATE.md
@@ -8,6 +6,8 @@ lint:
     - conf/igenomes_ignored.config
     - .github/workflows/branch.yml
     - .github/workflows/linting.yml
+  files_exist:
+    - tests/default.nf.test
   nextflow_config: false
   schema_params: false
 nf_core_version: 4.2.2

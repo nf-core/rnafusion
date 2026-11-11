@@ -1,0 +1,273 @@
+
+nextflow_function {
+
+    name "Test Functions"
+    script "subworkflows/local/build_references/main.nf"
+
+    test("Test Function exists_not_empty - local file exists") {
+
+        function "exists_not_empty"
+
+        when {
+            function {
+                """
+                input[0] = "${projectDir}/main.nf"
+                """
+            }
+        }
+
+        then {
+            assert function.success
+            assert function.result == true
+        }
+
+    }
+
+    test("Test Function exists_not_empty - local directory exists") {
+
+        function "exists_not_empty"
+
+        when {
+            function {
+                """
+                input[0] = "${projectDir}/assets"
+                """
+            }
+        }
+
+        then {
+            assert function.success
+            assert function.result == true
+        }
+
+    }
+
+    test("Test Function exists_not_empty - local file not exists") {
+
+        function "exists_not_empty"
+
+        when {
+            function {
+                """
+                input[0] = "${projectDir}/non_existing_file.txt"
+                """
+            }
+        }
+
+        then {
+            assert function.success
+            assert function.result == false
+        }
+
+    }
+
+    test("Test Function exists_not_empty - local directory not exists") {
+
+        function "exists_not_empty"
+
+        when {
+            function {
+                """
+                input[0] = "${projectDir}/non_existing_directory"
+                """
+            }
+        }
+
+        then {
+            assert function.success
+            assert function.result == false
+        }
+
+    }
+
+    test("Test Function exists_not_empty - local file empty") {
+
+        function "exists_not_empty"
+
+        when {
+            function {
+                """
+                input[0] = "${projectDir}/subworkflows/local/build_references/tests/empty_folder/empty_file.txt"
+                """
+            }
+        }
+
+        then {
+            assert function.success
+            assert function.result == false
+        }
+
+    }
+
+    test("Test Function exists_not_empty - local directory empty") {
+
+        function "exists_not_empty"
+
+        when {
+            function {
+                """
+                input[0] = "${projectDir}/subworkflows/local/build_references/tests/empty_folder/"
+                """
+            }
+        }
+
+        then {
+            assert function.success
+            assert function.result == false
+        }
+
+    }
+
+    test("Test Function exists_not_empty - HTTPS file exists") {
+
+        function "exists_not_empty"
+
+        when {
+            function {
+                """
+                input[0] = "https://github.com/nf-core/test-datasets/raw/afe31d4ea9be70bbaaf1fb633a4ae7a4afeaf215/README.md"
+                """
+            }
+        }
+
+        then {
+            assert function.success
+            assert function.result == true
+        }
+
+    }
+
+    test("Test Function exists_not_empty - HTTPS directory exists") {
+
+        function "exists_not_empty"
+
+        when {
+            function {
+                """
+                input[0] = "https://github.com/nf-core/test-datasets/raw/afe31d4ea9be70bbaaf1fb633a4ae7a4afeaf215/testdata/"
+                """
+            }
+        }
+
+        then {
+            assert function.success
+            assert function.result == true
+        }
+
+    }
+
+    test("Test Function exists_not_empty - HTTPS file not exists") {
+
+        function "exists_not_empty"
+
+        when {
+            function {
+                """
+                input[0] = "https://github.com/nf-core/test-datasets/raw/afe31d4ea9be70bbaaf1fb633a4ae7a4afeaf215/non_existing_file.txt"
+                """
+            }
+        }
+
+        then {
+            assert function.success
+            assert function.result == false
+        }
+
+    }
+
+    test("Test Function exists_not_empty - HTTPS directory not exists") {
+
+        function "exists_not_empty"
+
+        when {
+            function {
+                """
+                input[0] = "https://github.com/nf-core/test-datasets/raw/afe31d4ea9be70bbaaf1fb633a4ae7a4afeaf215/non_existing_directory/"
+                """
+            }
+        }
+
+        then {
+            assert function.success
+            assert function.result == false
+        }
+
+    }
+
+    test("Test Function exists_not_empty - s3 file exists") {
+
+        function "exists_not_empty"
+
+        when {
+            function {
+                """
+                input[0] = "s3://ngi-igenomes/igenomes/Homo_sapiens/Ensembl/GRCh37/Sequence/WholeGenomeFasta/genome.fa"
+                """
+            }
+        }
+
+        then {
+            assert function.success
+            assert function.result == true
+        }
+
+    }
+
+    test("Test Function exists_not_empty - s3 directory exists") {
+
+        function "exists_not_empty"
+
+        when {
+            function {
+                """
+                input[0] = "s3://ngi-igenomes/igenomes/Homo_sapiens/Ensembl/GRCh37/Sequence/WholeGenomeFasta/"
+                """
+            }
+        }
+
+        then {
+            assert function.success
+            assert function.result == true
+        }
+
+    }
+
+    test("Test Function exists_not_empty - s3 file not exists") {
+
+        function "exists_not_empty"
+
+        when {
+            function {
+                """
+                input[0] = "s3://ngi-igenomes/igenomes/this_file_does_not_exist.txt"
+                """
+            }
+        }
+
+        then {
+            assert function.success
+            assert function.result == false
+        }
+
+    }
+
+    test("Test Function exists_not_empty - s3 directory not exists") {
+
+        function "exists_not_empty"
+
+        when {
+            function {
+                """
+                input[0] = "s3://ngi-igenomes/igenomes/this_directory_does_not_exist/"
+                """
+            }
+        }
+
+        then {
+            assert function.success
+            assert function.result == false
+        }
+
+    }
+
+}
