@@ -8,6 +8,8 @@ lint:
     - .github/workflows/linting.yml
   files_exist:
     - tests/default.nf.test
+    - conf/igenomes.config
+    - conf/igenomes_ignored.config
   nextflow_config: false
   schema_params: false
 nf_core_version: 4.2.2

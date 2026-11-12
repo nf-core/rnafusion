@@ -182,4 +182,12 @@ If you update images or graphics, follow the nf-core [style guidelines](https://
 
 ## Pipeline specific contribution guidelines
 
-<!-- TODO nf-core: Add any pipeline specific contribution guidelines here, such as coding styles, procedures, checklists etc. -->
+In addition to the general nf-core guidelines above, please keep the following in mind when contributing to nf-core/rnafusion:
+
+- **Changelog**: add an entry for every user-facing change to the unreleased section of `CHANGELOG.md`, linking the issue or pull request.
+- **Strict syntax**: the pipeline is fully compatible with the Nextflow strict syntax. Run `nextflow lint .` before opening a pull request and do not introduce new errors or warnings in pipeline-owned code (`main.nf`, `workflows/`, `subworkflows/local/`, `modules/local/` and `conf/`).
+- **Parameters**: parameters are typed in the `params` block of `main.nf`. A new parameter needs a typed declaration there and an entry in `nextflow_schema.json` (`nf-core pipelines schema build`). Defaults that other config files depend on stay in `nextflow.config`.
+- **Shared components**: never edit files under `modules/nf-core/` or `subworkflows/nf-core/` by hand. Fix the component upstream in [nf-core/modules](https://github.com/nf-core/modules), or use `nf-core modules patch` if a pipeline-specific change is unavoidable.
+- **Local subworkflows**: keep the `meta.yml` of a local subworkflow in sync with its `take:` and `emit:` blocks and its included components.
+- **Tests**: pipeline-level tests live in `tests/` (`test_stub*.nf.test` and `test_build.nf.test`), and modules and subworkflows carry their own `tests/` folders. Update snapshots with `nf-test test <path> --profile +docker --update-snapshot` and check the snapshot diff before committing.
+- **References**: reference files are built or downloaded by the `BUILD_REFERENCES` subworkflow. If you change how a reference is built, check that `--references_only` still works without `--input`.

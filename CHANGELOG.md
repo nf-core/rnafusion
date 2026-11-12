@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 9. Added `--no-fusiongdb2` to the fusionreport download command since the fusiongdb2 endpoint no longer exists. `FUSIONREPORT_DOWNLOAD` (patched) now creates an empty fusiongdb2 database instead, because `fusion_report run` always queries it and failed with `no such table: fusiongdb2` on references built with this release [#842](https://github.com/nf-core/rnafusion/issues/842). This will be removed once fusionreport is updated to address this issue.
 10. Updated the nf-core modules. `SALMON_INDEX` and `SALMON_QUANT` stay on 1.10.3 because salmon 2.x rejects the published index, and `utils_nfschema_plugin` stays on the nf-schema 2 version
 11. Replaced the local `GENCODE_DOWNLOAD` and `HGNC_DOWNLOAD` modules with the nf-core `wget` and `gunzip` modules [#575](https://github.com/nf-core/rnafusion/issues/575).
+12. Cleaned up pipeline-level lint findings: removed the deprecated `when:` section from the local `VCF_COLLECT` module, added `meta.yml` files to the local subworkflows, filled in the pipeline-specific contribution guidelines and ignored the renamed iGenomes config files in the `files_exist` lint test
 
 ### Fixed
 

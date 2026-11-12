@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "fusioncatcher_workflow"
+description: Detect fusion transcripts with FusionCatcher, optionally trimming reads with fastp first, or reuse a precomputed FusionCatcher result
+keywords:
+  - fusion
+  - rna-seq
+  - fusioncatcher
+components:
+  - fastp
+  - fusioncatcher/fusioncatcher
+input:
+  - reads:
+      description: |
+        Channel with the reads of each sample
+        Structure: [ val(meta), [ path(reads) ] ]
+  - fusioncatcher_trimming:
+      description: |
+        Whether to trim the reads with fastp before running FusionCatcher
+        Structure: val(boolean)
+  - adapter_fasta:
+      description: |
+        Optional FASTA file with adapter sequences used by fastp
+        Structure: path(adapter_fasta)
+  - fusioncatcher_ref:
+      description: |
+        FusionCatcher reference directory
+        Structure: [ val(meta), path(fusioncatcher_ref) ]
+  - fusioncatcher_fusions:
+      description: |
+        Optional precomputed FusionCatcher fusion file. If set, FusionCatcher is not run and this file is used for every sample
+        Structure: path(fusions)
+output:
+  - fusions:
+      description: |
+        FusionCatcher fusion predictions
+        Structure: [ val(meta), path(fusions) ]
+authors:
+  - "@rannick"
+  - "@nvnieuwk"
+  - "@atrigila"
+maintainers:
+  - "@rannick"
+  - "@nvnieuwk"
+  - "@atrigila"
