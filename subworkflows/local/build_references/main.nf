@@ -314,11 +314,13 @@ def exists_not_empty(path) {
         return !path_to_check.isEmpty()
     }
 
-    // Get the first file in a directory and return whether it is empty or not
-    def first_file = null
+    // A directory counts as not empty if any file in it has content. Checking a single file is
+    // not enough: prebuilt STAR-Fusion references contain empty checkpoint files in `__chkpts/`
+    def has_content = false
     path_to_check.toFile().eachFileRecurse(groovy.io.FileType.FILES) { file ->
-        first_file = file
-        return
+        if (!has_content && file.length() > 0) {
+            has_content = true
+        }
     }
-    return !first_file.toPath().isEmpty()
+    return has_content
 }
