@@ -197,7 +197,7 @@
                     },
                     "starfusion/detect": {
                         "branch": "master",
-                        "git_sha": "7b3452a23773f687ededb4befd037920e5a51341",
+                        "git_sha": "2c3af8756cf783a1ef63d7d922dcc1c510384840",
                         "installed_by": ["modules"]
                     },
                     "stringtie/merge": {

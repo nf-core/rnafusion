@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v4.2.0
+## v4.2.0 - [2026-11-12]
 
 ### Added
 
@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 10. Updated the nf-core modules. `SALMON_INDEX` and `SALMON_QUANT` stay on 1.10.3 because salmon 2.x rejects the published index, and `utils_nfschema_plugin` stays on the nf-schema 2 version
 11. Replaced the local `GENCODE_DOWNLOAD` and `HGNC_DOWNLOAD` modules with the nf-core `wget` and `gunzip` modules [#575](https://github.com/nf-core/rnafusion/issues/575).
 12. Cleaned up pipeline-level lint findings: removed the deprecated `when:` section from the local `VCF_COLLECT` module, added `meta.yml` files to the local subworkflows, filled in the pipeline-specific contribution guidelines and ignored the renamed iGenomes config files in the `files_exist` lint test
+13. Updated the `starfusion/detect` module to include its new nf-test with a chimeric junction file as input [#593](https://github.com/nf-core/rnafusion/issues/593)
 
 ### Fixed
 
