@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "qc_workflow"
+description: Collect RNA-seq, duplication and insert size metrics from the sorted alignments
+keywords:
+  - qc
+  - metrics
+  - picard
+  - gatk4
+components:
+  - picard/collectrnaseqmetrics
+  - gatk4/markduplicates
+  - picard/collectinsertsizemetrics
+input:
+  - ch_bam_sorted:
+      description: |
+        Sorted alignments
+        Structure: [ val(meta), path(bam) ]
+  - ch_refflat:
+      description: |
+        Gene annotation in refFlat format
+        Structure: [ val(meta), path(refflat) ]
+  - ch_fasta:
+      description: |
+        Reference genome FASTA file
+        Structure: [ val(meta), path(fasta) ]
+  - ch_fai:
+      description: |
+        Index of the reference genome FASTA file
+        Structure: [ val(meta), path(fai) ]
+  - ch_rrna_interval:
+      description: |
+        Interval list with the rRNA genes
+        Structure: [ val(meta), path(interval_list) ]
+output:
+  - rnaseq_metrics:
+      description: |
+        Picard CollectRnaSeqMetrics output
+        Structure: [ val(meta), path(metrics) ]
+  - duplicate_metrics:
+      description: |
+        GATK4 MarkDuplicates metrics
+        Structure: [ val(meta), path(metrics) ]
+  - insertsize_metrics:
+      description: |
+        Picard CollectInsertSizeMetrics output
+        Structure: [ val(meta), path(metrics) ]
+authors:
+  - "@rannick"
+  - "@nvnieuwk"
+  - "@atrigila"
+maintainers:
+  - "@rannick"
+  - "@nvnieuwk"
+  - "@atrigila"

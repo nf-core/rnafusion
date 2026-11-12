@@ -50,7 +50,7 @@ nextflow_workflow {
                 script "../../../../modules/nf-core/fusionreport/download/main.nf"
                 process {
                     """
-                    input[0] = [ id:'fusionreport' ]
+                    input[0] = channel.value([id: "test"])
                     """
                 }
             }
@@ -118,7 +118,7 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert snapshot(workflow.out.versions).match() }
+                { assert snapshot(sanitizeOutput(workflow.out)).match() }
             )
         }
     }
@@ -158,7 +158,7 @@ nextflow_workflow {
                 script "../../../../modules/nf-core/fusionreport/download/main.nf"
                 process {
                     """
-                    input[0] = [ id:'fusionreport' ]
+                    input[0] = channel.value([id: "test"])
                     """
                 }
             }

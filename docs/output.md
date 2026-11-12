@@ -320,6 +320,7 @@ Picard CollectRnaMetrics and picard MarkDuplicates share the same output directo
   - `<sample>_rna_metrics.txt` - metrics from CollectRnaMetrics
   - `<sample>_insert_size_metrics.txt.txt` - metrics from CollectInsertSizeMetrics
   - `<sample>.bam` - BAM file with marked duplicates
+  - `<sample>.bai` - index of the BAM file with marked duplicates
 
 </details>
 
@@ -393,6 +394,7 @@ The STAR index is generated with `--sjdbOverhang ${params.read_length - 1}`, `pa
 <summary>Output files</summary>
 
 - `stringtie/<sample>/stringtie.merged.gtf` - merged gtf from annotation and stringtie output gtfs
+
 </details>
 
 ### Vcf_collect

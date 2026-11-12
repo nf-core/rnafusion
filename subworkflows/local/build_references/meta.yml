@@ -1,0 +1,237 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "build_references"
+description: Download or build every reference needed by the selected tools, reusing the references that already exist
+keywords:
+  - references
+  - index
+  - genome
+  - fusion
+components:
+  - ucsc/gtftogenepred
+  - ctatsplicing/prepgenomelib
+  - bioawk
+  - agat/convertgff2bed
+  - samtools/faidx
+  - star/genomegenerate
+  - gatk4/createsequencedictionary
+  - gatk4/bedtointervallist
+  - salmon/index
+  - fusionreport/download
+  - starfusion/build
+  - gffread
+  - gunzip
+  - wget
+input:
+  - tools:
+      description: |
+        List of tools that will be run. Only the references needed by these tools are built
+        Structure: val(tools)
+  - fasta:
+      description: |
+        Reference genome FASTA file. Downloaded from GENCODE if it does not exist
+        Structure: val(path)
+  - fai:
+      description: |
+        Index of the reference genome FASTA file. Created with samtools faidx if it does not exist
+        Structure: val(path)
+  - gtf:
+      description: |
+        Gene annotation in GTF format. Downloaded from GENCODE if it does not exist
+        Structure: val(path)
+  - genome_gencode_version:
+      description: |
+        GENCODE release used to download the FASTA and GTF files
+        Structure: val(version)
+  - genome:
+      description: |
+        Genome build used to download the FASTA and GTF files, e.g. GRCh38
+        Structure: val(genome)
+  - hgnc_ref:
+      description: |
+        HGNC complete set. Downloaded if it does not exist and FusionInspector runs without --skip_vcf
+        Structure: val(path)
+  - hgnc_date:
+      description: |
+        File with the download date of the HGNC complete set
+        Structure: val(path)
+  - rrna_intervals:
+      description: |
+        Interval list with the rRNA genes. Created from the GTF file if it does not exist
+        Structure: val(path)
+  - refflat:
+      description: |
+        Gene annotation in refFlat format. Created from the GTF file if it does not exist
+        Structure: val(path)
+  - salmon_index:
+      description: |
+        Salmon index. Built if it does not exist and salmon runs
+        Structure: val(path)
+  - starindex_ref:
+      description: |
+        STAR index. Built if it does not exist and a tool needs STAR alignments
+        Structure: val(path)
+  - arriba_ref_blacklist:
+      description: |
+        Arriba blacklist
+        Structure: val(path)
+  - arriba_ref_cytobands:
+      description: |
+        Arriba cytobands annotation
+        Structure: val(path)
+  - arriba_ref_known_fusions:
+      description: |
+        Arriba known fusions
+        Structure: val(path)
+  - arriba_ref_protein_domains:
+      description: |
+        Arriba protein domains annotation
+        Structure: val(path)
+  - fusioncatcher_ref:
+      description: |
+        FusionCatcher reference directory
+        Structure: val(path)
+  - starfusion_ref:
+      description: |
+        STAR-Fusion (CTAT) genome library. Built with STAR-Fusion if it does not exist
+        Structure: val(path)
+  - fusionreport_ref:
+      description: |
+        fusion-report databases. Downloaded if they do not exist
+        Structure: val(path)
+  - fusion_annot_lib:
+      description: |
+        CTAT fusion annotation library, used to build the STAR-Fusion reference
+        Structure: val(path)
+  - species:
+      description: |
+        Species used to build the STAR-Fusion reference, e.g. homo_sapiens
+        Structure: val(species)
+  - cosmic_username:
+      description: |
+        COSMIC username, used to download the fusion-report databases
+        Structure: val(username)
+  - cosmic_passwd:
+      description: |
+        COSMIC password, used to download the fusion-report databases
+        Structure: val(password)
+  - pfam_file:
+      description: |
+        Pfam database, used to build the STAR-Fusion reference
+        Structure: val(path)
+  - dfam_hmm:
+      description: |
+        Dfam HMM file, used to build the STAR-Fusion reference
+        Structure: val(path)
+  - dfam_h3f:
+      description: |
+        Dfam h3f index file, used to build the STAR-Fusion reference
+        Structure: val(path)
+  - dfam_h3i:
+      description: |
+        Dfam h3i index file, used to build the STAR-Fusion reference
+        Structure: val(path)
+  - dfam_h3m:
+      description: |
+        Dfam h3m index file, used to build the STAR-Fusion reference
+        Structure: val(path)
+  - dfam_h3p:
+      description: |
+        Dfam h3p index file, used to build the STAR-Fusion reference
+        Structure: val(path)
+  - annot_filter_url:
+      description: |
+        AnnotFilterRule file, used to build the STAR-Fusion reference
+        Structure: val(path)
+  - ctatsplicing_cancer_introns:
+      description: |
+        Cancer introns file, used to add the cancer splicing index to the STAR-Fusion reference
+        Structure: val(path)
+  - skip_vcf:
+      description: |
+        Skip building the references only needed for the VCF file
+        Structure: val(boolean)
+  - skip_qc:
+      description: |
+        Skip building the references only needed for QC
+        Structure: val(boolean)
+  - no_cosmic:
+      description: |
+        Download the fusion-report databases without COSMIC
+        Structure: val(boolean)
+output:
+  - fasta:
+      description: |
+        Reference genome FASTA file
+        Structure: [ val(meta), path(fasta) ]
+  - gtf:
+      description: |
+        Gene annotation in GTF format
+        Structure: [ val(meta), path(gtf) ]
+  - fai:
+      description: |
+        Index of the reference genome FASTA file
+        Structure: [ val(meta), path(fai) ]
+  - hgnc_ref:
+      description: |
+        HGNC complete set
+        Structure: [ val(meta), path(hgnc_ref) ]
+  - hgnc_date:
+      description: |
+        File with the download date of the HGNC complete set
+        Structure: [ val(meta), path(hgnc_date) ]
+  - rrna_interval:
+      description: |
+        Interval list with the rRNA genes
+        Structure: [ val(meta), path(interval_list) ]
+  - refflat:
+      description: |
+        Gene annotation in refFlat format
+        Structure: [ val(meta), path(refflat) ]
+  - salmon_index:
+      description: |
+        Salmon index
+        Structure: path(salmon_index)
+  - starindex_ref:
+      description: |
+        STAR index
+        Structure: [ val(meta), path(star_index) ]
+  - arriba_ref_blacklist:
+      description: |
+        Arriba blacklist
+        Structure: path(blacklist)
+  - arriba_ref_cytobands:
+      description: |
+        Arriba cytobands annotation
+        Structure: path(cytobands)
+  - arriba_ref_known_fusions:
+      description: |
+        Arriba known fusions
+        Structure: path(known_fusions)
+  - arriba_ref_protein_domains:
+      description: |
+        Arriba protein domains annotation
+        Structure: path(protein_domains)
+  - fusioncatcher_ref:
+      description: |
+        FusionCatcher reference directory
+        Structure: [ val(meta), path(fusioncatcher_ref) ]
+  - starfusion_ref:
+      description: |
+        STAR-Fusion (CTAT) genome library
+        Structure: [ val(meta), path(starfusion_ref) ]
+  - fusionreport_ref:
+      description: |
+        fusion-report databases
+        Structure: [ val(meta), path(fusionreport_ref) ]
+  - versions:
+      description: |
+        Software versions of the modules that do not emit them to the versions topic
+        Structure: path(versions.yml)
+authors:
+  - "@rannick"
+  - "@nvnieuwk"
+  - "@atrigila"
+maintainers:
+  - "@rannick"
+  - "@nvnieuwk"
+  - "@atrigila"

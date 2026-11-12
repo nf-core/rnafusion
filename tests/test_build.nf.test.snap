@@ -4,39 +4,36 @@
             13,
             {
                 "AGAT_CONVERTGFF2BED": {
-                    "agat": "v1.5.1"
+                    "agat": "1.6.1"
                 },
                 "BIOAWK": {
                     "bioawk": 1.0
                 },
                 "CTATSPLICING_PREPGENOMELIB": {
-                    "ctatsplicing": "0.0.2"
+                    "ctatsplicing": "0.0.3"
                 },
                 "FUSIONREPORT_DOWNLOAD": {
-                    "fusion_report": "4.1.1"
+                    "fusion_report": "4.1.2"
                 },
                 "GATK4_BEDTOINTERVALLIST": {
-                    "gatk4": "4.6.1.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GATK4_CREATESEQUENCEDICTIONARY": {
-                    "gatk4": "4.6.1.0"
+                    "gatk4": "4.7.0.0"
                 },
                 "GFFREAD": {
                     "gffread": "0.12.7"
-                },
-                "HGNC_DOWNLOAD": {
-                    "wget": "1.21.4"
                 },
                 "SALMON_INDEX": {
                     "salmon": "1.10.3"
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": 1.21
+                    "samtools": 1.25
                 },
                 "STARFUSION_BUILD": {
-                    "STAR-Fusion": "1.15.1",
                     "gunzip": 1.12,
-                    "hmmer": 3.4
+                    "hmmer": 3.4,
+                    "star-fusion": "1.15.1"
                 },
                 "STAR_GENOMEGENERATE": {
                     "gawk": "5.1.0",
@@ -44,17 +41,20 @@
                     "star": "2.7.11b"
                 },
                 "UCSC_GTFTOGENEPRED": {
-                    "ucsc": 447
+                    "ucsc": 482
+                },
+                "WGET_HGNC": {
+                    "wget": "1.21.4"
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.1.3"
+                    "nf-core/rnafusion": "v4.2.0"
                 }
             },
             [
                 "agat",
                 "agat/minigenome.gtf.bed",
                 "bioawk",
-                "bioawk/minigenome.gtf_rrna.gtf.gz",
+                "bioawk/minigenome.gtf_rrna.gtf.gff",
                 "pipeline_info",
                 "pipeline_info/nf_core_rnafusion_software_mqc_versions.yml",
                 "references",
@@ -191,7 +191,7 @@
             ],
             [
                 "minigenome.gtf.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "minigenome.gtf_rrna.gtf.gz:md5,fb03ec66f68bc4becc71c299ed38b62d",
+                "minigenome.gtf_rrna.gtf.gff:md5,fb03ec66f68bc4becc71c299ed38b62d",
                 "minigenome.dict:md5,f2dfb8df1d1f860050fc0dba1399fd9e",
                 "minigenome.fa.fai:md5,e3f74a27219b33ae80fd5de5cbeaf32b",
                 "minigenome.gtf.fasta:md5,349d42b5dbd73e163cdbad3453d8cd3a",
@@ -210,7 +210,7 @@
                 "versionInfo.json:md5,d2c799050e81aa6e282ac8a73e773941",
                 "Genome:md5,1621486e3b854fefa37c0b4e77275233",
                 "SA:md5,9b6b936f3a8a1232c4fc5533daf9401d",
-                "SAindex:md5,8b2025227b78fdc83e3e5b17c0f538f7",
+                "SAindex:md5,3cd1830ea49ca8aab389603b513791e7",
                 "chrLength.txt:md5,e02cd536b7281b894246863b160d5d06",
                 "chrName.txt:md5,f4d0d6595f423084e6b9472e40dfe6e8",
                 "chrNameLength.txt:md5,07a67d7ac441d7d30d80840b0927e717",
@@ -280,10 +280,10 @@
                 "trans.blast.dat.gz:md5,85ba5ea96c566f751ad83a3e4b8ab128"
             ]
         ],
-        "timestamp": "2026-05-28T11:31:31.557285215",
+        "timestamp": "2026-11-06T22:25:00.720888",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.2"
+            "nf-test": "0.9.4",
+            "nextflow": "26.10.5"
         }
     }
 }

@@ -17,9 +17,6 @@ process VCF_COLLECT {
     tuple val("${task.process}"), val('vcf_collect'), val('0.1'), topic: versions, emit: versions_vcf_collect
     tuple val(meta), path("*vcf")    , emit: vcf
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """

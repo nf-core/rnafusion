@@ -76,7 +76,8 @@
             "strandedness": {
                 "type": "string",
                 "enum": ["forward", "reverse", "unstranded", "unknown"],
-                "errorMessage": "Strandedness has to be 'forward', 'reverse', 'unstranded' or 'unknown'"
+                "errorMessage": "Strandedness has to be 'forward', 'reverse', 'unstranded' or 'unknown'",
+                "meta": ["strandedness"]
             },
             "seq_platform": {
                 "type": "string",
@@ -91,15 +92,15 @@
                 "meta": "seq_center"
             }
         },
-        "uniqueEntries": ["sample"],
         "dependentRequired": {
+            "fastq_2": ["fastq_1"],
             "bai": ["bam"],
             "crai": ["cram"]
         },
         "required": ["sample", "strandedness"],
         "anyOf": [
             {
-                "required": ["fastq_1", "fastq_2"]
+                "required": ["fastq_1"]
             },
             {
                 "required": ["bam"]

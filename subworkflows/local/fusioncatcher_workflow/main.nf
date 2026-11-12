@@ -14,8 +14,6 @@ workflow FUSIONCATCHER_WORKFLOW {
         fusioncatcher_fusions   // path, string
 
     main:
-        ch_versions   = channel.empty()
-
         if (fusioncatcher_fusions){
 
             ch_fusioncatcher_fusions = reads.combine(channel.value(file(fusioncatcher_fusions, checkIfExists:true)))
@@ -42,10 +40,8 @@ workflow FUSIONCATCHER_WORKFLOW {
                 fusioncatcher_ref
             )
             ch_fusioncatcher_fusions = FUSIONCATCHER_FUSIONCATCHER.out.fusions
-            ch_versions              = ch_versions.mix(FUSIONCATCHER_FUSIONCATCHER.out.versions)
         }
 
     emit:
         fusions  = ch_fusioncatcher_fusions     // channel [ meta, fusions ]
-        versions = ch_versions                  // channel [ versions      ]
     }

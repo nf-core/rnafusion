@@ -3,6 +3,65 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v4.2.0 - [2026-11-12]
+
+### Added
+
+1. Added support for multiple FASTQ files for the same sample. These will be merged at the start of the pipeline [#821](https://github.com/nf-core/rnafusion/pull/821)
+2. Added a stub test for merging single-end FASTQ files of the same sample [#848](https://github.com/nf-core/rnafusion/issues/848)
+3. Added `--skip_gencode_filter` to build the CTAT genome library without STAR-Fusion's `--human_gencode_filter`, for annotations that are not GENCODE [#832](https://github.com/nf-core/rnafusion/issues/832)
+4. `GATK4_MARKDUPLICATES` now creates and publishes an index for the duplicate-marked BAM [#784](https://github.com/nf-core/rnafusion/issues/784)
+
+### Changed
+
+1. Moved the pipeline to full strict syntax compatibility
+2. Updated the minimal Nextflow version to 26.04.0
+3. Bumped to nf-core template v4.2.2
+4. Moved references from `s3://nf-core-awsmegatests/rnafusion/references` to `s3://ngi-igenomes/nf-core/pipelines/rnafusion/references`
+5. Added `--no-fusiongdb2` to the fusionreport download command since the fusiongdb2 endpoint no longer exists. This will be removed once fusionreport is updated to address this issue.
+6. The samplesheet no longer requires unique `sample` values: rows with the same `sample` are combined into one sample [#821](https://github.com/nf-core/rnafusion/pull/821)
+7. Bumped nf-schema to 2.7.3
+8. Reorganised the parameter schema so inputs, references and alignment options are grouped together. This only changes how parameters are presented. Based on the original reorganisation by FriederikeHanssen in [#782](https://github.com/nf-core/rnafusion/pull/782)
+9. Added `--no-fusiongdb2` to the fusionreport download command since the fusiongdb2 endpoint no longer exists. `FUSIONREPORT_DOWNLOAD` (patched) now creates an empty fusiongdb2 database instead, because `fusion_report run` always queries it and failed with `no such table: fusiongdb2` on references built with this release [#842](https://github.com/nf-core/rnafusion/issues/842). This will be removed once fusionreport is updated to address this issue.
+10. Updated the nf-core modules. `SALMON_INDEX` and `SALMON_QUANT` stay on 1.10.3 because salmon 2.x rejects the published index, and `utils_nfschema_plugin` stays on the nf-schema 2 version
+11. Replaced the local `GENCODE_DOWNLOAD` and `HGNC_DOWNLOAD` modules with the nf-core `wget` and `gunzip` modules [#575](https://github.com/nf-core/rnafusion/issues/575).
+12. Cleaned up pipeline-level lint findings: removed the deprecated `when:` section from the local `VCF_COLLECT` module, added `meta.yml` files to the local subworkflows, filled in the pipeline-specific contribution guidelines and ignored the renamed iGenomes config files in the `files_exist` lint test
+13. Updated the `starfusion/detect` module to include its new nf-test with a chimeric junction file as input [#593](https://github.com/nf-core/rnafusion/issues/593)
+
+### Fixed
+
+1. Fixed the `PL` tag of the STAR read group being merged into the `SM` tag when a sequencing platform is set [#822](https://github.com/nf-core/rnafusion/issues/822)
+2. Fixed single-end FASTQ samplesheets being rejected by the input schema since v4.0.0 [#860](https://github.com/nf-core/rnafusion/issues/860)
+3. Fixed `--references_only` requiring `--input`, which broke the documented reference-building command [#861](https://github.com/nf-core/rnafusion/issues/861)
+4. Fixed the `test_build` profile failing on the STAR-Fusion tutorial minigenome by setting `--skip_gencode_filter`, since that annotation is not GENCODE [#832](https://github.com/nf-core/rnafusion/issues/832)
+5. Fixed samples spread over several samplesheet rows keeping only the first row's meta: `seq_center`/`seq_platform` from other rows are kept (and must agree), and rows without FASTQ files no longer break the single-end/paired-end check [#847](https://github.com/nf-core/rnafusion/issues/847)
+6. Fixed every run checking the remote dfam, pfam, AnnotFilterRule, cancer introns and fusion annotation library defaults at launch. They are now only resolved when the STAR-Fusion reference is built [#843](https://github.com/nf-core/rnafusion/issues/843)
+7. Fixed the completion email arguments being shifted by one, and the MultiQC report being passed to the email as a `[meta, report]` tuple, which stopped the report from being attached [#849](https://github.com/nf-core/rnafusion/issues/849)
+8. Fixed the pfam warning being printed on every run, because `--pfam_file` was compared as a path instead of a URL [#845](https://github.com/nf-core/rnafusion/issues/845)
+9. Fixed MultiQC regressions: a custom `--multiqc_config` is applied on top of the pipeline config again instead of replacing it, MultiQC is skipped again with `--skip_qc` and `--references_only`, and the MultiQC meta id is `rnafusion` [#844](https://github.com/nf-core/rnafusion/issues/844)
+10. Fixed `strandedness` from the samplesheet not being added to the meta map, so `PICARD_COLLECTRNASEQMETRICS` never got the right `--STRAND_SPECIFICITY` and the per-sample strandedness check never ran [#856](https://github.com/nf-core/rnafusion/issues/856)
+11. Fixed `ctatsplicing` failing on a prebuilt STAR-Fusion reference without a cancer splicing index. The index is now added to a copy of the reference, which is published to `references/starfusion` in `--outdir` [#704](https://github.com/nf-core/rnafusion/issues/704)
+12. Fixed additional STAR parameters not being correctly passed to FusionInspector by updating the module [#841](https://github.com/nf-core/rnafusion/issues/841)
+13. Fixed `ARRIBA_VISUALISATION` crashing on a samplesheet BAM without an index. The index is now created when `ctatsplicing` or `fusioninspector` need it, and a sample without confirmed fusions now logs a warning that its visualisation is skipped [#780](https://github.com/nf-core/rnafusion/issues/780)
+14. Fixed prebuilt references being rebuilt because a directory was judged empty from a single file, e.g. an empty checkpoint file in the STAR-Fusion `__chkpts/` folder. A reference directory now counts as present if any file in it has content, and an empty directory no longer crashes the check [#774](https://github.com/nf-core/rnafusion/issues/774)
+15. Increased the memory of `FUSIONCATCHER_FUSIONCATCHER` to 48 GB, since `bbduk.sh` could run out of memory with the `process_medium` default [#773](https://github.com/nf-core/rnafusion/issues/773)
+
+### Tool version updates
+
+| Tool          | Old version          | New version |
+| ------------- | -------------------- | ----------- |
+| agat          | 1.5.1                | 1.6.1       |
+| ctatsplicing  | 0.0.2                | 0.0.3       |
+| fastp         | 1.1.0                | 1.4.0       |
+| fastqc        | 0.12.1               | 0.13.0      |
+| fusion-report | 4.1.1                | 4.1.2       |
+| gatk4         | 4.6.1.0              | 4.7.0.0     |
+| multiqc       | 1.33                 | 1.35        |
+| picard        | 3.3.0                | 3.5.0       |
+| samtools      | 1.21, 1.22.1, 1.23.1 | 1.25        |
+| stringtie     | 2.2.1, 2.2.3         | 3.0.3       |
+| ucsc          | 447                  | 482         |
+
 ## v4.1.3 - [2026-06-02]
 
 ### Added

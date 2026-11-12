@@ -40,12 +40,12 @@ The nf-core stance on the use of AI and LLMs is that humans are still ultimately
 
 If you’re using AI tools, try to stick by these guidelines:
 
-- Keep PRs as small and focussed as possible
+- Keep PRs as small and focused as possible
 - Avoid any unnecessary changes, such as moving or refactoring code (unless that is the explicit intention of the PR)
 - Review all generated code yourself before opening a PR, and ensure that you understand it
 - Engage with the community review process and expect to make revisions
 
-For more detail, see the the [blog post](https://nf-co.re/blog/2026/statement-on-ai) for a statement from the nf-core/core team.
+For more detail, see the [blog post](https://nf-co.re/blog/2026/statement-on-ai) for a statement from the nf-core/core team.
 
 ### Getting help
 
@@ -128,7 +128,7 @@ Please also refer to the [pipeline-specific contribution guidelines](#pipeline-s
 - [ ] Perform local tests to validate that the new code works as expected.
   - [ ] If applicable, add a new test in the `tests` directory.
 - [ ] Update `usage.md`, `output.md`, and `citation.md` as appropriate.
-- [ ] [Lint](lint) the code with nf-core/tools.
+- [ ] [Lint](#lint-tests) the code with nf-core/tools.
 - [ ] Update any diagrams or pipeline images as necessary.
 - [ ] Update MultiQC config `assets/multiqc_config.yml` so relevant suffixes, file name cleanup, and module plots are in the appropriate order.
 - [ ] If applicable, create a [MultiQC](https://seqera.io/multiqc/) module.
@@ -166,7 +166,7 @@ Specify these with generic `withLabel:` selectors, so they can be shared across 
 nf-core provides a set of standard labels that you should follow where possible, as seen in the [nf-core pipeline template](https://github.com/nf-core/tools/blob/main/nf_core/pipeline-template/conf/base.config).
 These labels define resource defaults for single-core processes, modules that require a GPU, and different levels of multi-core configurations with increasing memory requirements.
 
-Values assigned within these labels can be dynamically passed to a tool using the the `${task.cpus}` and `${task.memory}` Nextflow variables in the `script:` block of a module (see an example in the [modules repository](https://github.com/nf-core/modules/blob/bd1b6a40f55933d94b8c9ca94ec8c1ea0eaf4b82/modules/nf-core/samtools/bam2fq/main.nf#L30)).
+Values assigned within these labels can be dynamically passed to a tool using the `${task.cpus}` and `${task.memory}` Nextflow variables in the `script:` block of a module (see an example in the [modules repository](https://github.com/nf-core/modules/blob/bd1b6a40f55933d94b8c9ca94ec8c1ea0eaf4b82/modules/nf-core/samtools/bam2fq/main.nf#L30)).
 
 #### Nextflow version bumping
 
@@ -182,4 +182,12 @@ If you update images or graphics, follow the nf-core [style guidelines](https://
 
 ## Pipeline specific contribution guidelines
 
-<!-- TODO nf-core: Add any pipeline specific contribution guidelines here, such as coding styles, procedures, checklists etc. -->
+In addition to the general nf-core guidelines above, please keep the following in mind when contributing to nf-core/rnafusion:
+
+- **Changelog**: add an entry for every user-facing change to the unreleased section of `CHANGELOG.md`, linking the issue or pull request.
+- **Strict syntax**: the pipeline is fully compatible with the Nextflow strict syntax. Run `nextflow lint .` before opening a pull request and do not introduce new errors or warnings in pipeline-owned code (`main.nf`, `workflows/`, `subworkflows/local/`, `modules/local/` and `conf/`).
+- **Parameters**: parameters are typed in the `params` block of `main.nf`. A new parameter needs a typed declaration there and an entry in `nextflow_schema.json` (`nf-core pipelines schema build`). Defaults that other config files depend on stay in `nextflow.config`.
+- **Shared components**: never edit files under `modules/nf-core/` or `subworkflows/nf-core/` by hand. Fix the component upstream in [nf-core/modules](https://github.com/nf-core/modules), or use `nf-core modules patch` if a pipeline-specific change is unavoidable.
+- **Local subworkflows**: keep the `meta.yml` of a local subworkflow in sync with its `take:` and `emit:` blocks and its included components.
+- **Tests**: pipeline-level tests live in `tests/` (`test_stub*.nf.test` and `test_build.nf.test`), and modules and subworkflows carry their own `tests/` folders. Update snapshots with `nf-test test <path> --profile +docker --update-snapshot` and check the snapshot diff before committing.
+- **References**: reference files are built or downloaded by the `BUILD_REFERENCES` subworkflow. If you change how a reference is built, check that `--references_only` still works without `--input`.

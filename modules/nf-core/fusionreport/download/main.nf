@@ -1,11 +1,14 @@
+// Copyright (c) the nf-core community under an open-source MIT license.
+// See https://github.com/nf-core/modules for full license, file patching instructions and upstream contributing.
+
 process FUSIONREPORT_DOWNLOAD {
     tag 'fusionreport'
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a4/a41e89223340438d7cebca8af469cef9189d177bb44373b1bcb010c8e441a444/data' :
-        'community.wave.seqera.io/library/fusion-report_beautifulsoup4_click_colorlog_pruned:4aeac839f8a4fc86'}"
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/32/3240b594c095a3682b14e92571b2bc721c7925990a74f9df3b54ce82d4e05daa/data' :
+        'community.wave.seqera.io/library/fusion-report_beautifulsoup4_click_colorlog_pruned:15d1184d4eac76b8'}"
 
     input:
     val(meta)
@@ -23,6 +26,12 @@ process FUSIONREPORT_DOWNLOAD {
     """
     mkdir -p ${prefix}
     fusion_report download ${args} ${prefix}
+
+    # fusion_report run always queries fusiongdb2 (https://github.com/Clinical-Genomics/fusion-report/issues/99),
+    # so create an empty fusiongdb2 database when it was not downloaded (e.g. with --no-fusiongdb2)
+    if [ ! -f ${prefix}/fusiongdb2.db ]; then
+        python3 -c "import sqlite3; db = sqlite3.connect('${prefix}/fusiongdb2.db'); db.execute('CREATE TABLE fusiongdb2 (fusions varchar(50) NOT NULL)'); db.commit()"
+    fi
     """
 
     stub:
