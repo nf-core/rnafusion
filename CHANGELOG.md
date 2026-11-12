@@ -3,11 +3,16 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v4.2.1dev
+## v4.2.1dev - [unreleased]
 
-### Fixes
+### Added
 
-1. Made `CTATSPLICING_PREPGENOMELIB` args a closure so it can use typed parameters
+### Changed
+
+### Fixed
+1. Made `CTATSPLICING_PREPGENOMELIB` args a closure so it can use typed parameters [#881](https://github.com/nf-core/rnafusion/pull/881)
+
+### Tool version updates
 
 ## v4.2.0 - [2026-11-12]
 
