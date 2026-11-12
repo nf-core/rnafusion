@@ -74,7 +74,7 @@
                     "wget": "1.21.4"
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0"
+                    "nf-core/rnafusion": "v4.2.1dev"
                 }
             },
             [
@@ -316,7 +316,7 @@
                     "wget": "1.21.4"
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0"
+                    "nf-core/rnafusion": "v4.2.1dev"
                 }
             },
             [
@@ -542,7 +542,7 @@
                     "wget": "1.21.4"
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0"
+                    "nf-core/rnafusion": "v4.2.1dev"
                 }
             },
             [
@@ -875,7 +875,7 @@
                     "wget": "1.21.4"
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0"
+                    "nf-core/rnafusion": "v4.2.1dev"
                 }
             },
             [
@@ -1057,7 +1057,7 @@
                     "wget": "1.21.4"
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0"
+                    "nf-core/rnafusion": "v4.2.1dev"
                 }
             },
             [
@@ -1295,7 +1295,7 @@
                     "wget": "1.21.4"
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0"
+                    "nf-core/rnafusion": "v4.2.1dev"
                 }
             },
             [
@@ -1432,7 +1432,7 @@
                     "wget": "1.21.4"
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0"
+                    "nf-core/rnafusion": "v4.2.1dev"
                 }
             },
             [
@@ -1698,7 +1698,7 @@
                     "wget": "1.21.4"
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0"
+                    "nf-core/rnafusion": "v4.2.1dev"
                 }
             },
             [
@@ -1926,7 +1926,7 @@
                     "wget": "1.21.4"
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0"
+                    "nf-core/rnafusion": "v4.2.1dev"
                 }
             },
             [
@@ -2008,7 +2008,7 @@
                     "wget": "1.21.4"
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0"
+                    "nf-core/rnafusion": "v4.2.1dev"
                 }
             },
             [
@@ -2088,7 +2088,7 @@
                     "wget": "1.21.4"
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0"
+                    "nf-core/rnafusion": "v4.2.1dev"
                 }
             },
             [
@@ -2259,7 +2259,7 @@
                     "wget": "1.21.4"
                 },
                 "Workflow": {
-                    "nf-core/rnafusion": "v4.2.0"
+                    "nf-core/rnafusion": "v4.2.1dev"
                 }
             },
             [
