@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 1. Moved the pipeline to full strict syntax compatibility
 2. Updated the minimal Nextflow version to 26.04.0
-3. Bumped to nf-core template v4.2.1
+3. Bumped to nf-core template v4.2.2
 4. Moved references from `s3://nf-core-awsmegatests/rnafusion/references` to `s3://ngi-igenomes/nf-core/pipelines/rnafusion/references`
 5. Added `--no-fusiongdb2` to the fusionreport download command since the fusiongdb2 endpoint no longer exists. This will be removed once fusionreport is updated to address this issue.
 6. The samplesheet no longer requires unique `sample` values: rows with the same `sample` are combined into one sample [#821](https://github.com/nf-core/rnafusion/pull/821)

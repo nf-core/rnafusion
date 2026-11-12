@@ -451,7 +451,7 @@
     },
     "stub test fusioninspector": {
         "content": [
-            23,
+            24,
             {
                 "AGAT_CONVERTGFF2BED": {
                     "agat": "1.6.1"
@@ -691,9 +691,9 @@
                 "star/test.Aligned.sortedByCoord.out.bam.bai"
             ]
         ],
-        "timestamp": "2026-11-10T00:39:40.631175",
+        "timestamp": "2026-11-11T19:22:36.166558",
         "meta": {
-            "nf-test": "0.9.4",
+            "nf-test": "0.9.5",
             "nextflow": "26.10.5"
         }
     },
@@ -1468,7 +1468,7 @@
     },
     "stub test all": {
         "content": [
-            34,
+            35,
             {
                 "AGAT_CONVERTGFF2BED": {
                     "agat": "1.6.1"
@@ -1804,15 +1804,15 @@
                 "stringtie/test.transcripts.gtf"
             ]
         ],
-        "timestamp": "2026-11-10T00:18:30.18891",
+        "timestamp": "2026-11-11T19:07:30.918699",
         "meta": {
-            "nf-test": "0.9.4",
+            "nf-test": "0.9.5",
             "nextflow": "26.10.5"
         }
     },
     "default no fastqs provided": {
         "content": [
-            35,
+            36,
             {
                 "AGAT_CONVERTGFF2BED": {
                     "agat": "1.6.1"
@@ -2156,9 +2156,9 @@
                 "stringtie/test.transcripts.gtf"
             ]
         ],
-        "timestamp": "2026-11-10T00:41:24.683186",
+        "timestamp": "2026-11-11T19:24:19.120237",
         "meta": {
-            "nf-test": "0.9.4",
+            "nf-test": "0.9.5",
             "nextflow": "26.10.5"
         }
     }
