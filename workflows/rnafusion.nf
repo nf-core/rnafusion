@@ -6,6 +6,7 @@
 
 include { BUILD_REFERENCES              }   from '../subworkflows/local/build_references'
 include { CAT_FASTQ                     }   from '../modules/nf-core/cat/fastq/main'
+include { SEQTK_SAMPLE                  }   from '../modules/nf-core/seqtk/sample/main'
 include { FASTQ_FASTQC_UMITOOLS_FASTP   }   from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp/main'
 include { QC_WORKFLOW                   }   from '../subworkflows/local/qc_workflow'
 include { STARFUSION_DETECT             }   from '../modules/nf-core/starfusion/detect/main'
@@ -73,6 +74,7 @@ workflow RNAFUSION {
     min_trimmed_reads
     trim_tail_fusioncatcher
     tools_cutoff
+    max_reads
     // booleans
     references_only
     save_trimmed_fail
@@ -258,8 +260,32 @@ workflow RNAFUSION {
         def ch_fastqs_merged = CAT_FASTQ.out.reads
             .mix(ch_fastqs_merge.no_merge)
 
+        // Subsample reads if max_reads is specified
+        def ch_fastqs_subsampled = ch_fastqs_merged
+        if (max_reads) {
+            def seqtk_sample_input = ch_fastqs_merged
+                .map { meta, fastqs ->
+                    def new_meta = meta + [ fastq_count: fastqs.size() ]
+                    [ new_meta, fastqs ]
+                }
+                .transpose(by: 1)
+                .map { meta, fastq ->
+                    def new_meta = meta + [ original_id: meta.id, id: fastq.name.replace(".fastq.gz", "").replace(".fq.gz", "") ]
+                    [ new_meta, fastq, max_reads ]
+                }
+
+            SEQTK_SAMPLE(seqtk_sample_input)
+
+            ch_fastqs_subsampled = SEQTK_SAMPLE.out.reads
+                .map { meta, fastq ->
+                    def new_meta = meta - meta.subMap("fastq_count", "original_id") + [ id: meta.original_id ]
+                    [ groupKey(new_meta, meta.fastq_count), fastq ]
+                }
+                .groupTuple()
+        }
+
         // Add optional adapter FASTA to the reads tuple expected by FASTP.
-        def ch_fastqs_with_adapters = ch_fastqs_merged.map { meta, fastqs ->
+        def ch_fastqs_with_adapters = ch_fastqs_subsampled.map { meta, fastqs ->
             [ meta, fastqs, adapter_fasta ? file(adapter_fasta, checkIfExists: true) : [] ]
         }
 

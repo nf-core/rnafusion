@@ -179,6 +179,11 @@
                         "git_sha": "a582d5633f7df32396681ef4458068e2b509ca91",
                         "installed_by": ["bam_stats_samtools"]
                     },
+                    "seqtk/sample": {
+                        "branch": "master",
+                        "git_sha": "7b3452a23773f687ededb4befd037920e5a51341",
+                        "installed_by": ["modules"]
+                    },
                     "star/align": {
                         "branch": "master",
                         "git_sha": "7b3452a23773f687ededb4befd037920e5a51341",

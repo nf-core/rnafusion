@@ -176,6 +176,12 @@ params {
     // FASTP: Inputs with fewer than this reads will be filtered out of the "reads" output channel
     min_trimmed_reads: Integer = 1
 
+    // Maximum number of reads allowed in the input fastq files. Whenever the number of reads is bigger, the pipeline will subsample
+    max_reads: Integer?
+
+    // Seed for the seqtk subsampling, useful for reproducibility
+    seqtk_sample_seed: Integer = 100
+
     // FASTP: Specify true to save merged reads
     save_merged: Boolean
 
@@ -406,6 +412,7 @@ workflow {
         params.min_trimmed_reads,
         params.trim_tail_fusioncatcher,
         params.tools_cutoff,
+        params.max_reads,
         // booleans
         params.references_only,
         params.save_trimmed_fail,
