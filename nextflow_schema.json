@@ -133,6 +133,17 @@
                     "type": "boolean",
                     "fa_icon": "fas fa-download",
                     "description": "FASTP: Specify true to save merged reads"
+                },
+                "max_reads": {
+                    "type": "integer",
+                    "fa_icon": "fas fa-search-plus",
+                    "description": "Maximum number of reads allowed in a single input fastq file (will be double this amount of reads for paired end fastq files). Whenever the number of reads is bigger, the pipeline will subsample. Don't set this value to skip subsampling.",
+                    "minimum": 1
+                },
+                "seqtk_sample_seed": {
+                    "type": "integer",
+                    "description": "Seed for the seqtk subsampling, useful for reproducibility",
+                    "default": 100
                 }
             }
         },

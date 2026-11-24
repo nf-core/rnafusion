@@ -401,6 +401,12 @@ There are two parameters to increase the `--limitSjdbInsertNsj` parameter if nec
 
 Use the parameter `--cram` to compress the BAM files to CRAM.
 
+#### Subsample input FASTQ files
+
+It is possible to subsample FASTQ files (especially useful for fastq files with a high amount of reads since these can take a very long time in FusionCatcher and FusionInspector). To subsample, use the `--max_reads <integer>` parameter to set an upper limit of allowed reads. Keep in mind that this will be checked per FASTQ file, so paired end fastq files will contain double that amount of reads together. 
+
+To ensure reproducible subsampling, the seed of `seqtk sample` is set to 100 by default. This can be changed using the `--seqtk_sample_seed <integer>` parameter.
+
 ### Troubleshooting
 
 #### GstrandBit issues
