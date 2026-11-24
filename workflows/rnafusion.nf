@@ -264,7 +264,7 @@ workflow RNAFUSION {
         def ch_fastqs_subsampled = ch_fastqs_merged
         if (max_reads) {
             def seqtk_sample_input = ch_fastqs_merged
-                .map { meta, fastqs -> 
+                .map { meta, fastqs ->
                     def new_meta = meta + [ fastq_count: fastqs.size() ]
                     [ new_meta, fastqs ]
                 }

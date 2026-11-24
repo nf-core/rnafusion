@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-1. Added the `--max_reads` parameter to subsample FASTQ files before trimming. Whenever this value has not been given, the pipeline will not subsample. 
+1. Added the `--max_reads` parameter to subsample FASTQ files before trimming. Whenever this value has not been given, the pipeline will not subsample.
 
 ### Changed
 
